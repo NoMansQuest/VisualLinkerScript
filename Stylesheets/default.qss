@@ -1,0 +1,28 @@
+/* Menu bar and items */
+QMenuBar 
+{    
+    padding: 5px;
+    border-top: 1px solid #E0E0E0;
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                stop: 0 #FDFDFD, stop: 0.4 #FAFAFA,
+                                stop: 0.5 #F9F9F9, stop: 1.0 #F2F2F2);
+}
+
+QMenuBar::item
+{    
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    background: transparent;
+}
+
+QMenuBar::item:selected
+{    
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    border: 1px solid #E1E1E1;
+    background: #E9E9E9;
+}
