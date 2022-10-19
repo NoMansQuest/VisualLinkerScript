@@ -1,20 +1,34 @@
+/* Common depths
+ * Base backgroud:   #ff121212  
+ * Paper background: #ff121212
+ * 5%   : #0cffffff
+ * 7%   : #11ffffff
+ * 10%  : #19ffffff
+ * 13%  : #21ffffff
+ * 16%  : #28ffffff
+ * 20%  : #33ffffff
+ * 24%  : #3dffffff
+ * 28%  : #49ffffff
+ */
+
 /* Menu bar and items */
 QMenuBar 
 {    
     padding: 5px;
     border-top: 1px solid #E0E0E0;
-    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                stop: 0 #FDFDFD, stop: 0.4 #FAFAFA,
-                                stop: 0.5 #F9F9F9, stop: 1.0 #F2F2F2);
+    background: #2c2c2c;
+    font-family: 'Segoe UI' ;
+    font-size: 10pt;
 }
 
 QMenuBar::item
-{    
+{
     padding-left: 8px;
     padding-right: 8px;
     padding-top: 4px;
     padding-bottom: 4px;
     background: transparent;
+    color: #E0E0E0;
 }
 
 QMenuBar::item:selected
@@ -23,6 +37,60 @@ QMenuBar::item:selected
     padding-right: 8px;
     padding-top: 4px;
     padding-bottom: 4px;
-    border: 1px solid #E1E1E1;
-    background: #E9E9E9;
+    border: 0px solid #E1E1E1;
+    background: #23FFFFFF;
+    color: #E0E0E0;
+}
+
+/* Scroll Bars */
+QScrollBar {
+    background: #ff121212;
+    border-radius: 0px;
+}
+
+QScrollBar:horizontal {
+    height: 13px;
+}
+
+QScrollBar:vertical {
+    width: 13px;
+}
+
+QScrollBar::handle {
+    background: #33ffffff;
+    border-radius: 0px; 
+}
+
+QScrollBar::handle:hover {
+    background: #49ffffff;    
+}
+
+QScrollBar::handle:horizontal {
+    height: 25px;
+    min-width: 85px;
+}
+
+QScrollBar::handle:vertical {
+    width: 25px;
+    min-height: 85px;
+}
+
+QScrollBar::add-line,
+QScrollBar::sub-line {
+    border: none;
+    background: none;
+}
+
+QScrollBar::add-page:horizontal,
+QScrollBar::sub-page:horizontal,
+QScrollBar::add-page:vertical,
+QScrollBar::sub-page:vertical {
+    background: none;
+}
+
+/* Components */
+QsciScintilla
+{
+    border: 0px solid #000000;
+    background: #ff121212;
 }

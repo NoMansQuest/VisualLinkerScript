@@ -9,6 +9,7 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    Components/QScintilla/ComponentHelpers.cpp \
     Components/QScintilla/scintilla/lexlib/Accessor.cpp \
     Components/QScintilla/scintilla/lexlib/CharacterCategory.cpp \
     Components/QScintilla/scintilla/lexlib/CharacterSet.cpp \
@@ -76,6 +77,7 @@ SOURCES += \
     mainwindow.cpp
 
 HEADERS += \
+    Components/QScintilla/ComponentHelpers.h \
     Components/QScintilla/scintilla/include/ILexer.h \
     Components/QScintilla/scintilla/include/ILoader.h \
     Components/QScintilla/scintilla/include/Platform.h \
