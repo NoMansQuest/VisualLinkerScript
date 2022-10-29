@@ -10,6 +10,8 @@ CONFIG += c++17
 
 SOURCES += \
     Components/QScintilla/ComponentHelpers.cpp \
+    Components/QScintilla/scintilla/lexers/LexCPP.cpp \
+    Components/QScintilla/scintilla/lexers/LexLinkerScript.cpp \
     Components/QScintilla/scintilla/lexlib/Accessor.cpp \
     Components/QScintilla/scintilla/lexlib/CharacterCategory.cpp \
     Components/QScintilla/scintilla/lexlib/CharacterSet.cpp \

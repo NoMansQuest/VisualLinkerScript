@@ -91,6 +91,7 @@ QScrollBar::sub-page:vertical {
 /* Components */
 QsciScintilla
 {
+    padding-top: 10px;
     border: 0px solid #000000;
     background: #ff121212;
 }

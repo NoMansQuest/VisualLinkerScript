@@ -1,6 +1,7 @@
 
 #include "ComponentHelpers.h"
 #include <QScrollBar>
+#include <QStyle>
 #include "src/Qsci/qsciscintilla.h"
 #include <QOperatingSystemVersion>
 
@@ -31,3 +32,7 @@ void Components::QScintilla::SetComponentStyles(QsciScintilla& target)
 #endif
 }
 
+void Components::QScintilla::SetTextEditorStyles(QsciScintilla& target)
+{
+
+}
