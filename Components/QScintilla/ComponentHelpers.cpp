@@ -30,6 +30,9 @@ void Components::QScintilla::SetComponentStyles(QsciScintilla& target)
 #ifdef Q_OS_WIN32
   target.setFont(QFont("Consolas", 10));
 #endif
+
+    // Set Lexer
+    target.setLexer()
 }
 
 void Components::QScintilla::SetTextEditorStyles(QsciScintilla& target)

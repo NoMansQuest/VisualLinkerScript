@@ -23,17 +23,6 @@
    Enum Blue: 186,156, 214                      = 0xff569CD6
    Bracket Yellow Code: 255,215,4               = 0xffFFD704
 
-   States:
-   =========================================================
-   SCE_LINKERSCRIPT_DEFAULT 
-   SCE_LINKERSCRIPT_RESERVED 
-   SCE_LINKERSCRIPT_FUNCTION 
-   SCE_LINKERSCRIPT_CURLY_BRACKETS 
-   SCE_LINKERSCRIPT_PARENTHESIS 
-   SCE_LINKERSCRIPT_OPERATORS 
-   SCE_LINKERSCRIPT_COMMENTS 
-   SCE_LINKERSCRIPT_STRINGS 
-
  */
 
 #include <stdlib.h>
@@ -54,66 +43,174 @@
 #include "CharacterSet.h"
 #include "LexerModule.h"
 
-
-#define _LINKERSCRIPT_MAXIMUM_NUMBER_LENGTH 128
-
 using namespace Scintilla;
 
-/// @brief These words are considered as "Reserved", and have their own proper coloring
-static const char * const linkerScriptReservedWords[] = {
-    "MEMORY", "SECTIONS", "PHDRS", "VERSION", "OVERLAY", "NOCROSSREF", "AT", "PT_NULL"
-    "PT_LOAD", "PT_DYNAMIC", "PT_INTERP", "PT_NOTE", "PT_SHLIB", "PT_PHDR", "FORCE_COMMON_ALLOCATION",
-    "INCLUDE", "INPUT", "GROUP", "OUTPUT", "OUTPUT_ARCH", "OUTPUT_FORMAT", "SEARCH_DIR", 0
-};
-
-/// @brief These are linker-script Functions, and are colored accordingly
-static const char * const linkerScriptFunctions[]] = {
-    "ALIGN", "PROVIDE", "KEEP", "BYTE", "SHORT", "LONG", "QUAD", "SQUAD", "FLOAT", "NOFLOAT",
-    "FORCE_COMMON_ALLOCATION", "STARTUP", "TARGET",
-    0
-};
-
 /// @brief Anonymous namespace, used to avoid naming conflicts
-namespace
+namespace LinkerScript
 {
     /// @brief Type of numbers we Support
-    enum class NumberType
+    enum class NumberType : int
     {
-        Decimal,        // Base-10, Starts with any 1-9 digit.
+        Decimal = 0,    // Base-10, Starts with any 1-9 digit.
         Octal,          // Base-8, starts with leading '0'
         Hexadecimal,    // Base-16, starts with '0x'
         Binary,         // Base-2, starts with 0b
         Unidentified    // Unidentified type (or invalid)
+    };
+
+    /// @brief These words are considered as "Reserved", and have their own proper coloring
+    static const char * linkerScriptReservedWords[] = {
+        "MEMORY", "SECTIONS", "PHDRS", "VERSION", "OVERLAY", "NOCROSSREF", "AT", "PT_NULL"
+        "PT_LOAD", "PT_DYNAMIC", "PT_INTERP", "PT_NOTE", "PT_SHLIB", "PT_PHDR", "FORCE_COMMON_ALLOCATION",
+        "INCLUDE", "INPUT", "GROUP", "OUTPUT", "OUTPUT_ARCH", "OUTPUT_FORMAT", "SEARCH_DIR", 0
+    };
+
+    /// @brief These are linker-script Functions, and are colored accordingly
+    static const char * linkerScriptFunctions[] = {
+        "ALIGN", "PROVIDE", "KEEP", "BYTE", "SHORT", "LONG", "QUAD", "SQUAD", "FLOAT", "NOFLOAT",
+        "FORCE_COMMON_ALLOCATION", "STARTUP", "TARGET",
+        0
+    };
+
+    /// @brief Is this word present in the given list?
+    /// @param startPosition Position of the first character of the keyword
+    /// @param length Length of the keyword
+    /// @param listToCheckAgainst List of words to check against
+    /// @param styler Needed to access content
+    /// @return 'True' if a keyword (and needs to be styled as such), 'False' otherwise...
+    bool IsKeywordInList(Sci_PositionU startPosition, size_t length, const char** listToCheckAgainst, Accessor& styler)
+    {        
+        auto match = false;
+        for (auto reservedWordIndex = 0; listToCheckAgainst[reservedWordIndex] != 0; reservedWordIndex++)
+        {            
+            auto keywordToCheckAgainst = listToCheckAgainst[reservedWordIndex];
+            auto keywordLength = strlen(keywordToCheckAgainst);
+
+            if (keywordLength != length)
+            {
+                continue;
+            }
+
+            auto mismatched = false;
+            for (auto index = startPosition; index < length; index++)
+            {
+                if (styler.SafeGetCharAt(index) != keywordToCheckAgainst[index - startPosition])
+                {
+                    mismatched = true;
+                    break;
+                }
+            }       
+
+            if (!mismatched)             
+            {
+                match = true;
+                break;
+            }
+            break;
+        }
+        return match;
     }
 
     /// @brief Determines if this character can be the first letter of a word
     /// @param input Character to check
     /// @return True if the character can be the first letter of a word (i.e. A-Z, a-z, '_')
-    bool canBeStartOfWork(char input)
+    bool CanBeStartOfWord(char input)
     {
         return ((input >= 'A') && (input <= 'Z')) ||
                ((input >= 'a') && (input <= 'z')) ||               
-               (input == '_');
+               (input == '_') ||                           
+               (input == '.');
     }
 
     /// @brief If true, then the character can be considered as part of a word
     /// @param input Character to check
     /// @return True if the character can be considered as part of word (i.e. A-Z, a-z, 0-9 and '_')
-    bool canBeWordContent(char input)
+    bool CanBeWithinWord(char input)
     {
         return ((input >= 'A') && (input <= 'Z')) ||
                ((input >= 'a') && (input <= 'z')) ||
-               ((input >= '0') && (input <= '9')) ||
-               (input == '_');
+               ((input >= '0') && (input <= '9')) ||               
+               (input == '_') ||
+               (input == '-') || (input == '+') ||  // Yes, weirdly enough these are allowed in LinkerScript symbol names!
+               (input == '.');
+    }
+
+    /// @brief  Checks the character for being a potential prefix (such as 0x, 0b, etc.)
+    /// @param input Character to check
+    /// @return True if a prefix-character is observed.
+    bool IsNumberPrefix(char input)
+    {
+        return ((input == 'x') || 
+                (input == 'X') || 
+                (input == 'b') ||
+                (input == 'B'));
+    }
+
+    /// @brief  Checks the character for being an operator ( & = &= += > >> .... )
+    /// @param input Character to check
+    /// @return True if the character is considered to be an operator
+    bool IsOperator(char input)
+    {
+        return ((input == ':') ||
+                (input == '!') ||
+                (input == '*') ||
+                (input == '/') ||
+                (input == '%') ||
+                (input == '+') ||
+                (input == '-') ||
+                (input == '~') ||
+                (input == '&') ||
+                (input == '*') ||
+                (input == '?'));
+    }
+
+    /// @brief  Reports back the type of number in the given string ( @see NumeberType ). It also checks
+    ///         if the pointer is valid.
+    /// @param  startPosition Index of the first character to check
+    /// @param  length Length of the string. We don't use strlen here for optimization
+    /// @param  styler Styler. We use it to obtain characters mostly
+    /// @return Type of the number as described in @see NumeberType
+    LinkerScript::NumberType SafeDetectNumberType(Sci_PositionU startPosition, size_t length, Accessor &styler)
+    {
+        auto charAt0 = styler.SafeGetCharAt(startPosition);
+
+        if ((charAt0 == '0') && (length > 1))
+        {
+            auto charAt1 = styler.SafeGetCharAt(startPosition+1);
+
+            if ((charAt1 == 'x') || (charAt1 == 'X'))
+            {
+                return NumberType::Hexadecimal;
+            }
+            else if ((charAt1 == 'd') || (charAt1 == 'D'))
+            {
+                return NumberType::Decimal;
+            }
+            else if ((charAt1 == 'b') || (charAt1 == 'B'))
+            {
+                return NumberType::Binary;
+            }
+            else if (IsADigit(charAt1))
+            {
+                return NumberType::Octal;
+            }
+            else
+            {
+                return NumberType::Unidentified;
+            }
+        }
+
+        return (IsADigit(charAt0) ? NumberType::Decimal : NumberType::Unidentified);
     }
 
     /// @brief Checks to see if the provided string inbetween these positions represent a valid number.
-    /// @param numberToCheck String containing the number to check
+    /// @param startPosition Position to start scanning
     /// @param length Length of the number to check. We don't use 'strlen' for performance reasons.
-    /// @return 
-    bool isValidNumber(const char* stringToCheck, int length)
+    /// @param styler Needed to access content
+    /// @return Type of the number (Unidentified if not a valid number)
+    NumberType CheckNumber(Sci_PositionU startPosition, size_t length, Accessor &styler)
     {
-        auto numberType = safeDetectNumberType(stringToCheck);
+        auto numberType = SafeDetectNumberType(startPosition, length, styler);
         auto baseToCheck = 10;
         auto validationStartIndex = 0;
         auto lastIndexToCheck = length - 1;
@@ -121,282 +218,435 @@ namespace
         switch (numberType)
         {
             case NumberType::Decimal:
+            {
                 // On 'Decimal' numbers support postfixs, which could be either K or M.
-                auto lastChar = stringToCheck[length - 1];
+                auto lastChar = styler.SafeGetCharAt(length - 1);
                 if (!IsADigit(lastChar)) 
                 {
                     if ((lastChar == 'K') || (lastChar == 'M'))                       
-                    {                            
+                    {                                               
                         lastIndexToCheck = length - 2; // This is so that the we don't include the last char in the verification loop.
                     }
                     else
                     {    
-                        return false;
+                        return NumberType::Unidentified;
                     }                     
                 }                               
 
                 baseToCheck = 10;
-                validationStartIndex = 0
+                validationStartIndex = 0;
                 break;
+            }
 
             case NumberType::Octal:
+            {
                 baseToCheck = 8;
-                validationStartIndex = 1
+                validationStartIndex = 1;
                 break;    
+            }
 
             case NumberType::Hexadecimal:
+            {
                 baseToCheck = 10;
-                validationStartIndex = 2
+                validationStartIndex = 2;
                 break; 
+            }
 
             case NumberType::Binary:
+            {
                 baseToCheck = 2;
                 validationStartIndex = 2;
                 break;
+            }
 
             default:
-                return false;
+            {
+                return numberType;
+            }
         }
 
         for (auto hover = validationStartIndex; hover <= lastIndexToCheck; hover++)
         {
-            if (!IsADigit(stringToCheck[hover], baseToCheck))                    
+            if (!IsADigit(styler.SafeGetCharAt(hover), baseToCheck))                    
             {
-                return false; 
+                return numberType; 
             }
         }
 
-        return true;  
+        return NumberType::Unidentified;  
     }
 
 
-    /// @brief  Reports back the type of number in the given string ( @see NumeberType ). It also checks
-    ///         if the pointer is valid.
-    /// @param  numberToCheck String containing the number to be checked.
-    /// @param  length Length of the string. We don't use strlen here for optimization
-    /// @return Type of the number as described in @see NumeberType    
-    NumeberType safeDetectNumberType(const char* numberToCheck, int length)
+    /// @brief Goes back in the text to find the position of the first digit in the number
+    /// @param startingPosition Where to start from
+    /// @param styler Needed for content access
+    /// @return Position of the first character of the number
+    Sci_PositionU FindStartOfNumber(Sci_PositionU startingPosition, Accessor& styler)    
     {
-        if (numberToCheck == nullptr)
+        auto processingPosition = startingPosition;
+        while (startingPosition >= 0)
         {
-            return NumeberType::Unidentified;
+            auto currentChar = styler.SafeGetCharAt(processingPosition);
+            if (IsADigit(currentChar, 16) || LinkerScript::IsNumberPrefix(currentChar))
+            {
+                processingPosition--;
+                continue;
+            }
+
+            break;
         }
 
-        if (numberToCheck[0] == '0')
-        {
-            if ((numberToCheck[1] == 'x') || (numberToCheck[1] == 'X'))
-            {
-                return NumberType::Hexadecimal;
-            }
-            else if ((numberToCheck[1] == 'd') || (numberToCheck[1] == 'D'))
-            {
-                return NumberType::Decimal;
-            }
-            else if ((numberToCheck[1] == 'b') || (numberToCheck[1] == 'B'))
-            {
-                return NumberType::Binary;
-            }
-            else if (IsADigit(numberToCheck[1]))
-            {
-                return NumberType::Octal;
-            }
-            else
-            {
-                return NumberType::Unidentified;   
-            }
-        }
-
-        return (IsADigit(numberToCheck[0]) ? NumberType::Decimal : NumberType::Unidentified);
+        return processingPosition + 1;
     }
+
+    /// @brief Goes back in the text to find the position of the first digit in the number
+    /// @param startingPosition Where to start from
+    /// @param styler Needed for content access
+    /// @return Position of the first character of the number
+    Sci_PositionU FindStartOfWord(Sci_PositionU startingPosition, Accessor& styler)    
+    {        
+        auto processingPosition = startingPosition;
+        while (startingPosition >= 0)
+        {
+            auto currentChar = styler.SafeGetCharAt(processingPosition);
+            if (CanBeWithinWord(currentChar))
+            {
+                processingPosition--;
+                continue;
+            }
+
+            break;
+        }
+
+        processingPosition += 1; 
+        return (CanBeStartOfWord(styler.SafeGetCharAt(processingPosition)) ?
+                processingPosition : 
+                processingPosition + 1);
+    }
+
+    /// @brief Goes back in the text to find where the comment actually started
+    /// @param startingPosition Where to start from
+    /// @param styler Needed for content access
+    /// @return Position of the first character of the comment, which would be a '/' followed by a '*'
+    Sci_PositionU FindStartOfComment(Sci_PositionU startingPosition, Accessor& styler) 
+    {        
+        auto nextChar = styler.SafeGetCharAt(startingPosition+1);
+        auto previousChar = styler.SafeGetCharAt(startingPosition-1);
+
+        // Check if we're actually breaking the comment header
+        if ((previousChar == '/') && (nextChar == '*'))
+        {
+            return startingPosition - 1;
+        }
+
+        // Go back till we find a '*' preceded by a '/'
+        auto starFound = false;        
+        auto hoveringPosition = startingPosition;
+
+        while (hoveringPosition >= 0)
+        {
+            auto currentChar = styler.SafeGetCharAt(hoveringPosition);
+            if (((starFound == true) && (currentChar == '/')) || 
+                (hoveringPosition == 0))
+            {
+                break;
+            }
+            
+            starFound = (currentChar == '*');
+            hoveringPosition--;            
+        }
+
+        return hoveringPosition;
+    }        
 }
-
-
 
 static void ColouriseLinkerScriptDoc(Sci_PositionU startPos, Sci_Position length, int initStyle, WordList *keywordLists[], Accessor &styler)
 {
-    /*
-    SCE_LINKERSCRIPT_DEFAULT 
-    SCE_LINKERSCRIPT_RESERVED 
-    SCE_LINKERSCRIPT_FUNCTION 
-    SCE_LINKERSCRIPT_CURLY_BRACKETS 
-    SCE_LINKERSCRIPT_PARENTHESIS 
-    SCE_LINKERSCRIPT_OPERATORS 
-    SCE_LINKERSCRIPT_COMMENTS 
-    SCE_LINKERSCRIPT_STRINGS     
-    */
+    int state = (startPos == 0) ? SCE_LINKERSCRIPT_DEFAULT : initStyle;    
+    auto processedStartPosition = startPos;    
 
-    int state = (startPos == 0) ? SCE_LINKERSCRIPT_DEFAULT : initStyle;
-    auto nextChar = styler[startPos];
-    char numberValidationBuffer[_LINKERSCRIPT_MAXIMUM_NUMBER_LENGTH]; // Although unlikely a number would ever be this long!
+    // Adjust state and position based on special cases  
+    switch (state)
+    {   
+        case SCE_LINKERSCRIPT_RESERVED:
+        case SCE_LINKERSCRIPT_FUNCTION:
+            processedStartPosition = LinkerScript::FindStartOfWord(startPos, styler);
+            state = SCE_LINKERSCRIPT_DEFAULT;
+            break;
 
-    Sci_Position lengthDoc = startPos + length;
+        case SCE_LINKERSCRIPT_HEXADECIMAL_NUMBER:
+        case SCE_LINKERSCRIPT_DECIMAL_NUMBER:
+        case SCE_LINKERSCRIPT_OCTAL_NUMBER:
+        case SCE_LINKERSCRIPT_BINARY_NUMBER:
+            processedStartPosition = LinkerScript::FindStartOfNumber(startPos, styler);
+            state = SCE_LINKERSCRIPT_DEFAULT; 
+            break;
 
-    // create a buffer large enough to take the largest chunk...        
-    Sci_Position bufferCount = 0;
+        case SCE_LINKERSCRIPT_COMMENTS:
+            processedStartPosition = LinkerScript::FindStartOfComment(startPos, styler);
+            state = SCE_LINKERSCRIPT_DEFAULT; 
+            break;
 
-    // We have two types of keywords in this project
-    WordList &reservedWords = *linkerScriptReservedWordListDesc[0];
-    WordList &functions = *linkerScriptFunctionsListDesc[1];
+        case SCE_LINKERSCRIPT_STRING_START:
+            state = SCE_LINKERSCRIPT_STRING_CONTENT;
+            break;
 
-    // go through all provided text segment
-    // using the hand-written state machine shown below
-    styler.StartAt(startPos);
-    styler.StartSegment(startPos);
-    for (auto index = startPos; index < lengthDoc; index++) 
+        case SCE_LINKERSCRIPT_STRING_END:
+            state = SCE_LINKERSCRIPT_DEFAULT;
+            break;
+    }
+
+    // We need to know the length of the document
+    auto nextChar = styler.SafeGetCharAt(processedStartPosition);
+    Sci_PositionU lastPositionToCheck = processedStartPosition + length - 1;         
+
+    // Go through all provided text segment using the hand-written state machine shown below
+    styler.StartAt(processedStartPosition);
+    styler.StartSegment(processedStartPosition);
+
+    Sci_PositionU unknownObjectStartIndex = 0;   
+    Sci_PositionU index = processedStartPosition;
+    auto keepScanning = true;
+
+    while (keepScanning)
     {
         char currentChar = nextChar;
-        nextChar = styler.SafeGetCharAt(i + 1);
+        nextChar = styler.SafeGetCharAt(index + 1);
 
-        if (styler.IsLeadByte(currentChar) || 
-            isBackslash(currentChar)) 
+        if (styler.IsLeadByte(currentChar)) 
         {
             nextChar = styler.SafeGetCharAt(index + 2);
-            index++;
+            index += 2;
             continue;
         }
 
         switch(state) 
-        {
-            case SCE_CONF_DEFAULT:
-                if( isWhiteSpace(currentChar)) 
-                {
-                    // whitespace is simply ignored here...
-                    styler.ColourTo(i,SCE_CONF_DEFAULT);
+        {         
+           case SCE_LINKERSCRIPT_DEFAULT:
+           {
+               // Check if we need to abort 
+               if (index > lastPositionToCheck) 
+               {
+                    keepScanning = false;
                     break;
-                } 
-                else if( ch == '#' ) 
-                {
-                    // signals the start of a comment...
-                    state = SCE_CONF_COMMENT;
-                    styler.ColourTo(i,SCE_CONF_COMMENT);
-                } 
-                else if( ch == '.' /*|| ch == '/'*/) 
-                {
-                    // signals the start of a file...
-                    state = SCE_CONF_EXTENSION;
-                    styler.ColourTo(i,SCE_CONF_EXTENSION);
-                } 
-                else if( ch == '"') 
-                {
-                    state = SCE_CONF_STRING;
-                    styler.ColourTo(i,SCE_CONF_STRING);
-                } 
-                else if( IsASCII(ch) && ispunct(ch) ) 
-                {
-                    // signals an operator...
-                    // no state jump necessary for this
-                    // simple case...
-                    styler.ColourTo(i,SCE_CONF_OPERATOR);
-                } 
-                else if( IsASCII(ch) && isalpha(ch) ) 
-                {
-                    // signals the start of an identifier
-                    bufferCount = 0;
-                    buffer[bufferCount++] = static_cast<char>(tolower(ch));
-                    state = SCE_CONF_IDENTIFIER;
-                } 
-                else if( IsASCII(ch) && isdigit(ch) ) 
-                {
-                    // signals the start of a number
-                    bufferCount = 0;
-                    buffer[bufferCount++] = ch;
-                    //styler.ColourTo(i,SCE_CONF_NUMBER);
-                    state = SCE_CONF_NUMBER;
-                } 
-                else 
-                {
-                    // style it the default style..
-                    styler.ColourTo(i,SCE_CONF_DEFAULT);
-                }
-                break;
+               }
 
-            case SCE_CONF_COMMENT:
-                // if we find a newline here,
-                // we simply go to default state
-                // else continue to work on it...
-                if( ch == '\n' || ch == '\r' ) {
-                    state = SCE_CONF_DEFAULT;
-                } else {
-                    styler.ColourTo(i,SCE_CONF_COMMENT);
-                }
-                break;
+               if (LinkerScript::IsOperator(currentChar))
+               {
+                    // The only exception here is slash, which may indicate either start of comments or a divide operator
+                    if ((currentChar == '/') && (nextChar == '*'))
+                    {
+                        nextChar = styler.SafeGetCharAt(index+2);
+                        index += 2;
+                        state = SCE_LINKERSCRIPT_COMMENTS;
+                        continue;                       
+                    }
+                    
+                    styler.ColourTo(index, SCE_LINKERSCRIPT_OPERATORS);
+                    nextChar = styler.SafeGetCharAt(index++);                    
+                    continue;
+               }
 
-            case SCE_CONF_EXTENSION:
-                // if we find a non-alphanumeric char,
-                // we simply go to default state
-                // else we're still dealing with an extension...
-                if( (IsASCII(ch) && isalnum(ch)) || (ch == '_') ||
-                    (ch == '-') || (ch == '$') ||
-                    (ch == '/') || (ch == '.') || (ch == '*') )
-                {
-                    styler.ColourTo(i,SCE_CONF_EXTENSION);
-                } else {
-                    state = SCE_CONF_DEFAULT;
-                    chNext = styler[i--];
-                }
-                break;
+               if (currentChar == '"')               
+               {
+                    styler.ColourTo(index, SCE_LINKERSCRIPT_STRING_START);
+                    state = SCE_LINKERSCRIPT_STRING_CONTENT;
+                    nextChar = styler.SafeGetCharAt(index++);
+                    continue;
+               }
 
-            case SCE_CONF_STRING:
-                // if we find the end of a string char, we simply go to default state
-                // else we're still dealing with an string...
-                if( (ch == '"' && styler.SafeGetCharAt(i-1)!='\\') || (ch == '\n') || (ch == '\r') ) {
-                    state = SCE_CONF_DEFAULT;
-                }
-                styler.ColourTo(i,SCE_CONF_STRING);
-                break;
-
-            case SCE_CONF_IDENTIFIER:
-                // stay  in CONF_IDENTIFIER state until we find a non-alphanumeric
-                if( (IsASCII(ch) && isalnum(ch)) || (ch == '_') || (ch == '-') || (ch == '/') || (ch == '$') || (ch == '.') || (ch == '*')) {
-                    buffer[bufferCount++] = static_cast<char>(tolower(ch));
-                } else {
-                    state = SCE_CONF_DEFAULT;
-                    buffer[bufferCount] = '\0';
-
-                    // check if the buffer contains a keyword, and highlight it if it is a keyword...
-                    if(directives.InList(buffer)) {
-                        styler.ColourTo(i-1,SCE_CONF_DIRECTIVE );
-                    } else if(params.InList(buffer)) {
-                        styler.ColourTo(i-1,SCE_CONF_PARAMETER );
-                    } else if(strchr(buffer,'/') || strchr(buffer,'.')) {
-                        styler.ColourTo(i-1,SCE_CONF_EXTENSION);
-                    } else {
-                        styler.ColourTo(i-1,SCE_CONF_DEFAULT);
+               if (LinkerScript::CanBeStartOfWord(currentChar))
+               {    
+                    // Check special-case
+                    if (LinkerScript::CanBeWithinWord(nextChar))
+                    {                        
+                        unknownObjectStartIndex = index;
+                        state = SCE_LINKERSCRIPT_UNKNOWN_WORD;
+                        nextChar = styler.SafeGetCharAt(index++);
+                        continue;
+                    }
+                    else if (currentChar == '.')
+                    {
+                        styler.ColourTo(index, SCE_LINKERSCRIPT_LOCATION_COUNTER);
+                        state = SCE_LINKERSCRIPT_DEFAULT;
+                        nextChar = styler.SafeGetCharAt(index++);
+                        continue;
                     }
 
-                    // push back the faulty character
-                    chNext = styler[i--];
+                    // This is a single-letter symbol then...
+                    styler.ColourTo(index, SCE_LINKERSCRIPT_DEFAULT);
+                    nextChar = styler.SafeGetCharAt(index++);
+                    continue;                    
+               }
 
-                }
+               if (IsADigit(currentChar))
+               {
+                    unknownObjectStartIndex = index;
+                    nextChar = styler.SafeGetCharAt(index+1);
+                    state = SCE_LINKERSCRIPT_UNKNOWN_WORD;
+                    continue;    
+               }
+               else if ((currentChar == '{') || (currentChar == '}'))
+               {
+                    styler.ColourTo(index, SCE_LINKERSCRIPT_CURLY_BRACKETS);
+                    nextChar = styler.SafeGetCharAt(index++);
+                    continue;
+               }
+               else if ((currentChar == '(') || (currentChar == ')'))
+               {
+                    styler.ColourTo(index, SCE_LINKERSCRIPT_PARENTHESIS);
+                    nextChar = styler.SafeGetCharAt(index++);
+                    continue;
+               }
+               
+               nextChar = styler.SafeGetCharAt(index + 1);
+               styler.ColourTo(index++, SCE_LINKERSCRIPT_DEFAULT);
+               continue;
+           }          
+
+           case SCE_LINKERSCRIPT_UNKNOWN_NUMBER:
+           {
+               if (IsADigit(currentChar, 16) || LinkerScript::IsNumberPrefix(currentChar))
+               {
+                    nextChar = styler.SafeGetCharAt(index++);
+                    continue;
+               }
+
+               // OK, We have the position of the last character in the number. 
+               auto numberType = LinkerScript::CheckNumber(unknownObjectStartIndex, index - 1 - unknownObjectStartIndex + 1, styler);
+
+               switch (numberType) 
+               {
+                case LinkerScript::NumberType::Decimal:
+                    styler.ColourTo(index-1, SCE_LINKERSCRIPT_DECIMAL_NUMBER);
+                    break;
+
+                case LinkerScript::NumberType::Octal:
+                    styler.ColourTo(index-1, SCE_LINKERSCRIPT_OCTAL_NUMBER);
+                    break;    
+
+                case LinkerScript::NumberType::Hexadecimal:
+                    styler.ColourTo(index-1, SCE_LINKERSCRIPT_HEXADECIMAL_NUMBER);
+                    break; 
+
+                case LinkerScript::NumberType::Binary:
+                    styler.ColourTo(index-1, SCE_LINKERSCRIPT_BINARY_NUMBER);
+                    break;
+
+                default:
+                    styler.ColourTo(index-1, SCE_LINKERSCRIPT_UNKNOWN_NUMBER);
+                    break;
+               }
+
+               // We now need to reinvestigate the current character
+               state = SCE_LINKERSCRIPT_DEFAULT;
+               nextChar = currentChar;
+               continue;
+           }
+
+           case SCE_LINKERSCRIPT_UNKNOWN_WORD:
+           {   
+               if (LinkerScript::CanBeWithinWord(currentChar)) 
+               {
+                   nextChar = styler.SafeGetCharAt(index++);
+                   continue;
+               }
+
+               state = SCE_LINKERSCRIPT_DEFAULT; 
+               auto unknownWordLength = index - 1 - unknownObjectStartIndex + 1;
+               auto previousChar = styler.SafeGetCharAt(index - 1);
+
+               // Check for word type
+               if (LinkerScript::IsKeywordInList(unknownObjectStartIndex, 
+                                                 unknownWordLength,
+                                                 LinkerScript::linkerScriptFunctions,
+                                                 styler ))
+               {
+                   styler.ColourTo(index, SCE_LINKERSCRIPT_FUNCTION);
+               }
+               else if (LinkerScript::IsKeywordInList(unknownObjectStartIndex, 
+                                                 unknownWordLength,
+                                                 LinkerScript::linkerScriptReservedWords,
+                                                 styler ))
+               {
+                   styler.ColourTo(index, SCE_LINKERSCRIPT_RESERVED);
+               }
+               else if ((unknownWordLength == 1) && (previousChar == '.'))
+               {
+                   styler.ColourTo(index, SCE_LINKERSCRIPT_LOCATION_COUNTER);
+               }
+               else
+               {
+                   styler.ColourTo(index, SCE_LINKERSCRIPT_DEFAULT);
+               }
+
+               // We now need to reinvestigate the current character               
+               nextChar = currentChar;
+               continue; 
+           }
+
+           case SCE_LINKERSCRIPT_PARENTHESIS:
+           case SCE_LINKERSCRIPT_CURLY_BRACKETS:
+           case SCE_LINKERSCRIPT_LOCATION_COUNTER: 
+           case SCE_LINKERSCRIPT_OPERATORS:          
+           {
+                nextChar = styler.SafeGetCharAt(--index);
+                state = SCE_LINKERSCRIPT_DEFAULT;
                 break;
+           }
 
-            case SCE_CONF_NUMBER:
-                // stay  in CONF_NUMBER state until we find a non-numeric
-                if( (IsASCII(ch) && isdigit(ch)) || ch == '.') {
-                    buffer[bufferCount++] = ch;
-                } else {
-                    state = SCE_CONF_DEFAULT;
-                    buffer[bufferCount] = '\0';
+           case SCE_LINKERSCRIPT_COMMENTS:
+           {
+               // Check if we need to abort 
+               if (index > lastPositionToCheck) 
+               {
+                    keepScanning = false;
+                    break;
+               }
 
-                    // Colourize here...
-                    if( strchr(buffer,'.') ) {
-                        // it is an IP address...
-                        styler.ColourTo(i-1,SCE_CONF_IP);
-                    } else {
-                        // normal number
-                        styler.ColourTo(i-1,SCE_CONF_NUMBER);
-                    }
+               if ((currentChar == '/') && (styler.SafeGetCharAt(index - 1) == '*'))
+               {
+                    state = SCE_LINKERSCRIPT_DEFAULT;                    
+               }
 
-                    // push back a character
-                    chNext = styler[i--];
-                }
-                break;
+               styler.ColourTo(index, SCE_LINKERSCRIPT_COMMENTS);
+               nextChar = styler.SafeGetCharAt(index++);
+               break;
+           }
 
+           case SCE_LINKERSCRIPT_STRING_CONTENT:
+           {
+               // Check if we need to abort 
+               if (index > lastPositionToCheck) 
+               {
+                    keepScanning = false;
+                    break;
+               }
+
+               if ((currentChar == '"') && (styler.SafeGetCharAt(index - 1) != '\\'))
+               {
+                    styler.ColourTo(index - 1, SCE_LINKERSCRIPT_STRING_CONTENT);
+                    styler.ColourTo(index, SCE_LINKERSCRIPT_STRING_END);
+                    state = SCE_LINKERSCRIPT_DEFAULT;
+               }
+               else
+               {
+                    styler.ColourTo(index, SCE_LINKERSCRIPT_STRING_CONTENT);                    
+               } 
+
+               nextChar = styler.SafeGetCharAt(index++);               
+               break;
+           }
+
+           default:
+           {
+               // This is an error indeed. We don't throw any exceptions at this point in time
+               // until the pattern is established...
+               return;
+           } 
         }
     }
-    delete []buffer;
 }
 
+LexerModule lmLinkerScript(SCLEX_LINKERSCRIPT, ColouriseLinkerScriptDoc, "linkerScript", 0);
 
-
-LexerModule lmLinkerScript(SCLEX_LINKERSCRIPT, ColouriseLinkerScriptDoc, "linkerScript", 0, linkerScriptWordListDesc);
