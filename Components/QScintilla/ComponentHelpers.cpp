@@ -32,7 +32,7 @@ void Components::QScintilla::SetComponentStyles(QsciScintilla& target)
 #endif
 
     // Set Lexer
-    target.setLexer()
+    //target.setLexer()
 }
 
 void Components::QScintilla::SetTextEditorStyles(QsciScintilla& target)
