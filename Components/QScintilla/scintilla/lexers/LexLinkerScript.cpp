@@ -8,23 +8,6 @@
 // Copyright 1998-2001 by Neil Hodgson <neilh@scintilla.org>
 // The License.txt file describes the conditions under which this software may be distributed.
 
-/*
- * 
-   Colors:
-   =========================================================
-   Comment Green: 87, 166, 74                   = 0xff57A64A
-   Parameter Field/Class Green : 78,201,176     = 0xff4EC9B0
-   Enum Field Green: 181,206,168                = 0xffB5CEA8
-   Text Beige: 214,157,133                      = 0xffD69D85
-   Violet: 189, 99, 197                         = 0xffBD63C5
-   Darker Code Gray: 127, 127, 127              = 0xff7F7F7F
-   Lighter Code Gray: 155,155,155               = 0xff9B9B9B
-   Code White: 200, 200, 200                    = 0xffC8C8C8
-   Enum Blue: 186,156, 214                      = 0xff569CD6
-   Bracket Yellow Code: 255,215,4               = 0xffFFD704
-
- */
-
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>

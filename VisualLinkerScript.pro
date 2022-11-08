@@ -9,7 +9,6 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    ../../../../../Temp/QScintilla_src-2.13.3/QScintilla_src-2.13.3/src/qscilexercpp.cpp \
     Components/QScintilla/ComponentHelpers.cpp \
     Components/QScintilla/scintilla/lexers/LexCPP.cpp \
     Components/QScintilla/scintilla/lexers/LexLinkerScript.cpp \
@@ -65,7 +64,9 @@ SOURCES += \
     Components/QScintilla/src/qscicommand.cpp \
     Components/QScintilla/src/qscicommandset.cpp \
     Components/QScintilla/src/qscidocument.cpp \
-    Components/QScintilla/src/qscilexer.cpp \   
+    Components/QScintilla/src/qscilexer.cpp \    \
+    Components/QScintilla/src/qscilexercpp.cpp \
+    Components/QScintilla/src/qscilexerlinkerscript.cpp \
     Components/QScintilla/src/qscimacro.cpp \
     Components/QScintilla/src/qsciprinter.cpp \
     Components/QScintilla/src/qsciscintilla.cpp \
@@ -76,7 +77,6 @@ SOURCES += \
     mainwindow.cpp
 
 HEADERS += \
-    ../../../../../Temp/QScintilla_src-2.13.3/QScintilla_src-2.13.3/src/Qsci/qscilexercpp.h \
     Components/QScintilla/ComponentHelpers.h \
     Components/QScintilla/scintilla/include/ILexer.h \
     Components/QScintilla/scintilla/include/ILoader.h \
@@ -145,7 +145,9 @@ HEADERS += \
     Components/QScintilla/src/Qsci/qscicommandset.h \
     Components/QScintilla/src/Qsci/qscidocument.h \
     Components/QScintilla/src/Qsci/qsciglobal.h \
-    Components/QScintilla/src/Qsci/qscilexer.h \    
+    Components/QScintilla/src/Qsci/qscilexer.h \     \
+    Components/QScintilla/src/Qsci/qscilexercpp.h \
+    Components/QScintilla/src/Qsci/qscilexerlinkerscript.h \
     Components/QScintilla/src/Qsci/qscimacro.h \
     Components/QScintilla/src/Qsci/qsciprinter.h \
     Components/QScintilla/src/Qsci/qsciscintilla.h \

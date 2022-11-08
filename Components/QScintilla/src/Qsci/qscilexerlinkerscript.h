@@ -9,8 +9,8 @@
 
 #include <QObject>
 
-#include <Qsci/qsciglobal.h>
-#include <Qsci/qscilexer.h>
+#include "qsciglobal.h"
+#include "qscilexer.h"
 
 
 //! \brief The QsciLexerLinkerScript class encapsulates the Scintilla LinkerScript lexer.
@@ -20,25 +20,6 @@ class QSCINTILLA_EXPORT QsciLexerLinkerScript : public QsciLexer
 
 public:
 
-    /*
-#define SCE_LINKERSCRIPT_DEFAULT 0
-#define SCE_LINKERSCRIPT_RESERVED 1
-#define SCE_LINKERSCRIPT_FUNCTION 2
-#define SCE_LINKERSCRIPT_CURLY_BRACKETS 3
-#define SCE_LINKERSCRIPT_PARENTHESIS 4
-#define SCE_LINKERSCRIPT_OPERATORS 5
-#define SCE_LINKERSCRIPT_LOCATION_COUNTER 6
-#define SCE_LINKERSCRIPT_COMMENTS 7
-#define SCE_LINKERSCRIPT_STRING_START 8
-#define SCE_LINKERSCRIPT_STRING_CONTENT 9
-#define SCE_LINKERSCRIPT_STRING_END 10
-#define SCE_LINKERSCRIPT_DECIMAL_NUMBER 11
-#define SCE_LINKERSCRIPT_OCTAL_NUMBER 12
-#define SCE_LINKERSCRIPT_HEXADECIMAL_NUMBER 13
-#define SCE_LINKERSCRIPT_BINARY_NUMBER 14
-#define SCE_LINKERSCRIPT_UNKNOWN_WORD 15
-#define SCE_LINKERSCRIPT_UNKNOWN_NUMBER 16
-    */
 
     //! This enum defines the meanings of the different styles used by the
     //! LinkerScript lexer.
@@ -92,9 +73,7 @@ public:
         Unknown_Word = 15,
 
         //! Malformatted number. This should be shown as an error.
-        Unknown_Number = 16
-
-      
+        Unknown_Number = 16      
     };
 
     //! Construct a QsciLexerLinkerScript with parent \a parent.  \a parent is

@@ -48,80 +48,72 @@ const char *QsciLexerLinkerScript::language() const
 // Returns the lexer name.
 const char *QsciLexerLinkerScript::lexer() const
 {
-    return "cmake";
+    return "linkerScript";
 }
 
 
 // Returns the foreground colour of the text for a style.
 QColor QsciLexerLinkerScript::defaultColor(int style) const
 {
+
+    QColor colorCodeWhite(200,200,200);
+    QColor colorVividGreen(78,201,176); 
+    QColor colorStaleGreen(87,176,74);
+    QColor colorTooVividGreen(181,206,168);
+    QColor colorBeige(214,157,133);
+    QColor colorViolet(189,99,197);
+    QColor colorDarkGray(127,127,127);
+    QColor colorLightGray(155,155,155);
+    QColor colorWhite(200,200,200);
+    QColor colorVividBlue(185,156,214);
+    QColor colorYellow(255,215,4);
+    QColor colorVividRed(237,28,36);
+    
     switch (style)
-    {
-    case Default:
-    case KeywordSet3:
-        return QColor(0x00,0x00,0x00);
+    {   
+        case Location_Counter:
+        case Reserved:
+            return colorVividBlue;
 
-    case Comment:
-        return QColor(0x00,0x7f,0x00);
+        case Function:
+            return colorVividGreen;
 
-    case String:
-    case StringLeftQuote:
-    case StringRightQuote:
-        return QColor(0x7f,0x00,0x7f);
+        case Curly_Brackets:
+            return colorViolet;
 
-    case Function:
-    case BlockWhile:
-    case BlockForeach:
-    case BlockIf:
-    case BlockMacro:
-        return QColor(0x00,0x00,0x7f);
+        case Parenthesis:
+            return colorYellow;        
+                    
+        case Comments:
+            return colorVividGreen;
 
-    case Variable:
-        return QColor(0x80,0x00,0x00);
+        case String_Start:            
+        case String_Content:
+        case String_End:
+            return colorBeige;
 
-    case Label:
-    case StringVariable:
-        return QColor(0xcc,0x33,0x00);
+        case Decimal_Numebr:
+        case Octal_Number:
+        case Hexadecimal_Number:
+        case Binary_Number:
+            return colorTooVividGreen;
+    
+        case Unknown_Number:
+            return colorVividRed;
 
-    case Number:
-        return QColor(0x00,0x7f,0x7f);
-    }
-
-    return QsciLexer::defaultColor(style);
+        case Unknown_Word:
+        case Operators:
+        case Default:
+        default:
+            return colorWhite;
+    }    
 }
 
 
 // Returns the font of the text for a style.
 QFont QsciLexerLinkerScript::defaultFont(int style) const
 {
-    QFont f;
-
-    switch (style)
-    {
-    case Comment:
-#if defined(Q_OS_WIN)
-        f = QFont("Comic Sans MS",9);
-#elif defined(Q_OS_MAC)
-        f = QFont("Comic Sans MS", 12);
-#else
-        f = QFont("Bitstream Vera Serif",9);
-#endif
-        break;
-
-    case Function:
-    case BlockWhile:
-    case BlockForeach:
-    case BlockIf:
-    case BlockMacro:
-        f = QsciLexer::defaultFont(style);
-        f.setBold(true);
-        break;
-
-    default:
-        f = QsciLexer::defaultFont(style);
-    }
-
-    return f;
+    return QsciLexer::defaultFont(style);
 }
 
 
@@ -136,69 +128,67 @@ const char *QsciLexerLinkerScript::keywords(int set) const
 QString QsciLexerLinkerScript::description(int style) const
 {
     switch (style)
-    {
-    case Default:
-        return tr("Default");
+    {   
+        case Location_Counter:
+            return tr("Location-Counter (the dot)");
 
-    case Comment:
-        return tr("Comment");
+        case Reserved:
+            return tr("Reserved keywords");
 
-    case String:
-        return tr("String");
+        case Function:
+            return tr("Function names");
 
-    case StringLeftQuote:
-        return tr("Left quoted string");
+        case Curly_Brackets:
+            return tr("Curley Brackets");
 
-    case StringRightQuote:
-        return tr("Right quoted string");
+        case Parenthesis:
+            return tr("Parenthesis");
+                    
+        case Comments:
+            return tr("Comments");
 
-    case Function:
-        return tr("Function");
+        case String_Start:     
+            return tr("Double-quotation begining string");
 
-    case Variable:
-        return tr("Variable");
+        case String_Content:
+            return tr("String content");
 
-    case Label:
-        return tr("Label");
+        case String_End:
+            return tr("Double-quotation ending the string");
 
-    case KeywordSet3:
-        return tr("User defined");
+        case Decimal_Numebr:
+            return tr("Decimal number");
 
-    case BlockWhile:
-        return tr("WHILE block");
+        case Octal_Number:
+            return tr("Octal number");
 
-    case BlockForeach:
-        return tr("FOREACH block");
+        case Hexadecimal_Number:
+            return tr("Hexadecimal number");
 
-    case BlockIf:
-        return tr("IF block");
+        case Binary_Number:
+            return tr("Binary number");
+    
+        case Unknown_Number:
+            return tr("Malformed number");
 
-    case BlockMacro:
-        return tr("MACRO block");
+        case Unknown_Word:
+            return tr("Unrecognizable word (potentially symbols)");
 
-    case StringVariable:
-        return tr("Variable within a string");
+        case Operators:
+            return tr("Operators");
 
-    case Number:
-        return tr("Number");
-    }
+        case Default:
+            return tr("Default Text");
 
-    return QString();
+        default:
+            return QString();
+    }    
 }
 
 
 // Returns the background colour of the text for a style.
 QColor QsciLexerLinkerScript::defaultPaper(int style) const
 {
-    switch (style)
-    {
-    case String:
-    case StringLeftQuote:
-    case StringRightQuote:
-    case StringVariable:
-        return QColor(0xee,0xee,0xee);
-    }
-
     return QsciLexer::defaultPaper(style);
 }
 
@@ -206,36 +196,28 @@ QColor QsciLexerLinkerScript::defaultPaper(int style) const
 // Refresh all properties.
 void QsciLexerLinkerScript::refreshProperties()
 {
-    setAtElseProp();
+    // No actions
 }
 
 
 // Read properties from the settings.
 bool QsciLexerLinkerScript::readProperties(QSettings &qs,const QString &prefix)
 {
-    int rc = true;
-
-    fold_atelse = qs.value(prefix + "foldatelse", false).toBool();
-
-    return rc;
+    return false;
 }
 
 
 // Write properties to the settings.
 bool QsciLexerLinkerScript::writeProperties(QSettings &qs,const QString &prefix) const
 {
-    int rc = true;
-
-    qs.setValue(prefix + "foldatelse", fold_atelse);
-
-    return rc;
+    return false;
 }
 
 
 // Return true if ELSE blocks can be folded.
 bool QsciLexerLinkerScript::foldAtElse() const
 {
-    return fold_atelse;
+    return false;
 }
 
 
@@ -243,7 +225,6 @@ bool QsciLexerLinkerScript::foldAtElse() const
 void QsciLexerLinkerScript::setFoldAtElse(bool fold)
 {
     fold_atelse = fold;
-
     setAtElseProp();
 }
 
@@ -251,5 +232,5 @@ void QsciLexerLinkerScript::setFoldAtElse(bool fold)
 // Set the "fold.at.else" property.
 void QsciLexerLinkerScript::setAtElseProp()
 {
-    emit propertyChanged("fold.at.else",(fold_atelse ? "1" : "0"));
+    // No action undertaken yet
 }
