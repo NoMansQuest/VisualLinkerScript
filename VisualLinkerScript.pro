@@ -64,7 +64,7 @@ SOURCES += \
     Components/QScintilla/src/qscicommand.cpp \
     Components/QScintilla/src/qscicommandset.cpp \
     Components/QScintilla/src/qscidocument.cpp \
-    Components/QScintilla/src/qscilexer.cpp \    \
+    Components/QScintilla/src/qscilexer.cpp \
     Components/QScintilla/src/qscilexercpp.cpp \
     Components/QScintilla/src/qscilexerlinkerscript.cpp \
     Components/QScintilla/src/qscimacro.cpp \
