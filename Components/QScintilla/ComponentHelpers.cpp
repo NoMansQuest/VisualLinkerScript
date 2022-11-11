@@ -37,5 +37,5 @@ void Components::QScintilla::SetComponentStyles(QsciScintilla& target)
 
 void Components::QScintilla::SetTextEditorStyles(QsciScintilla& target)
 {
-
+    UNREFERENCED_PARAMETER(target); // TODO: Fix this later on.
 }

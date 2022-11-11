@@ -120,6 +120,7 @@ QFont QsciLexerLinkerScript::defaultFont(int style) const
 // Returns the set of keywords.
 const char *QsciLexerLinkerScript::keywords(int set) const
 {  
+    UNREFERENCED_PARAMETER(set);
     return 0; // None returned. The underlying lexer in 'Scintilla' will take care of that
 }
 
@@ -203,6 +204,8 @@ void QsciLexerLinkerScript::refreshProperties()
 // Read properties from the settings.
 bool QsciLexerLinkerScript::readProperties(QSettings &qs,const QString &prefix)
 {
+    UNREFERENCED_PARAMETER(qs);
+    UNREFERENCED_PARAMETER(prefix);
     return false;
 }
 
@@ -210,6 +213,8 @@ bool QsciLexerLinkerScript::readProperties(QSettings &qs,const QString &prefix)
 // Write properties to the settings.
 bool QsciLexerLinkerScript::writeProperties(QSettings &qs,const QString &prefix) const
 {
+    UNREFERENCED_PARAMETER(qs);
+    UNREFERENCED_PARAMETER(prefix);
     return false;
 }
 

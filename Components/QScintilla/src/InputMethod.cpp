@@ -155,8 +155,7 @@ void QsciScintillaBase::inputMethodEvent(QInputMethodEvent *event)
         for (int i = 0; i < commitStrLen;) {
             const int ucWidth = commitStr.at(i).isHighSurrogate() ? 2 : 1;
             const QString oneCharUTF16 = commitStr.mid(i, ucWidth);
-            const QByteArray oneChar = textAsBytes(oneCharUTF16);
-            const int oneCharLen = oneChar.length();
+            const QByteArray oneChar = textAsBytes(oneCharUTF16);            
 
             sci->AddCharUTF(oneChar.data(), oneChar.length());
             i += ucWidth;
@@ -176,7 +175,7 @@ void QsciScintillaBase::inputMethodEvent(QInputMethodEvent *event)
 
         std::vector<int> imeIndicator = MapImeIndicators(event);
 
-        for (unsigned int i = 0; i < preeditStrLen;) {
+        for (int i = 0; i < preeditStrLen;) {
             const unsigned int ucWidth = preeditStr.at(i).isHighSurrogate() ? 2 : 1;
             const QString oneCharUTF16 = preeditStr.mid(i, ucWidth);
             const QByteArray oneChar = textAsBytes(oneCharUTF16);

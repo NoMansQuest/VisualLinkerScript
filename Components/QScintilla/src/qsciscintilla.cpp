@@ -4147,7 +4147,7 @@ bool QsciScintilla::write(QIODevice *io) const
     const char *buf = reinterpret_cast<const char *>(SendScintillaPtrResult(SCI_GETCHARACTERPOINTER));
 
     const char *bp = buf;
-    uint buflen = qstrlen(buf);
+    size_t buflen = qstrlen(buf);
 
     while (buflen > 0)
     {

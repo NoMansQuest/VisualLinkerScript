@@ -23,6 +23,7 @@
 
 #include <qglobal.h>
 
+#define UNREFERENCED_PARAMETER(P) (P)
 
 #define QSCINTILLA_VERSION      0x020d03
 #define QSCINTILLA_VERSION_STR  "2.13.3"
