@@ -9,8 +9,8 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);    
-    Components::QScintilla::SetComponentStyles(*this->scintilla);
     this->scintilla = new QsciScintilla;
+    Components::QScintilla::SetComponentStyles(*this->scintilla);    
     auto lexer = new QsciLexerLinkerScript;
     this->scintilla->setLexer((QsciLexer*)lexer);
     ui->splitter->addWidget(this->scintilla);    

@@ -15,7 +15,7 @@ void Components::QScintilla::SetComponentStyles(QsciScintilla& target)
 
     target.setMargins(2);
     target.setMarginsBackgroundColor(QColor::fromRgba(0xff121212));
-    target.setMarginsForegroundColor(QColor::fromRgba(0xff959595));
+    target.setMarginsForegroundColor(QColor::fromRgba(0xff858585));
 
     target.setMarginType(0, QsciScintilla::NumberMargin);
     target.setMarginWidth(0, 50);

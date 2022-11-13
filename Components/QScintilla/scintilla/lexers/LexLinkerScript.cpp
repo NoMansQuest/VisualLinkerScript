@@ -75,9 +75,9 @@ namespace LinkerScript
             }
 
             auto mismatched = false;
-            for (auto index = startPosition; index < length; index++)
+            for (auto index = 0; index < length; index++)
             {
-                if (styler.SafeGetCharAt(index) != keywordToCheckAgainst[index - startPosition])
+                if (styler.SafeGetCharAt(startPosition + index) != keywordToCheckAgainst[index])
                 {
                     mismatched = true;
                     break;
@@ -127,6 +127,15 @@ namespace LinkerScript
                 (input == 'X') || 
                 (input == 'b') ||
                 (input == 'B'));
+    }
+
+    /// @brief  Checks the character for being a potential postfixes ('K' and 'M')
+    /// @param input Character to check
+    /// @return True if a post-fix character is observed.
+    bool IsNumberPostfix(char input)
+    {
+        return ((input == 'K') ||
+                (input == 'M'));
     }
 
     /// @brief  Checks the character for being an operator ( & = &= += > >> .... )
@@ -194,21 +203,21 @@ namespace LinkerScript
     NumberType CheckNumber(Sci_PositionU startPosition, size_t length, Accessor &styler)
     {
         auto numberType = SafeDetectNumberType(startPosition, length, styler);
-        auto baseToCheck = 10;
-        auto validationStartIndex = 0;
-        auto lastIndexToCheck = length - 1;
+        auto baseToCheck = 0;
+        auto validationStartIndex = startPosition;
+        auto lastIndexToCheck = startPosition + length - 1;
 
         switch (numberType)
         {
             case NumberType::Decimal:
             {
-                // On 'Decimal' numbers support postfixs, which could be either K or M.
-                auto lastChar = styler.SafeGetCharAt(length - 1);
-                if (!IsADigit(lastChar)) 
+                // On 'Decimal' numbers support postfixes, which could be either K or M.
+                auto lastChar = styler.SafeGetCharAt(startPosition + length - 1);
+                if (!IsADigit(lastChar) & (length > 1)) // Only lengths greater than two are checked for this
                 {
                     if ((lastChar == 'K') || (lastChar == 'M'))                       
                     {                                               
-                        lastIndexToCheck = length - 2; // This is so that the we don't include the last char in the verification loop.
+                        lastIndexToCheck = startPosition + length - 2; // This is so that the we don't include the last char in the verification loop.
                     }
                     else
                     {    
@@ -426,7 +435,7 @@ static void ColouriseLinkerScriptDoc(Sci_PositionU startPos, Sci_Position length
                     }
                     
                     styler.ColourTo(index, SCE_LINKERSCRIPT_OPERATORS);
-                    nextChar = styler.SafeGetCharAt(index++);                    
+                    nextChar = styler.SafeGetCharAt(++index);
                     continue;
                }
 
@@ -434,7 +443,7 @@ static void ColouriseLinkerScriptDoc(Sci_PositionU startPos, Sci_Position length
                {
                     styler.ColourTo(index, SCE_LINKERSCRIPT_STRING_START);
                     state = SCE_LINKERSCRIPT_STRING_CONTENT;
-                    nextChar = styler.SafeGetCharAt(index++);
+                    nextChar = styler.SafeGetCharAt(++index);
                     continue;
                }
 
@@ -445,98 +454,103 @@ static void ColouriseLinkerScriptDoc(Sci_PositionU startPos, Sci_Position length
                     {                        
                         unknownObjectStartIndex = index;
                         state = SCE_LINKERSCRIPT_UNKNOWN_WORD;
-                        nextChar = styler.SafeGetCharAt(index++);
+                        nextChar = currentChar;
                         continue;
                     }
                     else if (currentChar == '.')
                     {
                         styler.ColourTo(index, SCE_LINKERSCRIPT_LOCATION_COUNTER);
                         state = SCE_LINKERSCRIPT_DEFAULT;
-                        nextChar = styler.SafeGetCharAt(index++);
+                        nextChar = styler.SafeGetCharAt(++index);
                         continue;
                     }
 
                     // This is a single-letter symbol then...
                     styler.ColourTo(index, SCE_LINKERSCRIPT_DEFAULT);
-                    nextChar = styler.SafeGetCharAt(index++);
+                    nextChar = styler.SafeGetCharAt(++index);
                     continue;                    
                }
 
                if (IsADigit(currentChar))
                {
                     unknownObjectStartIndex = index;
-                    nextChar = styler.SafeGetCharAt(index+1);
-                    state = SCE_LINKERSCRIPT_UNKNOWN_WORD;
+                    nextChar = styler.SafeGetCharAt(++index);
+                    state = SCE_LINKERSCRIPT_UNKNOWN_NUMBER;
                     continue;    
                }
                else if ((currentChar == '{') || (currentChar == '}'))
                {
                     styler.ColourTo(index, SCE_LINKERSCRIPT_CURLY_BRACKETS);
-                    nextChar = styler.SafeGetCharAt(index++);
+                    nextChar = styler.SafeGetCharAt(++index);
                     continue;
                }
                else if ((currentChar == '(') || (currentChar == ')'))
                {
                     styler.ColourTo(index, SCE_LINKERSCRIPT_PARENTHESIS);
-                    nextChar = styler.SafeGetCharAt(index++);
+                    nextChar = styler.SafeGetCharAt(++index);
                     continue;
                }
-               
-               nextChar = styler.SafeGetCharAt(index + 1);
+                              
                styler.ColourTo(index++, SCE_LINKERSCRIPT_DEFAULT);
+               nextChar = styler.SafeGetCharAt(index);
                continue;
            }          
 
            case SCE_LINKERSCRIPT_UNKNOWN_NUMBER:
            {
-               if (IsADigit(currentChar, 16) || LinkerScript::IsNumberPrefix(currentChar))
+               if ((IsADigit(currentChar, 16) || LinkerScript::IsNumberPrefix(currentChar)) &&
+                   (index <= lastPositionToCheck))
                {
-                    nextChar = styler.SafeGetCharAt(index++);
+                    nextChar = styler.SafeGetCharAt(++index);
                     continue;
                }
 
                // OK, We have the position of the last character in the number. 
-               auto numberType = LinkerScript::CheckNumber(unknownObjectStartIndex, index - 1 - unknownObjectStartIndex + 1, styler);
+               auto lastIndexToConsider = LinkerScript::IsNumberPostfix(currentChar) ? index : index - 1;
+               auto numberType = LinkerScript::CheckNumber(unknownObjectStartIndex, lastIndexToConsider - unknownObjectStartIndex + 1, styler);
 
                switch (numberType) 
                {
                 case LinkerScript::NumberType::Decimal:
-                    styler.ColourTo(index-1, SCE_LINKERSCRIPT_DECIMAL_NUMBER);
+                    styler.ColourTo(lastIndexToConsider, SCE_LINKERSCRIPT_DECIMAL_NUMBER);
                     break;
 
                 case LinkerScript::NumberType::Octal:
-                    styler.ColourTo(index-1, SCE_LINKERSCRIPT_OCTAL_NUMBER);
+                    styler.ColourTo(lastIndexToConsider, SCE_LINKERSCRIPT_OCTAL_NUMBER);
                     break;    
 
                 case LinkerScript::NumberType::Hexadecimal:
-                    styler.ColourTo(index-1, SCE_LINKERSCRIPT_HEXADECIMAL_NUMBER);
+                    styler.ColourTo(lastIndexToConsider, SCE_LINKERSCRIPT_HEXADECIMAL_NUMBER);
                     break; 
 
                 case LinkerScript::NumberType::Binary:
-                    styler.ColourTo(index-1, SCE_LINKERSCRIPT_BINARY_NUMBER);
+                    styler.ColourTo(lastIndexToConsider, SCE_LINKERSCRIPT_BINARY_NUMBER);
                     break;
 
                 default:
-                    styler.ColourTo(index-1, SCE_LINKERSCRIPT_UNKNOWN_NUMBER);
+                    styler.ColourTo(lastIndexToConsider, SCE_LINKERSCRIPT_UNKNOWN_NUMBER);
                     break;
                }
 
                // We now need to reinvestigate the current character
                state = SCE_LINKERSCRIPT_DEFAULT;
-               nextChar = currentChar;
+               nextChar = styler.SafeGetCharAt(lastIndexToConsider + 1);
+               index = lastIndexToConsider + 1;
                continue;
            }
 
            case SCE_LINKERSCRIPT_UNKNOWN_WORD:
            {   
-               if (LinkerScript::CanBeWithinWord(currentChar)) 
+               if (LinkerScript::CanBeWithinWord(currentChar) && (index <= lastPositionToCheck))
                {
-                   nextChar = styler.SafeGetCharAt(index++);
+                   nextChar = styler.SafeGetCharAt(++index);
                    continue;
                }
 
                state = SCE_LINKERSCRIPT_DEFAULT; 
-               auto unknownWordLength = index - 1 - unknownObjectStartIndex + 1;
+               auto lastIndexToConsider = index - 1;
+               auto unknownWordLength = lastIndexToConsider - unknownObjectStartIndex + 1;
+
                auto previousChar = styler.SafeGetCharAt(index - 1);
 
                // Check for word type
@@ -544,27 +558,28 @@ static void ColouriseLinkerScriptDoc(Sci_PositionU startPos, Sci_Position length
                                                  unknownWordLength,
                                                  LinkerScript::linkerScriptFunctions,
                                                  styler ))
-               {
-                   styler.ColourTo(index, SCE_LINKERSCRIPT_FUNCTION);
+               {                   
+                   styler.ColourTo(lastIndexToConsider, SCE_LINKERSCRIPT_FUNCTION);
                }
                else if (LinkerScript::IsKeywordInList(unknownObjectStartIndex, 
                                                  unknownWordLength,
                                                  LinkerScript::linkerScriptReservedWords,
                                                  styler ))
                {
-                   styler.ColourTo(index, SCE_LINKERSCRIPT_RESERVED);
+                   styler.ColourTo(lastIndexToConsider, SCE_LINKERSCRIPT_RESERVED);
                }
                else if ((unknownWordLength == 1) && (previousChar == '.'))
                {
-                   styler.ColourTo(index, SCE_LINKERSCRIPT_LOCATION_COUNTER);
+                   styler.ColourTo(lastIndexToConsider, SCE_LINKERSCRIPT_LOCATION_COUNTER);
                }
                else
                {
-                   styler.ColourTo(index, SCE_LINKERSCRIPT_DEFAULT);
+                   styler.ColourTo(lastIndexToConsider, SCE_LINKERSCRIPT_DEFAULT);
                }
 
                // We now need to reinvestigate the current character               
-               nextChar = currentChar;
+               state = SCE_LINKERSCRIPT_DEFAULT;
+               nextChar = currentChar;               
                continue; 
            }
 
@@ -593,7 +608,7 @@ static void ColouriseLinkerScriptDoc(Sci_PositionU startPos, Sci_Position length
                }
 
                styler.ColourTo(index, SCE_LINKERSCRIPT_COMMENTS);
-               nextChar = styler.SafeGetCharAt(index++);
+               nextChar = styler.SafeGetCharAt(++index);
                break;
            }
 
@@ -617,7 +632,7 @@ static void ColouriseLinkerScriptDoc(Sci_PositionU startPos, Sci_Position length
                     styler.ColourTo(index, SCE_LINKERSCRIPT_STRING_CONTENT);                    
                } 
 
-               nextChar = styler.SafeGetCharAt(index++);               
+               nextChar = styler.SafeGetCharAt(++index);
                break;
            }
 

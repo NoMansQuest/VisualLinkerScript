@@ -24,6 +24,24 @@
 #include <qfont.h>
 #include <qsettings.h>
 
+namespace
+{
+    QColor colorCodeWhite(200,200,200);
+    QColor colorVividGreen(78,201,176);
+    QColor colorStaleGreen(87,176,74);
+    QColor colorTooVividGreen(181,206,168);
+    QColor colorBeige(214,157,133);
+    QColor colorViolet(189,99,197);
+    QColor colorDarkGray(127,127,127);
+    QColor colorLightGray(155,155,155);
+    QColor colorWhite(200,200,200);
+    QColor colorVividBlue(185,156,214);
+    QColor colorYellow(255,215,4);
+    QColor colorVividRed(237,28,36);
+    QColor colorDarkPaper(18,18,18);
+}
+
+
 
 // The ctor.
 QsciLexerLinkerScript::QsciLexerLinkerScript(QObject *parent)
@@ -54,21 +72,7 @@ const char *QsciLexerLinkerScript::lexer() const
 
 // Returns the foreground colour of the text for a style.
 QColor QsciLexerLinkerScript::defaultColor(int style) const
-{
-
-    QColor colorCodeWhite(200,200,200);
-    QColor colorVividGreen(78,201,176); 
-    QColor colorStaleGreen(87,176,74);
-    QColor colorTooVividGreen(181,206,168);
-    QColor colorBeige(214,157,133);
-    QColor colorViolet(189,99,197);
-    QColor colorDarkGray(127,127,127);
-    QColor colorLightGray(155,155,155);
-    QColor colorWhite(200,200,200);
-    QColor colorVividBlue(185,156,214);
-    QColor colorYellow(255,215,4);
-    QColor colorVividRed(237,28,36);
-    
+{    
     switch (style)
     {   
         case Location_Counter:
@@ -85,7 +89,7 @@ QColor QsciLexerLinkerScript::defaultColor(int style) const
             return colorYellow;        
                     
         case Comments:
-            return colorVividGreen;
+            return colorStaleGreen;
 
         case String_Start:            
         case String_Content:
@@ -113,7 +117,13 @@ QColor QsciLexerLinkerScript::defaultColor(int style) const
 // Returns the font of the text for a style.
 QFont QsciLexerLinkerScript::defaultFont(int style) const
 {
-    return QsciLexer::defaultFont(style);
+    #if defined(Q_OS_WIN)
+            return QFont("Consolas", 11);
+    #elif defined(Q_OS_MAC)
+            return QFont("Consolas", 11);
+    #else
+            return QFont("Ubuntu Mono",11);
+    #endif
 }
 
 
@@ -190,7 +200,7 @@ QString QsciLexerLinkerScript::description(int style) const
 // Returns the background colour of the text for a style.
 QColor QsciLexerLinkerScript::defaultPaper(int style) const
 {
-    return QsciLexer::defaultPaper(style);
+    return colorDarkPaper;
 }
 
 
