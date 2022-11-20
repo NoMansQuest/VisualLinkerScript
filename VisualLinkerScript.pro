@@ -73,6 +73,17 @@ SOURCES += \
     Components/QScintilla/src/qsciscintillabase.cpp \
     Components/QScintilla/src/qscistyle.cpp \
     Components/QScintilla/src/qscistyledtext.cpp \
+    Models/LinkerScript/CLinkerScriptEntity.cpp \
+    Models/LinkerScript/CMemoryEntry.cpp \
+    Models/LinkerScript/CMemoryRegion.cpp \
+    Models/LinkerScript/CProgramHeader.cpp \
+    Models/LinkerScript/CProgramHeadersRegion.cpp \
+    Models/LinkerScript/CSectionsRegion.cpp \
+    Models/LinkerScript/CSectionsRegionEntry.cpp \
+    Models/LinkerScript/CSectionsRegionObjectBase.cpp \
+    Models/LinkerScript/CSectionsRegionOverlay.cpp \
+    Models/LinkerScript/CSectionsRegionSection.cpp \
+    Models/LinkerScript/CSymbolAssignment.cpp \
     main.cpp \
     mainwindow.cpp
 
@@ -157,6 +168,17 @@ HEADERS += \
     Components/QScintilla/src/SciAccessibility.h \
     Components/QScintilla/src/SciClasses.h \
     Components/QScintilla/src/ScintillaQt.h \
+    Models/LinkerScript/CLinkerScriptEntity.h \
+    Models/LinkerScript/CMemoryEntry.h \
+    Models/LinkerScript/CMemoryRegion.h \
+    Models/LinkerScript/CProgramHeader.h \
+    Models/LinkerScript/CProgramHeadersRegion.h \
+    Models/LinkerScript/CSectionsRegion.h \
+    Models/LinkerScript/CSectionsRegionEntry.h \
+    Models/LinkerScript/CSectionsRegionObjectBase.h \
+    Models/LinkerScript/CSectionsRegionOverlay.h \
+    Models/LinkerScript/CSectionsRegionSection.h \
+    Models/LinkerScript/CSymbolAssignment.h \
     mainwindow.h
 
 FORMS += \
