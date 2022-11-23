@@ -25,10 +25,10 @@ void Components::QScintilla::SetComponentStyles(QsciScintilla& target)
 
     // Font-Related
 #ifdef Q_OS_LINUX
-  target.setFont(QFont("Monospace", 10));
+  target.setFont(QFont("Monospace", 9));
 #endif
 #ifdef Q_OS_WIN32
-  target.setFont(QFont("Consolas", 10));
+  target.setFont(QFont("Consolas", 9));
 #endif
 
     // Set Lexer

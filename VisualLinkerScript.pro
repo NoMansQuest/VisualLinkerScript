@@ -84,6 +84,8 @@ SOURCES += \
     Models/LinkerScript/CSectionsRegionOverlay.cpp \
     Models/LinkerScript/CSectionsRegionSection.cpp \
     Models/LinkerScript/CSymbolAssignment.cpp \
+    ParsingEngine/CPreliminaryParser.cpp \
+    ParsingEngine/Models/CRawFile.cpp \
     main.cpp \
     mainwindow.cpp
 
@@ -179,6 +181,12 @@ HEADERS += \
     Models/LinkerScript/CSectionsRegionOverlay.h \
     Models/LinkerScript/CSectionsRegionSection.h \
     Models/LinkerScript/CSymbolAssignment.h \
+    ParsingEngine/CParserHelpers.h \
+    ParsingEngine/CPreliminaryParser.h \
+    ParsingEngine/CPreliminaryParsingException.h \
+    ParsingEngine/Models/CRawEntry.h \
+    ParsingEngine/Models/CRawFile.h \
+    ParsingEngine/Models/EntryTypes.h \
     mainwindow.h
 
 FORMS += \

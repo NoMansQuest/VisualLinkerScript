@@ -2,7 +2,7 @@
 #define ENTRY_TYPES_H__
 
 namespace VisualLinkerScript { namespace ParsingEngine { namespace Models {
-{    
+
     /// @brief Type of entries procued by Preliminary-Parsing engine
     enum class EntryTypesEnum
     {
@@ -35,7 +35,8 @@ namespace VisualLinkerScript { namespace ParsingEngine { namespace Models {
 
         /// @brief Unknown type of operator. For example a backslash may be one
         Unknown
-    }
+    };
+
 }}}
 
 #endif

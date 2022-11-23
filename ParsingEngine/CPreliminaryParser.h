@@ -25,11 +25,11 @@ public:
 
 public:
     /// @brief Process the input file. This function can throw an exception 
-    /// @param inputStream Input stream containing the linker-script content
-    /// @param length Length of the stream
+    /// @param rawContent Contains the linker-script content
     /// @exception 
     /// @return Unique pointer to the processing result in form of a CRawFile.
-    std::unique_ptr<CRawFile> ProcessLinkerScript(const char* inputStream, unsigned int length);    }
+    std::shared_ptr<CRawFile> ProcessLinkerScript(const std::string& rawContent);
+};
 
 }}
 

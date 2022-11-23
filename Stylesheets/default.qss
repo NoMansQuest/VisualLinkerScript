@@ -14,7 +14,10 @@
 /* Menu bar and items */
 QMenuBar 
 {    
-    padding: 5px;
+    padding-left: 5px;
+    padding-top: 5px;
+    padding-right: 5px;
+    padding-bottom: 2px;
     border-top: 1px solid #E0E0E0;
     background: #2c2c2c;
     font-family: 'Segoe UI' ;
@@ -25,8 +28,8 @@ QMenuBar::item
 {
     padding-left: 8px;
     padding-right: 8px;
-    padding-top: 4px;
-    padding-bottom: 4px;
+    padding-top: 1px;
+    padding-bottom: 1px;
     background: transparent;
     color: #E0E0E0;
 }
@@ -37,6 +40,17 @@ QMenuBar::item:selected
     padding-right: 8px;
     padding-top: 4px;
     padding-bottom: 4px;
+    border: 0px solid #E1E1E1;
+    background: #23FFFFFF;
+    color: #E0E0E0;
+}
+
+QMenu
+{
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 6px;
+    padding-bottom: 6px;
     border: 0px solid #E1E1E1;
     background: #23FFFFFF;
     color: #E0E0E0;

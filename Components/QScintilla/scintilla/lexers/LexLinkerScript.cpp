@@ -50,7 +50,7 @@ namespace LinkerScript
 
     /// @brief These are linker-script Functions, and are colored accordingly
     static const char * linkerScriptFunctions[] = {
-        "ENTRY", "ALIGN", "PROVIDE", "KEEP", "BYTE", "SHORT", "LONG", "QUAD", "SQUAD", "FLOAT", "NOFLOAT",
+        "ENTRY", "ALIGN", "ORIGIN", "LENGTH", "PROVIDE", "KEEP", "BYTE", "SHORT", "LONG", "QUAD", "SQUAD", "FLOAT", "NOFLOAT",
         "FORCE_COMMON_ALLOCATION", "STARTUP", "TARGET", "LOADADDR",
         0
     };
@@ -88,8 +88,7 @@ namespace LinkerScript
             {
                 match = true;
                 break;
-            }
-            break;
+            }            
         }
         return match;
     }
