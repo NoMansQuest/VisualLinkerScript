@@ -3,10 +3,9 @@
  ** Lexer for GNU Linker-Script files.
  **
  ** First working version contributed by Nasser GHOSEIRI <nasser.ghoseiri@gmail.com> on October 23, 2022. This file was created
- ** as part of the Visual Linker Script project.
+ ** as part of the VisualLinkerScript project.
  **/
-// Copyright 1998-2001 by Neil Hodgson <neilh@scintilla.org>
-// The License.txt file describes the conditions under which this software may be distributed.
+
 
 #include <stdlib.h>
 #include <string.h>
