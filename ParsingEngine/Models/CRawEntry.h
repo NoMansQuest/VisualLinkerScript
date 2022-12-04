@@ -48,28 +48,28 @@ using namespace VisualLinkerScript::ParsingEngine::Models;
     public:
         /// @brief Reports back the type of thie entry
         /// @return Type of this entry
-        EntryTypesEnum getEntryType() const
+        EntryTypesEnum EntryType() const
         { 
             return this->m_entryType; 
         }
 
         /// @brief Reports back the length of this entry
         /// @return Length of this entry (>0)
-        unsigned int getLength() const
+        unsigned int Length() const
         {
             return this->m_length; 
         }
 
         /// @brief Reports back the starting position of this entry in the original stream
         /// @return Start position of this entry
-        unsigned int getStartPosition() const
+        unsigned int StartPosition() const
         { 
             return this->m_startPosition; 
         }
 
         /// @brief Reports the 'Depth' of this piece of data. This referes to how deep this portion
         ///        is relative to curly-brackets defined regions.
-        unsigned int getDepth() const
+        unsigned int Depth() const
         {
             return this->m_depth;
         }

@@ -9,8 +9,11 @@ namespace VisualLinkerScript { namespace ParsingEngine { namespace Models {
         /// @brief A word, which may only be a single dot as well
         Word,   
 
-        /// @brief Operators include '*', '=', '+', '-', '>', '<', ';', '/', etc.
+        /// @brief Operators include '*', '+', '-', '>', '<', ';', '/', etc.
         Operator,
+
+        /// @brief Assignment operators: '=', '*=', '+=', '-=', '/='
+        Assignment,
 
         /// @brief A number. This number may or may not be valid
         Number,

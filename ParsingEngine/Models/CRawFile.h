@@ -24,7 +24,7 @@ namespace VisualLinkerScript { namespace ParsingEngine { namespace Models {
     public:
         /// @brief Retried the content's vector
         /// @return Shared pointer to the vector of content.
-        std::shared_ptr<std::vector<CRawEntry>> getContent() const;
+        std::shared_ptr<std::vector<CRawEntry>> Content() const;
     };
 
 }}}
