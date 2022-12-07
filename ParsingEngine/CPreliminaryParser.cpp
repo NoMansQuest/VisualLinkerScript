@@ -2,7 +2,7 @@
 #include "CPreliminaryParsingException.h"
 #include "Models/CRawEntry.h"
 #include "Models/CRawFile.h"
-#include "Models/EntryTypes.h"
+#include "Models/EntryType.h"
 
 #include <memory>
 #include <string>
@@ -17,8 +17,7 @@ namespace
     enum class ParserStates
     {
         Default,
-        InComment,
-        InWhiteSpace,
+        InComment,        
         InString,
         InWord,
         InNumber,
@@ -51,7 +50,7 @@ namespace
                SafeTestCharacterInString(input, position + 1, secondCharacter);
     }
 
-        /// @brief Checks for the pattern of two characters at given positions. This is to optimize performance.
+    /// @brief Checks for the pattern of two characters at given positions. This is to optimize performance.
     /// @param input Input string
     /// @param position Position to start checking from
     /// @param firstCharacter First character to check (at 'position')
@@ -187,9 +186,40 @@ namespace
     /// @param input Input string to check
     /// @param position Position to check at
     /// @return 
-    bool TestForAssignmentSymbol(const string& input, unsigned int position)
+    bool TestForAssignmentSymbol(const string& input, const unsigned int position, unsigned int& operatorLength)
     {
-        if (SafeTestCharacterInString(input, position) == '')
+        auto charAtPosition = input[position];
+        auto detectedOperatorLength = (unsigned int)0;
+
+        if (SafeTestCharacterInString(input, position, '='))
+        {
+            if (position == input.length - 1)
+            {
+                return AssignmentSymbolTypes::SingleCharacter;
+            }
+
+            detectedOperatorLength = IsWhitespace(input[position+1]) ? 1 : 0;            
+        }
+        else if ((charAtPosition == '*') ||
+                 (charAtPosition == '/') ||
+                 (charAtPosition == '%') ||
+                 (charAtPosition == '-') ||
+                 (charAtPosition == '+'))
+        {
+            if (position == input.length - 1)
+            {
+                return AssignmentSymbolTypes::NotAnAssignmentSymbol;
+            }
+
+            if (!SafeTestCharacterInString(input, position + 1, '=') || (position == input.length - 2))
+            {
+                AssignmentSymbolTypes::NotAnAssignmentSymbol;
+            }
+            
+            operatorLength = IsWhitespace(input[position+2]) ? 2 : 0;
+        }
+
+        return (operatorLength > 0);
     }
 }
 
@@ -208,87 +238,156 @@ std::shared_ptr<CRawFile> CPreliminaryParser::ProcessLinkerScript(const std::str
     auto parsedContent = std::make_shared<std::vector<CRawEntry>>();
     auto currentState = ParserStates::Default;
     auto sectionStartIndex = (unsigned int)0;
-    auto currentDepth = (unsigned int)0; // Depth increases each time we encounter a '{' and decreases on each '}'
+    auto scopeDepth = (unsigned int)0; // Depth increases each time we encounter a '{' and decreases on each '}'
+    auto parenthesisDepth = (unsigned int)0; // Depth increases each time we encounter a '(' and decreases on each ')'
 
-    auto eventStartPosition = (unsigned int)0;    
-    
-    for (unsigned int hoverPosition = 0;; hoverPosition++)
+    auto entryStartPosition = (unsigned int)0;   
+    auto entryStartLine = (unsigned int)0;
+    auto backslashArmed = false;     
+    auto endOfStreamReached = false;
+    auto lineNumber = 1;
+    auto scanPosition = (unsigned int)0;
+
+    auto TransitionToState = [&](ParserStates targetState) 
     {
-        auto currentCharacter = rawContent[hoverPosition];
+        entryStartPosition = scanPosition; 
+        entryStartLine = lineNumber;
+        scanPosition--;              
+        currentState = targetState;
+    };
+
+    auto ReturnToDefaultState = [&](int scanPositionAdjustment = 0) 
+    {
+        scanPosition += scanPositionAdjustment;                                        
+        currentState = ParserStates::Default;
+    };    
+
+    auto AddEntryToVector = [&](EntryType entryType, unsigned int fromLine, unsigned int length)
+    {
+        auto entryObject = CRawEntry(entryType, fromLine, lineNumber, scanPosition, length, parenthesisDepth, scopeDepth);
+        parsedContent->emplace_back(entryObject);
+    };    
+    
+    for (scanPosition = 0;; scanPosition++)
+    {        
+        auto currentCharacter = rawContent[scanPosition];
+        endOfStreamReached = scanPosition >= rawContent.length;
+        lineNumber += (currentCharacter == '\n') ? 1 : 0;
+
         switch (currentState)
         {
             case ParserStates::Default:
-            {
+            {                
                 if (IsWhitespace(currentCharacter))
                 {
                     continue;
                 }
 
-                if (IsNumber(hoverPosition))
-                {                   
-                    eventStartPosition = hoverPosition; 
-                    hoverPosition--;                    
-                    currentState = ParserStates::InNumber;
+                if (IsNumber(scanPosition))
+                {     
+                    TransitionToState(ParserStates::InNumber); 
                     continue;
                 }
 
-                if (SafeTestPatternInString(rawContent, hoverPosition, '/', '*'))
+                if (SafeTestPatternInString(rawContent, scanPosition, '/', '*'))
                 {
-                    eventStartPosition = hoverPosition;
-                    hoverPosition--;
-                    currentState = ParserStates::InComment;
+                    TransitionToState(ParserStates::InComment);
                     continue;
                 }
 
-                if (IsAssignment(rawContent, hoverPosition))
+                if (currentCharacter == '"')
                 {
+                    TransitionToState(ParserStates::InString);
+                    continue;
+                }                
 
+                unsigned int assignmentOperatorLength = 0;
+                if (TestForAssignmentSymbol(rawContent, scanPosition, assignmentOperatorLength))
+                {
+                    AddEntryToVector(EntryType::Assignment, lineNumber, assignmentOperatorLength);
+                    scanPosition += (assignmentOperatorLength - 1);
+                    continue;
                 }
+
+                if (CanCharBeStartOfWord(currentCharacter))
+                {
+                    TransitionToState(ParserStates::InWord);
+                    continue;
+                }
+
+                if (IsOperator(currentCharacter))
+                {
+                    auto entyType = (currentCharacter == '{') ? EntryType::BracketOpen :
+                                    (currentCharacter == '}') ? EntryType::BracketClose :
+                                    (currentCharacter == '(') ? EntryType::ParenthesisOpen :
+                                    (currentCharacter == ')') ? EntryType::ParenthesisClose :
+                                    EntryType::Operator;
+
+                    AddEntryToVector(entyType, lineNumber, assignmentOperatorLength);
+                    parenthesisDepth += (currentCharacter == '(') ? 1 : (currentCharacter == ')') ? -1 : 0;
+                    scopeDepth += (currentCharacter == '{') ? 1 : (currentCharacter == '}') ? -1 : 0;
+                }
+                break;
             }
 
             case ParserStates::InComment:
             {
-                if (!SafeTestPatternInString(rawContent, hoverPosition, '*', '/'))
+                if (!SafeTestPatternInString(rawContent, scanPosition, '*', '/') && !endOfStreamReached)
                 {
                     continue;
                 }
 
-                parsedContent->emplace_back(CRawEntry(EntryTypesEnum::Comment,
-                                                      eventStartPosition,
-                                                      (hoverPosition + 1 - eventStartPosition) + 1,
-                                                      currentDepth));
-                hoverPosition++;
-                currentState = ParserStates::Default;
-            }
-
-            case ParserStates::InWhiteSpace:
-            {
-
+                AddEntryToVector(EntryType::Comment, entryStartLine, (scanPosition + 1 - entryStartPosition) + 1);
+                ReturnToDefaultState(1);
+                break;
             }
 
             case ParserStates::InString:
-            {
+            {                
+                backslashArmed = (backslashArmed) ? false : (currentCharacter == '\\');                
+                if (((currentCharacter != '"') || backslashArmed) && !endOfStreamReached)
+                {
+                    continue;
+                }
 
+                AddEntryToVector(EntryType::String, entryStartLine, (scanPosition - entryStartPosition) + 1);
+                ReturnToDefaultState(0);
+                break;
             }
 
             case ParserStates::InWord:
             {
+                if (CanCharBeWithinWord(currentCharacter) && !endOfStreamReached) 
+                {
+                    continue;
+                }
 
+                AddEntryToVector(EntryType::String, entryStartLine, (scanPosition - entryStartPosition) + 1);
+                ReturnToDefaultState(0);
+                break;
             }
 
             case ParserStates::InNumber:
             {
-                if (!IsNumberPostfix(currentCharacter) &&
-                    !IsNumberPrefix(currentCharacter) &&
-                    !IsNumber
+                if ((IsNumberPostfix(currentCharacter) || IsNumberPrefix(currentCharacter) || IsNumberOrHex(currentChar)) && !endOfStreamReached)
+                {
+                    continue;
+                }
 
+                AddEntryToVector(EntryType::Number, entryStartLine, (scanPosition - 1 - entryStartPosition) + 1);
+                ReturnToDefaultState(-1);   
+                break;
             }
 
             default:
             {
-
-
+                throw CPreliminaryParsingException(PreliminaryParsingExceptionTypeEnum::InternalParserError, "ParserState was not recognized.");
             }
+        }
+
+        if (endOfStreamReached)
+        {
+            break;
         }
     }
 

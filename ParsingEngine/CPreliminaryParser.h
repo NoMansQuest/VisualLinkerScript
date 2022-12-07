@@ -23,6 +23,7 @@ public:
     /// @brief Default destructor
     ~CPreliminaryParser();
 
+
 public:
     /// @brief Process the input file. This function can throw an exception 
     /// @param rawContent Contains the linker-script content
@@ -32,5 +33,6 @@ public:
 };
 
 }}
+
 
 #endif

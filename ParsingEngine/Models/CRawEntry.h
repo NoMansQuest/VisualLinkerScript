@@ -12,11 +12,15 @@ using namespace VisualLinkerScript::ParsingEngine::Models;
     {
     public:
         /// @brief Explicitly made based on callers request
-        explicit CRawEntry(EntryTypesEnum typeOfEntry,
+        explicit CRawEntry(EntryType typeOfEntry,                  
+                  unsigned int startLineNumber,
+                  unsigned int endLineNumber,
                   unsigned int startPosition,
                   unsigned int length,
                   unsigned int depth)
             : m_entryType(typeOfEntry),
+              m_startLineNumber(startLineNumber),
+              m_endLineNumber(endLineNumber),
               m_startPosition(startPosition),
               m_length(length),
               m_depth(depth)
@@ -26,10 +30,12 @@ using namespace VisualLinkerScript::ParsingEngine::Models;
 
         /// @brief Object-Copy constructor
         CRawEntry(CRawEntry& cloneSource)
-            : m_entryType(cloneSource.getEntryType()),
-              m_startPosition(cloneSource.getStartPosition()),
-              m_length(cloneSource.getLength()),
-              m_depth(cloneSource.getDepth())
+            : m_entryType(cloneSource.EntryType()),
+              m_startLineNumber(cloneSource.StartLineNumber()),
+              m_endLineNumber(cloneSource.EndLineNumber()),
+              m_startPosition(cloneSource.StartPosition()),
+              m_length(cloneSource.Length()),
+              m_depth(cloneSource.Depth())
         {
             // No operation to undertake
         }
@@ -43,12 +49,14 @@ using namespace VisualLinkerScript::ParsingEngine::Models;
         unsigned int m_startPosition;
         unsigned int m_length;
         unsigned int m_depth;
-        EntryTypesEnum m_entryType;
+        unsigned int m_startLineNumber;
+        unsigned int m_endLineNumber;
+        EntryType m_entryType;
         
     public:
         /// @brief Reports back the type of thie entry
         /// @return Type of this entry
-        EntryTypesEnum EntryType() const
+        EntryType EntryType() const
         { 
             return this->m_entryType; 
         }
@@ -65,6 +73,20 @@ using namespace VisualLinkerScript::ParsingEngine::Models;
         unsigned int StartPosition() const
         { 
             return this->m_startPosition; 
+        }
+
+        /// @brief Line number where this entry begins on
+        /// @return The line number
+        unsigned int StartLineNumber() const
+        {
+            return this->m_startLineNumber;
+        }
+
+        /// @brief Line number where this entry ends on
+        /// @return The ending line number
+        unsigned int EndLineNumber() const
+        {
+            
         }
 
         /// @brief Reports the 'Depth' of this piece of data. This referes to how deep this portion

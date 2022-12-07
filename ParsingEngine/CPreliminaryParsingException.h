@@ -11,7 +11,8 @@ using namespace std;
 /// @brief Each exception will have its own assigned enum entry
 enum class PreliminaryParsingExceptionTypeEnum
 {
-    ContentWasNull,    
+    ContentWasNull, 
+    InternalParserError,   
 };
 
 
