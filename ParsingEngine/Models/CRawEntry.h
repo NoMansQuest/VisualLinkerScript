@@ -1,7 +1,7 @@
 #ifndef CRAWENTRY_H__
 #define CRAWENTRY_H__
 
-#include "EntryTypes.h"
+#include "EntryType.h"
 
 namespace VisualLinkerScript { namespace ParsingEngine { namespace Models {
 
@@ -17,25 +17,28 @@ using namespace VisualLinkerScript::ParsingEngine::Models;
                   unsigned int endLineNumber,
                   unsigned int startPosition,
                   unsigned int length,
-                  unsigned int depth)
-            : m_entryType(typeOfEntry),
+                  unsigned int parenthesisDepth,
+                  unsigned int scopeDepth)
+            : m_startPosition(startPosition),
+              m_length(length),
+              m_parenthesisDepth(parenthesisDepth),
+              m_scopeDepth(scopeDepth),
               m_startLineNumber(startLineNumber),
               m_endLineNumber(endLineNumber),
-              m_startPosition(startPosition),
-              m_length(length),
-              m_depth(depth)
+              m_entryType(typeOfEntry)
         {            
             // No operation to undertake
         }
 
         /// @brief Object-Copy constructor
-        CRawEntry(CRawEntry& cloneSource)
-            : m_entryType(cloneSource.EntryType()),
+        CRawEntry(const CRawEntry& cloneSource)
+            : m_startPosition(cloneSource.StartPosition()),
+              m_length(cloneSource.Length()),
+              m_parenthesisDepth(cloneSource.ParenthesisDepth()),
+              m_scopeDepth(cloneSource.ScopeDepth()),
               m_startLineNumber(cloneSource.StartLineNumber()),
               m_endLineNumber(cloneSource.EndLineNumber()),
-              m_startPosition(cloneSource.StartPosition()),
-              m_length(cloneSource.Length()),
-              m_depth(cloneSource.Depth())
+              m_entryType(cloneSource.EntryType())
         {
             // No operation to undertake
         }
@@ -48,7 +51,8 @@ using namespace VisualLinkerScript::ParsingEngine::Models;
     private:
         unsigned int m_startPosition;
         unsigned int m_length;
-        unsigned int m_depth;
+        unsigned int m_parenthesisDepth;
+        unsigned int m_scopeDepth;
         unsigned int m_startLineNumber;
         unsigned int m_endLineNumber;
         EntryType m_entryType;
@@ -86,14 +90,21 @@ using namespace VisualLinkerScript::ParsingEngine::Models;
         /// @return The ending line number
         unsigned int EndLineNumber() const
         {
-            
+            return this->m_endLineNumber;
+        }
+
+        /// @brief Reports the 'Parenthesis Depth' of this piece of data. This referes to how deep this portion
+        ///        is relative to parenthesis-enclosued statement.
+        unsigned int ParenthesisDepth() const
+        {
+            return this->m_parenthesisDepth;
         }
 
         /// @brief Reports the 'Depth' of this piece of data. This referes to how deep this portion
         ///        is relative to curly-brackets defined regions.
-        unsigned int Depth() const
+        unsigned int ScopeDepth() const
         {
-            return this->m_depth;
+            return this->m_scopeDepth;
         }
     };
 

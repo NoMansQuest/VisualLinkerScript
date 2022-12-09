@@ -186,7 +186,7 @@ HEADERS += \
     ParsingEngine/CPreliminaryParsingException.h \
     ParsingEngine/Models/CRawEntry.h \
     ParsingEngine/Models/CRawFile.h \
-    ParsingEngine/Models/EntryTypes.h \
+    ParsingEngine/Models/EntryType.h \    
     mainwindow.h
 
 FORMS += \

@@ -20,33 +20,34 @@ class CPreliminaryParsingException : public std::exception
 {
 
 private:
-    std::string m_exceptionSource;
-    PreliminaryParsingExceptionTypeEnum m_exceptionType;
+    std::string m_description;
+    PreliminaryParsingExceptionTypeEnum m_type;
 
 public:
     /// @brief The human-readable version of what went wrong
     const char* what() const
     {
-        return m_exceptionSource.c_str();
+        return m_description.c_str();
     }
 
 public:
     /// @brief Default constructor
     /// @param exceptionDescription Text describing the issue (potentially displayed to the user) 
     explicit CPreliminaryParsingException(
-        PreliminaryParsingExceptionTypeEnum exceptionType, 
-        const std::string exceptionDescription)
+        PreliminaryParsingExceptionTypeEnum type,
+        const std::string description)
     {
-        this->m_exceptionSource = exceptionDescription;
+        this->m_description = description;
+        this->m_type = type;
     }
 
     ~CPreliminaryParsingException() {}
 
 
     /// @brief Type of exception
-    PreliminaryParsingExceptionTypeEnum getExceptionType()
+    PreliminaryParsingExceptionTypeEnum getExceptionType() const
     {
-        return m_exceptionType;
+        return m_type;
     }
 };
 

@@ -23,6 +23,23 @@ namespace
         InNumber,
     };
 
+    /// @brief Types of assignment symbols we can have in a linker-script
+    enum class AssignmentSymbolTypes
+    {
+        SingleCharacter,
+        DoubleCharacter,
+        NotAnAssignmentSymbol
+    };
+
+    /// @brief The loop needs alignment after an entry is detected and registerd
+    enum class ParserLoopActionType
+    {
+        StartFromSamePosition,
+        StartFromOneCharacterAfter,
+        StartFromOneCharacterBefore,
+        StartFromTwoCharactersAfter
+    };
+
     /// @brief Checks if the character at the given position matches @see testAgainst.
     /// @param input Input string
     /// @param position Positions to check
@@ -30,8 +47,7 @@ namespace
     /// @return True if character matches, false if it doesn't or if position is out of range
     bool SafeTestCharacterInString(const string& input, unsigned int position, char testAgainst)
     {   
-        return (position <= (input.length - 1)) && 
-               (input[position] == testAgainst);        
+        return (position <= (input.length() - 1)) && (input[position] == testAgainst);
     }
 
     /// @brief Checks for the pattern of two characters at given positions. This is to optimize performance.
@@ -101,7 +117,13 @@ namespace
                 (input == '=') ||
                 (input == '?') ||
                 (input == ':') ||
+                (input == ',') ||
+                (input == ';') ||
                 (input == '~') ||
+                (input == '(') ||
+                (input == ')') ||
+                (input == '{') ||
+                (input == '}') ||
                 (input == '!'));
     }
 
@@ -140,7 +162,7 @@ namespace
     /// @return True if 'input' is a white-space character. False otherwise.
     bool IsWhitespace(char input)
     {
-        return (input >= (char)0x09) && (input <= (char)0x0D);
+        return ((input >= (char)0x09) && (input <= (char)0x0D)) || (input == ' ');
     }
 
     /// @brief Checks if input is a digit. 
@@ -162,38 +184,19 @@ namespace
                ((input >= 'a') && (input <= 'f'));
     }
 
-    /// @brief  Checks the character for being an operator ( & = &= += > >> .... )
-    /// @param input Character to check
-    /// @return True if the character is considered to be an operator
-    bool IsOperator(char input)
-    {
-        return ((input == ':') ||
-                (input == '!') ||
-                (input == '*') ||
-                (input == '/') ||
-                (input == '%') ||
-                (input == '+') ||
-                (input == '-') ||
-                (input == '~') ||
-                (input == '&') ||
-                (input == '=') ||
-                (input == '*') ||
-                (input == '?'));
-    }
-
     /// @brief Checks to see if assignment symbol is present, 
     ///        such as '/=', '*=', '+=', '-=', '='
     /// @param input Input string to check
     /// @param position Position to check at
-    /// @return 
-    bool TestForAssignmentSymbol(const string& input, const unsigned int position, unsigned int& operatorLength)
+    /// @return Returns the type of detected assignment symbol
+    AssignmentSymbolTypes TestForAssignmentSymbol(const string& input, const unsigned int position)
     {
         auto charAtPosition = input[position];
         auto detectedOperatorLength = (unsigned int)0;
 
         if (SafeTestCharacterInString(input, position, '='))
         {
-            if (position == input.length - 1)
+            if (position == input.length() - 1)
             {
                 return AssignmentSymbolTypes::SingleCharacter;
             }
@@ -206,20 +209,62 @@ namespace
                  (charAtPosition == '-') ||
                  (charAtPosition == '+'))
         {
-            if (position == input.length - 1)
+            if (position == input.length() - 1)
             {
                 return AssignmentSymbolTypes::NotAnAssignmentSymbol;
             }
 
-            if (!SafeTestCharacterInString(input, position + 1, '=') || (position == input.length - 2))
+            if (!SafeTestCharacterInString(input, position + 1, '=') || (position == input.length() - 2))
             {
                 AssignmentSymbolTypes::NotAnAssignmentSymbol;
             }
-            
-            operatorLength = IsWhitespace(input[position+2]) ? 2 : 0;
+
+            detectedOperatorLength = IsWhitespace(input[position+2]) ? 2 : 0;
         }
 
-        return (operatorLength > 0);
+        return (detectedOperatorLength == 1) ? AssignmentSymbolTypes::SingleCharacter :
+               (detectedOperatorLength == 2) ? AssignmentSymbolTypes::DoubleCharacter :
+               AssignmentSymbolTypes::NotAnAssignmentSymbol ;
+    }
+
+    /// @brief Procedure in charge of maintaining scope-depth, parenthesis-depth and line-number based on detected character
+    void ProcessLineAndScopeIncrement(char inputCharacter, unsigned int& lineNumberHolder, unsigned int& parenthesisDepthHolder, unsigned int& scopeDepthHolder)
+    {
+        switch (inputCharacter)
+        {
+            case '\n':
+            {
+                lineNumberHolder++;
+                break;
+            }
+
+            case '{':
+            {
+                scopeDepthHolder++;
+                break;
+            }
+
+            case '}':
+            {
+                scopeDepthHolder--;
+                break;
+            }
+
+            case '(':
+            {
+                parenthesisDepthHolder++;
+                break;
+            }
+
+            case ')':
+            {
+                parenthesisDepthHolder--;
+                break;
+            }
+
+            default:
+                break;
+        }
     }
 }
 
@@ -236,8 +281,7 @@ CPreliminaryParser::~CPreliminaryParser()
 std::shared_ptr<CRawFile> CPreliminaryParser::ProcessLinkerScript(const std::string& rawContent)
 {
     auto parsedContent = std::make_shared<std::vector<CRawEntry>>();
-    auto currentState = ParserStates::Default;
-    auto sectionStartIndex = (unsigned int)0;
+    auto currentState = ParserStates::Default;    
     auto scopeDepth = (unsigned int)0; // Depth increases each time we encounter a '{' and decreases on each '}'
     auto parenthesisDepth = (unsigned int)0; // Depth increases each time we encounter a '(' and decreases on each ')'
 
@@ -245,8 +289,9 @@ std::shared_ptr<CRawFile> CPreliminaryParser::ProcessLinkerScript(const std::str
     auto entryStartLine = (unsigned int)0;
     auto backslashArmed = false;     
     auto endOfStreamReached = false;
-    auto lineNumber = 1;
+    auto lineNumber = (unsigned int)1;
     auto scanPosition = (unsigned int)0;
+    auto supressLineAndScopeUpdate = false;
 
     auto TransitionToState = [&](ParserStates targetState) 
     {
@@ -256,23 +301,40 @@ std::shared_ptr<CRawFile> CPreliminaryParser::ProcessLinkerScript(const std::str
         currentState = targetState;
     };
 
-    auto ReturnToDefaultState = [&](int scanPositionAdjustment = 0) 
+    auto ReturnToDefaultState = [&](ParserLoopActionType scanPositionAdjustment)
     {
-        scanPosition += scanPositionAdjustment;                                        
+        switch (scanPositionAdjustment)
+        {
+            case ParserLoopActionType::StartFromSamePosition:       scanPosition -= 1; break;
+            case ParserLoopActionType::StartFromOneCharacterAfter:  scanPosition += 0; break;
+            case ParserLoopActionType::StartFromOneCharacterBefore: scanPosition -= 2; break;
+            case ParserLoopActionType::StartFromTwoCharactersAfter: scanPosition += 1; break;
+            default: throw CPreliminaryParsingException(PreliminaryParsingExceptionTypeEnum::InternalParserError, "Unrecognized 'ParserLoopActionType' value.");
+        }
+
         currentState = ParserStates::Default;
     };    
 
-    auto AddEntryToVector = [&](EntryType entryType, unsigned int fromLine, unsigned int length)
+    auto AddEntryToVector = [&](
+            EntryType entryType,
+            unsigned int fromLine,
+            unsigned int toLine,
+            unsigned int fromPosition,
+            unsigned int length,
+            unsigned int elementParenthesisDepth,
+            unsigned int elementScopeDepth)
     {
-        auto entryObject = CRawEntry(entryType, fromLine, lineNumber, scanPosition, length, parenthesisDepth, scopeDepth);
+        CRawEntry entryObject(entryType, fromLine, toLine, fromPosition, length, elementParenthesisDepth, elementScopeDepth);
         parsedContent->emplace_back(entryObject);
-    };    
+    };
+
     
     for (scanPosition = 0;; scanPosition++)
     {        
         auto currentCharacter = rawContent[scanPosition];
-        endOfStreamReached = scanPosition >= rawContent.length;
-        lineNumber += (currentCharacter == '\n') ? 1 : 0;
+        endOfStreamReached = scanPosition >= rawContent.length();
+
+        std::string insightScope = rawContent.substr(scanPosition);
 
         switch (currentState)
         {
@@ -280,39 +342,40 @@ std::shared_ptr<CRawFile> CPreliminaryParser::ProcessLinkerScript(const std::str
             {                
                 if (IsWhitespace(currentCharacter))
                 {
-                    continue;
+                    break;
                 }
 
-                if (IsNumber(scanPosition))
+                if (IsNumber(currentCharacter))
                 {     
                     TransitionToState(ParserStates::InNumber); 
-                    continue;
+                    break;
                 }
 
                 if (SafeTestPatternInString(rawContent, scanPosition, '/', '*'))
                 {
                     TransitionToState(ParserStates::InComment);
-                    continue;
+                    break;
                 }
 
                 if (currentCharacter == '"')
                 {
                     TransitionToState(ParserStates::InString);
-                    continue;
-                }                
+                    break;
+                }
 
-                unsigned int assignmentOperatorLength = 0;
-                if (TestForAssignmentSymbol(rawContent, scanPosition, assignmentOperatorLength))
+                auto assignmentSymbolType = TestForAssignmentSymbol(rawContent, scanPosition);
+                if (assignmentSymbolType != AssignmentSymbolTypes::NotAnAssignmentSymbol)
                 {
-                    AddEntryToVector(EntryType::Assignment, lineNumber, assignmentOperatorLength);
+                    auto assignmentOperatorLength = (assignmentSymbolType == AssignmentSymbolTypes::SingleCharacter) ? 1 : 2;
+                    AddEntryToVector(EntryType::Assignment, lineNumber, lineNumber, scanPosition, assignmentOperatorLength, parenthesisDepth, scopeDepth);
                     scanPosition += (assignmentOperatorLength - 1);
-                    continue;
+                    break;
                 }
 
                 if (CanCharBeStartOfWord(currentCharacter))
                 {
                     TransitionToState(ParserStates::InWord);
-                    continue;
+                    break;
                 }
 
                 if (IsOperator(currentCharacter))
@@ -323,10 +386,9 @@ std::shared_ptr<CRawFile> CPreliminaryParser::ProcessLinkerScript(const std::str
                                     (currentCharacter == ')') ? EntryType::ParenthesisClose :
                                     EntryType::Operator;
 
-                    AddEntryToVector(entyType, lineNumber, assignmentOperatorLength);
-                    parenthesisDepth += (currentCharacter == '(') ? 1 : (currentCharacter == ')') ? -1 : 0;
-                    scopeDepth += (currentCharacter == '{') ? 1 : (currentCharacter == '}') ? -1 : 0;
+                    AddEntryToVector(entyType, lineNumber, lineNumber, scanPosition, 1, parenthesisDepth, scopeDepth);
                 }
+
                 break;
             }
 
@@ -334,11 +396,11 @@ std::shared_ptr<CRawFile> CPreliminaryParser::ProcessLinkerScript(const std::str
             {
                 if (!SafeTestPatternInString(rawContent, scanPosition, '*', '/') && !endOfStreamReached)
                 {
-                    continue;
+                    break;
                 }
 
-                AddEntryToVector(EntryType::Comment, entryStartLine, (scanPosition + 1 - entryStartPosition) + 1);
-                ReturnToDefaultState(1);
+                AddEntryToVector(EntryType::Comment, entryStartLine, lineNumber, entryStartPosition, (scanPosition + 1 - entryStartPosition) + 1, parenthesisDepth, scopeDepth);
+                ReturnToDefaultState(ParserLoopActionType::StartFromTwoCharactersAfter);
                 break;
             }
 
@@ -347,11 +409,12 @@ std::shared_ptr<CRawFile> CPreliminaryParser::ProcessLinkerScript(const std::str
                 backslashArmed = (backslashArmed) ? false : (currentCharacter == '\\');                
                 if (((currentCharacter != '"') || backslashArmed) && !endOfStreamReached)
                 {
-                    continue;
+                    break;
                 }
 
-                AddEntryToVector(EntryType::String, entryStartLine, (scanPosition - entryStartPosition) + 1);
-                ReturnToDefaultState(0);
+                // Note: Strings are always placed on the same line. A word cannot be split across two lines.
+                AddEntryToVector(EntryType::String, entryStartLine, entryStartLine, entryStartPosition, (scanPosition - entryStartPosition) + 1, parenthesisDepth, scopeDepth);
+                ReturnToDefaultState(ParserLoopActionType::StartFromOneCharacterAfter);
                 break;
             }
 
@@ -359,23 +422,30 @@ std::shared_ptr<CRawFile> CPreliminaryParser::ProcessLinkerScript(const std::str
             {
                 if (CanCharBeWithinWord(currentCharacter) && !endOfStreamReached) 
                 {
-                    continue;
+                    break;
                 }
 
-                AddEntryToVector(EntryType::String, entryStartLine, (scanPosition - entryStartPosition) + 1);
-                ReturnToDefaultState(0);
+                // Note: Words are always placed on the same line. A word cannot be split across two lines.
+                AddEntryToVector(EntryType::Word, entryStartLine, entryStartLine, entryStartPosition, (scanPosition - 1 - entryStartPosition) + 1, parenthesisDepth, scopeDepth);
+                ReturnToDefaultState(ParserLoopActionType::StartFromSamePosition);
+                supressLineAndScopeUpdate = true;
                 break;
             }
 
             case ParserStates::InNumber:
             {
-                if ((IsNumberPostfix(currentCharacter) || IsNumberPrefix(currentCharacter) || IsNumberOrHex(currentChar)) && !endOfStreamReached)
+                if ((IsNumberPostfix(currentCharacter) ||
+                     IsNumberPrefix(currentCharacter) ||
+                     IsNumberOrHex(currentCharacter)) &&
+                    !endOfStreamReached)
                 {
-                    continue;
+                    break;
                 }
 
-                AddEntryToVector(EntryType::Number, entryStartLine, (scanPosition - 1 - entryStartPosition) + 1);
-                ReturnToDefaultState(-1);   
+                // Note: Numbers are always placed on the same line. A word cannot be split across two lines.
+                AddEntryToVector(EntryType::Number, entryStartLine, entryStartLine, entryStartPosition, (scanPosition - 1 - entryStartPosition) + 1, parenthesisDepth, scopeDepth);
+                ReturnToDefaultState(ParserLoopActionType::StartFromSamePosition);
+                supressLineAndScopeUpdate = true;
                 break;
             }
 
@@ -384,6 +454,13 @@ std::shared_ptr<CRawFile> CPreliminaryParser::ProcessLinkerScript(const std::str
                 throw CPreliminaryParsingException(PreliminaryParsingExceptionTypeEnum::InternalParserError, "ParserState was not recognized.");
             }
         }
+
+        if (!supressLineAndScopeUpdate)
+        {
+            ProcessLineAndScopeIncrement(currentCharacter, lineNumber, parenthesisDepth, scopeDepth);
+        }
+
+        supressLineAndScopeUpdate = false;
 
         if (endOfStreamReached)
         {

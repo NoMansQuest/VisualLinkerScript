@@ -4,7 +4,7 @@
 namespace VisualLinkerScript { namespace ParsingEngine { namespace Models {
 
     /// @brief Type of entries procued by Preliminary-Parsing engine
-    enum class EntryType
+    enum class EntryType : int
     {
         /// @brief A word, which may only be a single dot as well
         Word,   

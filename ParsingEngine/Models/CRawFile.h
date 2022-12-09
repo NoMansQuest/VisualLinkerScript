@@ -19,7 +19,7 @@ namespace VisualLinkerScript { namespace ParsingEngine { namespace Models {
         ~CRawFile();
 
     private:        
-        std::vector<CRawEntry> m_content;
+        std::shared_ptr<std::vector<CRawEntry>> m_content;
 
     public:
         /// @brief Retried the content's vector
