@@ -233,39 +233,44 @@ namespace
         switch (inputCharacter)
         {
             case '\n':
-            {
                 lineNumberHolder++;
                 break;
-            }
 
             case '{':
-            {
                 scopeDepthHolder++;
                 break;
-            }
 
             case '}':
-            {
                 scopeDepthHolder--;
                 break;
-            }
 
             case '(':
-            {
                 parenthesisDepthHolder++;
                 break;
-            }
 
             case ')':
-            {
                 parenthesisDepthHolder--;
                 break;
-            }
 
             default:
                 break;
         }
     }
+
+    /// @brief Alters the parser-engines state along with scan-position adjustement
+    void SwitchToState(ParserStates& stateMachine, int& scanPosition, const ParserLoopActionType scanPositionAdjustment)
+    {
+        switch (scanPositionAdjustment)
+        {
+            case ParserLoopActionType::StartFromSamePosition:       scanPosition -= 1; break;
+            case ParserLoopActionType::StartFromOneCharacterAfter:  scanPosition += 0; break;
+            case ParserLoopActionType::StartFromOneCharacterBefore: scanPosition -= 2; break;
+            case ParserLoopActionType::StartFromTwoCharactersAfter: scanPosition += 1; break;
+            default: throw CPreliminaryParsingException(PreliminaryParsingExceptionTypeEnum::InternalParserError, "Unrecognized 'ParserLoopActionType' value.");
+        }
+
+        stateMachine = ParserStates::Default;
+    };
 }
 
 CPreliminaryParser::CPreliminaryParser()
@@ -290,45 +295,9 @@ std::shared_ptr<CRawFile> CPreliminaryParser::ProcessLinkerScript(const std::str
     auto backslashArmed = false;     
     auto endOfStreamReached = false;
     auto lineNumber = (unsigned int)1;
-    auto scanPosition = (unsigned int)0;
+    auto scanPosition = (int)0;
     auto supressLineAndScopeUpdate = false;
 
-    auto TransitionToState = [&](ParserStates targetState) 
-    {
-        entryStartPosition = scanPosition; 
-        entryStartLine = lineNumber;
-        scanPosition--;              
-        currentState = targetState;
-    };
-
-    auto ReturnToDefaultState = [&](ParserLoopActionType scanPositionAdjustment)
-    {
-        switch (scanPositionAdjustment)
-        {
-            case ParserLoopActionType::StartFromSamePosition:       scanPosition -= 1; break;
-            case ParserLoopActionType::StartFromOneCharacterAfter:  scanPosition += 0; break;
-            case ParserLoopActionType::StartFromOneCharacterBefore: scanPosition -= 2; break;
-            case ParserLoopActionType::StartFromTwoCharactersAfter: scanPosition += 1; break;
-            default: throw CPreliminaryParsingException(PreliminaryParsingExceptionTypeEnum::InternalParserError, "Unrecognized 'ParserLoopActionType' value.");
-        }
-
-        currentState = ParserStates::Default;
-    };    
-
-    auto AddEntryToVector = [&](
-            EntryType entryType,
-            unsigned int fromLine,
-            unsigned int toLine,
-            unsigned int fromPosition,
-            unsigned int length,
-            unsigned int elementParenthesisDepth,
-            unsigned int elementScopeDepth)
-    {
-        CRawEntry entryObject(entryType, fromLine, toLine, fromPosition, length, elementParenthesisDepth, elementScopeDepth);
-        parsedContent->emplace_back(entryObject);
-    };
-
-    
     for (scanPosition = 0;; scanPosition++)
     {        
         auto currentCharacter = rawContent[scanPosition];
@@ -347,19 +316,28 @@ std::shared_ptr<CRawFile> CPreliminaryParser::ProcessLinkerScript(const std::str
 
                 if (IsNumber(currentCharacter))
                 {     
-                    TransitionToState(ParserStates::InNumber); 
+                    entryStartPosition = scanPosition;
+                    entryStartLine = lineNumber;
+                    currentState = ParserStates::InNumber;
+                    scanPosition--;
                     break;
                 }
 
                 if (SafeTestPatternInString(rawContent, scanPosition, '/', '*'))
                 {
-                    TransitionToState(ParserStates::InComment);
+                    entryStartPosition = scanPosition;
+                    entryStartLine = lineNumber;
+                    currentState = ParserStates::InComment;
+                    scanPosition--;
                     break;
                 }
 
                 if (currentCharacter == '"')
                 {
-                    TransitionToState(ParserStates::InString);
+                    entryStartPosition = scanPosition;
+                    entryStartLine = lineNumber;
+                    currentState = ParserStates::InString;
+                    scanPosition--;
                     break;
                 }
 
@@ -367,14 +345,17 @@ std::shared_ptr<CRawFile> CPreliminaryParser::ProcessLinkerScript(const std::str
                 if (assignmentSymbolType != AssignmentSymbolTypes::NotAnAssignmentSymbol)
                 {
                     auto assignmentOperatorLength = (assignmentSymbolType == AssignmentSymbolTypes::SingleCharacter) ? 1 : 2;
-                    AddEntryToVector(EntryType::Assignment, lineNumber, lineNumber, scanPosition, assignmentOperatorLength, parenthesisDepth, scopeDepth);
+                    parsedContent->emplace_back(CRawEntry(EntryType::Assignment, lineNumber, lineNumber, scanPosition, assignmentOperatorLength, parenthesisDepth, scopeDepth));
                     scanPosition += (assignmentOperatorLength - 1);
                     break;
                 }
 
                 if (CanCharBeStartOfWord(currentCharacter))
                 {
-                    TransitionToState(ParserStates::InWord);
+                    entryStartPosition = scanPosition;
+                    entryStartLine = lineNumber;
+                    currentState = ParserStates::InWord;
+                    scanPosition--;
                     break;
                 }
 
@@ -386,7 +367,8 @@ std::shared_ptr<CRawFile> CPreliminaryParser::ProcessLinkerScript(const std::str
                                     (currentCharacter == ')') ? EntryType::ParenthesisClose :
                                     EntryType::Operator;
 
-                    AddEntryToVector(entyType, lineNumber, lineNumber, scanPosition, 1, parenthesisDepth, scopeDepth);
+                    parsedContent->emplace_back(CRawEntry(entyType, lineNumber, lineNumber, scanPosition, 1, parenthesisDepth, scopeDepth));
+                    break;
                 }
 
                 break;
@@ -399,8 +381,8 @@ std::shared_ptr<CRawFile> CPreliminaryParser::ProcessLinkerScript(const std::str
                     break;
                 }
 
-                AddEntryToVector(EntryType::Comment, entryStartLine, lineNumber, entryStartPosition, (scanPosition + 1 - entryStartPosition) + 1, parenthesisDepth, scopeDepth);
-                ReturnToDefaultState(ParserLoopActionType::StartFromTwoCharactersAfter);
+                parsedContent->emplace_back(CRawEntry(EntryType::Comment, entryStartLine, lineNumber, entryStartPosition, (scanPosition + 1 - entryStartPosition) + 1, parenthesisDepth, scopeDepth));
+                SwitchToState(currentState, scanPosition, ParserLoopActionType::StartFromTwoCharactersAfter);
                 break;
             }
 
@@ -413,8 +395,8 @@ std::shared_ptr<CRawFile> CPreliminaryParser::ProcessLinkerScript(const std::str
                 }
 
                 // Note: Strings are always placed on the same line. A word cannot be split across two lines.
-                AddEntryToVector(EntryType::String, entryStartLine, entryStartLine, entryStartPosition, (scanPosition - entryStartPosition) + 1, parenthesisDepth, scopeDepth);
-                ReturnToDefaultState(ParserLoopActionType::StartFromOneCharacterAfter);
+                parsedContent->emplace_back(CRawEntry(EntryType::String, entryStartLine, entryStartLine, entryStartPosition, (scanPosition - entryStartPosition) + 1, parenthesisDepth, scopeDepth));
+                SwitchToState(currentState, scanPosition, ParserLoopActionType::StartFromOneCharacterAfter);
                 break;
             }
 
@@ -426,25 +408,22 @@ std::shared_ptr<CRawFile> CPreliminaryParser::ProcessLinkerScript(const std::str
                 }
 
                 // Note: Words are always placed on the same line. A word cannot be split across two lines.
-                AddEntryToVector(EntryType::Word, entryStartLine, entryStartLine, entryStartPosition, (scanPosition - 1 - entryStartPosition) + 1, parenthesisDepth, scopeDepth);
-                ReturnToDefaultState(ParserLoopActionType::StartFromSamePosition);
+                parsedContent->emplace_back(CRawEntry(EntryType::Word, entryStartLine, entryStartLine, entryStartPosition, (scanPosition - 1 - entryStartPosition) + 1, parenthesisDepth, scopeDepth));
+                SwitchToState(currentState, scanPosition, ParserLoopActionType::StartFromSamePosition);
                 supressLineAndScopeUpdate = true;
                 break;
             }
 
             case ParserStates::InNumber:
             {
-                if ((IsNumberPostfix(currentCharacter) ||
-                     IsNumberPrefix(currentCharacter) ||
-                     IsNumberOrHex(currentCharacter)) &&
-                    !endOfStreamReached)
+                if ((IsNumberPostfix(currentCharacter) || IsNumberPrefix(currentCharacter) || IsNumberOrHex(currentCharacter)) && !endOfStreamReached)
                 {
                     break;
                 }
 
                 // Note: Numbers are always placed on the same line. A word cannot be split across two lines.
-                AddEntryToVector(EntryType::Number, entryStartLine, entryStartLine, entryStartPosition, (scanPosition - 1 - entryStartPosition) + 1, parenthesisDepth, scopeDepth);
-                ReturnToDefaultState(ParserLoopActionType::StartFromSamePosition);
+                parsedContent->emplace_back(CRawEntry(EntryType::Number, entryStartLine, entryStartLine, entryStartPosition, (scanPosition - 1 - entryStartPosition) + 1, parenthesisDepth, scopeDepth));
+                SwitchToState(currentState, scanPosition, ParserLoopActionType::StartFromSamePosition);
                 supressLineAndScopeUpdate = true;
                 break;
             }
