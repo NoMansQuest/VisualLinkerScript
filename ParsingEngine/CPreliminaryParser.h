@@ -4,7 +4,7 @@
 #include <vector>
 #include <memory>
 #include <stdexcept>
-#include "Models/CRawFile.h"
+#include "Models/Raw/CRawFile.h"
 
 using namespace VisualLinkerScript::ParsingEngine::Models;
 using namespace std;
@@ -23,13 +23,13 @@ public:
     /// @brief Default destructor
     ~CPreliminaryParser();
 
-
 public:
     /// @brief Process the input file. This function can throw an exception 
-    /// @param rawContent Contains the linker-script content
+    /// @param fileName Name of the file we're processing.
+    /// @param rawContent Contains the linker-script content.
     /// @exception 
     /// @return Unique pointer to the processing result in form of a CRawFile.
-    std::shared_ptr<CRawFile> ProcessLinkerScript(const std::string& rawContent);
+    std::shared_ptr<CRawFile> ProcessLinkerScript(const std::string& fileName, const std::string& rawContent);
 };
 
 }}

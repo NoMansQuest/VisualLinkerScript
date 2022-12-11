@@ -1,8 +1,8 @@
 #include "CPreliminaryParser.h"
 #include "CPreliminaryParsingException.h"
-#include "Models/CRawEntry.h"
-#include "Models/CRawFile.h"
-#include "Models/EntryType.h"
+#include "Models/Raw/CRawEntry.h"
+#include "Models/Raw/CRawFile.h"
+#include "Models/Raw/RawEntryType.h"
 
 #include <memory>
 #include <string>
@@ -41,24 +41,15 @@ namespace
     };
 
     /// @brief Checks if the character at the given position matches @see testAgainst.
-    /// @param input Input string
-    /// @param position Positions to check
-    /// @param testAgainst Character to check against
-    /// @return True if character matches, false if it doesn't or if position is out of range
-    bool SafeTestCharacterInString(const string& input, unsigned int position, char testAgainst)
+    bool SafeTestCharacterInString(const string& input, uint32_t position, char testAgainst)
     {   
         return (position <= (input.length() - 1)) && (input[position] == testAgainst);
     }
 
     /// @brief Checks for the pattern of two characters at given positions. This is to optimize performance.
-    /// @param input Input string
-    /// @param position Position to start checking from
-    /// @param firstCharacter First character to check (at 'position')
-    /// @param secondCharacter Second character to check (at 'position+1')
-    /// @return True if both characters found in sequence
     bool SafeTestPatternInString(
         const string& input, 
-        unsigned int position, 
+        uint32_t position, 
         const char firstCharacter,
         const char secondCharacter)
     {
@@ -67,15 +58,9 @@ namespace
     }
 
     /// @brief Checks for the pattern of two characters at given positions. This is to optimize performance.
-    /// @param input Input string
-    /// @param position Position to start checking from
-    /// @param firstCharacter First character to check (at 'position')
-    /// @param secondCharacter Second character to check (at 'position+1')
-    /// @param thirdCharacter Third character to check (at 'position+1')
-    /// @return True if both characters found in sequence
     bool SafeTestPatternInString(
         const string& input, 
-        unsigned int position, 
+        uint32_t position, 
         const char firstCharacter, 
         const char secondCharacter, 
         const char thirdCharacter)
@@ -86,8 +71,6 @@ namespace
     }
 
     /// @brief Determines if this character can be the first letter of a word
-    /// @param input Character to check
-    /// @return True if the character can be the first letter of a word (i.e. A-Z, a-z, '_')
     bool CanCharBeStartOfWord(const char input)
     {
         return ((input >= 'A') && (input <= 'Z')) ||
@@ -102,8 +85,6 @@ namespace
     }
 
     /// @brief Checks to see if a given character can be an operator
-    /// @param input Input to check
-    /// @return True if character is an operator (although further checks will be needed for some)
     bool IsOperator(const char input)
     {   
         return ((input == '*') ||
@@ -128,9 +109,7 @@ namespace
     }
 
     /// @brief If true, then the character can be considered as part of a word
-    /// @param input Character to check
-    /// @return True if the character can be considered as part of word (i.e. A-Z, a-z, 0-9 and '_')
-    bool CanCharBeWithinWord(const char input)
+    bool CanCharBeWithinWord(char input)
     {
         return ((input >= '0') && (input <= '9')) ||
                CanCharBeStartOfWord(input);
@@ -138,8 +117,6 @@ namespace
 
 
     /// @brief Checks the character for being a potential prefix (such as 0x, 0b, etc.)
-    /// @param input Character to check
-    /// @return True if a prefix-character is observed.
     bool IsNumberPrefix(char input)
     {
         return ((input == 'x') ||
@@ -149,8 +126,6 @@ namespace
     }
 
     /// @brief Checks the character for being a potential postfixes ('K' and 'M')
-    /// @param input Character to check
-    /// @return True if a post-fix character is observed.
     bool IsNumberPostfix(char input)
     {
         return ((input == 'K') ||
@@ -158,16 +133,12 @@ namespace
     }
 
     /// @brief Detects if the input character is a white-space
-    /// @param input Input to check.
-    /// @return True if 'input' is a white-space character. False otherwise.
     bool IsWhitespace(char input)
     {
         return ((input >= (char)0x09) && (input <= (char)0x0D)) || (input == ' ');
     }
 
     /// @brief Checks if input is a digit. 
-    /// @param input Input to check.
-    /// @return Self explanatory.
     bool IsNumber(char input)
     {
         return (input >= '0') && (input <= '9');
@@ -175,8 +146,6 @@ namespace
 
 
     /// @brief Checks if input is a digit or a hexadecimal. 
-    /// @param input Input to check.
-    /// @return Self explanatory.
     bool IsNumberOrHex(char input)
     {
         return ((input >= '0') && (input <= '9')) || 
@@ -184,15 +153,24 @@ namespace
                ((input >= 'a') && (input <= 'f'));
     }
 
+    /// @brief Checks if input is a double-quotation symbo, marking the start/end of a string
+    bool IsDoubleQuotation(char input)
+    {
+        return (input == '"');
+    }
+
+    /// @brief Checks if input is Line-Feed symbol
+    bool IsLineFeed(char input)
+    {
+        return (input == '\n');
+    }
+
     /// @brief Checks to see if assignment symbol is present, 
     ///        such as '/=', '*=', '+=', '-=', '='
-    /// @param input Input string to check
-    /// @param position Position to check at
-    /// @return Returns the type of detected assignment symbol
-    AssignmentSymbolTypes TestForAssignmentSymbol(const string& input, const unsigned int position)
+    AssignmentSymbolTypes TestForAssignmentSymbol(const string& input, const uint32_t position)
     {
         auto charAtPosition = input[position];
-        auto detectedOperatorLength = (unsigned int)0;
+        auto detectedOperatorLength = (uint32_t)0;
 
         if (SafeTestCharacterInString(input, position, '='))
         {
@@ -228,7 +206,7 @@ namespace
     }
 
     /// @brief Procedure in charge of maintaining scope-depth, parenthesis-depth and line-number based on detected character
-    void ProcessLineAndScopeIncrement(char inputCharacter, unsigned int& lineNumberHolder, unsigned int& parenthesisDepthHolder, unsigned int& scopeDepthHolder)
+    void ProcessLineAndScopeIncrement(char inputCharacter, uint32_t& lineNumberHolder, uint32_t& parenthesisDepthHolder, uint32_t& scopeDepthHolder)
     {
         switch (inputCharacter)
         {
@@ -266,7 +244,7 @@ namespace
             case ParserLoopActionType::StartFromOneCharacterAfter:  scanPosition += 0; break;
             case ParserLoopActionType::StartFromOneCharacterBefore: scanPosition -= 2; break;
             case ParserLoopActionType::StartFromTwoCharactersAfter: scanPosition += 1; break;
-            default: throw CPreliminaryParsingException(PreliminaryParsingExceptionTypeEnum::InternalParserError, "Unrecognized 'ParserLoopActionType' value.");
+            default: throw CPreliminaryParsingException(PreliminaryParsingExceptionType::InternalParserError, "Unrecognized 'ParserLoopActionType' value.");
         }
 
         stateMachine = ParserStates::Default;
@@ -283,18 +261,20 @@ CPreliminaryParser::~CPreliminaryParser()
     // No action needed at this point in time.
 }
 
-std::shared_ptr<CRawFile> CPreliminaryParser::ProcessLinkerScript(const std::string& rawContent)
-{
+std::shared_ptr<CRawFile> CPreliminaryParser::ProcessLinkerScript(const std::string& fileName, const std::string& rawContent)
+{    
+    // TODO: Revise code in event of available capacity to reduce cyclomatic complexity
+
     auto parsedContent = std::make_shared<std::vector<CRawEntry>>();
     auto currentState = ParserStates::Default;    
-    auto scopeDepth = (unsigned int)0; // Depth increases each time we encounter a '{' and decreases on each '}'
-    auto parenthesisDepth = (unsigned int)0; // Depth increases each time we encounter a '(' and decreases on each ')'
+    auto scopeDepth = (uint32_t)0; // Depth increases each time we encounter a '{' and decreases on each '}'
+    auto parenthesisDepth = (uint32_t)0; // Depth increases each time we encounter a '(' and decreases on each ')'
 
-    auto entryStartPosition = (unsigned int)0;   
-    auto entryStartLine = (unsigned int)0;
+    auto entryStartPosition = (uint32_t)0;   
+    auto entryStartLine = (uint32_t)0;
     auto backslashArmed = false;     
     auto endOfStreamReached = false;
-    auto lineNumber = (unsigned int)1;
+    auto lineNumber = (uint32_t)1;
     auto scanPosition = (int)0;
     auto supressLineAndScopeUpdate = false;
 
@@ -332,7 +312,7 @@ std::shared_ptr<CRawFile> CPreliminaryParser::ProcessLinkerScript(const std::str
                     break;
                 }
 
-                if (currentCharacter == '"')
+                if (IsDoubleQuotation(currentCharacter))
                 {
                     entryStartPosition = scanPosition;
                     entryStartLine = lineNumber;
@@ -345,7 +325,7 @@ std::shared_ptr<CRawFile> CPreliminaryParser::ProcessLinkerScript(const std::str
                 if (assignmentSymbolType != AssignmentSymbolTypes::NotAnAssignmentSymbol)
                 {
                     auto assignmentOperatorLength = (assignmentSymbolType == AssignmentSymbolTypes::SingleCharacter) ? 1 : 2;
-                    parsedContent->emplace_back(CRawEntry(EntryType::Assignment, lineNumber, lineNumber, scanPosition, assignmentOperatorLength, parenthesisDepth, scopeDepth));
+                    parsedContent->emplace_back(CRawEntry(RawEntryType::Assignment, lineNumber, lineNumber, scanPosition, assignmentOperatorLength, parenthesisDepth, scopeDepth));
                     scanPosition += (assignmentOperatorLength - 1);
                     break;
                 }
@@ -361,11 +341,11 @@ std::shared_ptr<CRawFile> CPreliminaryParser::ProcessLinkerScript(const std::str
 
                 if (IsOperator(currentCharacter))
                 {
-                    auto entyType = (currentCharacter == '{') ? EntryType::BracketOpen :
-                                    (currentCharacter == '}') ? EntryType::BracketClose :
-                                    (currentCharacter == '(') ? EntryType::ParenthesisOpen :
-                                    (currentCharacter == ')') ? EntryType::ParenthesisClose :
-                                    EntryType::Operator;
+                    auto entyType = (currentCharacter == '{') ? RawEntryType::BracketOpen :
+                                    (currentCharacter == '}') ? RawEntryType::BracketClose :
+                                    (currentCharacter == '(') ? RawEntryType::ParenthesisOpen :
+                                    (currentCharacter == ')') ? RawEntryType::ParenthesisClose :
+                                    RawEntryType::Operator;
 
                     parsedContent->emplace_back(CRawEntry(entyType, lineNumber, lineNumber, scanPosition, 1, parenthesisDepth, scopeDepth));
                     break;
@@ -381,21 +361,27 @@ std::shared_ptr<CRawFile> CPreliminaryParser::ProcessLinkerScript(const std::str
                     break;
                 }
 
-                parsedContent->emplace_back(CRawEntry(EntryType::Comment, entryStartLine, lineNumber, entryStartPosition, (scanPosition + 1 - entryStartPosition) + 1, parenthesisDepth, scopeDepth));
+                parsedContent->emplace_back(CRawEntry(RawEntryType::Comment, entryStartLine, lineNumber, entryStartPosition, (scanPosition + 1 - entryStartPosition) + 1, parenthesisDepth, scopeDepth));
                 SwitchToState(currentState, scanPosition, ParserLoopActionType::StartFromTwoCharactersAfter);
                 break;
             }
 
             case ParserStates::InString:
-            {                
-                backslashArmed = (backslashArmed) ? false : (currentCharacter == '\\');                
-                if (((currentCharacter != '"') || backslashArmed) && !endOfStreamReached)
+            {   
+                // Note: We accept the current character in the event that
+                //       1 - It is not Double-Quotation (unless preceded by a back-slash)
+                //       2 - End of file has not been reached
+                //       3 - The character is not 'Line-Feed' as strings are not allowed to stretch across multiple lines
+                if ((!IsDoubleQuotation(currentCharacter) || backslashArmed) && !endOfStreamReached && !IsLineFeed(currentCharacter))
                 {
                     break;
                 }
 
+                // If 'Backslash', the next character should be taken at face-value.
+                backslashArmed = (backslashArmed) ? false : (currentCharacter == '\\');
+
                 // Note: Strings are always placed on the same line. A word cannot be split across two lines.
-                parsedContent->emplace_back(CRawEntry(EntryType::String, entryStartLine, entryStartLine, entryStartPosition, (scanPosition - entryStartPosition) + 1, parenthesisDepth, scopeDepth));
+                parsedContent->emplace_back(CRawEntry(RawEntryType::String, entryStartLine, entryStartLine, entryStartPosition, (scanPosition - entryStartPosition) + 1, parenthesisDepth, scopeDepth));
                 SwitchToState(currentState, scanPosition, ParserLoopActionType::StartFromOneCharacterAfter);
                 break;
             }
@@ -408,7 +394,7 @@ std::shared_ptr<CRawFile> CPreliminaryParser::ProcessLinkerScript(const std::str
                 }
 
                 // Note: Words are always placed on the same line. A word cannot be split across two lines.
-                parsedContent->emplace_back(CRawEntry(EntryType::Word, entryStartLine, entryStartLine, entryStartPosition, (scanPosition - 1 - entryStartPosition) + 1, parenthesisDepth, scopeDepth));
+                parsedContent->emplace_back(CRawEntry(RawEntryType::Word, entryStartLine, entryStartLine, entryStartPosition, (scanPosition - 1 - entryStartPosition) + 1, parenthesisDepth, scopeDepth));
                 SwitchToState(currentState, scanPosition, ParserLoopActionType::StartFromSamePosition);
                 supressLineAndScopeUpdate = true;
                 break;
@@ -422,7 +408,7 @@ std::shared_ptr<CRawFile> CPreliminaryParser::ProcessLinkerScript(const std::str
                 }
 
                 // Note: Numbers are always placed on the same line. A word cannot be split across two lines.
-                parsedContent->emplace_back(CRawEntry(EntryType::Number, entryStartLine, entryStartLine, entryStartPosition, (scanPosition - 1 - entryStartPosition) + 1, parenthesisDepth, scopeDepth));
+                parsedContent->emplace_back(CRawEntry(RawEntryType::Number, entryStartLine, entryStartLine, entryStartPosition, (scanPosition - 1 - entryStartPosition) + 1, parenthesisDepth, scopeDepth));
                 SwitchToState(currentState, scanPosition, ParserLoopActionType::StartFromSamePosition);
                 supressLineAndScopeUpdate = true;
                 break;
@@ -430,7 +416,7 @@ std::shared_ptr<CRawFile> CPreliminaryParser::ProcessLinkerScript(const std::str
 
             default:
             {
-                throw CPreliminaryParsingException(PreliminaryParsingExceptionTypeEnum::InternalParserError, "ParserState was not recognized.");
+                throw CPreliminaryParsingException(PreliminaryParsingExceptionType::InternalParserError, "ParserState was not recognized.");
             }
         }
 
@@ -447,5 +433,5 @@ std::shared_ptr<CRawFile> CPreliminaryParser::ProcessLinkerScript(const std::str
         }
     }
 
-    return std::make_shared<CRawFile>(parsedContent);
+    return std::make_shared<CRawFile>(fileName, parsedContent);
 }

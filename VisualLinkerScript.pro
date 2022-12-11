@@ -73,19 +73,8 @@ SOURCES += \
     Components/QScintilla/src/qsciscintillabase.cpp \
     Components/QScintilla/src/qscistyle.cpp \
     Components/QScintilla/src/qscistyledtext.cpp \
-    Models/LinkerScript/CLinkerScriptEntity.cpp \
-    Models/LinkerScript/CMemoryEntry.cpp \
-    Models/LinkerScript/CMemoryRegion.cpp \
-    Models/LinkerScript/CProgramHeader.cpp \
-    Models/LinkerScript/CProgramHeadersRegion.cpp \
-    Models/LinkerScript/CSectionsRegion.cpp \
-    Models/LinkerScript/CSectionsRegionEntry.cpp \
-    Models/LinkerScript/CSectionsRegionObjectBase.cpp \
-    Models/LinkerScript/CSectionsRegionOverlay.cpp \
-    Models/LinkerScript/CSectionsRegionSection.cpp \
-    Models/LinkerScript/CSymbolAssignment.cpp \
     ParsingEngine/CPreliminaryParser.cpp \
-    ParsingEngine/Models/CRawFile.cpp \
+    ParsingEngine/Models/Raw/CRawFile.cpp \
     main.cpp \
     mainwindow.cpp
 
@@ -170,23 +159,20 @@ HEADERS += \
     Components/QScintilla/src/SciAccessibility.h \
     Components/QScintilla/src/SciClasses.h \
     Components/QScintilla/src/ScintillaQt.h \
-    Models/LinkerScript/CLinkerScriptEntity.h \
-    Models/LinkerScript/CMemoryEntry.h \
-    Models/LinkerScript/CMemoryRegion.h \
-    Models/LinkerScript/CProgramHeader.h \
-    Models/LinkerScript/CProgramHeadersRegion.h \
-    Models/LinkerScript/CSectionsRegion.h \
-    Models/LinkerScript/CSectionsRegionEntry.h \
-    Models/LinkerScript/CSectionsRegionObjectBase.h \
-    Models/LinkerScript/CSectionsRegionOverlay.h \
-    Models/LinkerScript/CSectionsRegionSection.h \
-    Models/LinkerScript/CSymbolAssignment.h \
     ParsingEngine/CParserHelpers.h \
     ParsingEngine/CPreliminaryParser.h \
     ParsingEngine/CPreliminaryParsingException.h \
-    ParsingEngine/Models/CRawEntry.h \
-    ParsingEngine/Models/CRawFile.h \
-    ParsingEngine/Models/EntryType.h \    
+    ParsingEngine/Models/CAssignmentStatement.h \
+    ParsingEngine/Models/CLinkerScriptEntryBase.h \
+    ParsingEngine/Models/CLinkerScriptFile.h \
+    ParsingEngine/Models/CMemoryStatement.h \
+    ParsingEngine/Models/CPhdrsStatement.h \
+    ParsingEngine/Models/CProcedureCall.h \
+    ParsingEngine/Models/Raw/CRawEntry.h \
+    ParsingEngine/Models/Raw/CRawFile.h \
+    ParsingEngine/Models/CSectionOutputStatement.h \
+    ParsingEngine/Models/CSectionOverlayStatement.h \
+    ParsingEngine/Models/Raw/RawEntryType.h \
     mainwindow.h
 
 FORMS += \

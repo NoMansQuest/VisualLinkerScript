@@ -24,11 +24,12 @@ MainWindow::MainWindow(QWidget *parent)
 
     // OK, We need to generate the content here
     CPreliminaryParser preliminaryParser;
-    QFile fileToRead("C:\\Temp\\TestLinkerScriptFile.lds");
+    QString fileName("C:\\Temp\\TestLinkerScriptFile.lds");
+    QFile fileToRead(fileName);
     fileToRead.open(QFile::ReadOnly | QFile::Text);
     QTextStream in(&fileToRead);
     auto fileContent = in.readAll();
-    auto parseResult = preliminaryParser.ProcessLinkerScript(fileContent.toStdString());
+    auto parseResult = preliminaryParser.ProcessLinkerScript(fileName.toStdString(), fileContent.toStdString());
 
     // Generate result
     QString debugOutput = "";
@@ -38,47 +39,47 @@ MainWindow::MainWindow(QWidget *parent)
 
         switch (entry.EntryType())
         {
-            case VisualLinkerScript::ParsingEngine::Models::EntryType::Word:
+            case VisualLinkerScript::ParsingEngine::Models::RawEntryType::Word:
                 translatedType = "Word";
                 break;
 
-            case VisualLinkerScript::ParsingEngine::Models::EntryType::Operator:
+            case VisualLinkerScript::ParsingEngine::Models::RawEntryType::Operator:
                 translatedType = "Operator";
                 break;
 
-            case VisualLinkerScript::ParsingEngine::Models::EntryType::Assignment:
+            case VisualLinkerScript::ParsingEngine::Models::RawEntryType::Assignment:
                 translatedType = "Assignment";
                 break;
 
-            case VisualLinkerScript::ParsingEngine::Models::EntryType::Number:
+            case VisualLinkerScript::ParsingEngine::Models::RawEntryType::Number:
                 translatedType = "Number";
                 break;
 
-            case VisualLinkerScript::ParsingEngine::Models::EntryType::String:
+            case VisualLinkerScript::ParsingEngine::Models::RawEntryType::String:
                 translatedType = "String";
                 break;
 
-            case VisualLinkerScript::ParsingEngine::Models::EntryType::Comment:
+            case VisualLinkerScript::ParsingEngine::Models::RawEntryType::Comment:
                 translatedType = "Comment";
                 break;
 
-            case VisualLinkerScript::ParsingEngine::Models::EntryType::ParenthesisOpen:
+            case VisualLinkerScript::ParsingEngine::Models::RawEntryType::ParenthesisOpen:
                 translatedType = "ParenthesisOpen";
                 break;
 
-            case VisualLinkerScript::ParsingEngine::Models::EntryType::ParenthesisClose:
+            case VisualLinkerScript::ParsingEngine::Models::RawEntryType::ParenthesisClose:
                 translatedType = "ParenthesisClose";
                 break;
 
-            case VisualLinkerScript::ParsingEngine::Models::EntryType::BracketOpen:
+            case VisualLinkerScript::ParsingEngine::Models::RawEntryType::BracketOpen:
                 translatedType = "BracketOpen";
                 break;
 
-            case VisualLinkerScript::ParsingEngine::Models::EntryType::BracketClose:
+            case VisualLinkerScript::ParsingEngine::Models::RawEntryType::BracketClose:
                 translatedType = "BracketClose";
                 break;
 
-            case VisualLinkerScript::ParsingEngine::Models::EntryType::Unknown:
+            case VisualLinkerScript::ParsingEngine::Models::RawEntryType::Unknown:
                 translatedType = "Unknown";
                 break;
 

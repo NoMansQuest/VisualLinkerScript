@@ -9,19 +9,19 @@ namespace VisualLinkerScript { namespace ParsingEngine {
 using namespace std;
 
 /// @brief Each exception will have its own assigned enum entry
-enum class PreliminaryParsingExceptionTypeEnum
+enum class PreliminaryParsingExceptionType
 {
     ContentWasNull, 
     InternalParserError,   
 };
 
-
+/// @brief This class respresents an exception raised during preliminary parsing phase of the Linker-Script.
 class CPreliminaryParsingException : public std::exception 
 {
 
 private:
     std::string m_description;
-    PreliminaryParsingExceptionTypeEnum m_type;
+    PreliminaryParsingExceptionType m_type;
 
 public:
     /// @brief The human-readable version of what went wrong
@@ -34,7 +34,7 @@ public:
     /// @brief Default constructor
     /// @param exceptionDescription Text describing the issue (potentially displayed to the user) 
     explicit CPreliminaryParsingException(
-        PreliminaryParsingExceptionTypeEnum type,
+        PreliminaryParsingExceptionType type,
         const std::string description)
     {
         this->m_description = description;
@@ -45,7 +45,7 @@ public:
 
 
     /// @brief Type of exception
-    PreliminaryParsingExceptionTypeEnum getExceptionType() const
+    PreliminaryParsingExceptionType getExceptionType() const
     {
         return m_type;
     }
