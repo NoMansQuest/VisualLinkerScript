@@ -29,11 +29,11 @@ MainWindow::MainWindow(QWidget *parent)
     fileToRead.open(QFile::ReadOnly | QFile::Text);
     QTextStream in(&fileToRead);
     auto fileContent = in.readAll();
-    auto parseResult = preliminaryParser.ProcessLinkerScript(fileName.toStdString(), fileContent.toStdString());
+    auto contentToAnalyze = preliminaryParser.ProcessLinkerScript(fileName.toStdString(), fileContent.toStdString())->Content();
 
     // Generate result
-    QString debugOutput = "";
-    for (auto entry: *parseResult->Content())
+    QString debugOutput = "";    
+    for (auto entry: contentToAnalyze)
     {
         QString translatedType;
 
@@ -106,8 +106,6 @@ MainWindow::MainWindow(QWidget *parent)
     }
 
     this->scintilla->setText(debugOutput);
-
-
 }
 
 MainWindow::~MainWindow()

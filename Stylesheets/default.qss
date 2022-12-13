@@ -1,6 +1,6 @@
 /* Common depths
- * Base backgroud:   #ff121212  
- * Paper background: #ff121212
+ * Base backgroud:   #ff1e1e1e
+ * Paper background: #ff1e1e1e
  * 5%   : #0cffffff
  * 7%   : #11ffffff
  * 10%  : #19ffffff
@@ -58,7 +58,7 @@ QMenu
 
 /* Scroll Bars */
 QScrollBar {
-    background: #ff121212;
+    background: #ff1e1e1e;
     border-radius: 0px;
 }
 
@@ -107,5 +107,5 @@ QsciScintilla
 {
     padding-top: 10px;
     border: 0px solid #000000;
-    background: #ff121212;
+    background: #ff1e1e1e;
 }

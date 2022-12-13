@@ -4,12 +4,12 @@
 #include <memory>
 #include <string.h>
 
-using namespace VisualLinkerScript::ParsingEngine::Models;
+using namespace VisualLinkerScript::ParsingEngine::Models::Raw;
 
-CRawFile::CRawFile(const std::string& fileName, const std::shared_ptr<std::vector<CRawEntry>> content)
+CRawFile::CRawFile(const std::string& fileName, std::vector<CRawEntry>&& content)
+    : m_content(std::move(content)),
+      m_fileName(fileName)
 {
-    this->m_fileName = fileName; 
-    this->m_content = content;
 }
 
 CRawFile::~CRawFile()
@@ -17,7 +17,7 @@ CRawFile::~CRawFile()
     // No action;
 }
  
-std::shared_ptr<std::vector<CRawEntry>> CRawFile::Content() const
+const std::vector<CRawEntry>& CRawFile::Content()
 {
     return this->m_content;
 }

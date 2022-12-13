@@ -3,7 +3,7 @@
 
 #include "RawEntryType.h"
 
-namespace VisualLinkerScript { namespace ParsingEngine { namespace Models {
+namespace VisualLinkerScript { namespace ParsingEngine { namespace Models { namespace Raw {
 
 using namespace VisualLinkerScript::ParsingEngine::Models;
 
@@ -108,6 +108,6 @@ using namespace VisualLinkerScript::ParsingEngine::Models;
         }
     };
 
-}}}
+}}}}
 
 #endif

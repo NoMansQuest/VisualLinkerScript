@@ -74,6 +74,7 @@ SOURCES += \
     Components/QScintilla/src/qscistyle.cpp \
     Components/QScintilla/src/qscistyledtext.cpp \
     ParsingEngine/CPreliminaryParser.cpp \
+    ParsingEngine/Models/CLinkerScriptFile.cpp \
     ParsingEngine/Models/Raw/CRawFile.cpp \
     main.cpp \
     mainwindow.cpp
