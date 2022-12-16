@@ -1,7 +1,8 @@
 #ifndef ENTRY_TYPES_H__
 #define ENTRY_TYPES_H__
 
-namespace VisualLinkerScript { namespace ParsingEngine { namespace Models {
+namespace VisualLinkerScript::ParsingEngine::Models::Raw 
+{
 
     /// @brief Type of entries procued by Preliminary-Parsing engine
     enum class RawEntryType : uint32_t

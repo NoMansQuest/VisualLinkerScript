@@ -3,29 +3,27 @@
 
 #include "RawEntryType.h"
 
-namespace VisualLinkerScript { namespace ParsingEngine { namespace Models { namespace Raw {
-
-using namespace VisualLinkerScript::ParsingEngine::Models;
-
+namespace VisualLinkerScript::ParsingEngine::Models::Raw 
+{
     /// @brief Represents an entry found in the LinkerScript file by the @see CPreliminaryParser
     class CRawEntry
     {
     public:
         /// @brief Explicitly made based on callers request
         explicit CRawEntry(RawEntryType typeOfEntry,                  
-                  uint32_t startLineNumber,
-                  uint32_t endLineNumber,
-                  uint32_t startPosition,
-                  uint32_t length,
-                  uint32_t parenthesisDepth,
-                  uint32_t scopeDepth)
+                    uint32_t startLineNumber,
+                    uint32_t endLineNumber,
+                    uint32_t startPosition,
+                    uint32_t length,
+                    uint32_t parenthesisDepth,
+                    uint32_t scopeDepth)
             : m_startPosition(startPosition),
-              m_length(length),
-              m_parenthesisDepth(parenthesisDepth),
-              m_scopeDepth(scopeDepth),
-              m_startLineNumber(startLineNumber),
-              m_endLineNumber(endLineNumber),
-              m_entryType(typeOfEntry)
+                m_length(length),
+                m_parenthesisDepth(parenthesisDepth),
+                m_scopeDepth(scopeDepth),
+                m_startLineNumber(startLineNumber),
+                m_endLineNumber(endLineNumber),
+                m_entryType(typeOfEntry)
         {            
             // No operation to undertake
         }
@@ -33,12 +31,12 @@ using namespace VisualLinkerScript::ParsingEngine::Models;
         /// @brief Object-Copy constructor
         CRawEntry(const CRawEntry& cloneSource)
             : m_startPosition(cloneSource.StartPosition()),
-              m_length(cloneSource.Length()),
-              m_parenthesisDepth(cloneSource.ParenthesisDepth()),
-              m_scopeDepth(cloneSource.ScopeDepth()),
-              m_startLineNumber(cloneSource.StartLineNumber()),
-              m_endLineNumber(cloneSource.EndLineNumber()),
-              m_entryType(cloneSource.EntryType())
+                m_length(cloneSource.Length()),
+                m_parenthesisDepth(cloneSource.ParenthesisDepth()),
+                m_scopeDepth(cloneSource.ScopeDepth()),
+                m_startLineNumber(cloneSource.StartLineNumber()),
+                m_endLineNumber(cloneSource.EndLineNumber()),
+                m_entryType(cloneSource.EntryType())
         {
             // No operation to undertake
         }
@@ -107,7 +105,6 @@ using namespace VisualLinkerScript::ParsingEngine::Models;
             return this->m_scopeDepth;
         }
     };
-
-}}}}
+}
 
 #endif

@@ -6,8 +6,8 @@
 #include <string>
 #include "CRawEntry.h"
 
-namespace VisualLinkerScript { namespace ParsingEngine { namespace Models { namespace Raw {
-
+namespace VisualLinkerScript::ParsingEngine::Models::Raw 
+{
     /// @brief This object represents a file processed by @see CPreliminaryParser
     class CRawFile
     {
@@ -30,7 +30,6 @@ namespace VisualLinkerScript { namespace ParsingEngine { namespace Models { name
         /// @brief Name of the loaded file        
         std::string FileName() const;
     };
-
-}}}}
+}
 
 #endif

@@ -4,47 +4,40 @@
 #include <memory>
 #include <vector>
 #include <string>
-#include "CLinkerScriptEntryBase.h"
+#include "CLinkerScriptContentBase.h"
 
-namespace VisualLinkerScript { namespace ParsingEngine { namespace Models {
-
-/// @brief Object representing a parsed Linker-Script
-class CLinkerScriptFile
+namespace VisualLinkerScript::ParsingEngine::Models 
 {
-
-private:
-    std::vector<CLinkerScriptEntryBase> m_content;
-    std::string m_rawText;
-
-public:
-    /// @brief Default constructor
-    explicit CLinkerScriptFile(std::string rawText, std::vector<CLinkerScriptEntryBase>&& content)
-        : m_content(std::move(content)), m_rawText(rawText)
+    /// @brief Object representing a parsed Linker-Script
+    class CLinkerScriptFile
     {
-    }
 
-    /// @brief Default destructor
-    ~CLinkerScriptFile()
-    {
-    }
+    private:
+        std::vector<CLinkerScriptContentBase> m_content;
+        std::string m_rawText;
 
-public:
-    /// @brief Returns the content of the file
-    const std::vector<CLinkerScriptEntryBase>& Content();
+    public:
+        /// @brief Default constructor
+        explicit CLinkerScriptFile(std::string rawText, std::vector<CLinkerScriptContentBase>&& content)
+            : m_content(std::move(content)), m_rawText(rawText)
+        {}
 
-    /// @brief Returns the raw linker-script text
-    const std::string& RawText();
+        /// @brief Default destructor
+        ~CLinkerScriptFile()
+        {}
 
-    /// @brief Returns the full text the input component is composed of.
-    /// @param entryToResolve Component to process
-    /// @return The full text that constitutes the component.
-    const std::string ResolveEntryText(CLinkerScriptEntryBase& entryToResolve);
+    public:
+        /// @brief Returns the content of the file
+        const std::vector<CLinkerScriptEntryBase>& Content();
 
-private:
+        /// @brief Returns the raw linker-script text
+        const std::string& RawText();
 
-
-};
-
-}}}
+        /// @brief Returns the full text the input component is composed of.
+        /// @param entryToResolve Component to process
+        /// @return The full text that constitutes the component.
+        const std::string ResolveEntryText(CLinkerScriptEntryBase& entryToResolve);    
+    };
+}
 
 #endif
