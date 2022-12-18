@@ -25,7 +25,8 @@ namespace VisualLinkerScript::ParsingEngine::Models
     public:
         /// @brief Default constructor.
         CViolation(std::vector<CRawEntry>&& involvedEntries, ViolationCode violationCode) 
-            : m_involvedEntries(std::move(involvedEntries)), m_violationCode(violationCode)
+            : m_involvedEntries(std::move(involvedEntries)), 
+              m_violationCode(violationCode)
         {
         }
 

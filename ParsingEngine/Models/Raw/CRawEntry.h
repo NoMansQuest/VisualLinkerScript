@@ -18,12 +18,12 @@ namespace VisualLinkerScript::ParsingEngine::Models::Raw
                     uint32_t parenthesisDepth,
                     uint32_t scopeDepth)
             : m_startPosition(startPosition),
-                m_length(length),
-                m_parenthesisDepth(parenthesisDepth),
-                m_scopeDepth(scopeDepth),
-                m_startLineNumber(startLineNumber),
-                m_endLineNumber(endLineNumber),
-                m_entryType(typeOfEntry)
+              m_length(length),
+              m_parenthesisDepth(parenthesisDepth),
+              m_scopeDepth(scopeDepth),
+              m_startLineNumber(startLineNumber),
+              m_endLineNumber(endLineNumber),
+              m_entryType(typeOfEntry)
         {            
             // No operation to undertake
         }
@@ -31,12 +31,12 @@ namespace VisualLinkerScript::ParsingEngine::Models::Raw
         /// @brief Object-Copy constructor
         CRawEntry(const CRawEntry& cloneSource)
             : m_startPosition(cloneSource.StartPosition()),
-                m_length(cloneSource.Length()),
-                m_parenthesisDepth(cloneSource.ParenthesisDepth()),
-                m_scopeDepth(cloneSource.ScopeDepth()),
-                m_startLineNumber(cloneSource.StartLineNumber()),
-                m_endLineNumber(cloneSource.EndLineNumber()),
-                m_entryType(cloneSource.EntryType())
+              m_length(cloneSource.Length()),
+              m_parenthesisDepth(cloneSource.ParenthesisDepth()),
+              m_scopeDepth(cloneSource.ScopeDepth()),
+              m_startLineNumber(cloneSource.StartLineNumber()),
+              m_endLineNumber(cloneSource.EndLineNumber()),
+              m_entryType(cloneSource.EntryType())
         {
             // No operation to undertake
         }

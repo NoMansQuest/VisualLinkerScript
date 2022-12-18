@@ -16,8 +16,11 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
         ~CSubParserBase();
 
     public:
-        
-         CanParseContent(const CRawEntry& startingEntry, const CRawFile& sourceRawFile);
+        /// @brief Try to parse the content. 
+        /// @param currentPosition [In] Position to start parser at. 
+        /// @param sourceRawFile The CRawFile        
+        /// @return False if parsing failed. True if parser successful, in which case 'currentPosition' is updated accordingly.
+        bool TryParse(uint32_t parseStartPosition, const CRawFile& rawFile, std::vector<) = 0;
     }
 }
 

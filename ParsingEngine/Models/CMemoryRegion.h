@@ -10,7 +10,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
     class CMemoryRegion : public CLinkerScriptContentBase
     {       
     private:
-        std::vector<CMemoryStatement> m_rawElements;
+        std::vector<CMemoryStatement> m_memoryStatements;
 
     public:
         /// @brief Default constructor, accessible to inheritors only
@@ -32,7 +32,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
         /// @brief Reports back the statements
         const std::vector<CMemoryStatement>& Statements()
         {
-            return m_rawElements;
+            return m_memoryStatements;
         }
     }
 }
