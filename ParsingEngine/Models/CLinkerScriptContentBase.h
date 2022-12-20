@@ -9,9 +9,11 @@ namespace VisualLinkerScript::ParsingEngine::Models
     /// @brief Type of content. This is to simplifying type-casting
     enum class ContentType
     {
+        UnrecognizableContent,
         Comment,
         ProcedureCall,
         AssignmentStatement,
+        CCompoundExpression,
         PhdrsRegion,
         PhdrsStatement,
         MemoryRegion,
@@ -22,7 +24,9 @@ namespace VisualLinkerScript::ParsingEngine::Models
         VersionsRegion,        
         VersionNode,
         VersionScope,
-        VersionScopeEntry        
+        VersionScopeEntry,
+        PrimarySymbol,
+        SecondarySymbol
     };
 
     /// @brief Linker-Script content based object.

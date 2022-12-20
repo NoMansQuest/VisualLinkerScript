@@ -1,10 +1,10 @@
 #ifndef CPHDRS_REGION_PARSER_H__
 #define CPHDRS_REGION_PARSER_H__
 
-namespace VisualLinkerScript::ParsingEngine::SubParsers
-{
-    class CSubParserBase;
+#include "CSubParserBase.h"
 
+namespace VisualLinkerScript::ParsingEngine::SubParsers
+{   
     /* PHDRS Region has the following format:
      *
      * PHDRS 
@@ -36,7 +36,9 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
     /// @brief Object in charge of parsing the "PHDRS" region inside a linker-script
     class CPhdrsRegionParser : CSubParserBase
     {
-        
+    public:
+        /// @copydoc CSubParserBase::TryParse(std::vector<CRawEntry>::const_iterator&)
+        virtual std::vector<CLinkerScriptContentBase>&& TryParse(std::vector<CRawEntry>::const_iterator& iterator) override;
     }
 }
 

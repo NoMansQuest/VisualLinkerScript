@@ -7,6 +7,9 @@ namespace VisualLinkerScript::ParsingEngine::Models::Raw
     /// @brief Type of entries procued by Preliminary-Parsing engine
     enum class RawEntryType : uint32_t
     {
+        /// @brief NULL Entry. This element does not exist.
+        NullEntry,
+
         /// @brief A word, which may only be a single dot as well
         Word,   
 
@@ -38,7 +41,7 @@ namespace VisualLinkerScript::ParsingEngine::Models::Raw
         BracketClose,        
 
         /// @brief Unknown type of operator. For example a backslash may be one
-        Unknown
+        Unknown        
     };
 
 }}}

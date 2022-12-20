@@ -3,6 +3,9 @@
 
 #include <vector>
 #include "CLinkerScriptContentBase.h"
+#include "../Raw/CRawEntry.h"
+
+using namespace VisualLinkerScript::ParsingEngine::Models::Raw;
 
 namespace VisualLinkerScript::ParsingEngine::Models
 {
@@ -11,11 +14,17 @@ namespace VisualLinkerScript::ParsingEngine::Models
     {       
     private:
         std::vector<CMemoryStatement> m_memoryStatements;
+        CRawEntry m_headerTag;
+        CRawEntry m_openingBracket;
+        CRawEntry m_closingBracket;
 
     public:
         /// @brief Default constructor, accessible to inheritors only
         /// @param rawElements A list of object this element is comprised of.
-        explicit CMemoryRegion(std::vector<CRawEntry>&& rawElements, 
+        explicit CMemoryRegion(CRawEntry headerTag,
+                               CRawEntry openiningBracket,
+                               CRawEntry closingBracket, 
+                               std::vector<CRawEntry>&& rawElements, 
                                std::vector<CMemoryStatement>&& memoryStatements, 
                                std::vector<CViolation>&& violations) 
             : CLinkerScriptContentBase(rawElements, violations),
@@ -30,9 +39,27 @@ namespace VisualLinkerScript::ParsingEngine::Models
         }
 
         /// @brief Reports back the statements
-        const std::vector<CMemoryStatement>& Statements()
+        std::vector<CMemoryStatement>& Statements() const
         {
             return m_memoryStatements;
+        }
+
+        /// @brief Gets the header tag in raw-element
+        CRawEntry& HeaderTag() const
+        {
+            return this->m_headerTag;
+        }
+
+        /// @brief Gets the opening-bracket's raw-element
+        CRawEntry& OpeningBracket() const
+        {
+            return this->m_openingBracket;
+        }
+
+        /// @brief Gets the closing-bracket's raw-element
+        CRawEntry& ClosingBracket() const
+        {
+            return this->m_closingBracket;
         }
     }
 }

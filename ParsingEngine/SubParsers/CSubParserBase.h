@@ -1,26 +1,23 @@
 #ifndef CSUBPARSER_BASE_H__
 #define CSUBPARSER_BASE_H__
 
+#include <vector>
+#include "../Models/CLinkerScriptContentBase.h"
+
+using namespace VisualLinkerScript::ParsingEngine::Models::Raw;    
+using namespace VisualLinkerScript::ParsingEngine::Models;
+
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {
-    using namespace VisualLinkerScript::ParsingEngine::Models::Raw;    
-
     /// @brief Base class for all sub-parsers
     class CSubParserBase
     {
     public:
-        /// @brief Default constructor
-        CSubParserBase();
-
-        /// @brief Desctructor
-        ~CSubParserBase();
-
-    public:
-        /// @brief Try to parse the content. 
-        /// @param currentPosition [In] Position to start parser at. 
-        /// @param sourceRawFile The CRawFile        
-        /// @return False if parsing failed. True if parser successful, in which case 'currentPosition' is updated accordingly.
-        bool TryParse(uint32_t parseStartPosition, const CRawFile& rawFile, std::vector<) = 0;
+        /// @brief Try to parse the content. If succesful, parsed content can be recovered via @see {GetParsedContent}.
+        /// @param iterator [In] Iterator pointing out to the location to start parsing
+        /// @return Parsed content (if successful), under which case the @see {iterator} is also updated, otherwise an empty vectoro in case
+        ///         of failure to parse
+        virtual std::vector<CLinkerScriptContentBase>&& TryParse(std::vector<CRawEntry>::const_iterator& iterator) = 0;
     }
 }
 
