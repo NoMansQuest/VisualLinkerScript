@@ -6,6 +6,35 @@
 
 namespace VisualLinkerScript::ParsingEngine::Models
 {
+    /*
+    MEMORY
+    {
+        rom (rx)  : ORIGIN = 0, LENGTH = 256K
+        ram (!rx) : org = 0x40000000, l = 4M
+    }
+
+    ‘R’
+    Read-only section
+
+    ‘W’
+    Read/write section
+
+    ‘X’
+    Executable section
+
+    ‘A’
+    Allocatable section
+
+    ‘I’
+    Initialized section
+
+    ‘L’
+    Same as ‘I’
+
+    ‘!’
+    Invert the sense of any of the attributes that follow
+    */
+
     /// @brief Represents a single entry in the "MEMORIES" region
     class CMemoryStatement : public CLinkerScriptContentBase
     {   

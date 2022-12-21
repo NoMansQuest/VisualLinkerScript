@@ -9,8 +9,8 @@ using namespace VisualLinkerScript::ParsingEngine::Models::Raw;
 
 namespace VisualLinkerScript::ParsingEngine::Models
 {
-    /// @brief Represents a compound expression, composed of multiple symbols (and/or sub expressions) encapsulated by    
-    ///        parenthesis.
+    /// @brief Represents a compound expression, composed of multiple symbols (and/or sub expressions) 
+    ///        encapsulated by parenthesis.
     class CCompoundExpression : public CLinkerScriptContentBase
     { 
     public:
@@ -41,7 +41,6 @@ namespace VisualLinkerScript::ParsingEngine::Models
         {}        
 
     public:
-
         /// @brief Gets the Opening Parenthesis's CRawElement
         CRawElement& OpeningParenthesis() const
         {

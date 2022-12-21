@@ -2,6 +2,7 @@
 #define CRAWENTRY_H__
 
 #include "RawEntryType.h"
+#include <cstdint>
 
 namespace VisualLinkerScript::ParsingEngine::Models::Raw 
 {

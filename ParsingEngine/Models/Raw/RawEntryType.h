@@ -1,9 +1,10 @@
 #ifndef ENTRY_TYPES_H__
 #define ENTRY_TYPES_H__
 
+#include <cstdint>
+
 namespace VisualLinkerScript::ParsingEngine::Models::Raw 
 {
-
     /// @brief Type of entries procued by Preliminary-Parsing engine
     enum class RawEntryType : uint32_t
     {
@@ -43,7 +44,6 @@ namespace VisualLinkerScript::ParsingEngine::Models::Raw
         /// @brief Unknown type of operator. For example a backslash may be one
         Unknown        
     };
-
-}}}
+}
 
 #endif

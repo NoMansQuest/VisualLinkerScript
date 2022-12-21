@@ -164,11 +164,24 @@ HEADERS += \
     ParsingEngine/CPreliminaryParser.h \
     ParsingEngine/CPreliminaryParsingException.h \
     ParsingEngine/Models/CAssignmentStatement.h \
+    ParsingEngine/Models/CCompoundExpression.h \
+    ParsingEngine/Models/CLinkerScriptContentBase.h \
     ParsingEngine/Models/CLinkerScriptEntryBase.h \
     ParsingEngine/Models/CLinkerScriptFile.h \
+    ParsingEngine/Models/CMemoryRegion.h \
     ParsingEngine/Models/CMemoryStatement.h \
+    ParsingEngine/Models/CPhdrsRegion.h \
     ParsingEngine/Models/CPhdrsStatement.h \
+    ParsingEngine/Models/CPrimarySymbol.h \
     ParsingEngine/Models/CProcedureCall.h \
+    ParsingEngine/Models/CSecondarySymbol.h \
+    ParsingEngine/Models/CSectionsRegion.h \
+    ParsingEngine/Models/CUnrecognizableContent.h \
+    ParsingEngine/Models/CVersionNode.h \
+    ParsingEngine/Models/CVersionScope.h \
+    ParsingEngine/Models/CVersionScopeEntry.h \
+    ParsingEngine/Models/CVersionsRegion.h \
+    ParsingEngine/Models/CViolation.h \
     ParsingEngine/Models/Raw/CRawEntry.h \
     ParsingEngine/Models/Raw/CRawFile.h \
     ParsingEngine/Models/CSectionOutputStatement.h \

@@ -33,16 +33,16 @@ namespace VisualLinkerScript::ParsingEngine::Models
     class CLinkerScriptContentBase
     {
     private:
-        std::vector<CRawElement> m_rawElements;
+        std::vector<CRawEntry> m_rawEntries;
         std::vector<CViolation> m_violations;
 
     protected:
         /// @brief Default constructor, accessible to inheritors only
         /// @param composingRawElements A list of object this element is comprised of
         /// @param violations Violations related to this content (if any)
-        explicit CLinkerScriptContentBase(std::vector<CRawEntry>&& rawElements, 
+        explicit CLinkerScriptContentBase(std::vector<CRawEntry>&& rawEntries,
                                           std::vector<CViolation>&& violations)
-            : m_rawElements(std::move(m_rawElements)), 
+            : m_rawEntries(std::move(rawEntries)),
               m_violations(std::move(violations))
         {}
 
@@ -57,13 +57,13 @@ namespace VisualLinkerScript::ParsingEngine::Models
         /// @brief Does content pass integrity check? 
         bool IsValid()
         {
-            return violations.size() == 0;
+            return m_violations.size() == 0;
         }
 
         /// @brief Returns the first element present        
-        const std::vector<CRawElement>& RawElements()
+        const std::vector<CRawEntry>& RawEntries()
         {
-            return m_rawElements;
+            return m_rawEntries;
         }
 
         /// @brief Returns list detected violations
@@ -71,7 +71,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
         {
             return m_violations;
         }
-    }
+    };
 }
 
 #endif

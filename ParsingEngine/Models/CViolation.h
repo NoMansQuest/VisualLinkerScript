@@ -41,7 +41,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
         /// @brief Reports back the tpe of violation        
         const ViolationCode Code()
         {
-            return m_violationType;
+            return m_violationCode;
         }
     };
 }
