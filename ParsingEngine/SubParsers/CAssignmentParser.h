@@ -1,5 +1,5 @@
-#ifndef CVERSION_REGION_PARSER_H__
-#define CVERSION_REGION_PARSER_H__
+#ifndef CASSIGNMENT_PARSER_H__
+#define CASSIGNMENT_PARSER_H__
 
 #include "CSubParserBase.h"
 #include "SubParserType.h"
@@ -7,14 +7,14 @@
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {
-    /// @brief Object in charge of parsing the "VERSIONS" region inside a linker-script
-    class CVersionRegionParser : CSubParserBase
+    /// @brief Object in charge of parsing symbol assignment (i.e. a = b + c...) inside a linker-script
+    class CAssignmentParser : CSubParserBase
     {
     public:
         /// @copydoc CSubParserBase::Type()
         virtual SubParserType Type() override 
         {
-            return SubParserType::VersionRegionParser;
+            return SubParserType::AssignmentParser;
         }
 
         /// @copydoc CSubParserBase::TryParse(std::vector<CRawEntry>::const_iterator&)

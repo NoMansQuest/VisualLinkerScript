@@ -1,25 +1,25 @@
-#ifndef CVERSION_REGION_PARSER_H__
-#define CVERSION_REGION_PARSER_H__
+#ifndef CDEFAULT_PARSER_H__
+#define CDEFAULT_PARSER_H__
 
 #include "CSubParserBase.h"
 #include "SubParserType.h"
 #include <memory>
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers
-{
-    /// @brief Object in charge of parsing the "VERSIONS" region inside a linker-script
-    class CVersionRegionParser : CSubParserBase
+{   
+    /// @brief Object in charge parsing R-Value expression (e.g. a + b - c + ((f / g) - h) ...)
+    class CExpressionParser : CSubParserBase
     {
     public:
         /// @copydoc CSubParserBase::Type()
         virtual SubParserType Type() override 
         {
-            return SubParserType::VersionRegionParser;
+            return SubParserType::ExpressionParser;
         }
 
         /// @copydoc CSubParserBase::TryParse(std::vector<CRawEntry>::const_iterator&)
         virtual std::vector<std::unique_ptr<CLinkerScriptContentBase>>&& TryParse(
-                std::vector<CRawEntry>::const_iterator& iterator) override;    
+                std::vector<CRawEntry>::const_iterator& iterator) override;
     }
 }
 

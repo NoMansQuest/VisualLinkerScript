@@ -6,7 +6,7 @@
 
 namespace VisualLinkerScript::ParsingEngine::Models::Raw 
 {
-    /// @brief Represents an entry found in the LinkerScript file by the @see CPreliminaryParser
+    /// @brief Represents an entry found in the LinkerScript file by the @see {CPreliminaryParser}
     class CRawEntry
     {
     public:
@@ -46,7 +46,7 @@ namespace VisualLinkerScript::ParsingEngine::Models::Raw
               m_scopeDepth(0),
               m_startLineNumber(0),
               m_endLineNumber(0),
-              m_entryType(RawEntryType::NullEntry)
+              m_entryType(RawEntryType::NotPresent)
         {}
 
         /// @brief Default destructor

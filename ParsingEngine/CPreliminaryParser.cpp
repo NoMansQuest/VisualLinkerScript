@@ -434,5 +434,5 @@ std::shared_ptr<CRawFile> CPreliminaryParser::ProcessLinkerScript(const std::str
         }
     }
 
-    return std::make_shared<CRawFile>(fileName, std::move(parsedContent));
+    return std::make_shared<CRawFile>(std::move(rawContent), fileName, std::move(parsedContent));
 }

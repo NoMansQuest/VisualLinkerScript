@@ -2,6 +2,8 @@
 #define CMEMORY_REGION_PARSER_H__
 
 #include "CSubParserBase.h"
+#include "SubParserType.h"
+#include <memory>
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {
@@ -9,8 +11,15 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
     class CMemoryParserRegion : CSubParserBase
     {
     public:
+        /// @copydoc CSubParserBase::Type()
+        virtual SubParserType Type() override 
+        {
+            return SubParserType::MemoryRegionParser;
+        }
+
         /// @copydoc CSubParserBase::TryParse(std::vector<CRawEntry>::const_iterator&)
-        virtual std::vector<CLinkerScriptContentBase>&& TryParse(std::vector<CRawEntry>::const_iterator& iterator) override;
+        virtual std::vector<std::unique_ptr<CLinkerScriptContentBase>>&& TryParse(
+                std::vector<CRawEntry>::const_iterator& iterator) override;
     }
 }
 

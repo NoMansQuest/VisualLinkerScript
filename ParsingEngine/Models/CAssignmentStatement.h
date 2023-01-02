@@ -4,6 +4,7 @@
 #include <vector>
 #include "CLinkerScriptContentBase.h"
 #include "../Models/Raw/CRawEntry.h"
+#include "CExpression.h"
 
 namespace VisualLinkerScript::ParsingEngine::Models
 {
@@ -20,19 +21,32 @@ namespace VisualLinkerScript::ParsingEngine::Models
 
     private:
         std::vector<CRawEntry> m_assignmentOperator;        
-        std::vector<CLinkerScriptContentBase> m_lValueComposition;
-        std::vector<CLinkerScriptContentBase> m_rValueComposition;
+        CExpression m_lValueExpression;
+        CExpression m_rValueComposition;
         CRawEntry m_semicolonOperator;
 
     public:
-        /// @brief Default constructor, accessible to inheritors only
-        explicit CAssignmentStatement(std::vector<CLinkerScriptContentBase>&& lValueComposition,
-                                      std::vector<CLinkerScriptContentBase>&& rValueComposition,
+        /// @brief Detailed Constructor
+        explicit CAssignmentStatement(CExpression&& lValueExpression,
+                                      CExpression&& rValueComposition,
                                       std::vector<CRawEntry>&& assignmentOperator,
                                       std::CRawEntry semicolonOperator,
                                       std::vector<CRawEntry>&& rawElements, 
                                       std::vector<CViolation>&& violations) 
             : CLinkerScriptContentBase(rawElements, violations),
+              m_lValueComposition(lValueComposition),
+              m_rValueComposition(rValueComposition),
+              m_assignmentOperator(assignmentOperator),
+              m_semicolonOperator(semicolonOperator)
+        {}        
+
+        /// @brief Default constructor
+        explicit CAssignmentStatement(CExpression&& lValueExpression,
+                                      CExpression&& rValueComposition,
+                                      std::vector<CRawEntry>&& assignmentOperator,
+                                      std::CRawEntry semicolonOperator,
+                                      std::vector<CRawEntry>&& rawElements) 
+            : CLinkerScriptContentBase(rawElements),
               m_lValueComposition(lValueComposition),
               m_rValueComposition(rValueComposition),
               m_assignmentOperator(assignmentOperator),
@@ -47,13 +61,13 @@ namespace VisualLinkerScript::ParsingEngine::Models
         }        
 
         /// @brief Gets the "LValueComposition"
-        std::vector<CLinkerScriptContentBase>& LValueComposition const
+        CExpression& LValueComposition const
         {
             return this->m_lValueComposition;
         }
         
         /// @brief Gets the "RValueComposition"
-        std::vector<CLinkerScriptContentBase>& RValueComposition const
+        CExpression& RValueComposition const
         {
             return this->m_rValueComposition;
         }
@@ -63,7 +77,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
         {
             return this->m_semicolonOperator;
         }
-    }
+    };
 }
 
 #endif

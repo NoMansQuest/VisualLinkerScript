@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "CViolation.h"
+#include "Raw/CRawEntry.h"
 
 namespace VisualLinkerScript::ParsingEngine::Models
 {
@@ -13,7 +14,8 @@ namespace VisualLinkerScript::ParsingEngine::Models
         Comment,
         ProcedureCall,
         AssignmentStatement,
-        CCompoundExpression,
+        Expression,
+        EnclosedExpression,
         PhdrsRegion,
         PhdrsStatement,
         MemoryRegion,
@@ -37,8 +39,8 @@ namespace VisualLinkerScript::ParsingEngine::Models
         std::vector<CViolation> m_violations;
 
     protected:
-        /// @brief Default constructor, accessible to inheritors only
-        /// @param composingRawElements A list of object this element is comprised of
+        /// @brief Constructor, accessible to inheritors only
+        /// @param rawEntries A list of object this element is comprised of
         /// @param violations Violations related to this content (if any)
         explicit CLinkerScriptContentBase(std::vector<CRawEntry>&& rawEntries,
                                           std::vector<CViolation>&& violations)
@@ -46,8 +48,10 @@ namespace VisualLinkerScript::ParsingEngine::Models
               m_violations(std::move(violations))
         {}
 
-        /// @brief Default destructor. We don't hold any object in need of release.
-        ~CLinkerScriptContentBase()
+        /// @brief Constructor, accessible to inheritors only
+        /// @param rawEntries A list of object this element is comprised of
+        explicit CLinkerScriptContentBase(std::vector<CRawEntry>&& rawEntries)
+            : m_rawEntries(std::move(rawEntries))
         {}
 
     public:

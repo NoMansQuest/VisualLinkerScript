@@ -61,7 +61,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
         {
             return this->m_closingBracket;
         }
-    }
+    };
 }
 
 #endif

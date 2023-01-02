@@ -17,13 +17,19 @@ namespace VisualLinkerScript::ParsingEngine::Models
             : CLinkerScriptContentBase(rawElements, violations)
         {}        
 
+        /// @brief Default constructor, accessible to inheritors only
+        /// @param rawElements A list of object this element is comprised of.
+        explicit CSectionOutputStatement(std::vector<CRawEntry>&& rawElements) 
+            : CLinkerScriptContentBase(rawElements)
+        {}     
+
     public:
         /// @brief Reports back the type of this object.        
         ContentType Type() override
         {
             return ContentType::SectionsOutputStatement;
         }
-    }
+    };
 }
 
 #endif

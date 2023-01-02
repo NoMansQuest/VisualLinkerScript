@@ -1,9 +1,10 @@
-#ifndef CCOMPOUND_EXPRESSION_H__
-#define CCOMPOUND_EXPRESSION_H__
+#ifndef CENCLOSED_EXPRESSION_H__
+#define CENCLOSED_EXPRESSION_H__
 
 #include <vector>
 #include "CLinkerScriptContentBase.h"
 #include "../Models/Raw/CRawEntry.h"
+#include "CExpression.h"
 
 using namespace VisualLinkerScript::ParsingEngine::Models::Raw;
 
@@ -11,15 +12,8 @@ namespace VisualLinkerScript::ParsingEngine::Models
 {
     /// @brief Represents a compound expression, composed of multiple symbols (and/or sub expressions) 
     ///        encapsulated by parenthesis.
-    class CCompoundExpression : public CLinkerScriptContentBase
+    class CEnclosedExpression : public CExpression
     { 
-    public:
-        /// @brief Reports back the type of this object.        
-        ContentType Type() override
-        {
-            return ContentType::CompoundExpression;
-        }    
-
     private:
         std::vector<CRawEntry> m_assignmentOperator;        
         std::vector<CLinkerScriptContentBase> m_composition;        
@@ -29,18 +23,24 @@ namespace VisualLinkerScript::ParsingEngine::Models
     public:
         /// @brief Default constructor, accessible to inheritors only
         /// @param rawElements A list of object this element is comprised of.
-        explicit CAssignmentStatement(CRawEntry openingParenthesis,
-                                      CRawEntry closingParenthesis,
-                                      std::vector<CLinkerScriptContentBase>&& composition,
-                                      std::vector<CRawEntry>&& rawElements, 
-                                      std::vector<CViolation>&& violations) 
-            : CLinkerScriptContentBase(rawElements, violations),
+        explicit CEnclosedExpression(CRawEntry openingParenthesis,
+                                     CRawEntry closingParenthesis,
+                                     std::vector<CLinkerScriptContentBase>&& composition,
+                                     std::vector<CRawEntry>&& rawElements, 
+                                     std::vector<CViolation>&& violations) 
+            : CExpression(composition, rawElements, violations),
               m_openingParenthesis(openingParenthesis),
               m_closingParenthesis(closingParenthesis),
               m_composition(composition)
         {}        
 
     public:
+        /// @brief Reports back the type of this object.        
+        ContentType Type() override
+        {
+            return ContentType::EnclosedExpression;
+        }    
+
         /// @brief Gets the Opening Parenthesis's CRawElement
         CRawElement& OpeningParenthesis() const
         {
@@ -52,13 +52,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
         {
             return this->m_closingParenthesis;
         }
-
-        /// @brief Gets the "Composition" 
-        std::vector<CLinkerScriptContentBase>& Composition() const
-        {
-            return this->m_composition;
-        }
-    }
+    };
 }
 
 #endif

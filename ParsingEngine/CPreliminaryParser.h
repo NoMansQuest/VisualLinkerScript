@@ -7,7 +7,8 @@
 #include "Models/Raw/CRawFile.h"
 
 using namespace VisualLinkerScript::ParsingEngine::Models;
-using namespace std;
+using namespace VisualLinkerScript::ParsingEngine::Models::Raw;
+
 
 namespace VisualLinkerScript::ParsingEngine 
 {

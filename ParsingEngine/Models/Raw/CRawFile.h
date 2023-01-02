@@ -19,17 +19,24 @@ namespace VisualLinkerScript::ParsingEngine::Models::Raw
     public:
         /// @brief Default constructor
         /// @param content Vector of CRawEntry, which the linker-script is composed of.
-        explicit CRawFile(const std::string fileContent, 
+        explicit CRawFile(std::string&& fileContent,
                           const std::string fileName, 
+                          std::vector<CRawEntry>&& content)
+            : m_content(std::move(content)),
+              m_fileName(fileName),
+              m_fileContent(std::move(fileContent))
+        {}
+
+        /// @brief Default constructor
+        /// @param content Vector of CRawEntry, which the linker-script is composed of.
+        explicit CRawFile(const std::string fileContent,
+                          const std::string fileName,
                           std::vector<CRawEntry>&& content)
             : m_content(std::move(content)),
               m_fileName(fileName),
               m_fileContent(fileContent)
         {}
 
-        /// @brief Default destructor
-        ~CRawFile()
-        {}
 
     public:
         /// @brief Retried the content's vector        
@@ -49,6 +56,15 @@ namespace VisualLinkerScript::ParsingEngine::Models::Raw
         {
             return this->m_fileContent;
         }
+
+        /// @brief Resolves the entry by returning the string-content the @see {entryToResolve} is
+        ///        referring to.        
+        const std::string& ResolveRawEntry(const CRawEntry& entryToResolve)
+        {
+
+        }
+
+        
     };
 }
 

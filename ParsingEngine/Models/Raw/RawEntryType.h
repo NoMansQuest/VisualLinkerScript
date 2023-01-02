@@ -8,8 +8,8 @@ namespace VisualLinkerScript::ParsingEngine::Models::Raw
     /// @brief Type of entries procued by Preliminary-Parsing engine
     enum class RawEntryType : uint32_t
     {
-        /// @brief NULL Entry. This element does not exist.
-        NullEntry,
+        /// @brief This element is not present, and serves as a placedholder only.
+        NotPresent,
 
         /// @brief A word, which may only be a single dot as well
         Word,   

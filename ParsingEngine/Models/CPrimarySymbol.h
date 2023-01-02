@@ -37,7 +37,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
         {
             return this->m_symbol;
         }     
-    }
+    };
 }
 
 #endif

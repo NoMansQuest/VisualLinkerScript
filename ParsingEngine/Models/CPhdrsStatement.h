@@ -2,6 +2,7 @@
 #define CPHDRS_STATEMENT_H__
 
 #include <vector>
+#include "CExpression.h"
 #include "CLinkerScriptContentBase.h"
 
 namespace VisualLinkerScript::ParsingEngine::Models
@@ -12,7 +13,12 @@ namespace VisualLinkerScript::ParsingEngine::Models
     public:
         /// @brief Default constructor, accessible to inheritors only
         /// @param rawElements A list of object this element is comprised of.
-        explicit CPhdrsStatement(std::vector<CRawEntry>&& rawElements, 
+        explicit CPhdrsStatement(CRawEntry headerName,
+                                 CRawEntry headerType,
+                                 CRawEntry fileHdr,
+                                 std::vector<CRawEntry>&& atAddress,
+                                 CExpression         
+                                 std::vector<CRawEntry>&& rawElements, 
                                  std::vector<CViolation>&& violations) 
             : CLinkerScriptContentBase(rawElements, violations)
         {}        
@@ -23,7 +29,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
         {
             return ContentType::PhdrsStatement;
         }
-    }
+    };
 }
 
 #endif

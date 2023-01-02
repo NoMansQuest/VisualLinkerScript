@@ -1,11 +1,10 @@
-#include "CMemoryRegionParser.h"
+#include "CAssignmentParser.h"
 #include <vector>
-#include <memory>
 #include "../Raw/CRawEntry.h"
 
 using namespace VisualLinkerScript::ParsingEngine::SubParsers;
 
-std::vector<std::unique_ptr<CLinkerScriptContentBase>>&& CMemoryParserRegion::TryParse(std::vector<CRawEntry>::const_iterator& iterator)
+std::vector<CLinkerScriptContentBase>&& CAssignmentParser::TryParse(std::vector<CRawEntry>::const_iterator& iterator)
 {
     std::vector<CLinkerScriptContentBase> parsedContent;
 

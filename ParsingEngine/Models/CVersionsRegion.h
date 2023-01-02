@@ -36,7 +36,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
         {
             return m_phdrsStatements;
         }
-    }
+    };
 }
 
 #endif

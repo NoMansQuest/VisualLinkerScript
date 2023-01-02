@@ -34,7 +34,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
         {
             return m_entries;
         }
-    }
+    };
 }
 
 #endif

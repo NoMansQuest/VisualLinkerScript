@@ -7,6 +7,7 @@
 #include <QFile>
 #include <memory.h>
 #include <QString>
+#include "ParsingEngine/CMasterParser.h"
 
 using namespace VisualLinkerScript::ParsingEngine;
 using namespace VisualLinkerScript::ParsingEngine::Models;
@@ -29,7 +30,8 @@ MainWindow::MainWindow(QWidget *parent)
     fileToRead.open(QFile::ReadOnly | QFile::Text);
     QTextStream in(&fileToRead);
     auto fileContent = in.readAll();
-    auto contentToAnalyze = preliminaryParser.ProcessLinkerScript(fileName.toStdString(), fileContent.toStdString())->Content();
+    auto preliminaryParseResult = preliminaryParser.ProcessLinkerScript(fileName.toStdString(), fileContent.toStdString());
+    auto contentToAnalyze = preliminaryParseResult->Content();
 
     // Generate result
     QString debugOutput = "";    
@@ -39,47 +41,47 @@ MainWindow::MainWindow(QWidget *parent)
 
         switch (entry.EntryType())
         {
-            case VisualLinkerScript::ParsingEngine::Models::RawEntryType::Word:
+            case VisualLinkerScript::ParsingEngine::Models::Raw::RawEntryType::Word:
                 translatedType = "Word";
                 break;
 
-            case VisualLinkerScript::ParsingEngine::Models::RawEntryType::Operator:
+            case VisualLinkerScript::ParsingEngine::Models::Raw::RawEntryType::Operator:
                 translatedType = "Operator";
                 break;
 
-            case VisualLinkerScript::ParsingEngine::Models::RawEntryType::Assignment:
+            case VisualLinkerScript::ParsingEngine::Models::Raw::RawEntryType::Assignment:
                 translatedType = "Assignment";
                 break;
 
-            case VisualLinkerScript::ParsingEngine::Models::RawEntryType::Number:
+            case VisualLinkerScript::ParsingEngine::Models::Raw::RawEntryType::Number:
                 translatedType = "Number";
                 break;
 
-            case VisualLinkerScript::ParsingEngine::Models::RawEntryType::String:
+            case VisualLinkerScript::ParsingEngine::Models::Raw::RawEntryType::String:
                 translatedType = "String";
                 break;
 
-            case VisualLinkerScript::ParsingEngine::Models::RawEntryType::Comment:
+            case VisualLinkerScript::ParsingEngine::Models::Raw::RawEntryType::Comment:
                 translatedType = "Comment";
                 break;
 
-            case VisualLinkerScript::ParsingEngine::Models::RawEntryType::ParenthesisOpen:
+            case VisualLinkerScript::ParsingEngine::Models::Raw::RawEntryType::ParenthesisOpen:
                 translatedType = "ParenthesisOpen";
                 break;
 
-            case VisualLinkerScript::ParsingEngine::Models::RawEntryType::ParenthesisClose:
+            case VisualLinkerScript::ParsingEngine::Models::Raw::RawEntryType::ParenthesisClose:
                 translatedType = "ParenthesisClose";
                 break;
 
-            case VisualLinkerScript::ParsingEngine::Models::RawEntryType::BracketOpen:
+            case VisualLinkerScript::ParsingEngine::Models::Raw::RawEntryType::BracketOpen:
                 translatedType = "BracketOpen";
                 break;
 
-            case VisualLinkerScript::ParsingEngine::Models::RawEntryType::BracketClose:
+            case VisualLinkerScript::ParsingEngine::Models::Raw::RawEntryType::BracketClose:
                 translatedType = "BracketClose";
                 break;
 
-            case VisualLinkerScript::ParsingEngine::Models::RawEntryType::Unknown:
+            case VisualLinkerScript::ParsingEngine::Models::Raw::RawEntryType::Unknown:
                 translatedType = "Unknown";
                 break;
 
@@ -105,6 +107,14 @@ MainWindow::MainWindow(QWidget *parent)
         debugOutput.append(fileContent.mid(entry.StartPosition(), entry.Length()));
     }
 
+    // Parse content
+    CMasterParser masterParser;
+    auto parsedContent = std::move(masterParser.ProcessLinkerScriptFile(preliminaryParseResult));
+
+    // Add more information to the output text
+
+
+    // Produce output.
     this->scintilla->setText(debugOutput);
 }
 

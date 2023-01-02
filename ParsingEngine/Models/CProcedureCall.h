@@ -23,7 +23,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
         {
             return ContentType::ProcedureCall;
         }
-    }
+    };
 }
 
 #endif

@@ -16,29 +16,28 @@ namespace VisualLinkerScript::ParsingEngine::Models
     {
 
     private:
-        std::vector<CLinkerScriptContentBase> m_content;
-        CRawFile m_rawFile;
+        std::vector<std::unique_ptr<CLinkerScriptContentBase>> m_content;
+        std::shared_ptr<CRawFile> m_rawFile;
 
     public:
         /// @brief Default constructor
-        explicit CLinkerScriptFile(CRawFile&& rawFile, std::vector<CLinkerScriptContentBase>&& content)
+        explicit CLinkerScriptFile(std::shared_ptr<CRawFile> rawFile,
+                                   std::vector<std::unique_ptr<CLinkerScriptContentBase>>&& content)
             : m_content(std::move(content)), 
-              m_rawFile(std::move(rawFile))
-        {}
-
-        /// @brief Default destructor
-        ~CLinkerScriptFile()
+              m_rawFile(rawFile)
         {}
 
     public:
+
+
         /// @brief Returns the content of the file
-        const std::vector<CLinkerScriptContentBase>& Content()
+        const std::vector<std::unique_ptr<CLinkerScriptContentBase>>& Content()
         {
             return this->m_content;
         }
 
         /// @brief Returns the raw linker-script file
-        const CRawFile& RawFile()
+        const std::shared_ptr<CRawFile> RawFile()
         {
             return this->m_rawFile;
         }
@@ -52,7 +51,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
             auto endPosition = contentToResolve.RawEntries().back().StartPosition() +
                                contentToResolve.RawEntries().back().Length() - 1;
 
-            return this->m_rawFile.FileContent().substr(startPosition, endPosition - startPosition + 1);
+            return this->m_rawFile->FileContent().substr(startPosition, endPosition - startPosition + 1);
         }
     };
 }

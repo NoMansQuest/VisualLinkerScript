@@ -1,27 +1,26 @@
-#ifndef CSECTION_OVERLAY_H__
-#define CSECTION_OVERLAY_H__
+#ifndef CCOMMENT_H__
+#define CCOMMENT_H__
 
 #include <vector>
 #include "CLinkerScriptContentBase.h"
 
 namespace VisualLinkerScript::ParsingEngine::Models
 {
-    /// @brief Represents a single 'Output' segment in the "SECTIONS"
-    class CSectionOverlayStatement : public CLinkerScriptContentBase
+    /// @brief Represents a comment entry
+    class CComment : public CLinkerScriptContentBase
     {   
     public:
         /// @brief Default constructor, accessible to inheritors only
         /// @param composingRawElements A list of object this element is comprised of.
-        explicit CSectionOverlayStatement(std::vector<CRawEntry>&& composingRawElements, 
-                                          std::vector<CViolation>&& violations) 
+        explicit CComment(std::vector<CRawEntry>&& composingRawElements,                              
+                          std::vector<CViolation>&& violations) 
             : CLinkerScriptContentBase(composingRawElements, violations)
         {}        
 
-    public:
         /// @brief Reports back the type of this object.        
         ContentType Type() override
         {
-            return ContentType::SectionsOverlayStatement;
+            return ContentType::Comment;
         }
     };
 }

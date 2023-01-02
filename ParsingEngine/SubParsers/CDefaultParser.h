@@ -2,6 +2,8 @@
 #define CDEFAULT_PARSER_H__
 
 #include "CSubParserBase.h"
+#include "SubParserType.h"
+#include <memory>
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {   
@@ -9,8 +11,15 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
     class CDefaultParser : CSubParserBase
     {
     public:
+        /// @copydoc CSubParserBase::Type()
+        virtual SubParserType Type() override 
+        {
+            return SubParserType::DefaultParser;
+        }
+
         /// @copydoc CSubParserBase::TryParse(std::vector<CRawEntry>::const_iterator&)
-        virtual bool TryParse(std::vector<CRawEntry>::const_iterator& iterator) override;
+        virtual std::vector<std::unique_ptr<CLinkerScriptContentBase>>&& TryParse(
+                std::vector<CRawEntry>::const_iterator& iterator) override;
     }
 }
 

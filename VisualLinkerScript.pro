@@ -74,8 +74,6 @@ SOURCES += \
     Components/QScintilla/src/qscistyle.cpp \
     Components/QScintilla/src/qscistyledtext.cpp \
     ParsingEngine/CPreliminaryParser.cpp \
-    ParsingEngine/Models/CLinkerScriptFile.cpp \
-    ParsingEngine/Models/Raw/CRawFile.cpp \
     main.cpp \
     mainwindow.cpp
 
@@ -164,7 +162,10 @@ HEADERS += \
     ParsingEngine/CPreliminaryParser.h \
     ParsingEngine/CPreliminaryParsingException.h \
     ParsingEngine/Models/CAssignmentStatement.h \
+    ParsingEngine/Models/CComment.h \
     ParsingEngine/Models/CCompoundExpression.h \
+    ParsingEngine/Models/CEnclosedExpression.h \
+    ParsingEngine/Models/CExpression.h \
     ParsingEngine/Models/CLinkerScriptContentBase.h \
     ParsingEngine/Models/CLinkerScriptEntryBase.h \
     ParsingEngine/Models/CLinkerScriptFile.h \
@@ -182,6 +183,14 @@ HEADERS += \
     ParsingEngine/Models/CVersionScopeEntry.h \
     ParsingEngine/Models/CVersionsRegion.h \
     ParsingEngine/Models/CViolation.h \
+    ParsingEngine/Models/Evaluation/ArithmeticOperationType.h \
+    ParsingEngine/Models/Evaluation/CArithmeticResultOp.h \
+    ParsingEngine/Models/Evaluation/CCompoundResult.h \
+    ParsingEngine/Models/Evaluation/CEvaluatableBase.h \
+    ParsingEngine/Models/Evaluation/CNumericResult.h \
+    ParsingEngine/Models/Evaluation/CResultBase.h \
+    ParsingEngine/Models/Evaluation/CSymbolResult.h \
+    ParsingEngine/Models/Evaluation/EvaluationResultType.h \
     ParsingEngine/Models/Raw/CRawEntry.h \
     ParsingEngine/Models/Raw/CRawFile.h \
     ParsingEngine/Models/CSectionOutputStatement.h \

@@ -10,10 +10,9 @@ namespace VisualLinkerScript::ParsingEngine::Models
     class CUnrecognizableContent : public CLinkerScriptContentBase
     {   
     public:
-        /// @brief Default constructor, accessible to inheritors only
-        /// @param composingRawElements A list of object this element is comprised of.
-        explicit CSectionOverlayStatement(std::vector<CRawEntry>&& composingRawElements, 
-                                          std::vector<CViolation>&& violations) 
+        /// @brief Construct an "Unrecognizable" object
+        explicit CUnrecognizableContent(std::vector<CRawEntry>&& composingRawElements, 
+                                        std::vector<CViolation>&& violations) 
             : CLinkerScriptContentBase(composingRawElements, violations)
         {}        
 
@@ -23,7 +22,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
         {
             return ContentType::UnrecognizableContent;
         }
-    }
+    };
 }
 
 

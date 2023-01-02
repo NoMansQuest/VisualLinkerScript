@@ -22,7 +22,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
         {
             return ContentType::VersionScope;
         }
-    }
+    };
 }
 
 #endif

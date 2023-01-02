@@ -52,7 +52,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
         {
             return ContentType::MemoryStatement;
         }
-    }
+    };
 }
 
 #endif
