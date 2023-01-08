@@ -8,7 +8,7 @@
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {   
     /// @brief Object in charge of parsing content that is unrecognizable or irrelevant (such as comments)
-    class CDefaultParser : CSubParserBase
+    class CDefaultParser : public CSubParserBase
     {
     public:
         /// @copydoc CSubParserBase::Type()
@@ -18,9 +18,11 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
         }
 
         /// @copydoc CSubParserBase::TryParse(std::vector<CRawEntry>::const_iterator&)
-        virtual std::vector<std::unique_ptr<CLinkerScriptContentBase>>&& TryParse(
-                std::vector<CRawEntry>::const_iterator& iterator) override;
-    }
+        virtual std::shared_ptr<CLinkerScriptContentBase> TryParse(
+                CRawFile& linkerScriptFile,
+                std::vector<CRawEntry>::const_iterator& iterator,
+                std::vector<CRawEntry>::const_iterator& endOfVectorIterator) override;
+    };
 }
 
 #endif

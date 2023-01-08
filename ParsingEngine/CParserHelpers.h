@@ -5,7 +5,7 @@
 
 namespace VisualLinkerScript::ParsingEngine
 {
-    
+    std::vector<std::string> ReservedKeyWords
 }
 
 #endif

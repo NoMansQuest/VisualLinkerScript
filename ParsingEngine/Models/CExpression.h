@@ -9,24 +9,18 @@ using namespace VisualLinkerScript::ParsingEngine::Models::Raw;
 
 namespace VisualLinkerScript::ParsingEngine::Models
 {
-    /// @brief Represents a compound expression, composed of multiple symbols (and/or sub expressions).
+    /// @brief Represents a compound R-Value expression, composed of multiple symbols (and/or sub expressions).
     class CExpression: public CLinkerScriptContentBase
-    {
+    {   
     private:
-        std::vector<CRawEntry> m_assignmentOperator;        
-        std::vector<CLinkerScriptContentBase> m_composition;        
+        std::vector<std::shared_ptr<CLinkerScriptContentBase>> m_composition;
 
     public:
         /// @brief Parameterized constructor, accessible to inheritors only
-        /// @param rawElements A list of object this element is comprised of.
-        explicit CExpression(CRawEntry openingParenthesis,
-                             CRawEntry closingParenthesis,
-                             std::vector<CLinkerScriptContentBase>&& composition,
+        explicit CExpression(std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& composition,
                              std::vector<CRawEntry>&& rawElements, 
-                             std::vector<CViolation>&& violations) 
-            : CLinkerScriptContentBase(rawElements, violations),
-              m_openingParenthesis(openingParenthesis),
-              m_closingParenthesis(closingParenthesis),
+                             std::vector<CViolation>&& violations)
+            : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
               m_composition(composition)
         {}        
 
@@ -38,7 +32,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
         }    
 
         /// @brief Gets the "Composition" 
-        std::vector<CLinkerScriptContentBase>& Composition() const
+        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& Composition()
         {
             return this->m_composition;
         }

@@ -3,13 +3,16 @@
 #include <vector>
 #include <memory>
 #include <string>
-#include "../Raw/CRawEntry.h"
-#include "../Raw/RawEntryType.h"
-#include "../CPhdrsRegion.h"
-#include "../CPhdrsStatement.h"
+#include "../Models/Raw/CRawEntry.h"
+#include "../Models/Raw/RawEntryType.h"
+#include "../Models/CPhdrsRegion.h"
+#include "../Models/CPhdrsStatement.h"
 #include "../CMasterParserException.h"
 #include "../Models/CComment.h"
-#include "../CViolation.h"
+#include "../Models/CViolation.h"
+#include "../Models/CFunctionCall.h"
+#include "../Models/CExpression.h"
+#include "../Models/Raw/CRawFile.h"
 
 /* PHDRS Region has the following format:
 *
@@ -43,28 +46,269 @@ using namespace VisualLinkerScript::ParsingEngine::SubParsers;
 using namespace VisualLinkerScript::ParsingEngine::Models;
 using namespace VisualLinkerScript::ParsingEngine::Models::Raw;
 
+
 namespace
 {
-    /// @brief 
-    enum class ContentParserMachineState
+    /// @brief CPhdrsRegionContentParser parser states
+    enum class ParserState
     {
         AwaitingName,
         AwaitingType,
-        AwaitingFileHdr,
-        AwaitingPhdrs,
-        AwaitingAt,
-        AwaitingFlags,
+        AwaitingOptionalFields,
         AwaitingSemicolon,
         ParsingComplete
     };
+
+    std::vector<std::string> ProgramHeaderTypes = {
+        "PT_NULL",
+        "PT_LOAD",
+        "PT_DYNAMIC",
+        "PT_INTERP",
+        "PT_NOTE",
+        "PT_SHLIB",
+        "PT_PHDR"        
+    };
+
+    std::vector<std::string> IllegalProgramHeaderNames = {
+        "PT_NULL",
+        "PT_LOAD",
+        "PT_DYNAMIC",
+        "PT_INTERP",
+        "PT_NOTE",
+        "PT_SHLIB",
+        "PT_PHDR",
+        "FILEHDR",
+        "PHDRS",
+        "AT",
+        "FLAGS",
+    };
+
+    /// @brief Checks to see if the content of the @see {rawEntry} (resovled on @see {sourceFile}) is found 
+    ///        in the vector of string as pointed out by @see {targetList}.
+    const bool CheckIfRawEntryInList(
+            const CRawFile& sourceFile,
+            const CRawEntry& rawEntry, 
+            const std::vector<std::string>& targetList)
+    {
+        if (rawEntry.EntryType() == RawEntryType::NotPresent)
+        {
+            return false;
+        }
+
+        auto resolvedValue = sourceFile.ResolveRawEntry(rawEntry);
+        return std::find(targetList.begin(), targetList.end(), resolvedValue) != targetList.end();
+    }
 }
 
-std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& CPhdrsRegionParser::TryParse(
-        std::string& fileContent,
+
+std::shared_ptr<CLinkerScriptContentBase> CPhdrsRegionContentParser::TryParse(
+        CRawFile& linkerScriptFile,
         std::vector<CRawEntry>::const_iterator& iterator,
         std::vector<CRawEntry>::const_iterator& endOfVectorIterator)
 {   
+    std::vector<CRawEntry>::const_iterator localIterator = iterator;      
+    std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = iterator;    
+    std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
+    std::vector<CViolation> violations;          
+
+    auto parserState = ParserState::AwaitingName;
+    auto doNotAdvance = false;
+
+    CRawEntry nameEntry;
+    CRawEntry typeEntry;
+    CRawEntry fileHdrEntry;
+    CRawEntry phdrsEntry;
+    std::shared_ptr<CFunctionCall> atAddressFunction;
+    std::shared_ptr<CFunctionCall> flagsFunction;
+    CRawEntry semicolonEntry;
+
+    while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
+    {
+        doNotAdvance = false;
+
+        switch (localIterator->EntryType())
+        {
+            case RawEntryType::Comment:
+            {          
+                parsedContent.emplace_back(std::shared_ptr<CComment>(new CComment({*localIterator},std::vector<CViolation>())));
+                break;
+            }
+
+            case RawEntryType::Word:
+            {
+                switch (parserState)
+                {
+                    case ParserState::AwaitingName:
+                    {
+                        if (CheckIfRawEntryInList(linkerScriptFile, *localIterator, IllegalProgramHeaderNames))
+                        {
+                            // We need to abort. Continue to semicolon to recover...
+                            violations.emplace_back(CViolation(*localIterator, ViolationCode::ProgramHeaderNameShouldNotBeAReservedKeyword));
+                            parserState = ParserState::AwaitingSemicolon;
+                            break;
+                        }         
+
+                        nameEntry = *iterator;
+                        parserState = ParserState::AwaitingType;
+                        break;
+                    }
+ 
+                    case ParserState::AwaitingType:
+                    {
+                        auto resolvedContent = linkerScriptFile.ResolveRawEntry(*localIterator);
+                        if ((resolvedContent == "FILEHDR") || (resolvedContent == "PHDRS"))
+                        {
+                            // We need to abort. Continue to semicolon to recover...
+                            violations.emplace_back(CViolation(*localIterator, ViolationCode::WasExpectingProgramHeaderTypeHere));
+                            parserState = ParserState::AwaitingSemicolon;
+                        }
+                        else if (!CheckIfRawEntryInList(linkerScriptFile, *localIterator, ProgramHeaderTypes))
+                        {
+                            // We need to abort. Continue to semicolon to recover...
+                            violations.emplace_back(CViolation(*localIterator, ViolationCode::ProgramHeaderTypeNotRecognized));
+                            parserState = ParserState::AwaitingSemicolon;
+                        }
+                        else
+                        {
+                            nameEntry = *iterator;
+                            parserState = ParserState::AwaitingType;
+                        }
+
+                        break;
+                    }
+ 
+                    case ParserState::AwaitingOptionalFields:
+                    {
+                        auto resolvedContent = linkerScriptFile.ResolveRawEntry(*localIterator);
+                        if (resolvedContent == "FILEHDR")
+                        {
+                            fileHdrEntry = *localIterator;
+                        }
+                        else if (resolvedContent == "PHDRS")
+                        {
+                            doNotAdvance = true;
+                        }
+                        else if (!CheckIfRawEntryInList(linkerScriptFile, *localIterator, ProgramHeaderTypes))
+                        {
+                            // We need to abort. Continue to semicolon to recover...
+                            violations.emplace_back(CViolation(*localIterator, ViolationCode::ProgramHeaderTypeNotRecognized));
+                            parserState = ParserState::AwaitingSemicolon;
+                        }
+                        else
+                        {
+                            // Something bad has happened...
+                            // nameEntry = *iterator;
+                            // parserState = ParserState::AwaitingType;
+                        }
+
+                        break;
+                    }
+ 
+                    case ParserState::AwaitingSemicolon:
+                    {
+ 
+                    }
+ 
+                    default:
+                    {
+                        throw CMasterParsingException(
+                                    MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
+                                    "ParserState invalid in CPhdrsRegionContentParser");
+                    }
+                }
+
+
+                /*
+                if (parserState == ParserState::AwaitingClosingBracket)      
+                {   
+                    auto parsedStatement = std::move(this->m_phdrsRegionContentParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator));
+                    if (parsedStatement.size() == 0)
+                    {
+                        CViolation detectedViolation(
+                            std::move(std::vector<CRawEntry>{ *localIterator }),
+                            ViolationCode::NoSymbolOrKeywordAllowedAfterPhdrsHeader);
+                        violations.emplace_back(detectedViolation);
+                    }
+                    else
+                    {
+                        parsedContent.insert(parsedContent.end(), parsedStatement.begin(), parsedContent.end());
+                    }
+                }
+                else if (parserState == ParserState::AwaitingPhdrsHeader)
+                {
+                    auto stringContent = linkerScriptFile.ResolveRawEntry(*localIterator);
+                    if (stringContent != "PHDRS")
+                    {
+                        // Full abort in this cas
+                        return std::move(parsedContent);
+                    }
+
+                    phdrHeaderEntry = *localIterator;
+                    parserState = ParserState::AwaitingOpenningBracket;
+                }
+                else if (parserState == ParserState::AwaitingOpenningBracket)
+                {                    
+                    CViolation detectedViolation(
+                        std::move(std::vector<CRawEntry>{ *localIterator }),
+                        ViolationCode::NoSymbolOrKeywordAllowedAfterPhdrsHeader);                            
+
+                    violations.emplace_back(std::move(detectedViolation));
+                }
+                break;*/
+            }
+            
+            case RawEntryType::Operator:
+            case RawEntryType::Assignment:
+            case RawEntryType::Number:
+            case RawEntryType::String:
+            case RawEntryType::ParenthesisOpen:
+            case RawEntryType::ParenthesisClose:
+            case RawEntryType::BracketOpen:
+            case RawEntryType::BracketClose:
+            case RawEntryType::Unknown:
+            {
+                throw CMasterParsingException(
+                        MasterParsingExceptionType::NotPresentEntryDetected, 
+                        "A 'Unknown' entry was detected.");
+            }
+
+            case RawEntryType::NotPresent:
+            {
+                throw CMasterParsingException(
+                        MasterParsingExceptionType::NotPresentEntryDetected, 
+                        "A 'non-present' entry was detected.");
+            }
+
+            default:
+            {
+                throw CMasterParsingException(
+                        MasterParsingExceptionType::UnrecognizableRawEntryTypeValueFound, 
+                        "Unrecognized raw-entry type detected.");
+            }
+        }        
     
+        localIterator = ((parserState != ParserState::ParsingComplete) && !doNotAdvance) ?
+                        localIterator + 1 : 
+                        localIterator;
+    }
 
+    std::vector<CRawEntry> rawEntries;    
+    std::copy(parsingStartIteratorPosition, localIterator, rawEntries.begin());
 
+    // We repot back the position parsing should continue with;
+    iterator = (localIterator == endOfVectorIterator) ?
+                localIterator :
+                localIterator + 1;
+
+    auto phdrsStatement = std::shared_ptr<CLinkerScriptContentBase>(
+                new CPhdrsStatement(nameEntry,
+                                    typeEntry,
+                                    fileHdrEntry,
+                                    atAddressFunction,
+                                    flagsFunction,
+                                    semicolonEntry,
+                                    std::move(rawEntries),
+                                    std::move(violations)));
+
+    return phdrsStatement;
 }

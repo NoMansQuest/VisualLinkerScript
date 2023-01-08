@@ -1,16 +1,18 @@
 #include "CExpressionParser.h"
 #include <vector>
 #include <memory>
-#include "../Raw/CRawEntry.h"
+#include "../Models/Raw/CRawEntry.h"
 #include "../Models/CUnrecognizableContent.h"
 #include "../Models/CViolation.h"
 
 using namespace VisualLinkerScript::ParsingEngine::SubParsers;
 using namespace VisualLinkerScript::ParsingEngine::Models;
 
-std::vector<std::unique_ptr<CLinkerScriptContentBase>>&& CDefaultParser::TryParse(std::vector<CRawEntry>::const_iterator& iterator)
+std::shared_ptr<CLinkerScriptContentBase> CExpressionParser::TryParse(
+        CRawFile& linkerScriptFile,
+        std::vector<CRawEntry>::const_iterator& iterator,
+        std::vector<CRawEntry>::const_iterator& endOfVectorIterator)
 {
-
-
-
+    // TODO: Implement the parser
+    return nullptr;
 }

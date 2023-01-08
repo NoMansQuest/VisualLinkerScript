@@ -4,6 +4,8 @@
 #include <vector>
 #include <memory>
 #include "../Models/CLinkerScriptContentBase.h"
+#include "../Models/Raw/CRawFile.h"
+#include "SubParserType.h"
 
 using namespace VisualLinkerScript::ParsingEngine::Models::Raw;    
 using namespace VisualLinkerScript::ParsingEngine::Models;
@@ -20,10 +22,13 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
         /// @param endOfVectorIterator Iterator value pointing to the end of the vector (hence end of parsing)
         /// @return Parsed content (if successful), under which case the @see {iterator} is also updated, otherwise an empty vectoro in case
         ///         of failure to parse
-        virtual std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& CPhdrsRegionParser::TryParse(
-            std::string& fileContent,
-            std::vector<CRawEntry>::const_iterator& iterator,
-            std::vector<CRawEntry>::const_iterator& endOfVectorIterator) = 0;  
+        virtual std::shared_ptr<CLinkerScriptContentBase> TryParse(
+                CRawFile& linkerScriptFile,
+                std::vector<CRawEntry>::const_iterator& iterator,
+                std::vector<CRawEntry>::const_iterator& endOfVectorIterator) = 0;
+
+        /// @brief Type of parser.
+        virtual SubParserType Type() = 0;
     };
 }
 

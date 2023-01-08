@@ -11,27 +11,24 @@ namespace VisualLinkerScript::ParsingEngine::Models
     class CPhdrsRegion : public CLinkerScriptContentBase
     {  
     private:
-        std::vector<CPhdrsStatement> m_phdrsStatements;
+        std::vector<std::shared_ptr<CLinkerScriptContentBase>> m_phdrsStatements;
         CRawEntry m_openningBracketEntry;
         CRawEntry m_closingBracketEntry;
         CRawEntry m_phdrsHeaderEntry;
 
     public:
         /// @brief Default constructor, accessible to inheritors only
-        /// @param rawElements A list of object this element is comprised of
-        /// @param phdrsStatements A list of PHDR statements
-        /// @param violations Violations found in the current element
         explicit CPhdrsRegion(CRawEntry phdrsHeaderEntry,
                               CRawEntry cpenningBracketEntry,
                               CRawEntry closingBracketEntry,
-                              std::vector<CPhdrsStatement>&& phdrsStatements,  
+                              std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& phdrsStatements,
                               std::vector<CRawEntry>&& rawElements,
-                              std::vector<CViolation>&& violations) 
-            : CLinkerScriptContentBase(rawElements, violations),
+                              std::vector<CViolation>&& violations)
+            : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
               m_phdrsStatements(std::move(phdrsStatements)),
-              m_phdrsHeaderEntry(phdrsHeaderEntry),
-              m_phdrsOpenningBracketEntry(phdrsOpenningBracketEntry)
-              m_phdrsClosingBracketEntry(phrdsClosingBracketEntry)
+              m_openningBracketEntry(cpenningBracketEntry),
+              m_closingBracketEntry(closingBracketEntry),
+              m_phdrsHeaderEntry(phdrsHeaderEntry)
         {}        
 
     public:
@@ -42,7 +39,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
         }
 
         /// @brief Reports back PHDR statements
-        const std::vector<CPhdrsStatement>& Statements()
+        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& Statements()
         {
             return m_phdrsStatements;
         }

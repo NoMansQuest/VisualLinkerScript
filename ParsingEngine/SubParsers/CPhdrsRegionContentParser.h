@@ -3,12 +3,15 @@
 
 #include "CSubParserBase.h"
 #include "SubParserType.h"
+#include "../Models/Raw/CRawFile.h"
 #include <memory>
+
+using namespace VisualLinkerScript::ParsingEngine::Models::Raw;
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {   
     /// @brief Object in charge of parsing the "PHDRS" region inside a linker-script
-    class CPhdrsRegionContentParser : CSubParserBase
+    class CPhdrsRegionContentParser : public CSubParserBase
     {
     public:
         /// @copydoc CSubParserBase::Type()
@@ -18,11 +21,11 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
         }
 
         /// @copydoc CSubParserBase::TryParse
-        virtual std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& CPhdrsRegionParser::TryParse(
-                    std::string& fileContent,
-                    std::vector<CRawEntry>::const_iterator& iterator,
-                    std::vector<CRawEntry>::const_iterator& endOfVectorIterator) override;      
-    }
+        virtual std::shared_ptr<CLinkerScriptContentBase> TryParse(
+                CRawFile& linkerScriptFile,
+                std::vector<CRawEntry>::const_iterator& iterator,
+                std::vector<CRawEntry>::const_iterator& endOfVectorIterator) override;
+    };
 }
 
 #endif

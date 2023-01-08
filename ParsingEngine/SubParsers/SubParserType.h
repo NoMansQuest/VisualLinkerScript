@@ -5,13 +5,15 @@
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {   
-    enum class SubParserType : uint32_t
+    /// @brief Type of subparsers. This is to simplify
+    ///        code and avoid dynamic_casts all over the place
+    enum class SubParserType
     {        
         AssignmentParser,
         DefaultParser,
         MemoryRegionParser,
         PhdrsRegionParser,
-        PhdrsRegionContentParser
+        PhdrsRegionContentParser,
         SectionsRegionOverlayParser,
         SectionsRegionParser,
         VersionRegionParser,

@@ -2,7 +2,8 @@
 #define CPHDRS_STATEMENT_H__
 
 #include <vector>
-#include "CExpression.h"
+#include <memory>
+#include "CFunctionCall.h"
 #include "CLinkerScriptContentBase.h"
 
 namespace VisualLinkerScript::ParsingEngine::Models
@@ -10,24 +11,68 @@ namespace VisualLinkerScript::ParsingEngine::Models
     /// @brief Represents a single entry in the PHDRS region
     class CPhdrsStatement : public CLinkerScriptContentBase
     {   
+    private:
+        CRawEntry m_headerNameEntry;
+        CRawEntry m_headerTypeEntry;
+        CRawEntry m_fileHdrEntry;
+        std::shared_ptr<CFunctionCall> m_atAddressFunction;
+        std::shared_ptr<CFunctionCall> m_flagsFunction;
+        CRawEntry m_semicolonEntry;
+
     public:
         /// @brief Default constructor, accessible to inheritors only
         /// @param rawElements A list of object this element is comprised of.
-        explicit CPhdrsStatement(CRawEntry headerName,
-                                 CRawEntry headerType,
-                                 CRawEntry fileHdr,
-                                 std::vector<CRawEntry>&& atAddress,
-                                 CExpression         
+        explicit CPhdrsStatement(CRawEntry headerNameEntry,
+                                 CRawEntry headerTypeEntry,
+                                 CRawEntry fileHdrEntry,
+                                 std::shared_ptr<CFunctionCall> atAddressFunction,
+                                 std::shared_ptr<CFunctionCall> flagsFunction,
+                                 CRawEntry semicolonEntry,
                                  std::vector<CRawEntry>&& rawElements, 
-                                 std::vector<CViolation>&& violations) 
-            : CLinkerScriptContentBase(rawElements, violations)
+                                 std::vector<CViolation>&& violations)
+            : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
+              m_headerNameEntry(headerNameEntry),
+              m_headerTypeEntry(headerTypeEntry),
+              m_fileHdrEntry(fileHdrEntry),
+              m_atAddressFunction(atAddressFunction),
+              m_flagsFunction(flagsFunction),
+              m_semicolonEntry(semicolonEntry)
         {}        
 
-    public:
         /// @brief Reports back the type of this object.        
         ContentType Type() override
         {
             return ContentType::PhdrsStatement;
+        }
+
+        /// @brief Reports back the Header-Name Entry
+        const CRawEntry& HeaderNameEntry()
+        {
+            return this->m_headerNameEntry;
+        }
+
+        /// @brief Reports back the Header-Type Entry
+        const CRawEntry& HeaderTypeEntry()
+        {
+            return this->m_headerTypeEntry;
+        }
+
+        /// @brief Reports back the 'AT(ADDRESS)'
+        const std::shared_ptr<CFunctionCall> AtAddressFunction()
+        {
+            return this->m_atAddressFunction;
+        }
+
+        /// @brief Reports back the Flags function
+        const std::shared_ptr<CFunctionCall> FlagsFunction()
+        {
+            return this->m_flagsFunction;
+        }
+
+        /// @brief Reports back the Semicolon Entry
+        const CRawEntry& SemicolonEntry()
+        {
+            return this->m_semicolonEntry;
         }
     };
 }

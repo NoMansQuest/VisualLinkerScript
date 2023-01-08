@@ -10,15 +10,15 @@ namespace VisualLinkerScript::ParsingEngine::Models
     class CSectionsRegion : public CLinkerScriptContentBase
     {       
     private:
-        std::vector<CLinkerScriptContentBase> m_entries;
+        std::vector<std::shared_ptr<CLinkerScriptContentBase>> m_entries;
 
     public:
         /// @brief Default constructor, accessible to inheritors only
         /// @param rawElements A list of object this element is comprised of.
         explicit CSectionsRegion(std::vector<CRawEntry>&& rawElements, 
-                                 std::vector<CLinkerScriptContentBase>&& entries, 
-                                 std::vector<CViolation>&& violations) 
-            : CLinkerScriptContentBase(rawElements, violations),
+                                 std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& entries,
+                                 std::vector<CViolation>&& violations)
+            : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
               m_entries(std::move(entries))
         {}        
 
@@ -30,7 +30,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
         }
 
         /// @brief Reports back the statements
-        const std::vector<CLinkerScriptContentBase>& Entries()
+        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& Entries()
         {
             return m_entries;
         }

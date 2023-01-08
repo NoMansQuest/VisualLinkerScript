@@ -12,13 +12,19 @@ namespace VisualLinkerScript::ParsingEngine::Models
 {
     /// @brief An exhaustive list of all known violations.
     enum class ViolationCode : uint32_t
-    {        
-        EntryInvalidOrMisplaced,
+    {
+        // Program Header (PHDRS) violations
         NoSymbolOrKeywordAllowedAfterPhdrsHeader,
+        ProgramHeaderNameShouldNotBeAReservedKeyword,
+        ProgramHeaderTypeNotRecognized,
+        WasExpectingProgramHeaderTypeHere,
+
+        //
         MissingOpeningCurlyBracket,
         MissingClosingCurlyBracket,
         MissingOpeningParenthesis,
-        MissingClosingParenthesis
+        MissingClosingParenthesis,
+        EntryInvalidOrMisplaced
     };
 
     /// @brief This object contains information about a detected violation in the Linker Script
@@ -36,6 +42,13 @@ namespace VisualLinkerScript::ParsingEngine::Models
             : m_involvedEntries(std::move(involvedEntries)), 
               m_violationCode(violationCode)
         {}
+
+        /// @brief Simplified constructor accepting only CRawEntry. the @see {involvedEntries} only
+        explicit CViolation(CRawEntry involvedEntry, ViolationCode violationCode)
+            : m_involvedEntries(std::move(std::vector<CRawEntry> { involvedEntry })),
+              m_violationCode(violationCode)
+        {}
+
         
         /// @brief Constructor with @see {involvedEntries}, @see {entryBeforeViolation} and @see {entryAfterViolation}
         explicit CViolation(
@@ -43,10 +56,10 @@ namespace VisualLinkerScript::ParsingEngine::Models
                    CRawEntry entryBeforeViolation,
                    CRawEntry entryAfterViolation,
                    ViolationCode violationCode) 
-            : m_involvedEntries(std::move(involvedEntries)), 
-              m_violationCode(violationCode)              
-              m_entryBeforeViolation(entryBeforeViolation),
-              m_entryAfterViolation(entryAfterViolation)
+            : m_entryBeforeViolation(entryBeforeViolation),
+              m_entryAfterViolation(entryAfterViolation),
+              m_involvedEntries(std::move(involvedEntries)),
+              m_violationCode(violationCode)
         {}
 
         /// @brief Constructor with only @see {entryBeforeViolation} and @see {entryAfterViolation}
@@ -54,14 +67,14 @@ namespace VisualLinkerScript::ParsingEngine::Models
                    CRawEntry entryBeforeViolation,
                    CRawEntry entryAfterViolation,
                    ViolationCode violationCode) 
-            : m_violationCode(violationCode)              
-              m_entryBeforeViolation(entryBeforeViolation),
-              m_entryAfterViolation(entryAfterViolation)
+            : m_entryBeforeViolation(entryBeforeViolation),
+              m_entryAfterViolation(entryAfterViolation),
+              m_violationCode(violationCode)
         {}        
 
     public:
         /// @brief Returns back a list of raw entries involved in the current parsed component of 
-        ///        the current linker script 
+        ///        the current linker script.
         const std::vector<CRawEntry>& InvoledEntries()
         {
             return this->m_involvedEntries;

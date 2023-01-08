@@ -13,8 +13,8 @@ namespace VisualLinkerScript::ParsingEngine::Models
         /// @brief Default constructor, accessible to inheritors only
         /// @param composingRawElements A list of object this element is comprised of.
         explicit CComment(std::vector<CRawEntry>&& composingRawElements,                              
-                          std::vector<CViolation>&& violations) 
-            : CLinkerScriptContentBase(composingRawElements, violations)
+                          std::vector<CViolation>&& violations)
+            : CLinkerScriptContentBase(std::move(composingRawElements), std::move(violations))
         {}        
 
         /// @brief Reports back the type of this object.        

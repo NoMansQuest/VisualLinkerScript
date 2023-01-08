@@ -48,15 +48,9 @@ namespace VisualLinkerScript::ParsingEngine::Models
               m_violations(std::move(violations))
         {}
 
-        /// @brief Constructor, accessible to inheritors only
-        /// @param rawEntries A list of object this element is comprised of
-        explicit CLinkerScriptContentBase(std::vector<CRawEntry>&& rawEntries)
-            : m_rawEntries(std::move(rawEntries))
-        {}
-
     public:
         /// @brief Reports back the type of this object       
-        virtual ContentType Type() = 0;                
+        virtual ContentType Type() = 0;
 
         /// @brief Does content pass integrity check? 
         bool IsValid()

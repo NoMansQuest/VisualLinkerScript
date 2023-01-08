@@ -70,6 +70,12 @@ namespace VisualLinkerScript::ParsingEngine::Models::Raw
             return this->m_entryType; 
         }
 
+        /// @brief Reports back whether this entry is present or serving as a placeholder
+        bool IsPresent() 
+        {
+            return (this->m_entryType != RawEntryType::NotPresent);
+        }
+
         /// @brief Reports back the length of this entry
         /// @return Length of this entry (>0)
         uint32_t Length() const

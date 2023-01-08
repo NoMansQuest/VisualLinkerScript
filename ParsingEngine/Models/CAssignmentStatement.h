@@ -3,8 +3,8 @@
 
 #include <vector>
 #include "CLinkerScriptContentBase.h"
-#include "../Models/Raw/CRawEntry.h"
 #include "CExpression.h"
+#include "../Models/Raw/CRawEntry.h"
 
 namespace VisualLinkerScript::ParsingEngine::Models
 {
@@ -12,68 +12,53 @@ namespace VisualLinkerScript::ParsingEngine::Models
     ///        anywhere and everywhere. 
     class CAssignmentStatement : public CLinkerScriptContentBase
     { 
+    private:
+        std::vector<CRawEntry> m_assignmentOperator;        
+        CExpression m_lValueExpression;
+        CExpression m_rValueExpression;
+        CRawEntry m_semicolonOperator;
+
     public:
+        /// @brief Detailed Constructor
+        explicit CAssignmentStatement(CExpression&& lValueExpression,
+                                      CExpression&& rValueExpression,
+                                      std::vector<CRawEntry>&& assignmentOperator,
+                                      CRawEntry semicolonOperator,
+                                      std::vector<CRawEntry>&& rawElements, 
+                                      std::vector<CViolation>&& violations)
+            : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
+              m_assignmentOperator(std::move(assignmentOperator)),
+              m_lValueExpression(std::move(lValueExpression)),
+              m_rValueExpression(std::move(rValueExpression)),
+              m_semicolonOperator(semicolonOperator)
+        {}             
+
         /// @brief Reports back the type of this object.        
         ContentType Type() override
         {
             return ContentType::AssignmentStatement;
         }    
 
-    private:
-        std::vector<CRawEntry> m_assignmentOperator;        
-        CExpression m_lValueExpression;
-        CExpression m_rValueComposition;
-        CRawEntry m_semicolonOperator;
-
-    public:
-        /// @brief Detailed Constructor
-        explicit CAssignmentStatement(CExpression&& lValueExpression,
-                                      CExpression&& rValueComposition,
-                                      std::vector<CRawEntry>&& assignmentOperator,
-                                      std::CRawEntry semicolonOperator,
-                                      std::vector<CRawEntry>&& rawElements, 
-                                      std::vector<CViolation>&& violations) 
-            : CLinkerScriptContentBase(rawElements, violations),
-              m_lValueComposition(lValueComposition),
-              m_rValueComposition(rValueComposition),
-              m_assignmentOperator(assignmentOperator),
-              m_semicolonOperator(semicolonOperator)
-        {}        
-
-        /// @brief Default constructor
-        explicit CAssignmentStatement(CExpression&& lValueExpression,
-                                      CExpression&& rValueComposition,
-                                      std::vector<CRawEntry>&& assignmentOperator,
-                                      std::CRawEntry semicolonOperator,
-                                      std::vector<CRawEntry>&& rawElements) 
-            : CLinkerScriptContentBase(rawElements),
-              m_lValueComposition(lValueComposition),
-              m_rValueComposition(rValueComposition),
-              m_assignmentOperator(assignmentOperator),
-              m_semicolonOperator(semicolonOperator)
-        {}        
-
-    public:
         /// @brief Gets the "AssignmentOperator"
-        std::vector<CRawEntry>& AssignmentOperator const
+        const std::vector<CRawEntry>& AssignmentOperator()
         {
             return this->m_assignmentOperator;
         }        
 
         /// @brief Gets the "LValueComposition"
-        CExpression& LValueComposition const
+        const CExpression& LValueExpression()
         {
-            return this->m_lValueComposition;
+            return this->m_lValueExpression;
         }
         
         /// @brief Gets the "RValueComposition"
-        CExpression& RValueComposition const
+        const CExpression& RValueExpression()
         {
-            return this->m_rValueComposition;
+            return this->m_rValueExpression;
         }
 
         /// @brief Gets the "SemicolonOperator"
-        CRawEntry& SemicolonOperator() const
+        const CRawEntry& SemicolonOperator()
         {
             return this->m_semicolonOperator;
         }

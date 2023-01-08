@@ -12,9 +12,9 @@ namespace VisualLinkerScript::ParsingEngine::Models
     public:
         /// @brief Default constructor, accessible to inheritors only
         /// @param composingRawElements A list of object this element is comprised of.
-        explicit CVersionNode(std::vector<CRawEntry>&& composingRawElements,                              
-                              std::vector<CViolation>&& violations) 
-            : CLinkerScriptContentBase(composingRawElements, violations)
+        explicit CVersionNode(std::vector<CRawEntry>&& rawElements,
+                              std::vector<CViolation>&& violations)
+            : CLinkerScriptContentBase(std::move(rawElements), std::move(violations))
         {}        
 
         /// @brief Reports back the type of this object.        

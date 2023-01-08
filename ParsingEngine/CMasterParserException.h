@@ -4,16 +4,15 @@
 #include <exception>
 #include <string>
 
-using namespace std;
-
 namespace VisualLinkerScript::ParsingEngine 
 {
     /// @brief Each exception will have its own assigned enum entry
     enum class MasterParsingExceptionType
     {
         NotPresentEntryDetected,
+        ParserMachineStateNotExpectedOrUnknown,
         UnrecognizableRawEntryTypeValueFound,
-        NoParserWasAbleToProceed,
+        NoParserWasAbleToProceed,        
         InternalParserError,   
     };
 
@@ -33,8 +32,8 @@ namespace VisualLinkerScript::ParsingEngine
         }
 
     public:
-        /// @brief Default constructor
-        explicit CPreliminaryParsingException(
+        /// @brief Detailed constructor
+        explicit CMasterParsingException(
             MasterParsingExceptionType type,
             const std::string description)
         {
@@ -43,18 +42,18 @@ namespace VisualLinkerScript::ParsingEngine
         }
 
         /// @brief Default constructor
-        explicit CPreliminaryParsingException(
+        explicit CMasterParsingException(
             MasterParsingExceptionType type)
         {
             this->m_description = "";
             this->m_type = type;
         }
 
-        ~CPreliminaryParsingException() {}
-
+        /// @brief Default destructor
+        ~CMasterParsingException() {}
 
         /// @brief Type of exception
-        MasterParsingExceptionType getExceptionType() const
+        MasterParsingExceptionType getExceptionType()
         {
             return m_type;
         }

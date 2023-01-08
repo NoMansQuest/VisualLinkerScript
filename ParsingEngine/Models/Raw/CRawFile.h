@@ -59,12 +59,10 @@ namespace VisualLinkerScript::ParsingEngine::Models::Raw
 
         /// @brief Resolves the entry by returning the string-content the @see {entryToResolve} is
         ///        referring to.        
-        const std::string& ResolveRawEntry(const CRawEntry& entryToResolve)
+        const std::string ResolveRawEntry(const CRawEntry& entryToResolve) const
         {
-
-        }
-
-        
+            return this->m_fileContent.substr(entryToResolve.StartPosition(),entryToResolve.Length());
+        }        
     };
 }
 

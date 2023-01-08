@@ -16,22 +16,20 @@ namespace VisualLinkerScript::ParsingEngine::Models
     {
 
     private:
-        std::vector<std::unique_ptr<CLinkerScriptContentBase>> m_content;
+        std::vector<std::shared_ptr<CLinkerScriptContentBase>> m_content;
         std::shared_ptr<CRawFile> m_rawFile;
 
     public:
         /// @brief Default constructor
         explicit CLinkerScriptFile(std::shared_ptr<CRawFile> rawFile,
-                                   std::vector<std::unique_ptr<CLinkerScriptContentBase>>&& content)
+                                   std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& content)
             : m_content(std::move(content)), 
               m_rawFile(rawFile)
         {}
 
     public:
-
-
         /// @brief Returns the content of the file
-        const std::vector<std::unique_ptr<CLinkerScriptContentBase>>& Content()
+        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& Content()
         {
             return this->m_content;
         }

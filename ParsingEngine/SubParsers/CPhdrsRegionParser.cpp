@@ -3,14 +3,14 @@
 #include <vector>
 #include <memory>
 #include <string>
-#include "../Raw/CRawEntry.h"
-#include "../Raw/CRawFile.h"
-#include "../Raw/RawEntryType.h"
-#include "../CPhdrsRegion.h"
-#include "../CPhdrsStatement.h"
-#include "../CMasterParserException.h"
+#include "../Models/Raw/CRawEntry.h"
+#include "../Models/Raw/CRawFile.h"
+#include "../Models/Raw/RawEntryType.h"
+#include "../Models/CPhdrsRegion.h"
+#include "../Models/CPhdrsStatement.h"
 #include "../Models/CComment.h"
-#include "../CViolation.h"
+#include "../Models/CViolation.h"
+#include "../CMasterParserException.h"
 
 /* PHDRS Region has the following format:
 *
@@ -56,18 +56,17 @@ namespace
     };
 }
 
-std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& CPhdrsRegionParser::TryParse(
+std::shared_ptr<CLinkerScriptContentBase> CPhdrsRegionParser::TryParse(
         CRawFile& linkerScriptFile,
         std::vector<CRawEntry>::const_iterator& iterator,
         std::vector<CRawEntry>::const_iterator& endOfVectorIterator)
 {
     std::vector<CRawEntry>::const_iterator localIterator = iterator;      
     std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = iterator;    
-    std::vector<CLinkerScriptContentBase> parsedContent;
+    std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
     std::vector<CViolation> violations;          
 
     auto parserState = ParserState::AwaitingPhdrsHeader;
-    auto entryDetected = false; 
 
     CRawEntry phdrHeaderEntry;
     CRawEntry openningBracketEntry;
@@ -79,9 +78,8 @@ std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& CPhdrsRegionParser::Try
         switch (localIterator->EntryType())
         {
             case RawEntryType::Comment:
-            {          
-                CComment commentContent(std::move(std::vector<CRawEntry>{*localIterator}));
-                parsedContent.emplace_back(std::move(commentContent)) ;                
+            {
+                parsedContent.emplace_back(std::shared_ptr<CComment>(new CComment(std::vector<CRawEntry>{*localIterator}, std::vector<CViolation>())));
                 break;
             }
 
@@ -89,17 +87,17 @@ std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& CPhdrsRegionParser::Try
             {
                 if (parserState == ParserState::AwaitingClosingBracket)      
                 {   
-                    auto parsedStatement = std::move(this->m_phdrsRegionContentParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator));
-                    if (parsedStatement.size() == 0)
+                    auto parsedStatement = this->m_phdrsRegionContentParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
+                    if (parsedStatement == nullptr)
                     {
                         CViolation detectedViolation(
-                            std::move(std::vector<CRawEntry>{ *localIterator }),
+                            std::vector<CRawEntry>{ *localIterator },
                             ViolationCode::NoSymbolOrKeywordAllowedAfterPhdrsHeader);
                         violations.emplace_back(detectedViolation);
                     }
                     else
                     {
-                        parsedContent.insert(parsedContent.end(), parsedStatement.begin(), parsedContent.end());
+                        parsedContent.emplace_back(parsedStatement);
                     }
                 }
                 else if (parserState == ParserState::AwaitingPhdrsHeader)
@@ -108,7 +106,7 @@ std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& CPhdrsRegionParser::Try
                     if (stringContent != "PHDRS")
                     {
                         // Full abort in this cas
-                        return std::move(parsedContent);
+                        return nullptr;
                     }
 
                     phdrHeaderEntry = *localIterator;
@@ -117,7 +115,7 @@ std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& CPhdrsRegionParser::Try
                 else if (parserState == ParserState::AwaitingOpenningBracket)
                 {                    
                     CViolation detectedViolation(
-                        std::move(std::vector<CRawEntry>{ *localIterator }),
+                        std::vector<CRawEntry>{ *localIterator },
                         ViolationCode::NoSymbolOrKeywordAllowedAfterPhdrsHeader);                            
 
                     violations.emplace_back(std::move(detectedViolation));
@@ -135,13 +133,13 @@ std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& CPhdrsRegionParser::Try
                 if (parserState == ParserState::AwaitingClosingBracket)
                 {
                     CViolation detectedViolation(
-                            std::move(std::vector<CRawEntry>{ *localIterator }),
+                            std::vector<CRawEntry>{ *localIterator },
                             ViolationCode::EntryInvalidOrMisplaced);
                 }
                 else if (parserState == ParserState::AwaitingOpenningBracket)
                 {
                     CViolation detectedViolation(
-                            std::move(std::vector<CRawEntry>{ *localIterator }),
+                            std::vector<CRawEntry>{ *localIterator },
                             ViolationCode::NoSymbolOrKeywordAllowedAfterPhdrsHeader);                            
 
                     violations.emplace_back(std::move(detectedViolation));
@@ -207,20 +205,19 @@ std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& CPhdrsRegionParser::Try
 
     std::vector<CRawEntry> rawEntries;    
     std::copy(parsingStartIteratorPosition, localIterator, rawEntries.begin());
-    
-    CPhdrsRegion phdrsRegion(
-        std::move(rawEntries),
-        std::move(parsedContent),
-        phdrHeaderEntry,
-        openningBracketEntry,
-        closingBracketEntry,
-        std::move(violations));
+
+    auto phdrsRegion = std::make_shared<CPhdrsRegion>(
+                phdrHeaderEntry,
+                openningBracketEntry,
+                closingBracketEntry,
+                std::move(parsedContent),
+                std::move(rawEntries),
+                std::move(violations));
 
     // We repot back the position parsing should continue with;
     iterator = (localIterator == endOfVectorIterator) ? 
                 localIterator : 
                 localIterator + 1; 
 
-    parsedContent.emplace_back(std::move(phdrsRegion))
-    return std::move(parsedContent);
+    return phdrsRegion;
 }

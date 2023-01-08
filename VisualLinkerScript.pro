@@ -73,7 +73,17 @@ SOURCES += \
     Components/QScintilla/src/qsciscintillabase.cpp \
     Components/QScintilla/src/qscistyle.cpp \
     Components/QScintilla/src/qscistyledtext.cpp \
+    ParsingEngine/CMasterParser.cpp \
     ParsingEngine/CPreliminaryParser.cpp \
+    ParsingEngine/SubParsers/CAssignmentParser.cpp \
+    ParsingEngine/SubParsers/CDefaultParser.cpp \
+    ParsingEngine/SubParsers/CExpressionParser.cpp \
+    ParsingEngine/SubParsers/CMemoryRegionParser.cpp \
+    ParsingEngine/SubParsers/CPhdrsRegionContentParser.cpp \
+    ParsingEngine/SubParsers/CPhdrsRegionParser.cpp \
+    ParsingEngine/SubParsers/CSectionsRegionOverlayParser.cpp \
+    ParsingEngine/SubParsers/CSectionsRegionParser.cpp \
+    ParsingEngine/SubParsers/CVersionRegionParser.cpp \
     main.cpp \
     mainwindow.cpp
 
@@ -158,25 +168,24 @@ HEADERS += \
     Components/QScintilla/src/SciAccessibility.h \
     Components/QScintilla/src/SciClasses.h \
     Components/QScintilla/src/ScintillaQt.h \
+    ParsingEngine/CMasterParser.h \
+    ParsingEngine/CMasterParserException.h \
     ParsingEngine/CParserHelpers.h \
     ParsingEngine/CPreliminaryParser.h \
     ParsingEngine/CPreliminaryParsingException.h \
     ParsingEngine/Models/CAssignmentStatement.h \
-    ParsingEngine/Models/CComment.h \
-    ParsingEngine/Models/CCompoundExpression.h \
-    ParsingEngine/Models/CEnclosedExpression.h \
+    ParsingEngine/Models/CComment.h \        
     ParsingEngine/Models/CExpression.h \
-    ParsingEngine/Models/CLinkerScriptContentBase.h \
-    ParsingEngine/Models/CLinkerScriptEntryBase.h \
+    ParsingEngine/Models/CFunctionCall.h \
+    ParsingEngine/Models/CLinkerScriptContentBase.h \    
     ParsingEngine/Models/CLinkerScriptFile.h \
     ParsingEngine/Models/CMemoryRegion.h \
     ParsingEngine/Models/CMemoryStatement.h \
     ParsingEngine/Models/CPhdrsRegion.h \
-    ParsingEngine/Models/CPhdrsStatement.h \
-    ParsingEngine/Models/CPrimarySymbol.h \
-    ParsingEngine/Models/CProcedureCall.h \
-    ParsingEngine/Models/CSecondarySymbol.h \
+    ParsingEngine/Models/CPhdrsStatement.h \    
+    ParsingEngine/Models/CProcedureCall.h \    
     ParsingEngine/Models/CSectionsRegion.h \
+    ParsingEngine/Models/CSymbol.h \
     ParsingEngine/Models/CUnrecognizableContent.h \
     ParsingEngine/Models/CVersionNode.h \
     ParsingEngine/Models/CVersionScope.h \
@@ -196,6 +205,17 @@ HEADERS += \
     ParsingEngine/Models/CSectionOutputStatement.h \
     ParsingEngine/Models/CSectionOverlayStatement.h \
     ParsingEngine/Models/Raw/RawEntryType.h \
+    ParsingEngine/SubParsers/CAssignmentParser.h \
+    ParsingEngine/SubParsers/CDefaultParser.h \
+    ParsingEngine/SubParsers/CExpressionParser.h \
+    ParsingEngine/SubParsers/CMemoryRegionParser.h \
+    ParsingEngine/SubParsers/CPhdrsRegionContentParser.h \
+    ParsingEngine/SubParsers/CPhdrsRegionParser.h \
+    ParsingEngine/SubParsers/CSectionsRegionOverlayParser.h \
+    ParsingEngine/SubParsers/CSectionsRegionParser.h \
+    ParsingEngine/SubParsers/CSubParserBase.h \
+    ParsingEngine/SubParsers/CVersionRegionParser.h \
+    ParsingEngine/SubParsers/SubParserType.h \
     mainwindow.h
 
 FORMS += \

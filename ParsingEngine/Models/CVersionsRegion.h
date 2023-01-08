@@ -2,6 +2,7 @@
 #define CVERSIONS_REGION_H__
 
 #include <vector>
+#include "../Models/CVersionNode.h"
 #include "CLinkerScriptContentBase.h"
 
 namespace VisualLinkerScript::ParsingEngine::Models
@@ -10,7 +11,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
     class CVersionsRegion : public CLinkerScriptContentBase
     {  
     private:
-        std::vector<CVersionNode> m_versionStatements;
+        std::vector<CVersionNode> m_versionNodes;
 
     public:
         /// @brief Default constructor, accessible to inheritors only
@@ -19,9 +20,9 @@ namespace VisualLinkerScript::ParsingEngine::Models
         /// @param violations Violations found in the current element
         explicit CVersionsRegion(std::vector<CRawEntry>&& rawElements, 
                                  std::vector<CVersionNode>&& versionNodes,  
-                                 std::vector<CViolation>&& violations) 
-            : CLinkerScriptContentBase(rawElements, violations),
-              m_versionStatements(std::move(versionNodes))
+                                 std::vector<CViolation>&& violations)
+            : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
+              m_versionNodes(std::move(versionNodes))
         {}        
 
     public:
@@ -32,9 +33,9 @@ namespace VisualLinkerScript::ParsingEngine::Models
         }
 
         /// @brief Reports back PHDR statements
-        const std::vector<CPhdrsStatement>& Statements()
+        const std::vector<CVersionNode>& Nodes()
         {
-            return m_phdrsStatements;
+            return m_versionNodes;
         }
     };
 }

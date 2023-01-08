@@ -3,7 +3,8 @@
 
 #include <vector>
 #include "CLinkerScriptContentBase.h"
-#include "../Raw/CRawEntry.h"
+#include "Raw/CRawEntry.h"
+#include "CMemoryStatement.h"
 
 using namespace VisualLinkerScript::ParsingEngine::Models::Raw;
 
@@ -20,15 +21,17 @@ namespace VisualLinkerScript::ParsingEngine::Models
 
     public:
         /// @brief Default constructor, accessible to inheritors only
-        /// @param rawElements A list of object this element is comprised of.
         explicit CMemoryRegion(CRawEntry headerTag,
                                CRawEntry openiningBracket,
                                CRawEntry closingBracket, 
                                std::vector<CRawEntry>&& rawElements, 
                                std::vector<CMemoryStatement>&& memoryStatements, 
-                               std::vector<CViolation>&& violations) 
-            : CLinkerScriptContentBase(rawElements, violations),
-              m_memoryStatements(std::move(memoryStatements))
+                               std::vector<CViolation>&& violations)
+            : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
+              m_memoryStatements(std::move(memoryStatements)),
+              m_headerTag(headerTag),
+              m_openingBracket(openiningBracket),
+              m_closingBracket(closingBracket)
         {}        
 
     public:
@@ -39,25 +42,25 @@ namespace VisualLinkerScript::ParsingEngine::Models
         }
 
         /// @brief Reports back the statements
-        std::vector<CMemoryStatement>& Statements() const
+        const std::vector<CMemoryStatement>& Statements()
         {
             return m_memoryStatements;
         }
 
         /// @brief Gets the header tag in raw-element
-        CRawEntry& HeaderTag() const
+        const CRawEntry& HeaderTag()
         {
             return this->m_headerTag;
         }
 
         /// @brief Gets the opening-bracket's raw-element
-        CRawEntry& OpeningBracket() const
+        const CRawEntry& OpeningBracket()
         {
             return this->m_openingBracket;
         }
 
         /// @brief Gets the closing-bracket's raw-element
-        CRawEntry& ClosingBracket() const
+        const CRawEntry& ClosingBracket()
         {
             return this->m_closingBracket;
         }

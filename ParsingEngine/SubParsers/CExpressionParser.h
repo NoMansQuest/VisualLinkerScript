@@ -8,7 +8,7 @@
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {   
     /// @brief Object in charge parsing R-Value expression (e.g. a + b - c + ((f / g) - h) ...)
-    class CExpressionParser : CSubParserBase
+    class CExpressionParser : public CSubParserBase
     {
     public:
         /// @copydoc CSubParserBase::Type()
@@ -17,10 +17,12 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
             return SubParserType::ExpressionParser;
         }
 
-        /// @copydoc CSubParserBase::TryParse(std::vector<CRawEntry>::const_iterator&)
-        virtual std::vector<std::unique_ptr<CLinkerScriptContentBase>>&& TryParse(
-                std::vector<CRawEntry>::const_iterator& iterator) override;
-    }
+        /// @copydoc CSubParserBase::TryParse()
+        virtual std::shared_ptr<CLinkerScriptContentBase> TryParse(
+                CRawFile& linkerScriptFile,
+                std::vector<CRawEntry>::const_iterator& iterator,
+                std::vector<CRawEntry>::const_iterator& endOfVectorIterator) override;
+    };
 }
 
 #endif

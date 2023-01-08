@@ -25,6 +25,8 @@
 #include "CharacterSet.h"
 #include "LexerModule.h"
 
+#define UNREFERENCED_PARAMETER(P) (P)
+
 using namespace Scintilla;
 
 /// @brief Anonymous namespace, used to avoid naming conflicts
@@ -352,6 +354,8 @@ namespace LinkerScript
 
 static void ColouriseLinkerScriptDoc(Sci_PositionU startPos, Sci_Position length, int initStyle, WordList *keywordLists[], Accessor &styler)
 {
+    UNREFERENCED_PARAMETER(keywordLists);
+
     int state = (startPos == 0) ? SCE_LINKERSCRIPT_DEFAULT : initStyle;    
     auto processedStartPosition = startPos;    
 
