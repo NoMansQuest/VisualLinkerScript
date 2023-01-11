@@ -3,7 +3,6 @@
 
 #include <vector>
 #include <memory>
-#include "CFunctionCall.h"
 #include "CLinkerScriptContentBase.h"
 
 namespace VisualLinkerScript::ParsingEngine::Models
@@ -15,8 +14,8 @@ namespace VisualLinkerScript::ParsingEngine::Models
         CRawEntry m_headerNameEntry;
         CRawEntry m_headerTypeEntry;
         CRawEntry m_fileHdrEntry;
-        std::shared_ptr<CFunctionCall> m_atAddressFunction;
-        std::shared_ptr<CFunctionCall> m_flagsFunction;
+        std::shared_ptr<CLinkerScriptContentBase> m_atAddressFunction;
+        std::shared_ptr<CLinkerScriptContentBase> m_flagsFunction;
         CRawEntry m_semicolonEntry;
 
     public:
@@ -25,8 +24,8 @@ namespace VisualLinkerScript::ParsingEngine::Models
         explicit CPhdrsStatement(CRawEntry headerNameEntry,
                                  CRawEntry headerTypeEntry,
                                  CRawEntry fileHdrEntry,
-                                 std::shared_ptr<CFunctionCall> atAddressFunction,
-                                 std::shared_ptr<CFunctionCall> flagsFunction,
+                                 std::shared_ptr<CLinkerScriptContentBase> atAddressFunction,
+                                 std::shared_ptr<CLinkerScriptContentBase> flagsFunction,
                                  CRawEntry semicolonEntry,
                                  std::vector<CRawEntry>&& rawElements, 
                                  std::vector<CViolation>&& violations)
@@ -58,13 +57,13 @@ namespace VisualLinkerScript::ParsingEngine::Models
         }
 
         /// @brief Reports back the 'AT(ADDRESS)'
-        const std::shared_ptr<CFunctionCall> AtAddressFunction()
+        const std::shared_ptr<CLinkerScriptContentBase> AtAddressFunction()
         {
             return this->m_atAddressFunction;
         }
 
         /// @brief Reports back the Flags function
-        const std::shared_ptr<CFunctionCall> FlagsFunction()
+        const std::shared_ptr<CLinkerScriptContentBase> FlagsFunction()
         {
             return this->m_flagsFunction;
         }

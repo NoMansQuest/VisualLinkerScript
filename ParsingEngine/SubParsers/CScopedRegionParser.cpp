@@ -1,33 +1,13 @@
-#include "CMemoryRegionParser.h"
 #include <vector>
 #include <memory>
 #include <string>
+#include "CScopedRegionParser.h"
 #include "../Models/Raw/CRawEntry.h"
 #include "../Models/Raw/CRawFile.h"
 #include "../Models/Raw/RawEntryType.h"
-#include "../Models/CMemoryRegion.h"
 #include "../Models/CComment.h"
 #include "../Models/CViolation.h"
 #include "../CMasterParserException.h"
-
-/*
- *
- * Structure of the 'MEMORY' region
- * MEMORY
- * {
- *     name [(attr)] : ORIGIN = origin, LENGTH = len
- *     …
- * }
- *
- * An exmaple memory region:
- *
- * MEMORY
- * {
- *  rom (rx)  : ORIGIN = 0, LENGTH = 256K
- *  ram (!rx) : org = 0x40000000, l = 4M
- * }
- *
- */
 
 using namespace VisualLinkerScript::ParsingEngine::SubParsers;
 using namespace VisualLinkerScript::ParsingEngine::Models;
@@ -38,14 +18,15 @@ namespace
     /// @brief Parse states for Memory-Region
     enum class ParserState
     {
-        AwaitingMemoryRegionHeader,
+        AwaitingHeader,
         AwaitingOpenningBracket,
         AwaitingClosingBracket,
         ParsingComplete
     };
 }
 
-std::shared_ptr<CLinkerScriptContentBase> CMemoryParserRegion::TryParse(
+template <SubParserType TParserType, typename TContentParserType, class TProducingOutputType>
+std::shared_ptr<CLinkerScriptContentBase> CScopedRegionParser<TParserType, TContentParserType, TProducingOutputType>::TryParse(
         CRawFile& linkerScriptFile,
         std::vector<CRawEntry>::const_iterator& iterator,
         std::vector<CRawEntry>::const_iterator& endOfVectorIterator)
@@ -55,14 +36,13 @@ std::shared_ptr<CLinkerScriptContentBase> CMemoryParserRegion::TryParse(
     std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
     std::vector<CViolation> violations;
 
-    auto parserState = ParserState::AwaitingMemoryRegionHeader;
+    auto parserState = ParserState::AwaitingHeader;
 
-    CRawEntry memoryRegionHeaderEntry;
+    CRawEntry regionHeaderEntry;
     CRawEntry openningBracketEntry;
     CRawEntry closingBracketEntry;
 
-    while ((localIterator != endOfVectorIterator) &&
-           (parserState != ParserState::ParsingComplete))
+    while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
     {
         switch (localIterator->EntryType())
         {
@@ -89,16 +69,16 @@ std::shared_ptr<CLinkerScriptContentBase> CMemoryParserRegion::TryParse(
                         parsedContent.emplace_back(parsedStatement);
                     }
                 }
-                else if (parserState == ParserState::AwaitingMemoryRegionHeader)
+                else if (parserState == ParserState::AwaitingHeader)
                 {
                     auto stringContent = linkerScriptFile.ResolveRawEntry(*localIterator);
-                    if (stringContent != "MEMORY")
+                    if (stringContent != this->GetHeaderName())
                     {
                         // Full abort in this cas
                         return nullptr;
                     }
 
-                    memoryRegionHeaderEntry = *localIterator;
+                    regionHeaderEntry = *localIterator;
                     parserState = ParserState::AwaitingOpenningBracket;
                 }
                 else if (parserState == ParserState::AwaitingOpenningBracket)
@@ -148,7 +128,7 @@ std::shared_ptr<CLinkerScriptContentBase> CMemoryParserRegion::TryParse(
                     parserState = ParserState::AwaitingClosingBracket;
                 }
                 else if ((parserState == ParserState::AwaitingClosingBracket) ||
-                         (parserState == ParserState::AwaitingMemoryRegionHeader))
+                         (parserState == ParserState::AwaitingHeader))
                 {
                     parserState = ParserState::ParsingComplete;
                 }
@@ -196,12 +176,12 @@ std::shared_ptr<CLinkerScriptContentBase> CMemoryParserRegion::TryParse(
     std::copy(parsingStartIteratorPosition, localIterator, rawEntries.begin());
 
     auto memoryRegion = std::shared_ptr<CLinkerScriptContentBase>(
-                new CMemoryRegion(memoryRegionHeaderEntry,
-                                  openningBracketEntry,
-                                  closingBracketEntry,
-                                  std::move(parsedContent),
-                                  std::move(rawEntries),
-                                  std::move(violations)));
+                new TProducingOutputType(regionHeaderEntry,
+                                         openningBracketEntry,
+                                         closingBracketEntry,
+                                         std::move(parsedContent),
+                                         std::move(rawEntries),
+                                         std::move(violations)));
 
     // We repot back the position parsing should continue with;
     iterator = (localIterator == endOfVectorIterator) ?

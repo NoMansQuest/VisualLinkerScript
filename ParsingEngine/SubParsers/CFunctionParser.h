@@ -1,32 +1,33 @@
-#ifndef CMEMORY_REGION_PARSER_H__
-#define CMEMORY_REGION_PARSER_H__
+#ifndef CFUNCTION_PARSER_H__
+#define CFUNCTION_PARSER_H__
 
 #include "CSubParserBase.h"
-#include "CMemoryRegionContentParser.h"
 #include "SubParserType.h"
+#include "CExpressionParser.h"
 #include <memory>
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers
-{
-    /// @brief Object in charge of parsing the "MEMORY" region inside a linker-script
-    class CMemoryParserRegion : public CSubParserBase
+{   
+    /// @brief Object in charge parsing a full function: <NAME>(<EXPRESSION>)
+    class CFunctionParser : public CSubParserBase
     {
     private:
-        CMemoryRegionContentParser m_memoryRegionContentParser;
+        CExpressionParser m_expressionParser;
 
     public:
         /// @copydoc CSubParserBase::Type()
         virtual SubParserType Type() override 
         {
-            return SubParserType::MemoryRegionParser;
+            return SubParserType::FunctionParser;
         }
 
-        /// @copydoc CSubParserBase::TryParse(std::vector<CRawEntry>::const_iterator&)
+        /// @copydoc CSubParserBase::TryParse()
         virtual std::shared_ptr<CLinkerScriptContentBase> TryParse(
                 CRawFile& linkerScriptFile,
                 std::vector<CRawEntry>::const_iterator& iterator,
                 std::vector<CRawEntry>::const_iterator& endOfVectorIterator) override;
     };
 }
+
 
 #endif

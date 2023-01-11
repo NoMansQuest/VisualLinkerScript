@@ -73,14 +73,28 @@ SOURCES += \
     Components/QScintilla/src/qsciscintillabase.cpp \
     Components/QScintilla/src/qscistyle.cpp \
     Components/QScintilla/src/qscistyledtext.cpp \
+    Models/LinkerScript/CLinkerScriptEntity.cpp \
+    Models/LinkerScript/CMemoryEntry.cpp \
+    Models/LinkerScript/CMemoryRegion.cpp \
+    Models/LinkerScript/CProgramHeader.cpp \
+    Models/LinkerScript/CProgramHeadersRegion.cpp \
+    Models/LinkerScript/CSectionsRegion.cpp \
+    Models/LinkerScript/CSectionsRegionEntry.cpp \
+    Models/LinkerScript/CSectionsRegionObjectBase.cpp \
+    Models/LinkerScript/CSectionsRegionOverlay.cpp \
+    Models/LinkerScript/CSectionsRegionSection.cpp \
+    Models/LinkerScript/CSymbolAssignment.cpp \
     ParsingEngine/CMasterParser.cpp \
     ParsingEngine/CPreliminaryParser.cpp \
     ParsingEngine/SubParsers/CAssignmentParser.cpp \
     ParsingEngine/SubParsers/CDefaultParser.cpp \
     ParsingEngine/SubParsers/CExpressionParser.cpp \
+    ParsingEngine/SubParsers/CFunctionParser.cpp \
+    ParsingEngine/SubParsers/CMemoryRegionContentParser.cpp \
     ParsingEngine/SubParsers/CMemoryRegionParser.cpp \
     ParsingEngine/SubParsers/CPhdrsRegionContentParser.cpp \
     ParsingEngine/SubParsers/CPhdrsRegionParser.cpp \
+    ParsingEngine/SubParsers/CScopedRegionParser.cpp \
     ParsingEngine/SubParsers/CSectionsRegionOverlayParser.cpp \
     ParsingEngine/SubParsers/CSectionsRegionParser.cpp \
     ParsingEngine/SubParsers/CVersionRegionParser.cpp \
@@ -156,7 +170,7 @@ HEADERS += \
     Components/QScintilla/src/Qsci/qscicommandset.h \
     Components/QScintilla/src/Qsci/qscidocument.h \
     Components/QScintilla/src/Qsci/qsciglobal.h \
-    Components/QScintilla/src/Qsci/qscilexer.h \     \
+    Components/QScintilla/src/Qsci/qscilexer.h \
     Components/QScintilla/src/Qsci/qscilexercpp.h \
     Components/QScintilla/src/Qsci/qscilexerlinkerscript.h \
     Components/QScintilla/src/Qsci/qscimacro.h \
@@ -168,22 +182,77 @@ HEADERS += \
     Components/QScintilla/src/SciAccessibility.h \
     Components/QScintilla/src/SciClasses.h \
     Components/QScintilla/src/ScintillaQt.h \
+    Models/LinkerScript/CLinkerScriptEntity.h \
+    Models/LinkerScript/CMemoryEntry.h \
+    Models/LinkerScript/CMemoryRegion.h \
+    Models/LinkerScript/CProgramHeader.h \
+    Models/LinkerScript/CProgramHeadersRegion.h \
+    Models/LinkerScript/CSectionsRegion.h \
+    Models/LinkerScript/CSectionsRegionEntry.h \
+    Models/LinkerScript/CSectionsRegionObjectBase.h \
+    Models/LinkerScript/CSectionsRegionOverlay.h \
+    Models/LinkerScript/CSectionsRegionSection.h \
+    Models/LinkerScript/CSymbolAssignment.h \
     ParsingEngine/CMasterParser.h \
     ParsingEngine/CMasterParserException.h \
     ParsingEngine/CParserHelpers.h \
     ParsingEngine/CPreliminaryParser.h \
     ParsingEngine/CPreliminaryParsingException.h \
     ParsingEngine/Models/CAssignmentStatement.h \
-    ParsingEngine/Models/CComment.h \        
+    ParsingEngine/Models/CComment.h \
     ParsingEngine/Models/CExpression.h \
     ParsingEngine/Models/CFunctionCall.h \
-    ParsingEngine/Models/CLinkerScriptContentBase.h \    
+    ParsingEngine/Models/CLinkerScriptContentBase.h \
     ParsingEngine/Models/CLinkerScriptFile.h \
     ParsingEngine/Models/CMemoryRegion.h \
     ParsingEngine/Models/CMemoryStatement.h \
     ParsingEngine/Models/CPhdrsRegion.h \
-    ParsingEngine/Models/CPhdrsStatement.h \    
-    ParsingEngine/Models/CProcedureCall.h \    
+    ParsingEngine/Models/CPhdrsStatement.h \
+    ParsingEngine/Models/CProcedureCall.h \
+    ParsingEngine/Models/CSectionOutputStatement.h \
+    ParsingEngine/Models/CSectionOverlayStatement.h \
+    ParsingEngine/Models/CSectionsRegion.h \
+    ParsingEngine/Models/CSymbol.h \
+    ParsingEngine/Models/CUnrecognizableContent.h \
+    ParsingEngine/Models/CVersionNode.h \
+    ParsingEngine/Models/CVersionScope.h \
+    ParsingEngine/Models/CVersionScopeEntry.h \
+    ParsingEngine/Models/CVersionsRegion.h \
+    ParsingEngine/Models/CViolation.h \
+    ParsingEngine/Models/Evaluation/ArithmeticOperationType.h \
+    ParsingEngine/Models/Evaluation/CArithmeticResultOp.h \
+    ParsingEngine/Models/Evaluation/CCompoundResult.h \
+    ParsingEngine/Models/Evaluation/CEvaluatableBase.h \
+    ParsingEngine/Models/Evaluation/CNumericResult.h \
+    ParsingEngine/Models/Evaluation/CResultBase.h \
+    ParsingEngine/Models/Evaluation/CSymbolResult.h \
+    ParsingEngine/Models/Evaluation/EvaluationResultType.h \
+    ParsingEngine/Models/Raw/CRawEntry.h \
+    ParsingEngine/Models/Raw/CRawFile.h \
+    ParsingEngine/Models/Raw/RawEntryType.h \
+    ParsingEngine/SubParsers/CAssignmentParser.h \
+    ParsingEngine/SubParsers/CDefaultParser.h \
+    ParsingEngine/SubParsers/CExpressionParser.h \
+    ParsingEngine/SubParsers/CFunctionParser.h \
+    ParsingEngine/SubParsers/CMemoryRegionContentParser.h \
+    ParsingEngine/SubParsers/CMemoryRegionParser.h \
+    ParsingEngine/SubParsers/CPhdrsRegionContentParser.h \
+    ParsingEngine/SubParsers/CPhdrsRegionParser.h \
+    ParsingEngine/SubParsers/CScopedRegionParser.h \
+    ParsingEngine/SubParsers/CSectionsRegionOverlayParser.h \
+    ParsingEngine/SubParsers/CSectionsRegionParser.h \
+    ParsingEngine/SubParsers/CSubParserBase.h \
+    ParsingEngine/SubParsers/CVersionRegionParser.h \
+    ParsingEngine/SubParsers/SubParserType.h \
+    ParsingEngine/Models/CExpression.h \
+    ParsingEngine/Models/CFunctionCall.h \
+    ParsingEngine/Models/CLinkerScriptContentBase.h \
+    ParsingEngine/Models/CLinkerScriptFile.h \
+    ParsingEngine/Models/CMemoryRegion.h \
+    ParsingEngine/Models/CMemoryStatement.h \
+    ParsingEngine/Models/CPhdrsRegion.h \
+    ParsingEngine/Models/CPhdrsStatement.h \
+    ParsingEngine/Models/CProcedureCall.h \
     ParsingEngine/Models/CSectionsRegion.h \
     ParsingEngine/Models/CSymbol.h \
     ParsingEngine/Models/CUnrecognizableContent.h \

@@ -53,6 +53,19 @@ namespace VisualLinkerScript::ParsingEngine::Models::Raw
         ~CRawEntry()
         {}
 
+        /// @brief Assignment operator
+        CRawEntry& operator= (const CRawEntry& cloneSource)
+        {
+            this->m_startPosition = cloneSource.StartPosition();
+            this->m_length = cloneSource.Length();
+            this->m_parenthesisDepth = cloneSource.ParenthesisDepth();
+            this->m_scopeDepth = cloneSource.ScopeDepth();
+            this->m_startLineNumber = cloneSource.StartLineNumber();
+            this->m_endLineNumber = cloneSource.EndLineNumber();
+            this->m_entryType = cloneSource.EntryType();
+            return *this;
+        }
+
     private:
         uint32_t m_startPosition;
         uint32_t m_length;

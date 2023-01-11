@@ -4,7 +4,6 @@
 #include <vector>
 #include "CLinkerScriptContentBase.h"
 #include "Raw/CRawEntry.h"
-#include "CMemoryStatement.h"
 
 using namespace VisualLinkerScript::ParsingEngine::Models::Raw;
 
@@ -14,7 +13,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
     class CMemoryRegion : public CLinkerScriptContentBase
     {       
     private:
-        std::vector<CMemoryStatement> m_memoryStatements;
+        std::vector<std::shared_ptr<CLinkerScriptContentBase>> m_memoryStatements;
         CRawEntry m_headerTag;
         CRawEntry m_openingBracket;
         CRawEntry m_closingBracket;
@@ -23,9 +22,9 @@ namespace VisualLinkerScript::ParsingEngine::Models
         /// @brief Default constructor, accessible to inheritors only
         explicit CMemoryRegion(CRawEntry headerTag,
                                CRawEntry openiningBracket,
-                               CRawEntry closingBracket, 
-                               std::vector<CRawEntry>&& rawElements, 
-                               std::vector<CMemoryStatement>&& memoryStatements, 
+                               CRawEntry closingBracket,
+                               std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& memoryStatements,
+                               std::vector<CRawEntry>&& rawElements,
                                std::vector<CViolation>&& violations)
             : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
               m_memoryStatements(std::move(memoryStatements)),
@@ -42,7 +41,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
         }
 
         /// @brief Reports back the statements
-        const std::vector<CMemoryStatement>& Statements()
+        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& Statements()
         {
             return m_memoryStatements;
         }

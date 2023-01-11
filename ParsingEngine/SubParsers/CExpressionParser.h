@@ -1,5 +1,5 @@
-#ifndef CDEFAULT_PARSER_H__
-#define CDEFAULT_PARSER_H__
+#ifndef CEXPRESSION_PARSER_H__
+#define CEXPRESSION_PARSER_H__
 
 #include "CSubParserBase.h"
 #include "SubParserType.h"

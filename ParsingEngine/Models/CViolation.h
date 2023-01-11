@@ -17,7 +17,14 @@ namespace VisualLinkerScript::ParsingEngine::Models
         NoSymbolOrKeywordAllowedAfterPhdrsHeader,
         ProgramHeaderNameShouldNotBeAReservedKeyword,
         ProgramHeaderTypeNotRecognized,
+        ProgramHeaderFileHdrAlreadySet,
+        ProgramHeaderPhdrsAlreadySet,
+        ProgramHeaderAtAddressAlreadySet,
+        ProgramHeaderFlagsAlreadySet,
         WasExpectingProgramHeaderTypeHere,
+
+        // Memory region violations
+        NoSymbolOrKeywordAllowedAfterMemoryHeader,
 
         //
         MissingOpeningCurlyBracket,

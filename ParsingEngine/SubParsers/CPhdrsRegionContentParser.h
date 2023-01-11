@@ -2,6 +2,7 @@
 #define CPHDRS_REGION_CONTENT_PARSER_H__
 
 #include "CSubParserBase.h"
+#include "CExpressionParser.h"
 #include "SubParserType.h"
 #include "../Models/Raw/CRawFile.h"
 #include <memory>
@@ -13,6 +14,9 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
     /// @brief Object in charge of parsing the "PHDRS" region inside a linker-script
     class CPhdrsRegionContentParser : public CSubParserBase
     {
+    private:
+        CExpressionParser m_expressionParser;
+
     public:
         /// @copydoc CSubParserBase::Type()
         virtual SubParserType Type() override 
