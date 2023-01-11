@@ -91,13 +91,11 @@ SOURCES += \
     ParsingEngine/SubParsers/CExpressionParser.cpp \
     ParsingEngine/SubParsers/CFunctionParser.cpp \
     ParsingEngine/SubParsers/CMemoryRegionContentParser.cpp \
-    ParsingEngine/SubParsers/CMemoryRegionParser.cpp \
     ParsingEngine/SubParsers/CPhdrsRegionContentParser.cpp \
-    ParsingEngine/SubParsers/CPhdrsRegionParser.cpp \
     ParsingEngine/SubParsers/CScopedRegionParser.cpp \
+    ParsingEngine/SubParsers/CSectionsRegionContentParser.cpp \
     ParsingEngine/SubParsers/CSectionsRegionOverlayParser.cpp \
-    ParsingEngine/SubParsers/CSectionsRegionParser.cpp \
-    ParsingEngine/SubParsers/CVersionRegionParser.cpp \
+    ParsingEngine/SubParsers/CVersionRegionContentParser.cpp \
     main.cpp \
     mainwindow.cpp
 
@@ -239,9 +237,11 @@ HEADERS += \
     ParsingEngine/SubParsers/CPhdrsRegionContentParser.h \
     ParsingEngine/SubParsers/CPhdrsRegionParser.h \
     ParsingEngine/SubParsers/CScopedRegionParser.h \
+    ParsingEngine/SubParsers/CSectionsRegionContentParser.h \
     ParsingEngine/SubParsers/CSectionsRegionOverlayParser.h \
     ParsingEngine/SubParsers/CSectionsRegionParser.h \
     ParsingEngine/SubParsers/CSubParserBase.h \
+    ParsingEngine/SubParsers/CVersionRegionContentParser.h \
     ParsingEngine/SubParsers/CVersionRegionParser.h \
     ParsingEngine/SubParsers/SubParserType.h \
     ParsingEngine/Models/CExpression.h \
@@ -279,7 +279,6 @@ HEADERS += \
     ParsingEngine/SubParsers/CExpressionParser.h \
     ParsingEngine/SubParsers/CMemoryRegionParser.h \
     ParsingEngine/SubParsers/CPhdrsRegionContentParser.h \
-    ParsingEngine/SubParsers/CPhdrsRegionParser.h \
     ParsingEngine/SubParsers/CSectionsRegionOverlayParser.h \
     ParsingEngine/SubParsers/CSectionsRegionParser.h \
     ParsingEngine/SubParsers/CSubParserBase.h \

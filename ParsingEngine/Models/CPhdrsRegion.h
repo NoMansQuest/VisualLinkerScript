@@ -11,7 +11,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
     class CPhdrsRegion : public CLinkerScriptContentBase
     {  
     private:
-        std::vector<std::shared_ptr<CLinkerScriptContentBase>> m_phdrsStatements;
+        std::vector<std::shared_ptr<CLinkerScriptContentBase>> m_statements;
         CRawEntry m_openningBracketEntry;
         CRawEntry m_closingBracketEntry;
         CRawEntry m_phdrsHeaderEntry;
@@ -19,14 +19,14 @@ namespace VisualLinkerScript::ParsingEngine::Models
     public:
         /// @brief Default constructor, accessible to inheritors only
         explicit CPhdrsRegion(CRawEntry phdrsHeaderEntry,
-                              CRawEntry cpenningBracketEntry,
+                              CRawEntry openningBracketEntry,
                               CRawEntry closingBracketEntry,
                               std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& phdrsStatements,
                               std::vector<CRawEntry>&& rawElements,
                               std::vector<CViolation>&& violations)
             : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
-              m_phdrsStatements(std::move(phdrsStatements)),
-              m_openningBracketEntry(cpenningBracketEntry),
+              m_statements(std::move(phdrsStatements)),
+              m_openningBracketEntry(openningBracketEntry),
               m_closingBracketEntry(closingBracketEntry),
               m_phdrsHeaderEntry(phdrsHeaderEntry)
         {}        
@@ -41,7 +41,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
         /// @brief Reports back PHDR statements
         const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& Statements()
         {
-            return m_phdrsStatements;
+            return m_statements;
         }
 
         /// @brief Reports back the entry containing the 'PHDRS' header  

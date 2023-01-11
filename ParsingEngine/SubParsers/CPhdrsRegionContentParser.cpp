@@ -1,4 +1,3 @@
-
 #include "CPhdrsRegionContentParser.h"
 #include <vector>
 #include <memory>
@@ -295,17 +294,6 @@ std::shared_ptr<CLinkerScriptContentBase> CPhdrsRegionContentParser::TryParse(
     iterator = (localIterator == endOfVectorIterator) ?
                 localIterator :
                 localIterator + 1;
-
-    /*
-     * t(CRawEntry headerNameEntry,
-                                 CRawEntry headerTypeEntry,
-                                 CRawEntry fileHdrEntry,
-                                 std::shared_ptr<CFunctionCall> atAddressFunction,
-                                 std::shared_ptr<CFunctionCall> flagsFunction,
-                                 CRawEntry semicolonEntry,
-                                 std::vector<CRawEntry>&& rawElements,
-                                 std::vector<CViolation>&& violations)
-                                 */
 
     auto phdrsStatement = std::shared_ptr<CLinkerScriptContentBase>(
                 new CPhdrsStatement(nameEntry,

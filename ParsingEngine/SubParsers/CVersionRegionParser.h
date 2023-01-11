@@ -1,27 +1,23 @@
 #ifndef CVERSION_REGION_PARSER_H__
 #define CVERSION_REGION_PARSER_H__
 
-#include "CSubParserBase.h"
+#include "CScopedRegionParser.h"
+#include "../Models/CVersionsRegion.h"
+#include "CVersionRegionContentParser.h"
 #include "SubParserType.h"
 #include <memory>
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {
     /// @brief Object in charge of parsing the "VERSIONS" region inside a linker-script
-    class CVersionRegionParser : public CSubParserBase
+    class CVersionRegionParser : public CScopedRegionParser<SubParserType::VersionRegionParser, CVersionRegionContentParser, CVersionsRegion>
     {
-    public:
-        /// @copydoc CSubParserBase::Type()
-        virtual SubParserType Type() override 
+    protected:
+        /// @copydoc CScopedRegionParser:GetHeaderName()
+        virtual std::string GetHeaderName() override
         {
-            return SubParserType::VersionRegionParser;
+            return "VERSION";
         }
-
-        /// @copydoc CSubParserBase::TryParse(std::vector<CRawEntry>::const_iterator&)
-        virtual std::shared_ptr<CLinkerScriptContentBase> TryParse(
-                CRawFile& linkerScriptFile,
-                std::vector<CRawEntry>::const_iterator& iterator,
-                std::vector<CRawEntry>::const_iterator& endOfVectorIterator) override;
     };
 }
 

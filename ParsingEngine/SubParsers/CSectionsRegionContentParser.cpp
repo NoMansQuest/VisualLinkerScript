@@ -1,4 +1,4 @@
-#include "CMemoryRegionContentParser.h"
+#include "CSectionsRegionContentParser.h"
 #include <vector>
 #include <memory>
 #include <string>
@@ -13,7 +13,7 @@ using namespace VisualLinkerScript::ParsingEngine::SubParsers;
 using namespace VisualLinkerScript::ParsingEngine::Models;
 using namespace VisualLinkerScript::ParsingEngine::Models::Raw;
 
-std::shared_ptr<CLinkerScriptContentBase> CMemoryRegionContentParser::TryParse(
+std::shared_ptr<CLinkerScriptContentBase> CSectionsRegionContentParser::TryParse(
         CRawFile& linkerScriptFile,
         std::vector<CRawEntry>::const_iterator& iterator,
         std::vector<CRawEntry>::const_iterator& endOfVectorIterator)

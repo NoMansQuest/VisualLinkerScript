@@ -16,10 +16,12 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
         PhdrsRegionParser,
         PhdrsRegionContentParser,
         SectionsRegionOverlayParser,
+        SectionsRegionContentParser,
         SectionsRegionParser,
         VersionRegionParser,
+        VersionRegionContentParser,
         ExpressionParser,
-        FunctionParser
+        FunctionParser,
     };
 }
 

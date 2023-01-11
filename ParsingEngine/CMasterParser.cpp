@@ -24,7 +24,7 @@ using namespace VisualLinkerScript::ParsingEngine::SubParsers;
 CMasterParser::CMasterParser()
 {    
     this->m_subParsers.emplace_back(std::shared_ptr<CSubParserBase>(new CAssignmentParser()));
-    this->m_subParsers.emplace_back(std::shared_ptr<CSubParserBase>(new CPhdrsRegionParser()));
+    this->m_subParsers.emplace_back(std::shared_ptr<CSubParserBase>(new CPhdrsRegionParser() ));
     this->m_subParsers.emplace_back(std::shared_ptr<CSubParserBase>(new CMemoryParserRegion()));
     this->m_subParsers.emplace_back(std::shared_ptr<CSubParserBase>(new CSectionsRegionParser()));
     this->m_subParsers.emplace_back(std::shared_ptr<CSubParserBase>(new CSectionsRegionOverlayParser()));
