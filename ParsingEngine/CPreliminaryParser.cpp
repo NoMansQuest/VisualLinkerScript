@@ -77,12 +77,15 @@ namespace
         return ((input >= 'A') && (input <= 'Z')) ||
                ((input >= 'a') && (input <= 'z')) ||
                (input == '_') ||
-               (input == '?') ||                    // Wildcard support
-               (input == '*') ||                    // Wildcard support
-               (input == '[') ||                    // Wildcard support
-               (input == ']') ||                    // Wildcard support
-               (input == '/') ||                    // Wildcard support               
-               (input == '.');                      // Can also be part of a word
+               (input == '>') ||   // For example ">AT(SRAM)" placed after an output-section
+               (input == ':') ||   // For example ":phdrs" placed after an output-section
+               (input == '?') ||   // Wildcard support
+               (input == '*') ||   // Wildcard support, could also be an operator
+               (input == '[') ||   // Wildcard support
+               (input == ']') ||   // Wildcard support
+               (input == '/') ||   // Wildcard support, could also be an operator (e.g. /DISCARD/)
+               (input == '!') ||   // Wildcard support, could also be an operator (e.g. Memory-Statement attribute '(!r)')
+               (input == '.');     // Wildcard support, could also be an operator
     }
 
     /// @brief Checks to see if a given character can be an operator
@@ -164,6 +167,26 @@ namespace
     bool IsLineFeed(char input)
     {
         return (input == '\n');
+    }
+
+    /// @brief Checks if a long operator (e.g. >>= or !=, etc.) is present at position
+    bool CheckForLongOperator(const std::string& rawContent, const uint32_t position, uint32_t& longOperatorLength)
+    {
+        std::vector<std::string> recognizedLongOperators
+        {
+          ">>= ", "<<= ", "!= " , "== " , "+= " , "-= " , "*= " , "/= " , ">> " , "<< "
+        };
+
+        for (auto operatorToCheckFor: recognizedLongOperators)
+        {
+            if (rawContent.rfind(operatorToCheckFor, position) != std::string::npos)
+            {
+               longOperatorLength = operatorToCheckFor.length();
+               return true;
+            }
+        }
+
+        return false;
     }
 
     /// @brief Checks to see if assignment symbol is present, 
@@ -276,13 +299,19 @@ std::shared_ptr<CRawFile> CPreliminaryParser::ProcessLinkerScript(const std::str
     auto backslashArmed = false;     
     auto endOfStreamReached = false;
     auto lineNumber = (uint32_t)1;
-    auto scanPosition = (int)0;
+    auto scanPosition = (uint32_t)0;
     auto supressLineAndScopeUpdate = false;
+
+    auto nextCharacterExists = false;
+    auto nextCharacter = ' ';
 
     for (scanPosition = 0;; scanPosition++)
     {        
         auto currentCharacter = rawContent[scanPosition];
         endOfStreamReached = scanPosition >= rawContent.length();
+
+        nextCharacterExists = !endOfStreamReached;
+        nextCharacter = (nextCharacterExists) ? rawContent[scanPosition + 1] : ' ';
 
         std::string insightScope = rawContent.substr(scanPosition);
 
@@ -326,18 +355,28 @@ std::shared_ptr<CRawFile> CPreliminaryParser::ProcessLinkerScript(const std::str
                 if (assignmentSymbolType != AssignmentSymbolTypes::NotAnAssignmentSymbol)
                 {
                     auto assignmentOperatorLength = (assignmentSymbolType == AssignmentSymbolTypes::SingleCharacter) ? 1 : 2;
-                    parsedContent.emplace_back(CRawEntry(RawEntryType::Assignment, lineNumber, lineNumber, scanPosition, assignmentOperatorLength, parenthesisDepth, scopeDepth));
+                    parsedContent.emplace_back(CRawEntry(RawEntryType::Assignment, lineNumber, scanPosition, assignmentOperatorLength, parenthesisDepth, scopeDepth));
                     scanPosition += (assignmentOperatorLength - 1);
                     break;
                 }
 
                 if (CanCharBeStartOfWord(currentCharacter))
                 {
-                    entryStartPosition = scanPosition;
-                    entryStartLine = lineNumber;
-                    currentState = ParserStates::InWord;
-                    scanPosition--;
-                    break;
+                    uint32_t longOperatorLength;
+                    if (IsOperator(currentCharacter) && CheckForLongOperator(rawContent, scanPosition, longOperatorLength))
+                    {
+                        parsedContent.emplace_back(CRawEntry(RawEntryType::Operator, lineNumber, scanPosition, longOperatorLength, parenthesisDepth, scopeDepth));
+                        scanPosition += longOperatorLength - 1;
+                        break;
+                    }
+                    else
+                    {
+                        entryStartPosition = scanPosition;
+                        entryStartLine = lineNumber;
+                        currentState = ParserStates::InWord;
+                        scanPosition--;
+                        break;
+                    }
                 }
 
                 if (IsOperator(currentCharacter))
@@ -348,7 +387,7 @@ std::shared_ptr<CRawFile> CPreliminaryParser::ProcessLinkerScript(const std::str
                                     (currentCharacter == ')') ? RawEntryType::ParenthesisClose :
                                     RawEntryType::Operator;
 
-                    parsedContent.emplace_back(CRawEntry(entyType, lineNumber, lineNumber, scanPosition, 1, parenthesisDepth, scopeDepth));
+                    parsedContent.emplace_back(CRawEntry(entyType, lineNumber, scanPosition, 1, parenthesisDepth, scopeDepth));
                     break;
                 }
 

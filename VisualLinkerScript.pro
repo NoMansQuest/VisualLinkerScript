@@ -73,17 +73,6 @@ SOURCES += \
     Components/QScintilla/src/qsciscintillabase.cpp \
     Components/QScintilla/src/qscistyle.cpp \
     Components/QScintilla/src/qscistyledtext.cpp \
-    Models/LinkerScript/CLinkerScriptEntity.cpp \
-    Models/LinkerScript/CMemoryEntry.cpp \
-    Models/LinkerScript/CMemoryRegion.cpp \
-    Models/LinkerScript/CProgramHeader.cpp \
-    Models/LinkerScript/CProgramHeadersRegion.cpp \
-    Models/LinkerScript/CSectionsRegion.cpp \
-    Models/LinkerScript/CSectionsRegionEntry.cpp \
-    Models/LinkerScript/CSectionsRegionObjectBase.cpp \
-    Models/LinkerScript/CSectionsRegionOverlay.cpp \
-    Models/LinkerScript/CSectionsRegionSection.cpp \
-    Models/LinkerScript/CSymbolAssignment.cpp \
     ParsingEngine/CMasterParser.cpp \
     ParsingEngine/CPreliminaryParser.cpp \
     ParsingEngine/SubParsers/CAssignmentParser.cpp \
@@ -91,8 +80,8 @@ SOURCES += \
     ParsingEngine/SubParsers/CExpressionParser.cpp \
     ParsingEngine/SubParsers/CFunctionParser.cpp \
     ParsingEngine/SubParsers/CMemoryRegionContentParser.cpp \
-    ParsingEngine/SubParsers/CPhdrsRegionContentParser.cpp \
-    ParsingEngine/SubParsers/CScopedRegionParser.cpp \
+    ParsingEngine/SubParsers/CMemoryStatementAttributeParser.cpp \
+    ParsingEngine/SubParsers/CPhdrsRegionContentParser.cpp \    
     ParsingEngine/SubParsers/CSectionsRegionContentParser.cpp \
     ParsingEngine/SubParsers/CSectionsRegionOverlayParser.cpp \
     ParsingEngine/SubParsers/CVersionRegionContentParser.cpp \
@@ -204,6 +193,7 @@ HEADERS += \
     ParsingEngine/Models/CLinkerScriptFile.h \
     ParsingEngine/Models/CMemoryRegion.h \
     ParsingEngine/Models/CMemoryStatement.h \
+    ParsingEngine/Models/CMemoryStatementAttribute.h \
     ParsingEngine/Models/CPhdrsRegion.h \
     ParsingEngine/Models/CPhdrsStatement.h \
     ParsingEngine/Models/CProcedureCall.h \
@@ -234,15 +224,18 @@ HEADERS += \
     ParsingEngine/SubParsers/CFunctionParser.h \
     ParsingEngine/SubParsers/CMemoryRegionContentParser.h \
     ParsingEngine/SubParsers/CMemoryRegionParser.h \
+    ParsingEngine/SubParsers/CMemoryStatementAttributeParser.h \
     ParsingEngine/SubParsers/CPhdrsRegionContentParser.h \
     ParsingEngine/SubParsers/CPhdrsRegionParser.h \
     ParsingEngine/SubParsers/CScopedRegionParser.h \
+    ParsingEngine/SubParsers/CScopedRegionParser.tpp \
     ParsingEngine/SubParsers/CSectionsRegionContentParser.h \
     ParsingEngine/SubParsers/CSectionsRegionOverlayParser.h \
     ParsingEngine/SubParsers/CSectionsRegionParser.h \
     ParsingEngine/SubParsers/CSubParserBase.h \
     ParsingEngine/SubParsers/CVersionRegionContentParser.h \
     ParsingEngine/SubParsers/CVersionRegionParser.h \
+    ParsingEngine/SubParsers/Constants.h \
     ParsingEngine/SubParsers/SubParserType.h \
     ParsingEngine/Models/CExpression.h \
     ParsingEngine/Models/CFunctionCall.h \

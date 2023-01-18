@@ -15,6 +15,23 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
     /// @brief Base class for all sub-parsers
     class CSubParserBase
     {
+    protected:
+        /// @brief Checks to see if the content of the @see {rawEntry} (resovled on @see {sourceFile}) is found
+        ///        in the vector of string as pointed out by @see {targetList}.
+        const static bool CheckIfRawEntryInList(
+                const CRawFile& sourceFile,
+                const CRawEntry& rawEntry,
+                const std::vector<std::string>& targetList)
+        {
+            if (rawEntry.EntryType() == RawEntryType::NotPresent)
+            {
+                return false;
+            }
+
+            auto resolvedValue = sourceFile.ResolveRawEntry(rawEntry);
+            return std::find(targetList.begin(), targetList.end(), resolvedValue) != targetList.end();
+        }
+
     public:
         /// @brief Try to parse the content. If succesful, parsed content can be recovered via @see {GetParsedContent}.
         /// @param fileContent Content of the linker-script file

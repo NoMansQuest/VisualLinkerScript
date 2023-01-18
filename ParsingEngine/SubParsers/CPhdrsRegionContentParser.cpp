@@ -2,6 +2,7 @@
 #include <vector>
 #include <memory>
 #include <string>
+#include "Constants.h"
 #include "../Models/Raw/CRawEntry.h"
 #include "../Models/Raw/RawEntryType.h"
 #include "../Models/CPhdrsStatement.h"
@@ -25,46 +26,6 @@ namespace
         AwaitingSemicolon,
         ParsingComplete
     };
-
-    std::vector<std::string> ListOfProgramHeaderTypes = {
-        "PT_NULL",
-        "PT_LOAD",
-        "PT_DYNAMIC",
-        "PT_INTERP",
-        "PT_NOTE",
-        "PT_SHLIB",
-        "PT_PHDR"        
-    };
-
-    std::vector<std::string> ListOfIllegalProgramHeaderNames = {
-        "PT_NULL",
-        "PT_LOAD",
-        "PT_DYNAMIC",
-        "PT_INTERP",
-        "PT_NOTE",
-        "PT_SHLIB",
-        "PT_PHDR",
-        "FILEHDR",
-        "PHDRS",
-        "AT",
-        "FLAGS",
-    };
-
-    /// @brief Checks to see if the content of the @see {rawEntry} (resovled on @see {sourceFile}) is found 
-    ///        in the vector of string as pointed out by @see {targetList}.
-    const bool CheckIfRawEntryInList(
-            const CRawFile& sourceFile,
-            const CRawEntry& rawEntry, 
-            const std::vector<std::string>& targetList)
-    {
-        if (rawEntry.EntryType() == RawEntryType::NotPresent)
-        {
-            return false;
-        }
-
-        auto resolvedValue = sourceFile.ResolveRawEntry(rawEntry);
-        return std::find(targetList.begin(), targetList.end(), resolvedValue) != targetList.end();
-    }
 }
 
 
@@ -77,7 +38,6 @@ std::shared_ptr<CLinkerScriptContentBase> CPhdrsRegionContentParser::TryParse(
     std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = iterator;    
     std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
     std::vector<CViolation> violations;
-
 
     auto parserState = ParserState::AwaitingName;
     auto doNotAdvance = false;
@@ -110,7 +70,7 @@ std::shared_ptr<CLinkerScriptContentBase> CPhdrsRegionContentParser::TryParse(
                 {
                     case ParserState::AwaitingName:
                     {
-                        if (CheckIfRawEntryInList(linkerScriptFile, *localIterator, ListOfIllegalProgramHeaderNames))
+                        if (this->CheckIfRawEntryInList(linkerScriptFile, *localIterator, ListOfIllegalProgramHeaderNames))
                         {
                             // We need to abort. Continue to semicolon to recover...
                             violations.emplace_back(CViolation(*localIterator, ViolationCode::ProgramHeaderNameShouldNotBeAReservedKeyword));
@@ -125,7 +85,7 @@ std::shared_ptr<CLinkerScriptContentBase> CPhdrsRegionContentParser::TryParse(
  
                     case ParserState::AwaitingType:
                     {
-                        if (!CheckIfRawEntryInList(linkerScriptFile, *localIterator, ListOfProgramHeaderTypes))
+                        if (!this->CheckIfRawEntryInList(linkerScriptFile, *localIterator, ListOfProgramHeaderTypes))
                         {
                             // We need to abort. Continue to semicolon to recover...
                             violations.emplace_back(CViolation(*localIterator, ViolationCode::WasExpectingProgramHeaderTypeHere));

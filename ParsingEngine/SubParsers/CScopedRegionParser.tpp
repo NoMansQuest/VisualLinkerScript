@@ -9,15 +9,6 @@
 #include "../Models/CViolation.h"
 #include "../CMasterParserException.h"
 
-#include "CPhdrsRegionContentParser.h"
-#include "../Models/CPhdrsRegion.h"
-#include "CMemoryRegionContentParser.h"
-#include "../Models/CMemoryRegion.h"
-#include "CVersionRegionContentParser.h"
-#include "../Models/CVersionsRegion.h"
-#include "CSectionsRegionContentParser.h"
-#include "../Models/CSectionsRegion.h"
-
 using namespace VisualLinkerScript::ParsingEngine::SubParsers;
 using namespace VisualLinkerScript::ParsingEngine::Models;
 using namespace VisualLinkerScript::ParsingEngine::Models::Raw;
@@ -57,7 +48,7 @@ std::shared_ptr<CLinkerScriptContentBase> CScopedRegionParser<TParserType, TCont
         {
             case RawEntryType::Comment:
             {
-                parsedContent.emplace_back(std::shared_ptr<CComment>(new CComment(std::vector<CRawEntry>{*localIterator}, {})));
+                parsedContent.emplace_back(std::shared_ptr<CLinkerScriptContentBase>(new CComment(std::vector<CRawEntry>{*localIterator}, {})));
                 break;
             }
 
@@ -81,7 +72,7 @@ std::shared_ptr<CLinkerScriptContentBase> CScopedRegionParser<TParserType, TCont
                     auto stringContent = linkerScriptFile.ResolveRawEntry(*localIterator);
                     if (stringContent != this->GetHeaderName())
                     {
-                        // Full abort in this cas
+                        // Full abort in this case
                         return nullptr;
                     }
 
@@ -110,7 +101,6 @@ std::shared_ptr<CLinkerScriptContentBase> CScopedRegionParser<TParserType, TCont
                 else if (parserState == ParserState::AwaitingOpenningBracket)
                 {
                     CViolation detectedViolation({ *localIterator }, ViolationCode::NoSymbolOrKeywordAllowedAfterMemoryHeader);
-
                     violations.emplace_back(std::move(detectedViolation));
                 }
                 else if (parserState == ParserState::AwaitingOpenningBracket)
@@ -147,22 +137,19 @@ std::shared_ptr<CLinkerScriptContentBase> CScopedRegionParser<TParserType, TCont
 
             case RawEntryType::Unknown:
             {
-                throw CMasterParsingException(
-                        MasterParsingExceptionType::NotPresentEntryDetected,
+                throw CMasterParsingException(MasterParsingExceptionType::NotPresentEntryDetected,
                         "A 'Unknown' entry was detected.");
             }
 
             case RawEntryType::NotPresent:
             {
-                throw CMasterParsingException(
-                        MasterParsingExceptionType::NotPresentEntryDetected,
+                throw CMasterParsingException(MasterParsingExceptionType::NotPresentEntryDetected,
                         "A 'non-present' entry was detected.");
             }
 
             default:
             {
-                throw CMasterParsingException(
-                        MasterParsingExceptionType::UnrecognizableRawEntryTypeValueFound,
+                throw CMasterParsingException(MasterParsingExceptionType::UnrecognizableRawEntryTypeValueFound,
                         "Unrecognized raw-entry type detected.");
             }
         }
@@ -189,13 +176,4 @@ std::shared_ptr<CLinkerScriptContentBase> CScopedRegionParser<TParserType, TCont
                 localIterator + 1;
 
     return memoryRegion;
-}
-
-
-namespace VisualLinkerScript::ParsingEngine::SubParsers
-{
-    template class CScopedRegionParser<SubParserType::PhdrsRegionParser, CPhdrsRegionContentParser, CPhdrsRegion>;
-    template class CScopedRegionParser<SubParserType::MemoryRegionParser, CMemoryRegionContentParser, CMemoryRegion>;
-    template class CScopedRegionParser<SubParserType::SectionsRegionParser, CSectionsRegionContentParser, CSectionsRegion>;
-    template class CScopedRegionParser<SubParserType::VersionRegionParser, CVersionRegionContentParser, CVersionsRegion>;
 }

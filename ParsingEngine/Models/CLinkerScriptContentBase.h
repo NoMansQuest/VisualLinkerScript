@@ -20,6 +20,8 @@ namespace VisualLinkerScript::ParsingEngine::Models
         PhdrsStatement,
         MemoryRegion,
         MemoryStatement,
+        MemoryStatementAttribute,
+        MemoryStatementAttributeValue,
         SectionsRegion,
         SectionsOutputStatement,
         SectionsOverlayStatement,

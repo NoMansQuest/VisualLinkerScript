@@ -2,8 +2,12 @@
 #define CSCOPED_REGION_PARSER_H__
 
 #include "CSubParserBase.h"
+#include "../Models/Raw/CRawEntry.h"
+#include "../Models/Raw/CRawFile.h"
 #include "SubParserType.h"
+#include <vector>
 #include <memory>
+#include <string>
 #include <type_traits>
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers
@@ -14,12 +18,19 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
     {
     private:
         static_assert(
-            std::is_base_of_v<CSubParserBase, TContentParserType>,
+            std::is_base_of< CSubParserBase, TContentParserType >::value,
             "Only parsers based on 'CSubParserBase' are allowed" );
 
         static_assert(
-            std::is_base_of_v<CLinkerScriptContentBase, TProducingOutputType>,
+            std::is_base_of< CLinkerScriptContentBase, TProducingOutputType >::value,
             "Only 'Producing Output Types' based on 'CLinkerScriptContentBase' are allowed" );
+
+        static_assert(
+            std::is_constructible< TProducingOutputType, CRawEntry, CRawEntry,CRawEntry,
+                                   std::vector<std::shared_ptr<CLinkerScriptContentBase>>&&,
+                                   std::vector<CRawEntry>&&,
+                                   std::vector<CViolation>&& >::value,
+            "TProducingOutputType is not compatible. Please check the constructor." );
 
         TContentParserType m_regionContentParser;
 
@@ -42,5 +53,6 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
     };
 }
 
+#include "CScopedRegionParser.tpp"
 
 #endif

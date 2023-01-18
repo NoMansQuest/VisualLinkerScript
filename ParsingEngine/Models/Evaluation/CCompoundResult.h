@@ -3,6 +3,7 @@
 
 #include "CResultBase.h"
 #include "EvaluationResultType.h"
+#include "CEvaluatableBase.h"
 
 namespace VisualLinkerScript::ParsingEngine::Models::Evaluation
 {
@@ -10,16 +11,16 @@ namespace VisualLinkerScript::ParsingEngine::Models::Evaluation
     class CCompoundResult : CResultBase
     {
     private:
-        std::vector<CEvaluationResultBase> m_composition;       
+        std::vector<CEvaluatableBase> m_composition;
         
     public:
         /// @brief Default constructor
-        CCompoundResult(std::vector<CEvaluationResultBase> composition)
+        CCompoundResult(std::vector<CEvaluatableBase> composition)
             : m_composition(composition)
         {}
 
         /// @brief Reports back the composition of this evaluation
-        const std::vector<CEvaluationResultBase>& Composition()
+        const std::vector<CEvaluatableBase>& Composition()
         {
             return this->m_composition;
         }

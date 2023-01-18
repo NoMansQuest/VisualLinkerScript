@@ -25,8 +25,15 @@ namespace VisualLinkerScript::ParsingEngine::Models
 
         // Memory region violations
         NoSymbolOrKeywordAllowedAfterMemoryHeader,
+        ReadAttributeIsAlreadySet,
+        ReadWriteAttributeIsAlreadySet,
+        AlloctableAttributeIsAlreadySet,
+        ExecutableAttributeIsAlreadySet,
+        InitializedAttributeIsAlreadySet,
+        NegatingSymbolIsAlreadySet,
+        UnrecognizedAttributeSymbolWasFound,
 
-        //
+        // General violations
         MissingOpeningCurlyBracket,
         MissingClosingCurlyBracket,
         MissingOpeningParenthesis,

@@ -1,7 +1,7 @@
 #ifndef CEVALUATABLE_H__
 #define CEVALUATABLE_H__
 
-#include "Raw/CRawEntry.h"
+#include "../Raw/CRawEntry.h"
 
 using namespace VisualLinkerScript::ParsingEngine::Models::Raw;
 
@@ -19,19 +19,19 @@ namespace VisualLinkerScript::ParsingEngine::Models
     };
     
     /// @brief Abstract representation of a signed evaulatable entity.
-    class CSignedEvaluatableBase : CEvaluatableBase
+    class CSignedEvaluatableBase : public CEvaluatableBase
     {
     private:        
         CRawEntry m_signRawEntry;
 
     public: 
         /// @brief Default constructor
-        CEvaluatableBase(CRawEntry signRawEntry): :
-            m_signRawEntry(singRawEntry)
+        CSignedEvaluatableBase(CRawEntry signRawEntry) :
+            m_signRawEntry(signRawEntry)
         {}
 
         /// @brief Default destructor
-        ~CEvaluatableBase()
+        ~CSignedEvaluatableBase()
         {}
 
     public:

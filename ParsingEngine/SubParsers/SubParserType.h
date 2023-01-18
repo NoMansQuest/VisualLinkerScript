@@ -13,6 +13,7 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
         DefaultParser,
         MemoryRegionParser,
         MemoryRegionContentParser,
+        MemoryStatementAttributeParser,
         PhdrsRegionParser,
         PhdrsRegionContentParser,
         SectionsRegionOverlayParser,

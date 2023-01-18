@@ -16,7 +16,7 @@ namespace VisualLinkerScript::ParsingEngine::Models::Evaluation
         /// @brief Default constructor
         CNumericResult(uint64_t numericResult, bool isNegative) 
             : m_numericResult(numericResult),
-            : m_isNegative(isNegative)
+              m_isNegative(isNegative)
         {}
 
     public:

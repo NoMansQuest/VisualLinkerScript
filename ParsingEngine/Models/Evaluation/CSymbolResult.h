@@ -1,6 +1,7 @@
 #ifndef CEVALUATED_AS_NUMERIC_RESULT_H__
 #define CEVALUATED_AS_NUMERIC_RESULT_H__
 
+#include <string>
 #include "CResultBase.h"
 
 namespace VisualLinkerScript::ParsingEngine::Models::Evaluation
@@ -10,11 +11,14 @@ namespace VisualLinkerScript::ParsingEngine::Models::Evaluation
     {
     private:
         std::string m_symbolName;
+        bool m_isNegative;
         
     public:
         /// @brief Default constructor
-        CSymbolResult(std::string symbolName) 
-            : m_symbolName(symbolName)
+        CSymbolResult(std::string symbolName, bool isNegative)
+            : m_symbolName(symbolName),
+              m_isNegative(isNegative)
+
         {}
 
     public:

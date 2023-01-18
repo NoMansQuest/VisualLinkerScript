@@ -2,13 +2,14 @@
 #define EVALUATION_ARITHMETIC_OPERATION_H__
 
 #include "CResultBase.h"
+#include "CEvaluatableBase.h"
 #include "ArithmeticOperationType.h"
 
 namespace VisualLinkerScript::ParsingEngine::Models::Evaluation
 {
     /// @brief Represents an arithmetic operation inbetween results. If not present, the then
     ///        default operation is addition
-    class CArithmeticResultOp : CEvaluationResultBase
+    class CArithmeticResultOp : CResultBase
     {
     private:    
         ArithmeticOperationType m_type;        
@@ -27,7 +28,7 @@ namespace VisualLinkerScript::ParsingEngine::Models::Evaluation
         }       
 
         /// @copydoc CEvaluatedResultBase::Type()
-        virtual EvaluationResultType EvaluationType() override
+        EvaluationResultType EvaluationType()
         {
             return EvaluationResultType::ArithmetciOperation;
         }

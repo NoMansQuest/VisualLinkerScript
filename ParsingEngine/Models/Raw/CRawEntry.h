@@ -27,6 +27,22 @@ namespace VisualLinkerScript::ParsingEngine::Models::Raw
               m_entryType(typeOfEntry)
         {}
 
+        /// @brief Explicitly made based on callers request for single-line entries
+        explicit CRawEntry(RawEntryType typeOfEntry,
+                    uint32_t lineNumber,
+                    uint32_t startPosition,
+                    uint32_t length,
+                    uint32_t parenthesisDepth,
+                    uint32_t scopeDepth)
+            : m_startPosition(startPosition),
+              m_length(length),
+              m_parenthesisDepth(parenthesisDepth),
+              m_scopeDepth(scopeDepth),
+              m_startLineNumber(lineNumber),
+              m_endLineNumber(lineNumber),
+              m_entryType(typeOfEntry)
+        {}
+
         /// @brief Object-Copy constructor
         CRawEntry(const CRawEntry& cloneSource)
             : m_startPosition(cloneSource.StartPosition()),

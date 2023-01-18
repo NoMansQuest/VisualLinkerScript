@@ -2,6 +2,7 @@
 #define CEVALUATION_RESULT_H__
 
 #include <vector>
+#include "EvaluationResultType.h"
 #include "ArithmeticOperationType.h"
 
 namespace VisualLinkerScript::ParsingEngine::Models::Evaluation
