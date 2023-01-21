@@ -38,7 +38,7 @@ namespace VisualLinkerScript::ParsingEngine
             const std::string description)
         {
             this->m_description = description;
-            this->m_type = type;
+            this->m_type = type;            
         }
 
         /// @brief Default constructor

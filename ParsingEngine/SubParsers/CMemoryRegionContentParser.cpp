@@ -9,6 +9,7 @@
 #include "../Models/CComment.h"
 #include "../Models/CViolation.h"
 #include "../Models/Raw/CRawFile.h"
+#include "../Models/CMemoryStatement.h"
 
 using namespace VisualLinkerScript::ParsingEngine::SubParsers;
 using namespace VisualLinkerScript::ParsingEngine::Models;
@@ -32,6 +33,7 @@ namespace
         AwaitingColon,
         AwaitingOriginAssignment,
         AwaitingLengthAssignment,
+        AwaitingNewLineOrBracketClosure,
         ParsingComplete
     };
 }
@@ -55,11 +57,16 @@ std::shared_ptr<CLinkerScriptContentBase> CMemoryRegionContentParser::TryParse(
     std::shared_ptr<CLinkerScriptContentBase> originAssignment;
     std::shared_ptr<CLinkerScriptContentBase> lengthAssignment;
 
-
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
     {
         doNotAdvance = false;
         auto resolvedContent = linkerScriptFile.ResolveRawEntry(*localIterator);
+        auto lineChangeDetected = parsingStartIteratorPosition->EndLineNumber() != localIterator->EndLineNumber();
+
+        if (lineChangeDetected)
+        {
+            break; // Any line-change would be rended parsing attempt null and void
+        }
 
         switch (localIterator->EntryType())
         {
@@ -75,20 +82,18 @@ std::shared_ptr<CLinkerScriptContentBase> CMemoryRegionContentParser::TryParse(
                 {
                     case ParserState::AwaitingName:
                     {
-                        if (this->CheckIfRawEntryInList(linkerScriptFile, *localIterator, ListOfIllegalProgramHeaderNames))
+                        if (ParserHelpers::IsReservedWord(resolvedContent))
                         {
                             // We need to abort. Continue to semicolon to recover...
-                            violations.emplace_back(CViolation(*localIterator, ViolationCode::ProgramHeaderNameShouldNotBeAReservedKeyword));
-                            parserState = ParserState::AwaitingSemicolon;
-                            break;
+                            violations.emplace_back(CViolation(*localIterator, ViolationCode::MemorySectionNameShouldNotBeAReservedKeyword));
                         }
 
                         nameEntry = *iterator;
-                        parserState = ParserState::AwaitingType;
+                        parserState = ParserState::AwaitingAttributes;
                         break;
                     }
 
-                    case ParserState::AwaitingType:
+                    case ParserState::AwaitingAttributes:
                     {
                         if (!this->CheckIfRawEntryInList(linkerScriptFile, *localIterator, ListOfProgramHeaderTypes))
                         {
@@ -105,7 +110,7 @@ std::shared_ptr<CLinkerScriptContentBase> CMemoryRegionContentParser::TryParse(
                         break;
                     }
 
-                    case ParserState::AwaitingOptionalFields:
+                    case ParserState::AwaitingColon:
                     {
                         if (resolvedContent == "FILEHDR")
                         {
@@ -183,7 +188,13 @@ std::shared_ptr<CLinkerScriptContentBase> CMemoryRegionContentParser::TryParse(
                         break;
                     }
 
-                    case ParserState::AwaitingSemicolon:
+                    case ParserState::AwaitingOriginAssignment:
+                    {
+                        violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
+                        parserState = ParserState::AwaitingSemicolon;
+                    }
+
+                    case ParserState::AwaitingLengthAssignment:
                     {
                         violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
                         parserState = ParserState::AwaitingSemicolon;
@@ -200,6 +211,43 @@ std::shared_ptr<CLinkerScriptContentBase> CMemoryRegionContentParser::TryParse(
             }
 
             case RawEntryType::Operator:
+            {
+                switch (parserState)
+                {
+                    case ParserState::AwaitingAttributes:
+                    {
+                        if (resolvedContent[0] == '(')
+                        {
+                            auto attributeParsingResult = this->m_attributeParser.TryParse(linkerScriptFile, iterator, endOfVectorIterator);
+                            if (attributeParsingResult == nullptr)
+                            {
+                                violations.emplace_back(CViolation(*localIterator, ViolationCode::ProgramHeaderTypeNotRecognized));
+                            }
+                            else
+                            {
+
+
+                            }
+                        }
+                        break;
+                    }
+
+                    case ParserState::AwaitingName:
+                    case ParserState::AwaitingColon:
+                    case ParserState::AwaitingOriginAssignment:
+                    case ParserState::AwaitingLengthAssignment:
+                    default:
+                    {
+                        throw CMasterParsingException(
+                                    MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
+                                    "ParserState invalid in CPhdrsRegionContentParser");
+                    }
+                }
+
+
+                break;
+            }
+
             case RawEntryType::Assignment:
             case RawEntryType::Number:
             case RawEntryType::String:
@@ -250,6 +298,13 @@ std::shared_ptr<CLinkerScriptContentBase> CMemoryRegionContentParser::TryParse(
         localIterator = ((parserState != ParserState::ParsingComplete) && !doNotAdvance) ?
                         localIterator + 1 :
                         localIterator;
+    }    
+
+    if (!nameEntry.IsPresent() || !colonEntry.IsPresent())
+    {
+        // It is safe to say that we have failed parsing this statement. It's malformed beyond recognition or
+        // outright invalid.
+        return nullptr;
     }
 
     std::vector<CRawEntry> rawEntries;
@@ -260,15 +315,12 @@ std::shared_ptr<CLinkerScriptContentBase> CMemoryRegionContentParser::TryParse(
                 localIterator :
                 localIterator + 1;
 
-    auto phdrsStatement = std::shared_ptr<CLinkerScriptContentBase>(
-                new CPhdrsStatement(nameEntry,
-                                    typeEntry,
-                                    fileHdrEntry,
-                                    atAddressFunction,
-                                    flagsFunction,
-                                    semicolonEntry,
-                                    std::move(rawEntries),
-                                    std::move(violations)));
-
-    return phdrsStatement;
+    return std::shared_ptr<CLinkerScriptContentBase>(
+                new CMemoryStatement(nameEntry,
+                                     attributes,
+                                     colonEntry,
+                                     originAssignment,
+                                     lengthAssignment,
+                                     std::move(rawEntries),
+                                     std::move(violations)));;
 }

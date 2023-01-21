@@ -260,7 +260,7 @@ namespace
     }
 
     /// @brief Alters the parser-engines state along with scan-position adjustement
-    void SwitchToState(ParserStates& stateMachine, int& scanPosition, const ParserLoopActionType scanPositionAdjustment)
+    void SwitchToState(ParserStates& stateMachine, uint32_t& scanPosition, ParserLoopActionType scanPositionAdjustment)
     {
         switch (scanPositionAdjustment)
         {
@@ -288,7 +288,6 @@ CPreliminaryParser::~CPreliminaryParser()
 std::shared_ptr<CRawFile> CPreliminaryParser::ProcessLinkerScript(const std::string& fileName, const std::string& rawContent)
 {    
     // TODO: Revise code in event of available capacity to reduce cyclomatic complexity
-
     std::vector<CRawEntry> parsedContent;
     auto currentState = ParserStates::Default;    
     auto scopeDepth = (uint32_t)0; // Depth increases each time we encounter a '{' and decreases on each '}'

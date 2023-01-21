@@ -1,22 +1,24 @@
 #ifndef __LINKER_SCRIPT__
 #define __LINKER_SCRIPT__
 
-namespace VisualLinkerScript::Models::LinkerScript
-{   
-    class CMemoryRegion;
-    class CProgramHeadersRegion;    
-    class CSectionsRegion;
+#include "CProgramHeaderRegion.h"
+#include "CMemoryRegion.h"
+#include "CSectionsRegion.h"
 
-    class CLinkerScriptEntity :
+namespace VisualLinkerScript::Models::LinkerScript
+{
+
+    class CLinkerScriptEntity
     {   
+
     public:
         CLinkerScriptEntity();
 
     public:
         CProgramHeadersRegion Phdrs;
         CMemoryRegion Memories;
-        CSesionsRegion Sections;
-    }
+        CSectionsRegion Sections;
+    };
 }
 
 #endif

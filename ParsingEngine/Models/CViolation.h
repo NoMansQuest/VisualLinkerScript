@@ -32,6 +32,8 @@ namespace VisualLinkerScript::ParsingEngine::Models
         InitializedAttributeIsAlreadySet,
         NegatingSymbolIsAlreadySet,
         UnrecognizedAttributeSymbolWasFound,
+        MemorySectionNameShouldNotBeAReservedKeyword,
+        WasExpectingAttributeHereButEitherNotPresentOrInvalid,
 
         // General violations
         MissingOpeningCurlyBracket,

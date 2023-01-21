@@ -17,7 +17,7 @@ namespace
     enum class ParserState
     {
         AwaitingParenthesisOpen,
-        AwaitingParenthesisClose,
+        AwaitingParenthesisClosure,
         ParsingComplete
     };
 
@@ -130,8 +130,16 @@ std::shared_ptr<CLinkerScriptContentBase> CMemoryStatementAttributeParser::TryPa
     std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
     std::vector<CViolation> violations;
 
+    if (iterator->EntryType() != RawEntryType::ParenthesisOpen)
+    {
+        throw CMasterParsingException(
+                MasterParsingExceptionType::InternalParserError,
+                "'CMemoryStatementAttributeParser::TryParse' can only be called with 'iterator' pointing to a 'Parenthesis-Open'");
+    }
+
     auto parserState = ParserState::AwaitingParenthesisOpen;
     auto doNotAdvance = false;
+    auto lineChange = false;
 
     CRawEntry parenthesisOpen;
     CRawEntry parenthesisClose;
@@ -145,6 +153,7 @@ std::shared_ptr<CLinkerScriptContentBase> CMemoryStatementAttributeParser::TryPa
     {
         doNotAdvance = false;
         auto resolvedContent = linkerScriptFile.ResolveRawEntry(*localIterator);
+        lineChange = localIterator->EndLineNumber() != parsingStartIteratorPosition->StartLineNumber();
 
         switch (localIterator->EntryType())
         {
@@ -155,7 +164,7 @@ std::shared_ptr<CLinkerScriptContentBase> CMemoryStatementAttributeParser::TryPa
             }
 
             case RawEntryType::Word:
-            {
+            {                
                 switch (parserState)
                 {
                     case ParserState::AwaitingParenthesisOpen:
@@ -163,7 +172,7 @@ std::shared_ptr<CLinkerScriptContentBase> CMemoryStatementAttributeParser::TryPa
                         return nullptr; // Aborting
                     }
 
-                    case ParserState::AwaitingParenthesisClose:
+                    case ParserState::AwaitingParenthesisClosure:
                     {
                         ParseAttributeValues(
                                     *localIterator,
@@ -194,7 +203,7 @@ std::shared_ptr<CLinkerScriptContentBase> CMemoryStatementAttributeParser::TryPa
                     case ParserState::AwaitingParenthesisOpen:
                     {
                         parenthesisOpen = *localIterator;
-                        parserState = ParserState::AwaitingParenthesisClose;
+                        parserState = ParserState::AwaitingParenthesisClosure;
                         break;
                     }
                     default:
@@ -209,7 +218,7 @@ std::shared_ptr<CLinkerScriptContentBase> CMemoryStatementAttributeParser::TryPa
             {
                 switch (parserState)
                 {
-                    case ParserState::AwaitingParenthesisClose:
+                    case ParserState::AwaitingParenthesisClosure:
                     {
                         parenthesisClose = *localIterator;
                         parserState = ParserState::ParsingComplete;

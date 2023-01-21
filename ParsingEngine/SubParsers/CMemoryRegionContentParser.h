@@ -5,6 +5,7 @@
 #include "CExpressionParser.h"
 #include "SubParserType.h"
 #include "../Models/Raw/CRawFile.h"
+#include "CMemoryStatementAttributeParser.h"
 #include <memory>
 
 using namespace VisualLinkerScript::ParsingEngine::Models::Raw;
@@ -16,6 +17,7 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
     {
     private:
         CExpressionParser m_expressionParser;
+        CMemoryStatementAttributeParser m_attributeParser;
 
     public:
         /// @copydoc CSubParserBase::Type()

@@ -20,7 +20,7 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
             return SubParserType::MemoryStatementAttributeParser;
         }
 
-        /// @copydoc CSubParserBase::TryParse
+        /// @copydoc CSubParserBase::TryParse        
         virtual std::shared_ptr<CLinkerScriptContentBase> TryParse(
                 CRawFile& linkerScriptFile,
                 std::vector<CRawEntry>::const_iterator& iterator,

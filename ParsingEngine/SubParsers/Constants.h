@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 
-namespace VisualLinkerScript::ParsingEngine::Models
+namespace VisualLinkerScript::ParsingEngine::SubParsers
 {
     std::vector<std::string> ListOfProgramHeaderTypes = {
         "PT_NULL",
@@ -30,7 +30,47 @@ namespace VisualLinkerScript::ParsingEngine::Models
         "FLAGS",
     };
 
+    std::vector<std::string> ListOfAssignmentCommandNames = {
+        "PROVIDE",
+        "PROVIDE_HIDDEN",
+        "HIDDEN",
+    };
+
+    std::vector<std::string> ListOfFileRelatedCommandNames = {
+        "INCLUDE",
+        "INPUT",
+        "GROUP",
+        "AS_NEEDED",
+        "OUTPUT",
+        "SEARCH_DIR",
+        "STARTUP",
+    };
+
+    std::vector<std::string> ListOfObjectRelatedCommandNames = {
+        "OUTPUT_FORMAT",
+        "TARGET",
+    };
+
+    std::vector<std::string> ListOfMemoryRelatedCommandNames = {
+        "REGION_ALIAS",
+    };
+
+    std::vector<std::string> ListOfMiscellaneousCommandNames = {
+        "ASSERT",
+        "EXTERN",
+        "FORCE_COMMON_ALLOCATION ",
+        "INHIBIT_COMMON_ALLOCATION ",
+        "FORCE_GROUP_ALLOCATION ",
+        "INSERT BEFORE",
+        "INSERT AFTER",
+        "NOCROSSREFS",
+        "NOCROSSREFS_TO",
+        "OUTPUT_ARCH",
+        "LD_FEATURE",
+    };
+
     std::vector<std::string> ListOfFunctionNames = {
+        "ENTRY",
         "ABSOLUTE",
         "ADDR",
         "ALIGN",
@@ -68,6 +108,52 @@ namespace VisualLinkerScript::ParsingEngine::Models
         "INFO",
         "OVERLAY",
     };
+
+    std::vector<std::string> ListOfReservedKeywords = {
+        "PHDRS",
+        "MEMORY",
+        "SECTIONS",
+        "VERSIONS",
+        "EXCLUDE_FILE",
+        "ORIGIN",
+        "LENGTH",
+    };
+
+    /// @brief Class encapsulating all parser helper functions
+    class ParserHelpers
+    {
+    public:
+        /// @brief Is the word a reserved keyword, function name or command name?
+        static bool IsReservedWord(const std::string& wordToCheck)
+        {
+            auto concernedLists =
+            {
+                ListOfReservedKeywords,
+                ListOfOutputSectionTypes,
+                ListOfOutputSectionCommandNames,
+                ListOfFunctionNames,
+                ListOfMiscellaneousCommandNames,
+                ListOfMemoryRelatedCommandNames,
+                ListOfObjectRelatedCommandNames,
+                ListOfFileRelatedCommandNames,
+                ListOfAssignmentCommandNames
+            };
+
+            for (auto listToCheckAgainst: concernedLists)
+            {
+               if (std::find(listToCheckAgainst.cbegin(),
+                             listToCheckAgainst.cend(),
+                             wordToCheck ) != listToCheckAgainst.cend())
+               {
+                   return true;
+               }
+            }
+
+            return false;
+        }
+    };
+
+
 }
 
 #endif // CONSTANTS_H
