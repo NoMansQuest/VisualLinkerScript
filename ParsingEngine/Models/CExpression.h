@@ -15,7 +15,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
     private:
         std::vector<std::shared_ptr<CLinkerScriptContentBase>> m_composition;
         CRawEntry m_openningParenthesis;
-        CRawEntry m_closingParenthesis;
+        CRawEntry m_closingParenthesis;        
 
     public:
         /// @brief Parameterized constructor, accessible to inheritors only
@@ -55,6 +55,11 @@ namespace VisualLinkerScript::ParsingEngine::Models
         const CRawEntry& ClosingParenthesis()
         {
             return this->m_closingParenthesis;
+        }
+
+        bool IsComplete()
+        {
+            return m_isComplete;
         }
 
         /// @brief Gets the "Composition" 

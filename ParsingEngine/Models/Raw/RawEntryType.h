@@ -17,7 +17,7 @@ namespace VisualLinkerScript::ParsingEngine::Models::Raw
         /// @brief Operators include '*', '+', '-', '>', '<', ';', '/', etc.
         Operator,
 
-        /// @brief Assignment operators: '=', '*=', '+=', '-=', '/='
+        /// @brief Assignment operators: '=', '*=', '+=', '-=', '/=', '>>=' , '<<=', '|=', '&='
         Assignment,
 
         /// @brief A number. This number may or may not be valid

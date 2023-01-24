@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "CLinkerScriptContentBase.h"
+#include "../Models/Raw/CRawEntry.h"
 
 namespace VisualLinkerScript::ParsingEngine::Models
 {
@@ -11,8 +12,18 @@ namespace VisualLinkerScript::ParsingEngine::Models
     {   
     public:
         /// @brief Default constructor, accessible to inheritors only
+        /// @param versionName Name of the version we'de defining
+        /// @param versionDependsOn (Optional) Name of the version this entry extends upon.
+        /// @param openingBracket Entry containing the opening curly-brakcet
+        /// @param closingBracket Entry containing the closing brakcet
+        /// @param semicolonDelimiter Entry containing the semicolon delimiter
         /// @param composingRawElements A list of object this element is comprised of.
-        explicit CVersionScope(std::vector<CRawEntry>&& rawElements,
+        explicit CVersionScope(CRawEntry verisonName,
+                               CRawEntry versionDependsOn,
+                               CRawEntry openingBracket,
+                               CRawEntry closingBracket,
+                               CRawEntry semicolonDelimiter,
+                               std::vector<CRawEntry>&& rawElements,
                                std::vector<CViolation>&& violations)
             : CLinkerScriptContentBase(std::move(rawElements), std::move(violations))
         {}        

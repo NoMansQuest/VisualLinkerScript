@@ -29,7 +29,7 @@ namespace
 }
 
 
-std::shared_ptr<CLinkerScriptContentBase> CPhdrsRegionContentParser::TryParse(
+std::shared_ptr<CPhdrsStatement> CPhdrsRegionContentParser::TryParse(
         CRawFile& linkerScriptFile,
         std::vector<CRawEntry>::const_iterator& iterator,
         std::vector<CRawEntry>::const_iterator& endOfVectorIterator)
@@ -250,12 +250,9 @@ std::shared_ptr<CLinkerScriptContentBase> CPhdrsRegionContentParser::TryParse(
     std::vector<CRawEntry> rawEntries;    
     std::copy(parsingStartIteratorPosition, localIterator, rawEntries.begin());
 
-    // We repot back the position parsing should continue with;
-    iterator = (localIterator == endOfVectorIterator) ?
-                localIterator :
-                localIterator + 1;
+    iterator = localIterator;
 
-    auto phdrsStatement = std::shared_ptr<CLinkerScriptContentBase>(
+    return std::shared_ptr<CPhdrsStatement>(
                 new CPhdrsStatement(nameEntry,
                                     typeEntry,
                                     fileHdrEntry,
@@ -264,6 +261,4 @@ std::shared_ptr<CLinkerScriptContentBase> CPhdrsRegionContentParser::TryParse(
                                     semicolonEntry,
                                     std::move(rawEntries),
                                     std::move(violations)));
-
-    return phdrsStatement;
 }

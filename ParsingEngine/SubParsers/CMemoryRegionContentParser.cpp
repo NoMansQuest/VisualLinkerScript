@@ -15,14 +15,6 @@ using namespace VisualLinkerScript::ParsingEngine::SubParsers;
 using namespace VisualLinkerScript::ParsingEngine::Models;
 using namespace VisualLinkerScript::ParsingEngine::Models::Raw;
 
-/*
-MEMORY
-{
-    rom (rx)  : ORIGIN = 0, LENGTH = 256K
-    ram (!rx) : org = 0x40000000, l = 4M
-}
-*/
-
 namespace
 {
     /// @brief CMemoryRegionContentParser parser states
@@ -33,17 +25,17 @@ namespace
         AwaitingColon,
         AwaitingOriginAssignment,
         AwaitingLengthAssignment,
-        AwaitingNewLineOrBracketClosure,
         ParsingComplete
     };
 }
 
-std::shared_ptr<CLinkerScriptContentBase> CMemoryRegionContentParser::TryParse(
+std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
         CRawFile& linkerScriptFile,
         std::vector<CRawEntry>::const_iterator& iterator,
         std::vector<CRawEntry>::const_iterator& endOfVectorIterator)
 {
     std::vector<CRawEntry>::const_iterator localIterator = iterator;
+    std::vector<CRawEntry>::const_iterator previousPositionIterator = iterator;
     std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = iterator;
     std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
     std::vector<CViolation> violations;
@@ -65,7 +57,9 @@ std::shared_ptr<CLinkerScriptContentBase> CMemoryRegionContentParser::TryParse(
 
         if (lineChangeDetected)
         {
-            break; // Any line-change would be rended parsing attempt null and void
+            // Any line-change would be rended parsing attempt null and void (however, it may be possible to report
+            // back a type of statement)
+            break;
         }
 
         switch (localIterator->EntryType())
@@ -75,7 +69,6 @@ std::shared_ptr<CLinkerScriptContentBase> CMemoryRegionContentParser::TryParse(
                 parsedContent.emplace_back(std::shared_ptr<CComment>(new CComment({*localIterator},{})));
                 break;
             }
-
             case RawEntryType::Word:
             {
                 switch (parserState)
@@ -92,112 +85,42 @@ std::shared_ptr<CLinkerScriptContentBase> CMemoryRegionContentParser::TryParse(
                         parserState = ParserState::AwaitingAttributes;
                         break;
                     }
-
+\
+                    case ParserState::AwaitingColon:
                     case ParserState::AwaitingAttributes:
                     {
-                        if (!this->CheckIfRawEntryInList(linkerScriptFile, *localIterator, ListOfProgramHeaderTypes))
-                        {
-                            // We need to abort. Continue to semicolon to recover...
-                            violations.emplace_back(CViolation(*localIterator, ViolationCode::WasExpectingProgramHeaderTypeHere));
-                            parserState = ParserState::AwaitingSemicolon;
-                        }
-                        else
-                        {
-                            typeEntry = *iterator;
-                            parserState = ParserState::AwaitingOptionalFields;
-                        }
-
-                        break;
-                    }
-
-                    case ParserState::AwaitingColon:
-                    {
-                        if (resolvedContent == "FILEHDR")
-                        {
-                            if (fileHdrEntry.IsPresent())
-                            {
-                                CViolation detectedViolation({*localIterator, fileHdrEntry }, ViolationCode::ProgramHeaderFileHdrAlreadySet);
-                                violations.emplace_back(detectedViolation);
-                            }
-                            else
-                            {
-                                fileHdrEntry = *localIterator;
-                            }
-                        }
-                        else if (resolvedContent == "PHDRS")
-                        {
-                            if (phdrsEntry.IsPresent())
-                            {
-                                CViolation detectedViolation({ *localIterator, phdrsEntry }, ViolationCode::ProgramHeaderPhdrsAlreadySet);
-                                violations.emplace_back(detectedViolation);
-                            }
-                            else
-                            {
-                                fileHdrEntry = *localIterator;
-                            }
-                        }
-                        else if (resolvedContent == "AT")
-                        {
-                            if (atAddressFunction != nullptr)
-                            {
-                                CViolation detectedViolation({ *localIterator, phdrsEntry }, ViolationCode::ProgramHeaderAtAddressAlreadySet);
-                                violations.emplace_back(detectedViolation);
-                            }
-                            else
-                            {
-                                auto parsedFunction = this->m_expressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
-                                if (parsedFunction == nullptr)
-                                {
-                                    CViolation detectedViolation({ *localIterator, phdrsEntry }, ViolationCode::EntryInvalidOrMisplaced);
-                                    violations.emplace_back(detectedViolation);
-                                }
-                                else
-                                {
-                                    atAddressFunction = parsedFunction;
-                                }
-                            }
-                        }
-                        else if (resolvedContent == "FLAGS")
-                        {
-                            if (atAddressFunction != nullptr)
-                            {
-                                CViolation detectedViolation({*localIterator, phdrsEntry}, ViolationCode::ProgramHeaderFlagsAlreadySet);
-                                violations.emplace_back(detectedViolation);
-                            }
-                            else
-                            {
-                                auto parsedFunction = this->m_expressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
-                                if (parsedFunction == nullptr)
-                                {
-                                    CViolation detectedViolation({*localIterator, phdrsEntry}, ViolationCode::EntryInvalidOrMisplaced);
-                                    violations.emplace_back(detectedViolation);
-                                }
-                                else
-                                {
-                                    atAddressFunction = parsedFunction;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            // We need to abort. Continue to semicolon to recover...
-                            violations.emplace_back(CViolation(*localIterator, ViolationCode::ProgramHeaderTypeNotRecognized));
-                            parserState = ParserState::AwaitingSemicolon;
-                        }
-
+                        violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
                         break;
                     }
 
                     case ParserState::AwaitingOriginAssignment:
                     {
-                        violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
-                        parserState = ParserState::AwaitingSemicolon;
+                        originAssignment = this->m_assignmentParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
+                        if (originAssignment == nullptr)
+                        {
+                            violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
+                        }
+                        else
+                        {
+                            doNotAdvance = true; // Since another parser was used, the iterator is already correctly positioned
+                            parserState = ParserState::AwaitingLengthAssignment;
+                        }
+                        break;
                     }
 
                     case ParserState::AwaitingLengthAssignment:
                     {
-                        violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
-                        parserState = ParserState::AwaitingSemicolon;
+                        lengthAssignment = this->m_assignmentParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
+                        if (lengthAssignment == nullptr)
+                        {
+                            violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
+                        }
+                        else
+                        {
+                            doNotAdvance = true; // Since another parser was used, the iterator is already correctly positioned
+                            parserState = ParserState::ParsingComplete;
+                        }
+                        break;
                     }
 
                     default:
@@ -209,7 +132,6 @@ std::shared_ptr<CLinkerScriptContentBase> CMemoryRegionContentParser::TryParse(
                 }
                 break;
             }
-
             case RawEntryType::Operator:
             {
                 switch (parserState)
@@ -218,24 +140,55 @@ std::shared_ptr<CLinkerScriptContentBase> CMemoryRegionContentParser::TryParse(
                     {
                         if (resolvedContent[0] == '(')
                         {
-                            auto attributeParsingResult = this->m_attributeParser.TryParse(linkerScriptFile, iterator, endOfVectorIterator);
-                            if (attributeParsingResult == nullptr)
+                            attributes = this->m_attributeParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
+                            if (attributes == nullptr)
                             {
-                                violations.emplace_back(CViolation(*localIterator, ViolationCode::ProgramHeaderTypeNotRecognized));
+                                // Parsing failed, mark this entry as invalid
+                                violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
+                                parserState = ParserState::AwaitingAttributes;
                             }
                             else
                             {
-
-
+                                doNotAdvance = true; // Since another parser was used, the iterator is already correctly positioned
+                                parserState = ParserState::AwaitingColon;
                             }
                         }
+                        else if (resolvedContent[0] == ':') // This means 'attributes' was not provided (being an 'optional' field)
+                        {
+                            colonEntry = *localIterator;
+                            parserState = ParserState::AwaitingOriginAssignment;
+                        }
+                        else
+                        {
+                            violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
+                        }
+
+                        break;
+                    }
+
+                    case ParserState::AwaitingColon:
+                    {
+                        if (resolvedContent[0] == ':')
+                        {
+                            colonEntry = *localIterator;
+                            parserState = ParserState::AwaitingOriginAssignment;
+                        }
+                        else
+                        {
+                            violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
+                        }
+
                         break;
                     }
 
                     case ParserState::AwaitingName:
-                    case ParserState::AwaitingColon:
                     case ParserState::AwaitingOriginAssignment:
                     case ParserState::AwaitingLengthAssignment:
+                    {
+                        violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
+                        break;
+                    }
+
                     default:
                     {
                         throw CMasterParsingException(
@@ -243,33 +196,24 @@ std::shared_ptr<CLinkerScriptContentBase> CMemoryRegionContentParser::TryParse(
                                     "ParserState invalid in CPhdrsRegionContentParser");
                     }
                 }
-
-
                 break;
             }
-
             case RawEntryType::Assignment:
             case RawEntryType::Number:
             case RawEntryType::String:
             case RawEntryType::ParenthesisOpen:
             case RawEntryType::ParenthesisClose:
+            {
+                violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
+                break;
+            }
+
+            // Brackets are sensitive and the matter needs to be escalated to higher-up
             case RawEntryType::BracketOpen:
             case RawEntryType::BracketClose:
             {
-                if (resolvedContent == ";")
-                {
-                    if (parserState == ParserState::AwaitingSemicolon)
-                    {
-                        semicolonEntry = *iterator;
-                        break;
-                    }
-                    parserState = ParserState::ParsingComplete;
-                }
-                else
-                {
-                    violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
-                    parserState = ParserState::AwaitingSemicolon;
-                }
+                localIterator = previousPositionIterator;
+                parserState = ParserState::ParsingComplete;
                 break;
             }
 
@@ -279,14 +223,12 @@ std::shared_ptr<CLinkerScriptContentBase> CMemoryRegionContentParser::TryParse(
                         MasterParsingExceptionType::NotPresentEntryDetected,
                         "A 'Unknown' entry was detected.");
             }
-
             case RawEntryType::NotPresent:
             {
                 throw CMasterParsingException(
                         MasterParsingExceptionType::NotPresentEntryDetected,
                         "A 'non-present' entry was detected.");
             }
-
             default:
             {
                 throw CMasterParsingException(
@@ -310,17 +252,14 @@ std::shared_ptr<CLinkerScriptContentBase> CMemoryRegionContentParser::TryParse(
     std::vector<CRawEntry> rawEntries;
     std::copy(parsingStartIteratorPosition, localIterator, rawEntries.begin());
 
-    // We repot back the position parsing should continue with;
-    iterator = (localIterator == endOfVectorIterator) ?
-                localIterator :
-                localIterator + 1;
+    iterator = localIterator;
 
-    return std::shared_ptr<CLinkerScriptContentBase>(
+    return std::shared_ptr<CMemoryStatement>(
                 new CMemoryStatement(nameEntry,
                                      attributes,
                                      colonEntry,
                                      originAssignment,
                                      lengthAssignment,
                                      std::move(rawEntries),
-                                     std::move(violations)));;
+                                     std::move(violations)));
 }

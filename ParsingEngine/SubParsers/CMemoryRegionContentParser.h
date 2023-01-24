@@ -2,9 +2,10 @@
 #define CMEMORY_REGION_CONTENT_PARSER_H__
 
 #include "CSubParserBase.h"
-#include "CExpressionParser.h"
+#include "CAssignmentParser.h"
 #include "SubParserType.h"
 #include "../Models/Raw/CRawFile.h"
+#include "../Models/CMemoryStatementAttribute.h"
 #include "CMemoryStatementAttributeParser.h"
 #include <memory>
 
@@ -13,10 +14,10 @@ using namespace VisualLinkerScript::ParsingEngine::Models::Raw;
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {   
     /// @brief Object in charge of parsing the content found inside "MEMORY" region within a linker-script
-    class CMemoryRegionContentParser : public CSubParserBase
+    class CMemoryRegionContentParser : public CSubParserBase<CMemoryStatementAttribute>
     {
     private:
-        CExpressionParser m_expressionParser;
+        CAssignmentParser m_assignmentParser;
         CMemoryStatementAttributeParser m_attributeParser;
 
     public:
@@ -27,7 +28,7 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
         }
 
         /// @copydoc CSubParserBase::TryParse()
-        virtual std::shared_ptr<CLinkerScriptContentBase> TryParse(
+        virtual std::shared_ptr<CMemoryStatementAttribute> TryParse(
                 CRawFile& linkerScriptFile,
                 std::vector<CRawEntry>::const_iterator& iterator,
                 std::vector<CRawEntry>::const_iterator& endOfVectorIterator) override;

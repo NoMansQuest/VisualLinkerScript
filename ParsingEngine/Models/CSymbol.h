@@ -11,17 +11,14 @@ namespace VisualLinkerScript::ParsingEngine::Models
     class CSymbol : public CLinkerScriptContentBase
     { 
     private:
-        CRawEntry m_arithmeticOperator;
         CRawEntry m_symbol;
 
     public:        
         /// @brief Default constructor, accessible to inheritors only
-        explicit CSymbol(CRawEntry precedingOperator,
-                         CRawEntry symbol,
+        explicit CSymbol(CRawEntry symbol,
                          std::vector<CRawEntry>&& rawElements, 
                          std::vector<CViolation>&& violations)
             : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
-              m_arithmeticOperator(precedingOperator),
               m_symbol(symbol)
         {}   
 
@@ -30,12 +27,6 @@ namespace VisualLinkerScript::ParsingEngine::Models
         {
             return ContentType::SecondarySymbol;
         }    
-
-        /// @brief Gets the arithmetic operator        
-        const CRawEntry& ArithmeticOperator()
-        {
-            return this->m_arithmeticOperator;
-        }
 
         /// @brief Gets the symbol itself
         const CRawEntry& Symbol()

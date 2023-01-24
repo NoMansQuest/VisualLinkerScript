@@ -12,7 +12,7 @@ using namespace VisualLinkerScript::ParsingEngine::Models::Raw;
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {
     /// @brief Object in charge of parsing the content of the "SECTIONS" region inside a linker-script
-    class CSectionsRegionContentParser : public CSubParserBase
+    class CSectionsRegionContentParser : public CSubParserBase<CLinkerScriptContentBase>
     {
     private:
         CExpressionParser m_expressionParser;

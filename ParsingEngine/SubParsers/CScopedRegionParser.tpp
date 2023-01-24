@@ -26,7 +26,7 @@ namespace
 }
 
 template <SubParserType TParserType, typename TContentParserType, class TProducingOutputType>
-std::shared_ptr<CLinkerScriptContentBase> CScopedRegionParser<TParserType, TContentParserType, TProducingOutputType>::TryParse(
+std::shared_ptr<TProducingOutputType> CScopedRegionParser<TParserType, TContentParserType, TProducingOutputType>::TryParse(
         CRawFile& linkerScriptFile,
         std::vector<CRawEntry>::const_iterator& iterator,
         std::vector<CRawEntry>::const_iterator& endOfVectorIterator)
@@ -64,7 +64,7 @@ std::shared_ptr<CLinkerScriptContentBase> CScopedRegionParser<TParserType, TCont
                     }
                     else
                     {
-                        parsedContent.emplace_back(parsedStatement);
+                        parsedContent.emplace_back(parsedStatement);                        
                     }
                 }
                 else if (parserState == ParserState::AwaitingHeader)
@@ -162,18 +162,13 @@ std::shared_ptr<CLinkerScriptContentBase> CScopedRegionParser<TParserType, TCont
     std::vector<CRawEntry> rawEntries;
     std::copy(parsingStartIteratorPosition, localIterator, rawEntries.begin());
 
-    auto memoryRegion = std::shared_ptr<CLinkerScriptContentBase>(
+    iterator = localIterator;
+
+    return std::shared_ptr<TProducingOutputType>(
                 new TProducingOutputType(regionHeaderEntry,
                                          openningBracketEntry,
                                          closingBracketEntry,
                                          std::move(parsedContent),
                                          std::move(rawEntries),
                                          std::move(violations)));
-
-    // We repot back the position parsing should continue with;
-    iterator = (localIterator == endOfVectorIterator) ?
-                localIterator :
-                localIterator + 1;
-
-    return memoryRegion;
 }

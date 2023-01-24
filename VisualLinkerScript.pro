@@ -188,6 +188,8 @@ HEADERS += \
     ParsingEngine/Models/CAssignmentStatement.h \
     ParsingEngine/Models/CComment.h \
     ParsingEngine/Models/CExpression.h \
+    ParsingEngine/Models/CExpressionNumber.h \
+    ParsingEngine/Models/CExpressionOperator.h \
     ParsingEngine/Models/CFunctionCall.h \
     ParsingEngine/Models/CLinkerScriptContentBase.h \
     ParsingEngine/Models/CLinkerScriptFile.h \
@@ -204,7 +206,6 @@ HEADERS += \
     ParsingEngine/Models/CUnrecognizableContent.h \
     ParsingEngine/Models/CVersionNode.h \
     ParsingEngine/Models/CVersionScope.h \
-    ParsingEngine/Models/CVersionScopeEntry.h \
     ParsingEngine/Models/CVersionsRegion.h \
     ParsingEngine/Models/CViolation.h \
     ParsingEngine/Models/Evaluation/ArithmeticOperationType.h \
@@ -251,7 +252,6 @@ HEADERS += \
     ParsingEngine/Models/CUnrecognizableContent.h \
     ParsingEngine/Models/CVersionNode.h \
     ParsingEngine/Models/CVersionScope.h \
-    ParsingEngine/Models/CVersionScopeEntry.h \
     ParsingEngine/Models/CVersionsRegion.h \
     ParsingEngine/Models/CViolation.h \
     ParsingEngine/Models/Evaluation/ArithmeticOperationType.h \

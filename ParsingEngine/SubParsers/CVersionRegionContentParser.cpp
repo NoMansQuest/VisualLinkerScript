@@ -13,7 +13,7 @@ using namespace VisualLinkerScript::ParsingEngine::SubParsers;
 using namespace VisualLinkerScript::ParsingEngine::Models;
 using namespace VisualLinkerScript::ParsingEngine::Models::Raw;
 
-std::shared_ptr<CLinkerScriptContentBase> CVersionRegionContentParser::TryParse(
+std::shared_ptr<CVersionScope> CVersionRegionContentParser::TryParse(
         CRawFile& linkerScriptFile,
         std::vector<CRawEntry>::const_iterator& iterator,
         std::vector<CRawEntry>::const_iterator& endOfVectorIterator)

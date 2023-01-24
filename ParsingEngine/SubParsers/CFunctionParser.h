@@ -4,16 +4,14 @@
 #include "CSubParserBase.h"
 #include "SubParserType.h"
 #include "CExpressionParser.h"
+#include "../Models/CFunctionCall.h"
 #include <memory>
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {   
     /// @brief Object in charge parsing a full function: <NAME>(<EXPRESSION>)
-    class CFunctionParser : public CSubParserBase
+    class CFunctionParser : public CSubParserBase<CFunctionCall>
     {
-    private:
-        CExpressionParser m_expressionParser;
-
     public:
         /// @copydoc CSubParserBase::Type()
         virtual SubParserType Type() override 
@@ -22,7 +20,7 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
         }
 
         /// @copydoc CSubParserBase::TryParse()
-        virtual std::shared_ptr<CLinkerScriptContentBase> TryParse(
+        virtual std::shared_ptr<CFunctionCall> TryParse(
                 CRawFile& linkerScriptFile,
                 std::vector<CRawEntry>::const_iterator& iterator,
                 std::vector<CRawEntry>::const_iterator& endOfVectorIterator) override;

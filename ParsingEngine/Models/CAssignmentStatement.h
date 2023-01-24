@@ -16,7 +16,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
         std::vector<CRawEntry> m_assignmentOperator;        
         CExpression m_lValueExpression;
         CExpression m_rValueExpression;
-        CRawEntry m_semicolonOperator;
+        CRawEntry m_deliminterOperator;
 
     public:
         /// @brief Detailed Constructor
@@ -30,8 +30,8 @@ namespace VisualLinkerScript::ParsingEngine::Models
               m_assignmentOperator(std::move(assignmentOperator)),
               m_lValueExpression(std::move(lValueExpression)),
               m_rValueExpression(std::move(rValueExpression)),
-              m_semicolonOperator(semicolonOperator)
-        {}             
+              m_deliminterOperator(semicolonOperator)
+        {}
 
         /// @brief Reports back the type of this object.        
         ContentType Type() override
@@ -58,9 +58,9 @@ namespace VisualLinkerScript::ParsingEngine::Models
         }
 
         /// @brief Gets the "SemicolonOperator"
-        const CRawEntry& SemicolonOperator()
+        const CRawEntry& DelimiterOperator()
         {
-            return this->m_semicolonOperator;
+            return this->m_deliminterOperator;
         }
     };
 }
