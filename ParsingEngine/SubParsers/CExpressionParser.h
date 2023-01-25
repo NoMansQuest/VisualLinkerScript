@@ -10,9 +10,8 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
 {   
     enum class ExpressionTerminationType
     {
-        SemicolonAsDelimiter,
-        ColonAsDelimiter,
-        NoDelimiter
+        SemicolonOrColonAsDelimiter,
+        NewLineAsDelimiter
     };
 
     /// @brief Object in charge parsing R-Value expression (e.g. a + b - c + ((f / g) - h) ...)

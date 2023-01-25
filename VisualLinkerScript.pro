@@ -182,7 +182,6 @@ HEADERS += \
     Models/LinkerScript/CSymbolAssignment.h \
     ParsingEngine/CMasterParser.h \
     ParsingEngine/CMasterParserException.h \
-    ParsingEngine/CParserHelpers.h \
     ParsingEngine/CPreliminaryParser.h \
     ParsingEngine/CPreliminaryParsingException.h \
     ParsingEngine/Models/CAssignmentStatement.h \

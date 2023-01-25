@@ -35,7 +35,11 @@ namespace VisualLinkerScript::ParsingEngine::Models
         MemorySectionNameShouldNotBeAReservedKeyword,
         WasExpectingAttributeHereButEitherNotPresentOrInvalid,
 
+        // Expression violations
+        OperatorIsNotAcceptedHere,
+
         // General violations
+        FunctionMissingDefinitionOrInvalidSymbolName,
         MissingOpeningCurlyBracket,
         MissingClosingCurlyBracket,
         MissingOpeningParenthesis,

@@ -102,6 +102,7 @@ namespace
                 (input == '=') ||
                 (input == '?') ||
                 (input == ':') ||
+                (input == '^') ||
                 (input == ',') ||
                 (input == ';') ||
                 (input == '~') ||
@@ -169,12 +170,14 @@ namespace
         return (input == '\n');
     }
 
+    bool IsAssignmentOperator
+
     /// @brief Checks if a long operator (e.g. >>= or !=, etc.) is present at position
     bool CheckForLongOperator(const std::string& rawContent, const uint32_t position, uint32_t& longOperatorLength)
     {
         std::vector<std::string> recognizedLongOperators
-        {
-          ">>= ", "<<= ", "!= " , "== " , "+= " , "-= " , "*= " , "/= " , ">> " , "<< "
+        {            
+            ">>= ", "<<= ", "!=", "==", "+=", "-=", "*=", "/=", "%=", ">> ", "<<", "||", "&&"
         };
 
         for (auto operatorToCheckFor: recognizedLongOperators)
@@ -380,14 +383,22 @@ std::shared_ptr<CRawFile> CPreliminaryParser::ProcessLinkerScript(const std::str
 
                 if (IsOperator(currentCharacter))
                 {
-                    auto entyType = (currentCharacter == '{') ? RawEntryType::BracketOpen :
-                                    (currentCharacter == '}') ? RawEntryType::BracketClose :
-                                    (currentCharacter == '(') ? RawEntryType::ParenthesisOpen :
-                                    (currentCharacter == ')') ? RawEntryType::ParenthesisClose :
-                                    RawEntryType::Operator;
+                    uint32_t longOperatorLength;
+                    if (CheckForLongOperator(rawContent, scanPosition, longOperatorLength))
+                    {
+                        parsedContent.emplace_back(CRawEntry(RawEntryType::Operator, lineNumber, scanPosition, longOperatorLength, parenthesisDepth, scopeDepth));
+                        scanPosition += longOperatorLength - 1;
+                    }
+                    else
+                    {
+                        auto entyType = (currentCharacter == '{') ? RawEntryType::BracketOpen :
+                                        (currentCharacter == '}') ? RawEntryType::BracketClose :
+                                        (currentCharacter == '(') ? RawEntryType::ParenthesisOpen :
+                                        (currentCharacter == ')') ? RawEntryType::ParenthesisClose :
+                                        RawEntryType::Operator;
 
-                    parsedContent.emplace_back(CRawEntry(entyType, lineNumber, scanPosition, 1, parenthesisDepth, scopeDepth));
-                    break;
+                        parsedContent.emplace_back(CRawEntry(entyType, lineNumber, scanPosition, 1, parenthesisDepth, scopeDepth));
+                    }
                 }
 
                 break;

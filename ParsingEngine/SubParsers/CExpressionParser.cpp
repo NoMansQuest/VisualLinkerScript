@@ -1,10 +1,15 @@
 #include "CExpressionParser.h"
 #include <vector>
 #include <memory>
+#include "Constants.h"
 #include "../Models/Raw/CRawEntry.h"
 #include "../Models/CUnrecognizableContent.h"
 #include "../Models/CViolation.h"
+#include "../Models/CComment.h"
 #include "../Models/CExpression.h"
+#include "../Models/CSymbol.h"
+#include "../Models/CExpressionNumber.h"
+#include "../Models/CExpressionOperator.h"
 #include "../CMasterParserException.h"
 
 using namespace VisualLinkerScript::ParsingEngine::SubParsers;
@@ -31,7 +36,8 @@ std::shared_ptr<CLinkerScriptContentBase> CExpressionParser::TryParse(
     std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = iterator;
     std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
     std::vector<CViolation> violations;
-    CExpressionParser expressionParser;
+
+    CExpressionParser nestedExpressionParser(ExpressionTerminationType::NoDelimiter, this->m_supportsMultiLine);
 
     auto parserState = ParserState::AwaitingContent;
     auto doNotAdvance = false;
@@ -45,7 +51,13 @@ std::shared_ptr<CLinkerScriptContentBase> CExpressionParser::TryParse(
         auto resolvedContent = linkerScriptFile.ResolveRawEntry(*localIterator);
         auto lineChangeDetected = parsingStartIteratorPosition->EndLineNumber() != localIterator->EndLineNumber();
 
-        if (lineChangeDetected)
+        CRawEntry oneEntryAhead;
+        if (localIterator + 1 != endOfVectorIterator)
+        {
+            oneEntryAhead = *(localIterator+1);
+        }
+
+        if (lineChangeDetected && !this->m_supportsMultiLine)
         {
             // Any line-change would be rended parsing attempt null and void (however, it may be possible to report
             // back a type of statement)
@@ -59,57 +71,43 @@ std::shared_ptr<CLinkerScriptContentBase> CExpressionParser::TryParse(
                 parsedContent.emplace_back(std::shared_ptr<CComment>(new CComment({*localIterator},{})));
                 break;
             }
+
             case RawEntryType::Word:
             {
                 switch (parserState)
                 {
-                    case ParserState::AwaitingName:
+                    case ParserState::AwaitingParenthesisClosure:
+                    case ParserState::AwaitingContent:
                     {
-                        if (ParserHelpers::IsReservedWord(resolvedContent))
+                        if (CParserHelpers::IsFunctionName(resolvedContent))
                         {
-                            // We need to abort. Continue to semicolon to recover...
-                            violations.emplace_back(CViolation(*localIterator, ViolationCode::MemorySectionNameShouldNotBeAReservedKeyword));
+                            if (oneEntryAhead.EntryType() != RawEntryType::ParenthesisOpen)
+                            {
+                                violations.emplace_back(CViolation(*localIterator, ViolationCode::FunctionMissingDefinitionOrInvalidSymbolName));
+                                break;
+                            }
+
+                            auto parsedFunction = nestedExpressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
+                            if (parsedFunction == nullptr)
+                            {
+                                violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
+                                break;
+                            }
+
+                            parsedContent.emplace_back(parsedFunction);
                         }
-
-                        nameEntry = *iterator;
-                        parserState = ParserState::AwaitingAttributes;
-                        break;
-                    }
-\
-                    case ParserState::AwaitingColon:
-                    case ParserState::AwaitingAttributes:
-                    {
-                        violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
-                        break;
-                    }
-
-                    case ParserState::AwaitingOriginAssignment:
-                    {
-                        originAssignment = this->m_assignmentParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
-                        if (originAssignment == nullptr)
+                        else if (CParserHelpers::IsReservedWord(resolvedContent))
                         {
+                            // We have an invalid statement here
                             violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
+                            break;
                         }
                         else
                         {
-                            doNotAdvance = true; // Since another parser was used, the iterator is already correctly positioned
-                            parserState = ParserState::AwaitingLengthAssignment;
+                            CSymbol symbol(*localIterator, {*localIterator}, {});
+                            parsedContent.emplace_back(symbol);
                         }
-                        break;
-                    }
 
-                    case ParserState::AwaitingLengthAssignment:
-                    {
-                        lengthAssignment = this->m_assignmentParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
-                        if (lengthAssignment == nullptr)
-                        {
-                            violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
-                        }
-                        else
-                        {
-                            doNotAdvance = true; // Since another parser was used, the iterator is already correctly positioned
-                            parserState = ParserState::ParsingComplete;
-                        }
                         break;
                     }
 
@@ -122,72 +120,32 @@ std::shared_ptr<CLinkerScriptContentBase> CExpressionParser::TryParse(
                 }
                 break;
             }
+
             case RawEntryType::Operator:
             {
-                switch (parserState)
+                if ((resolvedContent == ";") || (resolvedContent == ","))
                 {
-                    case ParserState::AwaitingAttributes:
+                    // Forced completion of parsing
+                    localIterator = previousPositionIterator;
+                    parserState = ParserState::ParsingComplete;
+                }
+                else
+                {
+                    if (CParserHelpers::IsComparisonOperator(resolvedContent) ||
+                        CParserHelpers::IsArithmeticOperator(resolvedContent) ||
+                        CParserHelpers::IsTernaryOperator(resolvedContent))
                     {
-                        if (resolvedContent[0] == '(')
-                        {
-                            attributes = this->m_attributeParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
-                            if (attributes == nullptr)
-                            {
-                                // Parsing failed, mark this entry as invalid
-                                violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
-                                parserState = ParserState::AwaitingAttributes;
-                            }
-                            else
-                            {
-                                doNotAdvance = true; // Since another parser was used, the iterator is already correctly positioned
-                                parserState = ParserState::AwaitingColon;
-                            }
-                        }
-                        else if (resolvedContent[0] == ':') // This means 'attributes' was not provided (being an 'optional' field)
-                        {
-                            colonEntry = *localIterator;
-                            parserState = ParserState::AwaitingOriginAssignment;
-                        }
-                        else
-                        {
-                            violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
-                        }
-
-                        break;
+                        CExpressionOperator expressionOperator(*localIterator, {*localIterator}, {});
+                        parsedContent.emplace_back(expressionOperator);
                     }
-
-                    case ParserState::AwaitingColon:
+                    else
                     {
-                        if (resolvedContent[0] == ':')
-                        {
-                            colonEntry = *localIterator;
-                            parserState = ParserState::AwaitingOriginAssignment;
-                        }
-                        else
-                        {
-                            violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
-                        }
-
-                        break;
-                    }
-
-                    case ParserState::AwaitingName:
-                    case ParserState::AwaitingOriginAssignment:
-                    case ParserState::AwaitingLengthAssignment:
-                    {
-                        violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
-                        break;
-                    }
-
-                    default:
-                    {
-                        throw CMasterParsingException(
-                                    MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
-                                    "ParserState invalid in CPhdrsRegionContentParser");
+                        violations.emplace_back(CViolation(*localIterator, ViolationCode::OperatorIsNotAcceptedHere));
                     }
                 }
                 break;
             }
+
             case RawEntryType::Assignment:
             case RawEntryType::Number:
             case RawEntryType::String:

@@ -14,7 +14,7 @@ namespace VisualLinkerScript::ParsingEngine::Models::Raw
         /// @brief A word, which may only be a single dot as well
         Word,   
 
-        /// @brief Operators include '*', '+', '-', '>', '<', ';', '/', etc.
+        /// @brief Operators include '*', '+', '-', '>', '<', ';', '/', '?', '%'etc.
         Operator,
 
         /// @brief Assignment operators: '=', '*=', '+=', '-=', '/=', '>>=' , '<<=', '|=', '&='

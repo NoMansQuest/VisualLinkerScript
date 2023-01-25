@@ -117,10 +117,61 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
         "EXCLUDE_FILE",
         "ORIGIN",
         "LENGTH",
+    };    
+
+    std::vector<std::string> ListOfLogicalOperators =
+    {
+        "==",
+        "&&",
+        "||",
+        "!="
     };
 
+    std::vector<std::string> ListOfTernaryOperators =
+    {
+        "?",
+        ":"
+    };
+
+    std::vector<std::string> ListOfArithmeticOperators =
+    {
+        "+",
+        "-",
+        "*",
+        "/",
+        "%",
+        "&",
+        "|",
+        "^"
+    };
+
+    std::vector<std::string> ListOfComparisonOperators =
+    {
+        "<",
+        ">",
+        "<=",
+        ">=",
+        "==",
+        "!="
+    };
+
+    std::vector<std::string> ListOfAssignmentOperators =
+    {
+        ">>=",
+        "<<=",
+        "+=",
+        "-=",
+        "*=",
+        "/=",
+        "=",
+        "&=",
+        "|=",
+        "%="
+    };
+
+
     /// @brief Class encapsulating all parser helper functions
-    class ParserHelpers
+    class CParserHelpers
     {
     public:
         /// @brief Is the word a reserved keyword, function name or command name?
@@ -150,6 +201,62 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
             }
 
             return false;
+        }
+
+        /// @brief Is the word in question a potential function?
+        static bool IsFunctionName(const std::string& wordToCheck)
+        {
+            return std::find(ListOfFunctionNames.cbegin(),
+                             ListOfFunctionNames.cend(),
+                             wordToCheck) != ListOfFunctionNames.cend();
+        }
+
+        /// @brief Is the word in question a potential Assignment Procedure?
+        static bool IsAssignmentProcedure(const std::string& wordToCheck)
+        {
+            return std::find(ListOfAssignmentCommandNames.cbegin(),
+                             ListOfAssignmentCommandNames.cend(),
+                             wordToCheck) != ListOfAssignmentCommandNames.cend();
+        }
+
+        /// @brief Checks if the given operator is in fact an 'assignment' operator
+        static bool IsAssignmentOperator(const std::string& operatorToCheck)
+        {
+            return std::find(ListOfAssignmentOperators.cbegin(),
+                             ListOfAssignmentOperators.cend(),
+                             operatorToCheck) != ListOfAssignmentOperators.cend();
+        }
+
+        /// @brief Checks if the given operator is in fact an 'assignment' operator
+        static bool IsComparisonOperator(const std::string& operatorToCheck)
+        {
+            return std::find(ListOfComparisonOperators.cbegin(),
+                             ListOfComparisonOperators.cend(),
+                             operatorToCheck) != ListOfComparisonOperators.cend();
+        }
+
+        /// @brief Checks if the given operator is a logical operator (e.g. "&&", "||", "==")
+        static bool IsLogicalOperator(const std::string& operatorToCheck)
+        {
+            return std::find(ListOfLogicalOperators.cbegin(),
+                             ListOfLogicalOperators.cend(),
+                             operatorToCheck) != ListOfLogicalOperators.cend();
+        }
+
+        /// @brief Checks if the given operator is an arithmetic operator (e.g. "+", "-", etc.)
+        static bool IsArithmeticOperator(const std::string& operatorToCheck)
+        {
+            return std::find(ListOfArithmeticOperators.cbegin(),
+                             ListOfArithmeticOperators.cend(),
+                             operatorToCheck) != ListOfArithmeticOperators.cend();
+        }
+
+        /// @brief Checks if the given operator is a potential ternary operator (i.e. ":" or "?")
+        static bool IsTernaryOperator(const std::string& operatorToCheck)
+        {
+            return std::find(ListOfTernaryOperators.cbegin(),
+                             ListOfTernaryOperators.cend(),
+                             operatorToCheck) != ListOfTernaryOperators.cend();
         }
     };
 
