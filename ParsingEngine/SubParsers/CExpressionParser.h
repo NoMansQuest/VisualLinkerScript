@@ -8,23 +8,24 @@
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {   
-    enum class ExpressionTerminationType
+    enum class ExpressionParserType
     {
-        SemicolonOrColonAsDelimiter,
-        NewLineAsDelimiter
+        NormalParser,
+        TernaryThenSectionParser,
+        TernaryElseSectionParser
     };
 
     /// @brief Object in charge parsing R-Value expression (e.g. a + b - c + ((f / g) - h) ...)
     class CExpressionParser : public CSubParserBase<CExpression>
     {
     private:
-        ExpressionTerminationType m_terminationType;
+        ExpressionParserType m_parserType;
         bool m_supportsMultiLine;
 
     public:
         /// @brief Initializes an instance of 'CExpressionParser'
-        CExpressionParser(ExpressionTerminationType terminationType, bool supportsMultiline)
-            : m_terminationType(terminationType),
+        CExpressionParser(ExpressionParserType parserType, bool supportsMultiline)
+            : m_parserType(parserType),
               m_supportsMultiLine(supportsMultiline)
         {}
 

@@ -54,7 +54,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
         /// @brief Reports back the type of this object       
         virtual ContentType Type() = 0;
 
-        /// @brief Does content pass integrity check? 
+        /// @brief Does content pass integrity check?
         bool IsValid()
         {
             return m_violations.size() == 0;

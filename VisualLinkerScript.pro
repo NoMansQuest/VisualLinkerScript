@@ -201,6 +201,7 @@ HEADERS += \
     ParsingEngine/Models/CSectionOutputStatement.h \
     ParsingEngine/Models/CSectionOverlayStatement.h \
     ParsingEngine/Models/CSectionsRegion.h \
+    ParsingEngine/Models/CStringEntry.h \
     ParsingEngine/Models/CSymbol.h \
     ParsingEngine/Models/CUnrecognizableContent.h \
     ParsingEngine/Models/CVersionNode.h \
@@ -219,6 +220,7 @@ HEADERS += \
     ParsingEngine/Models/Raw/CRawFile.h \
     ParsingEngine/Models/Raw/RawEntryType.h \
     ParsingEngine/SubParsers/CAssignmentParser.h \
+    ParsingEngine/SubParsers/CCommandParser.h \
     ParsingEngine/SubParsers/CDefaultParser.h \
     ParsingEngine/SubParsers/CExpressionParser.h \
     ParsingEngine/SubParsers/CFunctionParser.h \

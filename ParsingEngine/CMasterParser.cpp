@@ -27,7 +27,6 @@ CMasterParser::CMasterParser()
     this->m_subParsers.emplace_back(std::shared_ptr<CSubParserBase>(new CPhdrsRegionParser() ));
     this->m_subParsers.emplace_back(std::shared_ptr<CSubParserBase>(new CMemoryParserRegion()));
     this->m_subParsers.emplace_back(std::shared_ptr<CSubParserBase>(new CSectionsRegionParser()));
-    this->m_subParsers.emplace_back(std::shared_ptr<CSubParserBase>(new CSectionsRegionOverlayParser()));
     this->m_subParsers.emplace_back(std::shared_ptr<CSubParserBase>(new CVersionRegionParser()));
     this->m_subParsers.emplace_back(std::shared_ptr<CSubParserBase>(new CDefaultParser()));
 }
@@ -45,11 +44,26 @@ CLinkerScriptFile&& CMasterParser::ProcessLinkerScriptFile(std::shared_ptr<CRawF
 
         switch (rawEntry.EntryType())
         {
+            case RawEntryType::Comment:
+            {
+                auto comment = std::shared_ptr<CComment>(new CComment({rawEntry},{}));
+                parsedContent.emplace_back(comment);
+                break;
+            }
+
             case RawEntryType::Word:
+            {
+                break;
+            }
+
+            case RawEntryType::String:
+            {
+
+            }
+
             case RawEntryType::Operator:
             case RawEntryType::Assignment:
-            case RawEntryType::Number:
-            case RawEntryType::String:
+            case RawEntryType::Number:            
             case RawEntryType::ParenthesisOpen:
             case RawEntryType::ParenthesisClose:
             case RawEntryType::BracketOpen:
@@ -78,14 +92,6 @@ CLinkerScriptFile&& CMasterParser::ProcessLinkerScriptFile(std::shared_ptr<CRawF
             case RawEntryType::NotPresent:
             {
                 throw CMasterParsingException(MasterParsingExceptionType::NotPresentEntryDetected);
-            }
-
-            case RawEntryType::Comment:
-            {
-                auto comment = std::make_shared<CComment>(std::vector<CRawEntry>{rawEntry},
-                                                          std::vector<CViolation>());
-                parsedContent.emplace_back(comment);
-                break;            
             }
 
             default:    
