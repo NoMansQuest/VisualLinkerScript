@@ -43,6 +43,14 @@ namespace VisualLinkerScript::ParsingEngine::Models
         WasExpectingASymbolOrNumberBeforeExpressionEnds,
         UnexpectedTerminationOfExpression,
         TernaryExpressionMissingFirstPart,
+        WasExpectingParenthesisOverture,
+        WasExpectingAnotherParameterOrParenthesisClosure,
+
+        // Functiosn parsing violations,
+        FunctionsCannotExpandToMultipleLines,
+        FunctionNotRecognized,
+        WasExpectingFunctioNameHere,
+        UnexpectedTerminationOfFunction,
 
         // General violations
         FunctionMissingDefinitionOrInvalidSymbolName,

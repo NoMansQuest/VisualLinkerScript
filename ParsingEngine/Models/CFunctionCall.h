@@ -14,21 +14,21 @@ namespace VisualLinkerScript::ParsingEngine::Models
         CRawEntry m_procedureName;
         CRawEntry m_openingParenthesis;
         CRawEntry m_closingParenthesis;
-        std::vector<CLinkerScriptContentBase> m_parameters;
+        std::vector<std::shared_ptr<CLinkerScriptContentBase>> m_parsedContent;
 
     public:
         /// @brief Default constructor, accessible to inheritors only
         explicit CFunctionCall(CRawEntry functionName,
                                CRawEntry openingParenthesis,
                                CRawEntry closingParenthesis,
-                               std::vector<CLinkerScriptContentBase>&& parameters,
+                               std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& parsedContent,
                                std::vector<CRawEntry>&& rawElements,
                                std::vector<CViolation>&& violations)
             : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
               m_procedureName(functionName),
               m_openingParenthesis(openingParenthesis),
               m_closingParenthesis(closingParenthesis),
-              m_parameters(std::move(parameters))
+              m_parsedContent(std::move(parsedContent))
         {}
 
     public:
@@ -39,9 +39,9 @@ namespace VisualLinkerScript::ParsingEngine::Models
         }
 
         /// @brief Reports back the list of parameters
-        const std::vector<CLinkerScriptContentBase> Parameters()
+        const  std::vector<std::shared_ptr<CLinkerScriptContentBase>>& ParsedContent()
         {
-            return this->m_parameters;
+            return this->m_parsedContent;
         }
 
         /// @brief Reports back the procedure-name

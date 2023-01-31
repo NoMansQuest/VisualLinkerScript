@@ -195,6 +195,7 @@ HEADERS += \
     ParsingEngine/Models/CMemoryRegion.h \
     ParsingEngine/Models/CMemoryStatement.h \
     ParsingEngine/Models/CMemoryStatementAttribute.h \
+    ParsingEngine/Models/CParameterSeparator.h \
     ParsingEngine/Models/CPhdrsRegion.h \
     ParsingEngine/Models/CPhdrsStatement.h \
     ParsingEngine/Models/CProcedureCall.h \

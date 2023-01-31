@@ -18,6 +18,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
         EnclosedExpression,
         PhdrsRegion,
         PhdrsStatement,
+        ParameterSeparator,
         MemoryRegion,
         MemoryStatement,
         MemoryStatementAttribute,

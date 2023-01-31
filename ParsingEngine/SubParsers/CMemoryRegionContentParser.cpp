@@ -75,7 +75,7 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
                 {
                     case ParserState::AwaitingName:
                     {
-                        if (ParserHelpers::IsReservedWord(resolvedContent))
+                        if (CParserHelpers::IsReservedWord(resolvedContent))
                         {
                             // We need to abort. Continue to semicolon to recover...
                             violations.emplace_back(CViolation(*localIterator, ViolationCode::MemorySectionNameShouldNotBeAReservedKeyword));
