@@ -13,7 +13,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
     /// @brief An exhaustive list of all known violations.
     enum class ViolationCode : uint32_t
     {
-        // Program Header (PHDRS) violations
+        // Program Header (PHDRS) violations:
         NoSymbolOrKeywordAllowedAfterPhdrsHeader,
         ProgramHeaderNameShouldNotBeAReservedKeyword,
         ProgramHeaderTypeNotRecognized,
@@ -23,7 +23,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
         ProgramHeaderFlagsAlreadySet,
         WasExpectingProgramHeaderTypeHere,
 
-        // Memory region violations
+        // Memory region violations:
         NoSymbolOrKeywordAllowedAfterMemoryHeader,
         ReadAttributeIsAlreadySet,
         ReadWriteAttributeIsAlreadySet,
@@ -35,7 +35,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
         MemorySectionNameShouldNotBeAReservedKeyword,
         WasExpectingAttributeHereButEitherNotPresentOrInvalid,
 
-        // Expression violations
+        // Expression violations:
         OperatorIsNotAcceptedHere,
         NoCorrespondingParenthesisOvertureFound,
         AssignmentOperatorNotValidInAnRValueExpression,
@@ -46,13 +46,19 @@ namespace VisualLinkerScript::ParsingEngine::Models
         WasExpectingParenthesisOverture,
         WasExpectingAnotherParameterOrParenthesisClosure,
 
-        // Functiosn parsing violations,
+        // Functiosn parsing violations:
         FunctionsCannotExpandToMultipleLines,
         FunctionNotRecognized,
         WasExpectingFunctioNameHere,
         UnexpectedTerminationOfFunction,
 
-        // General violations
+        // Assignment parsing violations:
+        LValueCannotContainRValueExpression,
+        MultipleAssignmentOperatorsDetected,
+        RValueExpressionParsingFailed,
+        MissingLValue,
+
+        // General violations:
         FunctionMissingDefinitionOrInvalidSymbolName,
         MissingOpeningCurlyBracket,
         MissingClosingCurlyBracket,

@@ -372,9 +372,10 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                 break;
 
             case RawEntryType::Unknown:
-                throw CMasterParsingException(
-                        MasterParsingExceptionType::NotPresentEntryDetected,
-                        "A 'Unknown' entry was detected.");
+            {
+                violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
+                break;
+            }
 
             case RawEntryType::NotPresent:
                 throw CMasterParsingException(

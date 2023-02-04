@@ -13,23 +13,23 @@ namespace VisualLinkerScript::ParsingEngine::Models
     class CAssignmentStatement : public CLinkerScriptContentBase
     { 
     private:
-        std::vector<CRawEntry> m_assignmentOperator;        
-        CExpression m_lValueExpression;
-        CExpression m_rValueExpression;
+        CRawEntry m_assignmentOperator;
+        CRawEntry m_lValueEntry;
+        std::vector<std::shared_ptr<CLinkerScriptContentBase>> m_parsedContent;
         CRawEntry m_deliminterOperator;
 
     public:
         /// @brief Detailed Constructor
-        explicit CAssignmentStatement(CExpression&& lValueExpression,
-                                      CExpression&& rValueExpression,
-                                      std::vector<CRawEntry>&& assignmentOperator,
+        explicit CAssignmentStatement(CRawEntry lValueEntry,
+                                      CRawEntry assignmentOperator,
                                       CRawEntry semicolonOperator,
+                                      std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& parsedContent,
                                       std::vector<CRawEntry>&& rawElements, 
                                       std::vector<CViolation>&& violations)
             : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
               m_assignmentOperator(std::move(assignmentOperator)),
-              m_lValueExpression(std::move(lValueExpression)),
-              m_rValueExpression(std::move(rValueExpression)),
+              m_lValueEntry(std::move(lValueEntry)),
+              m_parsedContent(std::move(parsedContent)),
               m_deliminterOperator(semicolonOperator)
         {}
 
@@ -40,21 +40,21 @@ namespace VisualLinkerScript::ParsingEngine::Models
         }    
 
         /// @brief Gets the "AssignmentOperator"
-        const std::vector<CRawEntry>& AssignmentOperator()
+        const CRawEntry AssignmentOperator()
         {
             return this->m_assignmentOperator;
         }        
 
-        /// @brief Gets the "LValueComposition"
-        const CExpression& LValueExpression()
+        /// @brief Gets the "LValue" entry
+        const CRawEntry LValueEntry()
         {
-            return this->m_lValueExpression;
+            return this->m_lValueEntry;
         }
         
         /// @brief Gets the "RValueComposition"
-        const CExpression& RValueExpression()
+        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& ParsedContent()
         {
-            return this->m_rValueExpression;
+            return this->m_parsedContent;
         }
 
         /// @brief Gets the "SemicolonOperator"

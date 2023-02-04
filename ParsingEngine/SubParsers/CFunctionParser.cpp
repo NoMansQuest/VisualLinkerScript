@@ -16,7 +16,7 @@ using namespace VisualLinkerScript::ParsingEngine::Models;
 
 namespace
 {
-    /// @brief CMemoryRegionContentParser parser states
+    /// @brief CFunctionParser parser states
     enum class ParserState
     {
         AwaitingName,
@@ -233,9 +233,8 @@ std::shared_ptr<CFunctionCall> CFunctionParser::TryParse(
 
             case RawEntryType::Unknown:
             {
-                throw CMasterParsingException(
-                        MasterParsingExceptionType::NotPresentEntryDetected,
-                        "A 'Unknown' entry was detected.");
+                violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
+                break;
             }
 
             case RawEntryType::NotPresent:
