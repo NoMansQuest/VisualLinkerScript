@@ -7,8 +7,6 @@
 #include "../Models/CComment.h"
 #include "../Models/Raw/CRawEntry.h"
 #include "../Models/CAssignmentStatement.h"
-#include "../Models/CParameterSeparator.h"
-#include "../Models/CUnrecognizableContent.h"
 #include "../Models/CViolation.h"
 
 using namespace VisualLinkerScript::ParsingEngine::SubParsers;
@@ -27,22 +25,18 @@ namespace
     };
 }
 
-using namespace VisualLinkerScript::ParsingEngine::SubParsers;
-
 std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
         CRawFile& linkerScriptFile,
         std::vector<CRawEntry>::const_iterator& iterator,
         std::vector<CRawEntry>::const_iterator& endOfVectorIterator)
 {
     std::vector<CRawEntry>::const_iterator localIterator = iterator;
-    std::vector<CRawEntry>::const_iterator previousPositionIterator = iterator;
     std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = iterator;
     std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
     std::vector<CViolation> violations;
 
     auto parserState = ParserState::AwaitingLValue;
     auto doNotAdvance = false;
-    auto isFirstEntry = false;
     auto joiningOperatorsObserved = false;
 
     CRawEntry lValueSymbol;
@@ -62,19 +56,6 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
     {
         doNotAdvance = false;
         auto resolvedContent = linkerScriptFile.ResolveRawEntry(*localIterator);
-        auto lineChangeDetected = parsingStartIteratorPosition->EndLineNumber() != localIterator->EndLineNumber();
-
-        CRawEntry oneEntryAhead;
-        if (localIterator + 1 != endOfVectorIterator)
-        {
-            oneEntryAhead = *(localIterator+1);
-        }
-
-        if (lineChangeDetected)
-        {
-            violations.emplace_back(CViolation(*localIterator, ViolationCode::FunctionsCannotExpandToMultipleLines));
-            break;
-        }
 
         switch (localIterator->EntryType())
         {
@@ -85,19 +66,27 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
             }
 
             case RawEntryType::Word:
+            case RawEntryType::ParenthesisOpen:
             {
                 switch (parserState)
                 {
                     case ParserState::AwaitingLValue:
                     {
-                        lValueSymbol = *localIterator;
-                        parserState = ParserState::AwaitingAssignmentSymbol;
-                        break;
+                        if (localIterator->EntryType() == RawEntryType::Word)
+                        {
+                            lValueSymbol = *localIterator;
+                            parserState = ParserState::AwaitingAssignmentSymbol;
+                            break;
+                        }
+                        else
+                        {
+                            return nullptr;
+                        }
                     }
 
                     case ParserState::AwaitingAssignmentSymbol:
                     {
-                        return nullptr; // Abort
+                        return nullptr;
                     }
 
                     case ParserState::AwaitingRValueExpression:
@@ -119,21 +108,6 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
                                     MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
                                     "ParserState invalid in CAssignmentParser");
                 }
-                break;
-            }
-
-            case RawEntryType::ParenthesisOpen:
-            {
-                switch (parserState)
-                {
-                    case ParserState::AwaitingLValue:
-                    case ParserState::AwaitingAssignmentSymbol:
-                    case ParserState::AwaitingRValueExpression:
-                    default:
-                        throw CMasterParsingException(
-                                    MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
-                                    "ParserState invalid in CAssignmentParser");
-                }
             }
 
             case RawEntryType::ParenthesisClose:
@@ -141,8 +115,17 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
                 switch (parserState)
                 {
                     case ParserState::AwaitingLValue:
+                    {
+                        return nullptr;
+                    }
+
                     case ParserState::AwaitingAssignmentSymbol:
                     case ParserState::AwaitingRValueExpression:
+                    {
+                        violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
+                        break;
+                    }
+
                     default:
                         throw CMasterParsingException(
                                     MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
@@ -175,6 +158,11 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
                                 // Abort, we're going up the wrong ladder.
                                 return nullptr;
                             }
+                        }
+                        else if (CParserHelpers::IsArithmeticOperator(resolvedContent))
+                        {
+                            joiningOperatorsObserved = true;
+                            violations.emplace_back(CViolation(*localIterator, ViolationCode::LValueCannotContainRValueExpression));
                         }
                         else
                         {
@@ -334,8 +322,6 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
         localIterator = ((parserState != ParserState::ParsingComplete) && !doNotAdvance) ?
                         localIterator + 1 :
                         localIterator;
-
-        isFirstEntry = false;
     }
 
     std::vector<CRawEntry> rawEntries;
@@ -351,4 +337,3 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
                                          std::move(rawEntries),
                                          std::move(violations)));
 }
-

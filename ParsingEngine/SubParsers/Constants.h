@@ -203,6 +203,14 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
             return false;
         }
 
+        /// @brief Is the word in question a Section-Output type?
+        static bool IsSectionOutputType(const std::string& wordToCheck)
+        {
+            return std::find(ListOfOutputSectionTypes.cbegin(),
+                             ListOfOutputSectionTypes.cend(),
+                             wordToCheck) != ListOfOutputSectionTypes.cend();
+        }
+
         /// @brief Is the word in question a potential function?
         static bool IsFunctionName(const std::string& wordToCheck)
         {

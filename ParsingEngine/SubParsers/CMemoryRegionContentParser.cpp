@@ -222,12 +222,14 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
                 violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
                 break;
             }
+
             case RawEntryType::NotPresent:
             {
                 throw CMasterParsingException(
                         MasterParsingExceptionType::NotPresentEntryDetected,
                         "A 'non-present' entry was detected.");
             }
+
             default:
             {
                 throw CMasterParsingException(

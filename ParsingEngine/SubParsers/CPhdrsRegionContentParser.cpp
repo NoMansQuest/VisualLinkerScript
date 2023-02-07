@@ -28,7 +28,6 @@ namespace
     };
 }
 
-
 std::shared_ptr<CPhdrsStatement> CPhdrsRegionContentParser::TryParse(
         CRawFile& linkerScriptFile,
         std::vector<CRawEntry>::const_iterator& iterator,
