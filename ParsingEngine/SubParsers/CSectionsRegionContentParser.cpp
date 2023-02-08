@@ -43,6 +43,7 @@ std::shared_ptr<CLinkerScriptContentBase> CSectionsRegionContentParser::TryParse
         std::vector<CRawEntry>::const_iterator& iterator,
         std::vector<CRawEntry>::const_iterator& endOfVectorIterator)
 {
+    /*
     std::vector<CRawEntry>::const_iterator localIterator = iterator;
     std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = iterator;
     std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
@@ -191,4 +192,6 @@ std::shared_ptr<CLinkerScriptContentBase> CSectionsRegionContentParser::TryParse
                                          std::move(parsedContent),
                                          std::move(rawEntries),
                                          std::move(violations)));
+    */
+    return nullptr;
 }

@@ -138,7 +138,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                                 break;
                             }
 
-                            parsedContent.emplace_back(parsedFunction);
+                            parsedContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(parsedFunction));
                         }
                         else if (CParserHelpers::IsReservedWord(resolvedContent))
                         {
@@ -148,7 +148,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                         }
                         else
                         {
-                            CSymbol symbol(*localIterator, {*localIterator}, {});
+                            auto symbol = std::shared_ptr<CLinkerScriptContentBase>(new CSymbol(*localIterator, {*localIterator}, {}));
                             parsedContent.emplace_back(symbol);
                         }
 
@@ -180,7 +180,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                 }
                 else if (CParserHelpers::IsComparisonOperator(resolvedContent))
                 {
-                    CExpressionOperator expressionOperator(*localIterator, {*localIterator}, {});
+                    auto expressionOperator = std::shared_ptr<CLinkerScriptContentBase>(new CExpressionOperator(*localIterator, {*localIterator}, {}));
                     parsedContent.emplace_back(expressionOperator);
                 }
                 else if (CParserHelpers::IsTernaryOperator(resolvedContent))
@@ -200,7 +200,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                                 }
                                 else
                                 {
-                                    parsedContent.emplace_back(std::make_shared<CLinkerScriptContentBase>(*parserPostColonExpression));
+                                    parsedContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(parserPostColonExpression));
                                 }
                             }
                             else
@@ -213,7 +213,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                                 }
                                 else
                                 {
-                                    parsedContent.emplace_back(std::make_shared<CLinkerScriptContentBase>(*parserPostQuestionMarkExpression));
+                                    parsedContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(parserPostQuestionMarkExpression));
                                     ternaryParserState = TernaryParserState::AwaitingElseExpression;
                                 }
                             }
@@ -237,7 +237,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                                 }
                                 else
                                 {
-                                    parsedContent.emplace_back(std::make_shared<CLinkerScriptContentBase>(*parserPostColonExpression));
+                                    parsedContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(parserPostColonExpression));
                                 }
                             }
 
@@ -258,7 +258,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                         CParserHelpers::IsArithmeticOperator(resolvedContent) ||
                         CParserHelpers::IsTernaryOperator(resolvedContent))
                     {
-                        CExpressionOperator expressionOperator(*localIterator, {*localIterator}, {});
+                        auto expressionOperator = std::shared_ptr<CLinkerScriptContentBase>(new CExpressionOperator (*localIterator, {*localIterator}, {}));
                         parsedContent.emplace_back(expressionOperator);
                         precedingOperatorSet = true; // This allows next found item to be accepted without violaiton
                     }
@@ -324,7 +324,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                         auto parsedNestedExpression = nestedExpressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
                         if (parsedNestedExpression != nullptr)
                         {
-                            parsedContent.emplace_back(std::make_shared<CLinkerScriptContentBase>(*parsedNestedExpression));
+                            parsedContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(parsedNestedExpression));
                         }
                         else
                         {

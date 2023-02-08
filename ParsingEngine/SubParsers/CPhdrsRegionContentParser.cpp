@@ -69,7 +69,7 @@ std::shared_ptr<CPhdrsStatement> CPhdrsRegionContentParser::TryParse(
                 {
                     case ParserState::AwaitingName:
                     {
-                        if (this->CheckIfRawEntryInList(linkerScriptFile, *localIterator, ListOfIllegalProgramHeaderNames))
+                        if (CParserHelpers::IsIllegalProgramHeaderName(resolvedContent))
                         {
                             // We need to abort. Continue to semicolon to recover...
                             violations.emplace_back(CViolation(*localIterator, ViolationCode::ProgramHeaderNameShouldNotBeAReservedKeyword));
@@ -84,7 +84,7 @@ std::shared_ptr<CPhdrsStatement> CPhdrsRegionContentParser::TryParse(
  
                     case ParserState::AwaitingType:
                     {
-                        if (!this->CheckIfRawEntryInList(linkerScriptFile, *localIterator, ListOfProgramHeaderTypes))
+                        if (!CParserHelpers::IsLegalProgramHeaderType(resolvedContent))
                         {
                             // We need to abort. Continue to semicolon to recover...
                             violations.emplace_back(CViolation(*localIterator, ViolationCode::WasExpectingProgramHeaderTypeHere));

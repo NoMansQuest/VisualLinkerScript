@@ -86,6 +86,7 @@ SOURCES += \
     ParsingEngine/SubParsers/CSectionsRegionContentParser.cpp \
     ParsingEngine/SubParsers/CSectionsRegionOverlayParser.cpp \
     ParsingEngine/SubParsers/CVersionRegionContentParser.cpp \
+    ParsingEngine/SubParsers/Constants.cpp \
     main.cpp \
     mainwindow.cpp
 

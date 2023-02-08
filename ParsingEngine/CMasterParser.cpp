@@ -23,17 +23,20 @@ using namespace VisualLinkerScript::ParsingEngine::SubParsers;
 
 CMasterParser::CMasterParser()
 {    
+    /*
     this->m_subParsers.emplace_back(std::shared_ptr<CSubParserBase>(new CAssignmentParser()));
     this->m_subParsers.emplace_back(std::shared_ptr<CSubParserBase>(new CPhdrsRegionParser() ));
     this->m_subParsers.emplace_back(std::shared_ptr<CSubParserBase>(new CMemoryParserRegion()));
     this->m_subParsers.emplace_back(std::shared_ptr<CSubParserBase>(new CSectionsRegionParser()));
     this->m_subParsers.emplace_back(std::shared_ptr<CSubParserBase>(new CVersionRegionParser()));
     this->m_subParsers.emplace_back(std::shared_ptr<CSubParserBase>(new CDefaultParser()));
+    */
 }
 
 CLinkerScriptFile&& CMasterParser::ProcessLinkerScriptFile(std::shared_ptr<CRawFile> rawFile)
 {
     std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
+    std::vector<CViolation> violations;
     auto iterator = rawFile->Content().cbegin();
     auto iteratorEnding = rawFile->Content().cend();
 
@@ -70,7 +73,9 @@ CLinkerScriptFile&& CMasterParser::ProcessLinkerScriptFile(std::shared_ptr<CRawF
             case RawEntryType::BracketClose:
             case RawEntryType::Unknown:
             {
+                /*
                 std::shared_ptr<CLinkerScriptContentBase> returnedContent;
+
                 for (auto parser: this->m_subParsers)
                 {                    
                     returnedContent = parser->TryParse( *rawFile, iterator, iteratorEnding);
@@ -86,6 +91,7 @@ CLinkerScriptFile&& CMasterParser::ProcessLinkerScriptFile(std::shared_ptr<CRawF
                 }
 
                 parsedContent.emplace_back(returnedContent);
+                */
                 break;
             }
 
@@ -101,5 +107,5 @@ CLinkerScriptFile&& CMasterParser::ProcessLinkerScriptFile(std::shared_ptr<CRawF
         }
     }
 
-    return std::move(CLinkerScriptFile(rawFile, std::move(parsedContent)));
+    return std::move(CLinkerScriptFile(rawFile, std::move(parsedContent), std::move(violations)));
 }

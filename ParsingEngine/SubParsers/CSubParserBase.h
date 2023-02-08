@@ -19,23 +19,6 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
     {
         static_assert(std::is_base_of<CLinkerScriptContentBase, TOutputType>::value);
 
-    protected:
-        /// @brief Checks to see if the content of the @see {rawEntry} (resovled on @see {sourceFile}) is found
-        ///        in the vector of string as pointed out by @see {targetList}.
-        const static bool CheckIfRawEntryInList(
-                const CRawFile& sourceFile,
-                const CRawEntry& rawEntry,
-                const std::vector<std::string>& targetList)
-        {
-            if (rawEntry.EntryType() == RawEntryType::NotPresent)
-            {
-                return false;
-            }
-
-            auto resolvedValue = sourceFile.ResolveRawEntry(rawEntry);
-            return std::find(targetList.begin(), targetList.end(), resolvedValue) != targetList.end();
-        }
-
     public:
         /// @brief Type of parser.
         virtual SubParserType Type() = 0;

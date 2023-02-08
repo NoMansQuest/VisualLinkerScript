@@ -170,8 +170,6 @@ namespace
         return (input == '\n');
     }
 
-    bool IsAssignmentOperator
-
     /// @brief Checks if a long operator (e.g. >>= or !=, etc.) is present at position
     bool CheckForLongOperator(const std::string& rawContent, const uint32_t position, uint32_t& longOperatorLength)
     {

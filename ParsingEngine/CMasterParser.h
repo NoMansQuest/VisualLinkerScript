@@ -6,7 +6,6 @@
 #include <vector>
 #include <memory>
 
-using namespace VisualLinkerScript::ParsingEngine::SubParsers;
 using namespace VisualLinkerScript::ParsingEngine::Models;
 
 namespace VisualLinkerScript::ParsingEngine

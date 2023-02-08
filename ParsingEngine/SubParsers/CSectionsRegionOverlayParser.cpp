@@ -5,7 +5,7 @@
 
 using namespace VisualLinkerScript::ParsingEngine::SubParsers;
 
-std::shared_ptr<CLinkerScriptContentBase> CSectionsRegionOverlayParser::TryParse(
+std::shared_ptr<CSectionOverlayStatement> CSectionsRegionOverlayParser::TryParse(
         CRawFile& linkerScriptFile,
         std::vector<CRawEntry>::const_iterator& iterator,
         std::vector<CRawEntry>::const_iterator& endOfVectorIterator)

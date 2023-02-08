@@ -25,12 +25,12 @@ namespace
 
 }
 
-
-std::shared_ptr<CMemoryStatementAttribute> CSectionOutputTypeParser::TryParse(
+std::shared_ptr<CSectionOutputType> CSectionOutputTypeParser::TryParse(
         CRawFile& linkerScriptFile,
         std::vector<CRawEntry>::const_iterator& iterator,
         std::vector<CRawEntry>::const_iterator& endOfVectorIterator)
 {
+    /*
     std::vector<CRawEntry>::const_iterator localIterator = iterator;
     std::vector<CRawEntry>::const_iterator previousPositionIterator = iterator;
     std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = iterator;
@@ -201,4 +201,6 @@ std::shared_ptr<CMemoryStatementAttribute> CSectionOutputTypeParser::TryParse(
                                               initializedSection,
                                               std::move(rawEntries),
                                               std::move(violations)));
+                                              */
+    return nullptr;
 }

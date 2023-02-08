@@ -108,8 +108,8 @@ MainWindow::MainWindow(QWidget *parent)
     }
 
     // Parse content
-    CMasterParser masterParser;
-    auto parsedContent = std::move(masterParser.ProcessLinkerScriptFile(preliminaryParseResult));
+    //CMasterParser masterParser;
+    //auto parsedContent = std::move(masterParser.ProcessLinkerScriptFile(preliminaryParseResult));
 
     // Add more information to the output text
 

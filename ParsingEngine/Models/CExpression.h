@@ -57,11 +57,6 @@ namespace VisualLinkerScript::ParsingEngine::Models
             return this->m_closingParenthesis;
         }
 
-        bool IsComplete()
-        {
-            return m_isComplete;
-        }
-
         /// @brief Gets the "Composition" 
         const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& Composition()
         {
