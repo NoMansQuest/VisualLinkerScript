@@ -182,7 +182,7 @@ namespace
         {
             if (rawContent.rfind(operatorToCheckFor, position) != std::string::npos)
             {
-               longOperatorLength = operatorToCheckFor.length();
+               longOperatorLength = (uint32_t)operatorToCheckFor.length();
                return true;
             }
         }

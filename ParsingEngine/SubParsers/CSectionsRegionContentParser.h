@@ -14,9 +14,6 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
     /// @brief Object in charge of parsing the content of the "SECTIONS" region inside a linker-script
     class CSectionsRegionContentParser : public CSubParserBase<CLinkerScriptContentBase>
     {
-    private:
-        CExpressionParser m_expressionParser;
-
     public:
         /// @copydoc CSubParserBase::Type()
         virtual SubParserType Type() override

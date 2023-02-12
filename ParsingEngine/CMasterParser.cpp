@@ -21,20 +21,16 @@ using namespace VisualLinkerScript::ParsingEngine;
 using namespace VisualLinkerScript::ParsingEngine::Models::Raw;
 using namespace VisualLinkerScript::ParsingEngine::SubParsers;
 
-CMasterParser::CMasterParser()
-{    
-    /*
-    this->m_subParsers.emplace_back(std::shared_ptr<CSubParserBase>(new CAssignmentParser()));
-    this->m_subParsers.emplace_back(std::shared_ptr<CSubParserBase>(new CPhdrsRegionParser() ));
-    this->m_subParsers.emplace_back(std::shared_ptr<CSubParserBase>(new CMemoryParserRegion()));
-    this->m_subParsers.emplace_back(std::shared_ptr<CSubParserBase>(new CSectionsRegionParser()));
-    this->m_subParsers.emplace_back(std::shared_ptr<CSubParserBase>(new CVersionRegionParser()));
-    this->m_subParsers.emplace_back(std::shared_ptr<CSubParserBase>(new CDefaultParser()));
-    */
-}
-
 CLinkerScriptFile&& CMasterParser::ProcessLinkerScriptFile(std::shared_ptr<CRawFile> rawFile)
 {
+    CAssignmentParser assignmentParser();
+    CPhdrsRegionParser phdrsRegionParser();
+    CMemoryParserRegion memoryParserRegion();
+    CSectionsRegionParser sectionsRegionParser();
+    CVersionRegionParser versionRegionParser();
+    CDefaultParser defaultParser();
+
+
     std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
     std::vector<CViolation> violations;
     auto iterator = rawFile->Content().cbegin();

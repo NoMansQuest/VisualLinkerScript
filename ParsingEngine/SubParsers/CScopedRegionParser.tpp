@@ -38,6 +38,8 @@ std::shared_ptr<TProducingOutputType> CScopedRegionParser<TParserType, TContentP
 
     auto parserState = ParserState::AwaitingHeader;
 
+    TContentParserType regionContentParser;
+
     CRawEntry regionHeaderEntry;
     CRawEntry openningBracketEntry;
     CRawEntry closingBracketEntry;
@@ -56,7 +58,7 @@ std::shared_ptr<TProducingOutputType> CScopedRegionParser<TParserType, TContentP
             {
                 if (parserState == ParserState::AwaitingClosingBracket)
                 {
-                    auto parsedStatement = this->m_regionContentParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
+                    auto parsedStatement = regionContentParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
                     if (parsedStatement == nullptr)
                     {
                         CViolation detectedViolation({*localIterator},ViolationCode::EntryInvalidOrMisplaced);
@@ -64,7 +66,7 @@ std::shared_ptr<TProducingOutputType> CScopedRegionParser<TParserType, TContentP
                     }
                     else
                     {
-                        parsedContent.emplace_back(parsedStatement);                        
+                        parsedContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(parsedStatement));
                     }
                 }
                 else if (parserState == ParserState::AwaitingHeader)

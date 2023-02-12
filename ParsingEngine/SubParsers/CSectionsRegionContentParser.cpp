@@ -192,6 +192,6 @@ std::shared_ptr<CLinkerScriptContentBase> CSectionsRegionContentParser::TryParse
                                          std::move(parsedContent),
                                          std::move(rawEntries),
                                          std::move(violations)));
-    */
+                                         */
     return nullptr;
 }

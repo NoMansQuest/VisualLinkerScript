@@ -16,25 +16,21 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
     template <SubParserType TParserType, typename TContentParserType, class TProducingOutputType>
     class CScopedRegionParser : public CSubParserBase<TProducingOutputType>
     {
-    private:
-        /*
+    private:        
         static_assert(
-            std::is_base_of< CSubParserBase, TContentParserType >::value,
-            "Only parsers based on 'CSubParserBase' are allowed" );
-            */
+            std::is_default_constructible< TContentParserType >::value,
+            "Content-parser must be default-constructible." );
 
         static_assert(
             std::is_base_of< CLinkerScriptContentBase, TProducingOutputType >::value,
             "Only 'Producing Output Types' based on 'CLinkerScriptContentBase' are allowed" );
 
         static_assert(
-            std::is_constructible< TProducingOutputType, CRawEntry, CRawEntry,CRawEntry,
+            std::is_constructible< TProducingOutputType, CRawEntry, CRawEntry, CRawEntry,
                                    std::vector<std::shared_ptr<CLinkerScriptContentBase>>&&,
                                    std::vector<CRawEntry>&&,
                                    std::vector<CViolation>&& >::value,
             "TProducingOutputType is not compatible. Please check the constructor." );
-
-        TContentParserType m_regionContentParser;
 
     protected:
         /// @brief This entry will be used by super class to determine the name of this scoped region.

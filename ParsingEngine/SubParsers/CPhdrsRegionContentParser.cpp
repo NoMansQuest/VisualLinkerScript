@@ -46,6 +46,8 @@ std::shared_ptr<CPhdrsStatement> CPhdrsRegionContentParser::TryParse(
     CRawEntry fileHdrEntry;
     CRawEntry phdrsEntry;
 
+    CExpressionParser expressionParser(ExpressionParserType::NormalParser, false);
+
     std::shared_ptr<CLinkerScriptContentBase> atAddressFunction;
     std::shared_ptr<CLinkerScriptContentBase> flagsFunction;
     CRawEntry semicolonEntry;
@@ -134,7 +136,7 @@ std::shared_ptr<CPhdrsStatement> CPhdrsRegionContentParser::TryParse(
                             }
                             else
                             {
-                                auto parsedFunction = this->m_expressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
+                                auto parsedFunction = expressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
                                 if (parsedFunction == nullptr)
                                 {
                                     CViolation detectedViolation({ *localIterator, phdrsEntry }, ViolationCode::EntryInvalidOrMisplaced);
@@ -155,7 +157,7 @@ std::shared_ptr<CPhdrsStatement> CPhdrsRegionContentParser::TryParse(
                             }
                             else
                             {
-                                auto parsedFunction = this->m_expressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
+                                auto parsedFunction = expressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
                                 if (parsedFunction == nullptr)
                                 {
                                     CViolation detectedViolation({*localIterator, phdrsEntry}, ViolationCode::EntryInvalidOrMisplaced);
