@@ -43,17 +43,6 @@ namespace VisualLinkerScript::ParsingEngine::Models::Raw
               m_entryType(typeOfEntry)
         {}
 
-        /// @brief Object-Copy constructor
-        CRawEntry(const CRawEntry& cloneSource)
-            : m_startPosition(cloneSource.StartPosition()),
-              m_length(cloneSource.Length()),
-              m_parenthesisDepth(cloneSource.ParenthesisDepth()),
-              m_scopeDepth(cloneSource.ScopeDepth()),
-              m_startLineNumber(cloneSource.StartLineNumber()),
-              m_endLineNumber(cloneSource.EndLineNumber()),
-              m_entryType(cloneSource.EntryType())
-        {}
-
         /// @brief Explicitly constructs a "Null" entry, indicating that the entry does not exist.
         explicit CRawEntry()
             : m_startPosition(0),
@@ -63,6 +52,17 @@ namespace VisualLinkerScript::ParsingEngine::Models::Raw
               m_startLineNumber(0),
               m_endLineNumber(0),
               m_entryType(RawEntryType::NotPresent)
+        {}
+
+        /// @brief Object-Copy constructor
+        CRawEntry(const CRawEntry& cloneSource)
+            : m_startPosition(cloneSource.StartPosition()),
+              m_length(cloneSource.Length()),
+              m_parenthesisDepth(cloneSource.ParenthesisDepth()),
+              m_scopeDepth(cloneSource.ScopeDepth()),
+              m_startLineNumber(cloneSource.StartLineNumber()),
+              m_endLineNumber(cloneSource.EndLineNumber()),
+              m_entryType(cloneSource.EntryType())
         {}
 
         /// @brief Default destructor

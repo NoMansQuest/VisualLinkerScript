@@ -6,7 +6,7 @@
 #include "../Models/CSectionOutputType.h"
 #include "../Models/Raw/CRawEntry.h"
 #include "../Models/CComment.h"
-#include "../Models/CMemoryStatementAttribute.h"
+#include "../Models/CSectionOutputType.h"
 #include "../Models/CViolation.h"
 
 using namespace VisualLinkerScript::ParsingEngine::SubParsers;
@@ -18,11 +18,10 @@ namespace
     /// @brief CPhdrsRegionContentParser parser states
     enum class ParserState
     {
-        AwaitingParenthesisOpen,
+        AwaitingParenthesisOverture,
         AwaitingParenthesisClosure,
         ParsingComplete
     };
-
 }
 
 std::shared_ptr<CSectionOutputType> CSectionOutputTypeParser::TryParse(
@@ -30,7 +29,6 @@ std::shared_ptr<CSectionOutputType> CSectionOutputTypeParser::TryParse(
         std::vector<CRawEntry>::const_iterator& iterator,
         std::vector<CRawEntry>::const_iterator& endOfVectorIterator)
 {
-    /*
     std::vector<CRawEntry>::const_iterator localIterator = iterator;
     std::vector<CRawEntry>::const_iterator previousPositionIterator = iterator;
     std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = iterator;
@@ -44,16 +42,12 @@ std::shared_ptr<CSectionOutputType> CSectionOutputTypeParser::TryParse(
                 "'CMemoryStatementAttributeParser::TryParse' can only be called with 'iterator' pointing to a 'Parenthesis-Open'");
     }
 
-    auto parserState = ParserState::AwaitingParenthesisOpen;
+    auto parserState = ParserState::AwaitingParenthesisOverture;
     auto doNotAdvance = false;
 
     CRawEntry parenthesisOpen;
     CRawEntry parenthesisClose;
-    AttributeDefinitionState readOnlySection;     // Value: R
-    AttributeDefinitionState readWriteSection;    // Value: W
-    AttributeDefinitionState allocatableSection;  // Value: A
-    AttributeDefinitionState executableSection;   // Value: X
-    AttributeDefinitionState initializedSection;  // Value: I or L
+    CRawEntry outputSectionTypeEntry;
 
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
     {
@@ -82,22 +76,21 @@ std::shared_ptr<CSectionOutputType> CSectionOutputTypeParser::TryParse(
             {
                 switch (parserState)
                 {
-                    case ParserState::AwaitingParenthesisOpen:
+                    case ParserState::AwaitingParenthesisOverture:
                     {
                         return nullptr; // Aborting
                     }
 
                     case ParserState::AwaitingParenthesisClosure:
                     {
-                        ParseAttributeValues(
-                                    *localIterator,
-                                     resolvedContent,
-                                     readOnlySection,
-                                     readWriteSection,
-                                     allocatableSection,
-                                     executableSection,
-                                     initializedSection,
-                                     violations);
+                        if (!outputSectionTypeEntry.IsPresent())
+                        {
+                            outputSectionTypeEntry = *localIterator;
+                        }
+                        else
+                        {
+                            violations.emplace_back(CViolation(*localIterator, ViolationCode::OnlyOneSectionOutputTypeIsAllowed));
+                        }
                         break;
                     }
 
@@ -105,7 +98,7 @@ std::shared_ptr<CSectionOutputType> CSectionOutputTypeParser::TryParse(
                     {
                         throw CMasterParsingException(
                                     MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
-                                    "ParserState invalid in CMemoryStatementAttributeParser");
+                                    "ParserState invalid in CSectionOutputTypeParser");
                     }
                 }
                 break;
@@ -115,12 +108,13 @@ std::shared_ptr<CSectionOutputType> CSectionOutputTypeParser::TryParse(
             {
                 switch (parserState)
                 {
-                    case ParserState::AwaitingParenthesisOpen:
+                    case ParserState::AwaitingParenthesisOverture:
                     {
                         parenthesisOpen = *localIterator;
                         parserState = ParserState::AwaitingParenthesisClosure;
                         break;
                     }
+
                     default:
                     {
                         return nullptr; // Parsing failed
@@ -191,16 +185,11 @@ std::shared_ptr<CSectionOutputType> CSectionOutputTypeParser::TryParse(
 
     iterator = localIterator;
 
-    return std::shared_ptr<CMemoryStatementAttribute>(
-                new CMemoryStatementAttribute(parenthesisOpen,
-                                              parenthesisClose,
-                                              readOnlySection,
-                                              readWriteSection,
-                                              allocatableSection,
-                                              executableSection,
-                                              initializedSection,
-                                              std::move(rawEntries),
-                                              std::move(violations)));
-                                              */
-    return nullptr;
+    return std::shared_ptr<CSectionOutputType>(
+                new CSectionOutputType(outputSectionTypeEntry,
+                                       parenthesisOpen,
+                                       parenthesisClose,
+                                       std::move(parsedContent),
+                                       std::move(rawEntries),
+                                       std::move(violations)));
 }

@@ -13,18 +13,21 @@ namespace VisualLinkerScript::ParsingEngine::Models
         CRawEntry m_typeEntry;
         CRawEntry m_openingParenthesis;
         CRawEntry m_closingParenthesis;
+        std::vector<std::shared_ptr<CLinkerScriptContentBase>> m_parsedContent;
 
     public:
         /// @brief Default constructor, accessible to inheritors only
         explicit CSectionOutputType(CRawEntry typeEntry,
-                                CRawEntry openingParenthesis,
-                                CRawEntry closingParenthesis,
-                                std::vector<CRawEntry>&& rawElements,
-                                std::vector<CViolation>&& violations)
+                                    CRawEntry openingParenthesis,
+                                    CRawEntry closingParenthesis,
+                                    std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& parsedContent,
+                                    std::vector<CRawEntry>&& rawElements,
+                                    std::vector<CViolation>&& violations)
             : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
               m_typeEntry(typeEntry),
               m_openingParenthesis(openingParenthesis),
-              m_closingParenthesis(closingParenthesis)
+              m_closingParenthesis(closingParenthesis),
+              m_parsedContent(std::move(parsedContent))
         {}
 
     public:
@@ -32,6 +35,12 @@ namespace VisualLinkerScript::ParsingEngine::Models
         ContentType Type() override
         {
             return ContentType::SectionOutputType;
+        }
+
+        /// @brief Reports back parsed content.
+        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& ParsedContent()
+        {
+            return this->m_parsedContent;
         }
 
         /// @brief Reports back the procedure-name

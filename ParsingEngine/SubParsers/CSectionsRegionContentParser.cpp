@@ -4,11 +4,13 @@
 #include <memory>
 #include <string>
 #include "../CMasterParserException.h"
+#include "../Models/CFunctionCall.h"
 #include "../Models/CSectionOutputToRegion.h"
 #include "../Models/CSectionOutputAtLmaRegion.h"
 #include "../Models/CSectionOutputPhdr.h"
 #include "../Models/CSectionOutputFillExpression.h"
 #include "../Models/CSectionOutputType.h"
+#include "../Models/CSectionOutputStatement.h"
 #include "../Models/Raw/CRawEntry.h"
 #include "../Models/Raw/RawEntryType.h"
 #include "../Models/Raw/CRawFile.h"
@@ -28,7 +30,6 @@ namespace
         AwaitingAddressOrTypeOrColon,
         AwaitingTypeOrColon,
         AwaitingColon,
-        AwaitingAtLmaOrBracketOpen,
         AwaitingBracketOpen,
         AwaitingBracketClosure,
         AwaitingToRegion,
@@ -38,12 +39,26 @@ namespace
     };
 }
 
-std::shared_ptr<CLinkerScriptContentBase> CSectionsRegionContentParser::TryParse(
+/*
+ *
+ * section [address] [(type)] :
+ *   [AT(lma)]
+ *   [ALIGN(section_align) | ALIGN_WITH_INPUT]
+ *   [SUBALIGN(subsection_align)]
+ *   [constraint]
+ *   {
+ *     output-section-command
+ *     output-section-command
+ *     …
+ *   } [>region] [AT>lma_region] [:phdr :phdr …] [=fillexp] [,]
+ *
+ */
+
+std::shared_ptr<CSectionOutputStatement> CSectionsRegionContentParser::TryParse(
         CRawFile& linkerScriptFile,
         std::vector<CRawEntry>::const_iterator& iterator,
         std::vector<CRawEntry>::const_iterator& endOfVectorIterator)
 {
-    /*
     std::vector<CRawEntry>::const_iterator localIterator = iterator;
     std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = iterator;
     std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
@@ -51,18 +66,22 @@ std::shared_ptr<CLinkerScriptContentBase> CSectionsRegionContentParser::TryParse
 
     auto parserState = ParserState::AwaitingHeader;
 
-    CRawEntry regionHeaderEntry;
+    CRawEntry sectionOutputNameEntry;
     std::shared_ptr<CExpression> addressExpression;
     std::shared_ptr<CSectionOutputType> sectionOutputType;
+    std::shared_ptr<CFunctionCall> atLmaFunction;
+    std::shared_ptr<CFunctionCall> alignFunction;
+    CRawEntry alignWithInputEntry;
+    std::shared_ptr<CFunctionCall> subAlignFunctionCall;
     CRawEntry colonEntry;
-    CRawEntry openningBracketEntry;
+    CRawEntry openingBracketEntry;
     CRawEntry closingBracketEntry;
-    std::shared_ptr<CSectionOutputToRegion> toRegion;
+    std::shared_ptr<CSectionOutputToRegion> toVmaRegion;
     std::shared_ptr<CSectionOutputAtLmaRegion> atLmaRegion;
-    std::vector<CSectionOutputPhdr> phdrs;
+    std::vector<CSectionOutputPhdr> programHeaders;
     std::shared_ptr<CSectionOutputFillExpression> fillExpression;
 
-
+    /*
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
     {
         switch (localIterator->EntryType())
@@ -178,20 +197,29 @@ std::shared_ptr<CLinkerScriptContentBase> CSectionsRegionContentParser::TryParse
         localIterator = (parserState != ParserState::ParsingComplete) ?
                         localIterator + 1 :
                         localIterator;
-    }
+    }*/
 
     std::vector<CRawEntry> rawEntries;
     std::copy(parsingStartIteratorPosition, localIterator, rawEntries.begin());
 
     iterator = localIterator;
 
-    return std::shared_ptr<TProducingOutputType>(
-                new TProducingOutputType(regionHeaderEntry,
-                                         openningBracketEntry,
-                                         closingBracketEntry,
-                                         std::move(parsedContent),
-                                         std::move(rawEntries),
-                                         std::move(violations)));
-                                         */
-    return nullptr;
+    return std::shared_ptr<CSectionOutputStatement>(
+                new CSectionOutputStatement(sectionOutputNameEntry,
+                                            addressExpression,
+                                            sectionOutputType,
+                                            atLmaFunction,
+                                            alignFunction,
+                                            alignWithInputEntry,
+                                            subAlignFunctionCall,
+                                            colonEntry,
+                                            openingBracketEntry,
+                                            closingBracketEntry,
+                                            toVmaRegion,
+                                            atLmaRegion,
+                                            std::move(programHeaders),
+                                            fillExpression,
+                                            std::move(parsedContent),
+                                            std::move(rawEntries),
+                                            std::move(violations)));
 }

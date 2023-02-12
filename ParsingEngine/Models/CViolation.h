@@ -58,6 +58,9 @@ namespace VisualLinkerScript::ParsingEngine::Models
         RValueExpressionParsingFailed,
         MissingLValue,
 
+        // Section Output Content
+        OnlyOneSectionOutputTypeIsAllowed,
+
         // General violations:
         FunctionMissingDefinitionOrInvalidSymbolName,
         MissingOpeningCurlyBracket,
