@@ -1,8 +1,9 @@
-#include "CSectionsRegionContentParser.h"
-#include "CExpressionParser.h"
 #include <vector>
 #include <memory>
 #include <string>
+#include "CSectionsRegionContentParser.h"
+#include "CExpressionParser.h"
+#include "Constants.h"
 #include "../CMasterParserException.h"
 #include "../Models/CFunctionCall.h"
 #include "../Models/CSectionOutputToRegion.h"
@@ -60,11 +61,13 @@ std::shared_ptr<CSectionOutputStatement> CSectionsRegionContentParser::TryParse(
         std::vector<CRawEntry>::const_iterator& endOfVectorIterator)
 {
     std::vector<CRawEntry>::const_iterator localIterator = iterator;
+    std::vector<CRawEntry>::const_iterator previousPositionIterator = iterator;
     std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = iterator;
     std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
     std::vector<CViolation> violations;
 
     auto parserState = ParserState::AwaitingHeader;
+    auto doNotAdvance = false;
 
     CRawEntry sectionOutputNameEntry;
     std::shared_ptr<CExpression> addressExpression;
@@ -81,9 +84,22 @@ std::shared_ptr<CSectionOutputStatement> CSectionsRegionContentParser::TryParse(
     std::vector<CSectionOutputPhdr> programHeaders;
     std::shared_ptr<CSectionOutputFillExpression> fillExpression;
 
-    /*
+
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
     {
+        doNotAdvance = false;
+        auto resolvedContent = linkerScriptFile.ResolveRawEntry(*localIterator);
+        auto lineChangeDetected = parsingStartIteratorPosition->EndLineNumber() != localIterator->EndLineNumber();
+
+        if (lineChangeDetected)
+        {
+            // Any line-change would be rended parsing attempt null and void (however, it may be possible to report
+            // back a type of statement)
+            localIterator = previousPositionIterator;
+            parserState = ParserState::ParsingComplete;
+            break;
+        }
+
         switch (localIterator->EntryType())
         {
             case RawEntryType::Comment:
@@ -94,36 +110,74 @@ std::shared_ptr<CSectionOutputStatement> CSectionsRegionContentParser::TryParse(
 
             case RawEntryType::Word:
             {
-                if (parserState == ParserState::AwaitingClosingBracket)
+                switch (parserState)
                 {
-                    auto parsedStatement = this->m_regionContentParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
-                    if (parsedStatement == nullptr)
+                    case ParserState::AwaitingHeader:
                     {
-                        CViolation detectedViolation({*localIterator},ViolationCode::EntryInvalidOrMisplaced);
-                        violations.emplace_back(detectedViolation);
-                    }
-                    else
-                    {
-                        parsedContent.emplace_back(parsedStatement);
-                    }
-                }
-                else if (parserState == ParserState::AwaitingHeader)
-                {
-                    auto stringContent = linkerScriptFile.ResolveRawEntry(*localIterator);
-                    if (stringContent != this->GetHeaderName())
-                    {
-                        // Full abort in this case
-                        return nullptr;
+                        // OK, The name should not be reserved keyword
+                        sectionOutputNameEntry = *localIterator;
+                        if (CParserHelpers::IsReservedWord(resolvedContent))
+                        {
+                            violations.emplace_back(CViolation(*localIterator, ViolationCode::SectionOutputNameCannotBeAReservedKeyword));
+                        }
+                        parserState = ParserState::AwaitingAddressOrTypeOrColon;
+                        break;
                     }
 
-                    regionHeaderEntry = *localIterator;
-                    parserState = ParserState::AwaitingOpenningBracket;
+                    case ParserState::AwaitingAddressOrTypeOrColon:
+                    {
+
+                        break;
+                    }
+
+                    case ParserState::AwaitingTypeOrColon:
+                    {
+
+                        break;
+                    }
+
+                    case ParserState::AwaitingColon:
+                    {
+
+                        break;
+                    }
+
+                    case ParserState::AwaitingBracketOpen:
+                    {
+
+                        break;
+                    }
+
+                    case ParserState::AwaitingBracketClosure:
+                    {
+
+                        break;
+                    }
+
+                    case ParserState::AwaitingToRegion:
+                    {
+
+                        break;
+                    }
+
+                    case ParserState::AwaitingAtLmaRegion:
+                    {
+
+                        break;
+                    }
+
+                    case ParserState::AwaitingPhdrOrFillExp:
+                    {
+
+                        break;
+                    }
+
+                    default:
+                        throw CMasterParsingException(
+                                    MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
+                                    "ParserState invalid in CSectionsRegionContentParser");
                 }
-                else if (parserState == ParserState::AwaitingOpenningBracket)
-                {
-                    CViolation detectedViolation({ *localIterator }, ViolationCode::NoSymbolOrKeywordAllowedAfterMemoryHeader);
-                    violations.emplace_back(std::move(detectedViolation));
-                }
+
                 break;
             }
 
@@ -134,70 +188,39 @@ std::shared_ptr<CSectionOutputStatement> CSectionsRegionContentParser::TryParse(
             case RawEntryType::ParenthesisOpen:
             case RawEntryType::ParenthesisClose:
             {
-                if (parserState == ParserState::AwaitingClosingBracket)
-                {
-                    CViolation detectedViolation({ *localIterator }, ViolationCode::EntryInvalidOrMisplaced);
-                }
-                else if (parserState == ParserState::AwaitingOpenningBracket)
-                {
-                    CViolation detectedViolation({ *localIterator }, ViolationCode::NoSymbolOrKeywordAllowedAfterMemoryHeader);
-                    violations.emplace_back(std::move(detectedViolation));
-                }
-                else if (parserState == ParserState::AwaitingOpenningBracket)
-                {
-                    parserState = ParserState::ParsingComplete;
-                }
+
                 break;
             }
 
             case RawEntryType::BracketOpen:
             {
-                if (parserState == ParserState::AwaitingOpenningBracket)
-                {
-                    openningBracketEntry = *localIterator;
-                    parserState = ParserState::AwaitingClosingBracket;
-                }
-                else if ((parserState == ParserState::AwaitingClosingBracket) ||
-                         (parserState == ParserState::AwaitingHeader))
-                {
-                    parserState = ParserState::ParsingComplete;
-                }
+
                 break;
             }
 
             case RawEntryType::BracketClose:
             {
-                if (parserState == ParserState::AwaitingClosingBracket)
-                {
-                    closingBracketEntry = *localIterator;
-                    parserState = ParserState::ParsingComplete;
-                }
+
                 break;
             }
 
             case RawEntryType::Unknown:
-            {
                 throw CMasterParsingException(MasterParsingExceptionType::NotPresentEntryDetected,
                         "A 'Unknown' entry was detected.");
-            }
 
             case RawEntryType::NotPresent:
-            {
                 throw CMasterParsingException(MasterParsingExceptionType::NotPresentEntryDetected,
                         "A 'non-present' entry was detected.");
-            }
 
             default:
-            {
                 throw CMasterParsingException(MasterParsingExceptionType::UnrecognizableRawEntryTypeValueFound,
                         "Unrecognized raw-entry type detected.");
-            }
         }
 
         localIterator = (parserState != ParserState::ParsingComplete) ?
                         localIterator + 1 :
                         localIterator;
-    }*/
+    }
 
     std::vector<CRawEntry> rawEntries;
     std::copy(parsingStartIteratorPosition, localIterator, rawEntries.begin());

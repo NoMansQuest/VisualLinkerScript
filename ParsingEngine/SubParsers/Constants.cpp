@@ -268,22 +268,3 @@ bool CParserHelpers::IsTernaryOperator(const std::string& operatorToCheck)
                      ListOfTernaryOperators.cend(),
                      operatorToCheck) != ListOfTernaryOperators.cend();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

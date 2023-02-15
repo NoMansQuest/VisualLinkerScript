@@ -60,6 +60,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
 
         // Section Output Content
         OnlyOneSectionOutputTypeIsAllowed,
+        SectionOutputNameCannotBeAReservedKeyword,
 
         // General violations:
         FunctionMissingDefinitionOrInvalidSymbolName,
