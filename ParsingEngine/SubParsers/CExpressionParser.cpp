@@ -114,6 +114,14 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
             {
                 if (!precedingOperatorSet && !isFirstEntry)
                 {
+                    if (!parenthesisOpen.IsPresent())
+                    {
+                        // We need to end our parsing here. This is because no preceding operator
+                        // was found, and we're not expecting a parenthesis closure either
+                        parserState = ParserState::ParsingComplete;
+                        break;
+                    }
+
                     // Each entry must be preceded by an operator (except the first entry)
                     violations.emplace_back(CViolation(*localIterator, ViolationCode::MissingOperatorInRValueExpression));
                 }
@@ -280,6 +288,14 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
             {
                 if (!precedingOperatorSet && !isFirstEntry)
                 {
+                    if (!parenthesisOpen.IsPresent())
+                    {
+                        // We need to end our parsing here. This is because no preceding operator
+                        // was found, and we're not expecting a parenthesis closure either
+                        parserState = ParserState::ParsingComplete;
+                        break;
+                    }
+
                     // Each entry must be preceded by an operator (except the first entry)
                     violations.emplace_back(CViolation(*localIterator, ViolationCode::MissingOperatorInRValueExpression));
                 }

@@ -28,7 +28,7 @@ namespace
     enum class ParserState
     {
         AwaitingHeader,
-        AwaitingAddressOrTypeOrColon,
+        AwaitingAddressOrTypeOrBlockAlignOrColon,
         AwaitingTypeOrColon,
         AwaitingColon,
         AwaitingBracketOpen,
@@ -42,7 +42,7 @@ namespace
 
 /*
  *
- * section [address] [(type)] :
+ * section [startAddress] [Block(align)] [(type)] :
  *   [AT(lma)]
  *   [ALIGN(section_align) | ALIGN_WITH_INPUT]
  *   [SUBALIGN(subsection_align)]
@@ -70,7 +70,8 @@ std::shared_ptr<CSectionOutputStatement> CSectionsRegionContentParser::TryParse(
     auto doNotAdvance = false;
 
     CRawEntry sectionOutputNameEntry;
-    std::shared_ptr<CExpression> addressExpression;
+    std::shared_ptr<CExpression> startAddressExpression;
+    std::shared_ptr<CExpression> blockAlignExpression;
     std::shared_ptr<CSectionOutputType> sectionOutputType;
     std::shared_ptr<CFunctionCall> atLmaFunction;
     std::shared_ptr<CFunctionCall> alignFunction;
@@ -88,7 +89,26 @@ std::shared_ptr<CSectionOutputStatement> CSectionsRegionContentParser::TryParse(
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
     {
         doNotAdvance = false;
+
         auto resolvedContent = linkerScriptFile.ResolveRawEntry(*localIterator);
+        auto localIteratorPlusOne = localIterator + 1;
+        auto localIteratorPlusTwo = localIterator + 2;
+        CRawEntry rawEntryPlusOne;
+        CRawEntry rawEntryPlusTwo;
+        std::string resolvedContentPlusOne;
+        std::string resolvedContentPlusTwo;
+        if (localIteratorPlusOne != endOfVectorIterator)
+        {
+            rawEntryPlusOne = *localIteratorPlusOne;
+            resolvedContentPlusOne = linkerScriptFile.ResolveRawEntry(rawEntryPlusOne);
+
+            if (localIteratorPlusTwo != endOfVectorIterator)
+            {
+                rawEntryPlusTwo = *localIteratorPlusTwo;
+                resolvedContentPlusTwo = linkerScriptFile.ResolveRawEntry(rawEntryPlusTwo);
+            }
+        }
+
         auto lineChangeDetected = parsingStartIteratorPosition->EndLineNumber() != localIterator->EndLineNumber();
 
         if (lineChangeDetected)
@@ -120,12 +140,43 @@ std::shared_ptr<CSectionOutputStatement> CSectionsRegionContentParser::TryParse(
                         {
                             violations.emplace_back(CViolation(*localIterator, ViolationCode::SectionOutputNameCannotBeAReservedKeyword));
                         }
-                        parserState = ParserState::AwaitingAddressOrTypeOrColon;
+                        parserState = ParserState::AwaitingAddressOrTypeOrBlockAlignOrColon;
                         break;
                     }
 
-                    case ParserState::AwaitingAddressOrTypeOrColon:
+                    case ParserState::AwaitingAddressOrTypeOrBlockAlignOrColon:
                     {
+                        // Here the job is a bit difficult. We need to extract
+                        // 1 - [Optional] The 'startAddress' in form of an expression
+                        // 2 - [Optional] The 'Block(align)' function call
+                        // 3 - [Optional] The section-output type (e.g. (NOLOAD))
+                        if (resolvedContent == ":")
+                        {
+                            // We arrive at the semicolon
+                            colonEntry = *localIterator;
+                            parserState = ParserState::AwaitingBracketOpen;
+                        }
+                        else if ((localIterator->EntryType() == RawEntryType::ParenthesisOpen) &&
+                                 CParserHelpers::IsSectionOutputType(resolvedContentPlusOne) &&
+                                 (rawEntryPlusTwo.EntryType() == RawEntryType::ParenthesisClose))
+                        {
+
+                            sectionOutputType = std::shared_ptr<CSectionOutputType>(
+                                        new CSectionOutputType(*localIteratorPlusOne,
+                                                               *localIterator,
+                                                               *localIteratorPlusTwo,
+                                                               {*localIteratorPlusOne, *localIterator, *localIteratorPlusTwo},
+                                                               {}));
+                        }
+                        else if ((resolvedContent == "BLOCK") && (rawEntryPlusOne.EntryType() == RawEntryType::ParenthesisOpen))
+                        {
+
+                        }
+                        else
+                        {
+                            // Whatever it is, it must be part of the "StartAddress". We need to treat it as an expression.
+
+                        }
 
                         break;
                     }
@@ -229,7 +280,8 @@ std::shared_ptr<CSectionOutputStatement> CSectionsRegionContentParser::TryParse(
 
     return std::shared_ptr<CSectionOutputStatement>(
                 new CSectionOutputStatement(sectionOutputNameEntry,
-                                            addressExpression,
+                                            startAddressExpression,
+                                            blockAlignExpression,
                                             sectionOutputType,
                                             atLmaFunction,
                                             alignFunction,
