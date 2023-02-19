@@ -42,6 +42,9 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
 
         /// @brief Checks if the given word is valid program-header (PHDR) type
         static bool IsLegalProgramHeaderType(const std::string& operatorToCheck);
+
+        /// @brief Checks if the given word is an Output-Section command.
+        static bool IsOutputSectionCommand(const std::string& wordToCheck);
     };    
 }
 

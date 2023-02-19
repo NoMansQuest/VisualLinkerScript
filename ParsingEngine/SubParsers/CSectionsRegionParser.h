@@ -2,14 +2,14 @@
 #define CSECTIONS_REGION_PARSER_H__
 
 #include "SubParserType.h"
-#include "CSectionsRegionContentParser.h"
+#include "CSectionOutputStatementParser.h"
 #include "CScopedRegionParser.h"
 #include "../Models/CSectionsRegion.h"
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {
     /// @brief Object in charge of parsing the "SECTIONS" region inside a linker-script
-    class CSectionsRegionParser : public CScopedRegionParser<SubParserType::SectionsRegionParser, CSectionsRegionContentParser, CSectionsRegion>
+    class CSectionsRegionParser : public CScopedRegionParser<SubParserType::SectionsRegionParser, CSectionOutputStatementParser, CSectionsRegion>
     {
     protected:
         /// @copydoc CScopedRegionParser:GetHeaderName()

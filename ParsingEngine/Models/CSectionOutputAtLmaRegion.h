@@ -15,13 +15,34 @@ namespace VisualLinkerScript::ParsingEngine::Models
         CRawEntry m_regionName;
 
     public:
-        /// @brief Default constructor, accessible to inheritors only
+        /// @brief Default constructor
         explicit CSectionOutputAtLmaRegion(CRawEntry atEntry,
                                 CRawEntry greatherThanSign,
                                 CRawEntry regionName,
                                 std::vector<CRawEntry>&& rawElements,
                                 std::vector<CViolation>&& violations)
             : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
+              m_atEntry(atEntry),
+              m_greatherThanSign(greatherThanSign),
+              m_regionName(regionName)
+        {}
+
+        /// @brief Alternate constructor without 'rawElements'
+        explicit CSectionOutputAtLmaRegion(CRawEntry atEntry,
+                                CRawEntry greatherThanSign,
+                                CRawEntry regionName,
+                                std::vector<CViolation>&& violations)
+            : CLinkerScriptContentBase({atEntry, greatherThanSign, regionName}, std::move(violations)),
+              m_atEntry(atEntry),
+              m_greatherThanSign(greatherThanSign),
+              m_regionName(regionName)
+        {}
+
+        /// @brief Alternate constructor without 'rawElements' and 'violations'
+        explicit CSectionOutputAtLmaRegion(CRawEntry atEntry,
+                                CRawEntry greatherThanSign,
+                                CRawEntry regionName)
+            : CLinkerScriptContentBase({atEntry, greatherThanSign, regionName}, {}),
               m_atEntry(atEntry),
               m_greatherThanSign(greatherThanSign),
               m_regionName(regionName)

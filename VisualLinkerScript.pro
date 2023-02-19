@@ -82,8 +82,9 @@ SOURCES += \
     ParsingEngine/SubParsers/CMemoryRegionContentParser.cpp \
     ParsingEngine/SubParsers/CMemoryStatementAttributeParser.cpp \
     ParsingEngine/SubParsers/CPhdrsRegionContentParser.cpp \
+    ParsingEngine/SubParsers/CSectionOutputStatementContentParser.cpp \
+    ParsingEngine/SubParsers/CSectionOutputStatementParser.cpp \
     ParsingEngine/SubParsers/CSectionOutputTypeParser.cpp \
-    ParsingEngine/SubParsers/CSectionsRegionContentParser.cpp \
     ParsingEngine/SubParsers/CSectionsRegionOverlayParser.cpp \
     ParsingEngine/SubParsers/CVersionRegionContentParser.cpp \
     ParsingEngine/SubParsers/Constants.cpp \
@@ -205,7 +206,7 @@ HEADERS += \
     ParsingEngine/Models/CSectionOutputFillExpression.h \
     ParsingEngine/Models/CSectionOutputPhdr.h \
     ParsingEngine/Models/CSectionOutputStatement.h \
-    ParsingEngine/Models/CSectionOutputToRegion.h \
+    ParsingEngine/Models/CSectionOutputToVmaRegion.h \
     ParsingEngine/Models/CSectionOutputType.h \
     ParsingEngine/Models/CSectionOverlayStatement.h \
     ParsingEngine/Models/CSectionsRegion.h \
@@ -232,6 +233,7 @@ HEADERS += \
     ParsingEngine/SubParsers/CDefaultParser.h \
     ParsingEngine/SubParsers/CExpressionParser.h \
     ParsingEngine/SubParsers/CFunctionParser.h \
+    ParsingEngine/SubParsers/CInputSectionParser.h \
     ParsingEngine/SubParsers/CMemoryRegionContentParser.h \
     ParsingEngine/SubParsers/CMemoryRegionParser.h \
     ParsingEngine/SubParsers/CMemoryStatementAttributeParser.h \
@@ -239,8 +241,9 @@ HEADERS += \
     ParsingEngine/SubParsers/CPhdrsRegionParser.h \
     ParsingEngine/SubParsers/CScopedRegionParser.h \
     ParsingEngine/SubParsers/CScopedRegionParser.tpp \
+    ParsingEngine/SubParsers/CSectionOutputStatementContentParser.h \
+    ParsingEngine/SubParsers/CSectionOutputStatementParser.h \
     ParsingEngine/SubParsers/CSectionOutputTypeParser.h \
-    ParsingEngine/SubParsers/CSectionsRegionContentParser.h \
     ParsingEngine/SubParsers/CSectionsRegionOverlayParser.h \
     ParsingEngine/SubParsers/CSectionsRegionParser.h \
     ParsingEngine/SubParsers/CSubParserBase.h \

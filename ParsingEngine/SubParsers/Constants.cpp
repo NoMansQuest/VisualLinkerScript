@@ -199,6 +199,13 @@ bool CParserHelpers::IsReservedWord(const std::string& wordToCheck)
     return false;
 }
 
+bool CParserHelpers::IsOutputSectionCommand(const std::string& wordToCheck)
+{
+    return std::find(ListOfOutputSectionCommandNames.cbegin(),
+                     ListOfOutputSectionCommandNames.cend(),
+                     wordToCheck) != ListOfOutputSectionCommandNames.cend();
+}
+
 bool CParserHelpers::IsIllegalProgramHeaderName(const std::string& wordToCheck)
 {
     return std::find(ListOfIllegalProgramHeaderNames.cbegin(),

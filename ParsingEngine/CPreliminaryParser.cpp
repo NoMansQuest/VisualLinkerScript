@@ -76,8 +76,7 @@ namespace
     {
         return ((input >= 'A') && (input <= 'Z')) ||
                ((input >= 'a') && (input <= 'z')) ||
-               (input == '_') ||
-               (input == '>') ||   // For example ">AT(SRAM)" placed after an output-section
+               (input == '_') ||               
                (input == ':') ||   // For example ":phdrs" placed after an output-section
                (input == '?') ||   // Wildcard support
                (input == '*') ||   // Wildcard support, could also be an operator

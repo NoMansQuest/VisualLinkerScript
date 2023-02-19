@@ -7,7 +7,7 @@
 namespace VisualLinkerScript::ParsingEngine::Models
 {
     /// @brief Represents an "AtLmaRegion" assigned to a "Section Output"
-    class CSectionOutputToRegion : public CLinkerScriptContentBase
+    class CSectionOutputToVmaRegion : public CLinkerScriptContentBase
     {
     private:
         CRawEntry m_greatherThanSign;
@@ -15,10 +15,10 @@ namespace VisualLinkerScript::ParsingEngine::Models
 
     public:
         /// @brief Default constructor, accessible to inheritors only
-        explicit CSectionOutputToRegion(CRawEntry greatherThanSign,
-                                        CRawEntry regionName,
-                                        std::vector<CRawEntry>&& rawElements,
-                                        std::vector<CViolation>&& violations)
+        explicit CSectionOutputToVmaRegion(CRawEntry greatherThanSign,
+                                           CRawEntry regionName,
+                                           std::vector<CRawEntry>&& rawElements,
+                                           std::vector<CViolation>&& violations)
             : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
               m_greatherThanSign(greatherThanSign),
               m_regionName(regionName)

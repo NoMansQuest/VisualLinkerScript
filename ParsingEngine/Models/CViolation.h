@@ -61,6 +61,11 @@ namespace VisualLinkerScript::ParsingEngine::Models
         // Section Output Content
         OnlyOneSectionOutputTypeIsAllowed,
         SectionOutputNameCannotBeAReservedKeyword,
+        MissingRegionForAtLmaDefinition,
+        WasExpectingANumericValueForFillExpression,
+        WasExpectingProgramHeaderName,
+        ProgramHeaderNameCannotBeAReservedWord,
+        VmaRegionNameCannotBeAReservedWord,
 
         // General violations:
         FunctionMissingDefinitionOrInvalidSymbolName,
