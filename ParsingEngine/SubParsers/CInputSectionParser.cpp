@@ -1,12 +1,11 @@
+
 #include <vector>
 #include <memory>
-#include "CSectionOutputTypeParser.h"
-#include "Constants.h"
+#include "CInputSectionParser.h"
 #include "../CMasterParserException.h"
-#include "../Models/CSectionOutputType.h"
 #include "../Models/Raw/CRawEntry.h"
 #include "../Models/CComment.h"
-#include "../Models/CSectionOutputType.h"
+#include "../Models/CInputSection.h"
 #include "../Models/CViolation.h"
 
 using namespace VisualLinkerScript::ParsingEngine::SubParsers;
@@ -15,16 +14,16 @@ using namespace VisualLinkerScript::ParsingEngine::Models::Raw;
 
 namespace
 {
-    /// @brief CPhdrsRegionContentParser parser states
+    /// @brief CInputSectionParser parser states
     enum class ParserState
     {
-        AwaitingParenthesisOverture,
+        AwaitingParenthesisOpen,
         AwaitingParenthesisClosure,
         ParsingComplete
     };
 }
 
-std::shared_ptr<CSectionOutputType> CSectionOutputTypeParser::TryParse(
+std::shared_ptr<CInputSection> CInputSectionParser::TryParse(
         CRawFile& linkerScriptFile,
         std::vector<CRawEntry>::const_iterator& iterator,
         std::vector<CRawEntry>::const_iterator& endOfVectorIterator)
@@ -35,19 +34,13 @@ std::shared_ptr<CSectionOutputType> CSectionOutputTypeParser::TryParse(
     std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
     std::vector<CViolation> violations;
 
-    if (iterator->EntryType() != RawEntryType::ParenthesisOpen)
-    {
-        throw CMasterParsingException(
-                MasterParsingExceptionType::InternalParserError,
-                "'CMemoryStatementAttributeParser::TryParse' can only be called with 'iterator' pointing to a 'Parenthesis-Open'");
-    }
-
-    auto parserState = ParserState::AwaitingParenthesisOverture;
+    auto parserState = ParserState::AwaitingParenthesisOpen;
     auto doNotAdvance = false;
 
+    CRawEntry inputSectionHeader;
     CRawEntry parenthesisOpen;
     CRawEntry parenthesisClose;
-    CRawEntry outputSectionTypeEntry;
+    std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
 
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
     {
@@ -76,21 +69,22 @@ std::shared_ptr<CSectionOutputType> CSectionOutputTypeParser::TryParse(
             {
                 switch (parserState)
                 {
-                    case ParserState::AwaitingParenthesisOverture:
+                    case ParserState::AwaitingParenthesisOpen:
                     {
                         return nullptr; // Aborting
                     }
 
                     case ParserState::AwaitingParenthesisClosure:
                     {
-                        if (!outputSectionTypeEntry.IsPresent())
-                        {
-                            outputSectionTypeEntry = *localIterator;
-                        }
-                        else
-                        {
-                            violations.emplace_back(CViolation(*localIterator, ViolationCode::OnlyOneSectionOutputTypeIsAllowed));
-                        }
+                        ParseAttributeValues(
+                                    *localIterator,
+                                     resolvedContent,
+                                     readOnlySection,
+                                     readWriteSection,
+                                     allocatableSection,
+                                     executableSection,
+                                     initializedSection,
+                                     violations);
                         break;
                     }
 
@@ -98,7 +92,7 @@ std::shared_ptr<CSectionOutputType> CSectionOutputTypeParser::TryParse(
                     {
                         throw CMasterParsingException(
                                     MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
-                                    "ParserState invalid in CSectionOutputTypeParser");
+                                    "ParserState invalid in CMemoryStatementAttributeParser");
                     }
                 }
                 break;
@@ -108,13 +102,12 @@ std::shared_ptr<CSectionOutputType> CSectionOutputTypeParser::TryParse(
             {
                 switch (parserState)
                 {
-                    case ParserState::AwaitingParenthesisOverture:
+                    case ParserState::AwaitingParenthesisOpen:
                     {
                         parenthesisOpen = *localIterator;
                         parserState = ParserState::AwaitingParenthesisClosure;
                         break;
                     }
-
                     default:
                     {
                         return nullptr; // Parsing failed
@@ -161,14 +154,18 @@ std::shared_ptr<CSectionOutputType> CSectionOutputTypeParser::TryParse(
             }
 
             case RawEntryType::NotPresent:
+            {
                 throw CMasterParsingException(
                         MasterParsingExceptionType::NotPresentEntryDetected,
                         "A 'non-present' entry was detected.");
+            }
 
             default:
+            {
                 throw CMasterParsingException(
                         MasterParsingExceptionType::UnrecognizableRawEntryTypeValueFound,
                         "Unrecognized raw-entry type detected.");
+            }
         }
 
         localIterator = ((parserState != ParserState::ParsingComplete) && !doNotAdvance) ?
@@ -181,11 +178,14 @@ std::shared_ptr<CSectionOutputType> CSectionOutputTypeParser::TryParse(
 
     iterator = localIterator;
 
-    return std::shared_ptr<CSectionOutputType>(
-                new CSectionOutputType(outputSectionTypeEntry,
-                                       parenthesisOpen,
-                                       parenthesisClose,
-                                       std::move(parsedContent),
-                                       std::move(rawEntries),
-                                       std::move(violations)));
+    return std::shared_ptr<CMemoryStatementAttribute>(
+                new CMemoryStatementAttribute(parenthesisOpen,
+                                              parenthesisClose,
+                                              readOnlySection,
+                                              readWriteSection,
+                                              allocatableSection,
+                                              executableSection,
+                                              initializedSection,
+                                              std::move(rawEntries),
+                                              std::move(violations)));
 }

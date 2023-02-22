@@ -1,20 +1,21 @@
 #include <vector>
 #include <memory>
 #include <string>
-#include "CSectionOutputStatementParser.h"
-#include "CSectionOutputStatementContentParser.h"
+#include "CSectionOutputCommandParser.h"
+#include "CSectionOutputCommandContentParser.h"
 #include "CExpressionParser.h"
+#include "CInputSectionParser.h"
 #include "CFunctionParser.h"
 #include "CAssignmentParser.h"
 #include "Constants.h"
 #include "../CMasterParserException.h"
+#include "../Models/CInputSection.h"
 #include "../Models/CFunctionCall.h"
 #include "../Models/CSectionOutputToVmaRegion.h"
 #include "../Models/CSectionOutputAtLmaRegion.h"
 #include "../Models/CSectionOutputPhdr.h"
 #include "../Models/CSectionOutputFillExpression.h"
-#include "../Models/CSectionOutputType.h"
-#include "../Models/CSectionOutputStatement.h"
+#include "../Models/CSectionOutputCommand.h"
 #include "../Models/Raw/CRawEntry.h"
 #include "../Models/Raw/RawEntryType.h"
 #include "../Models/Raw/CRawFile.h"
@@ -54,7 +55,7 @@ namespace
  *
  */
 
-std::shared_ptr<CSectionOutputStatement> CSectionOutputStatementParser::TryParse(
+std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
         CRawFile& linkerScriptFile,
         std::vector<CRawEntry>::const_iterator& iterator,
         std::vector<CRawEntry>::const_iterator& endOfVectorIterator)
@@ -66,7 +67,7 @@ std::shared_ptr<CSectionOutputStatement> CSectionOutputStatementParser::TryParse
 
     CFunctionParser functionParser;
     CExpressionParser expressionParser(ExpressionParserType::NormalParser, false);
-    CSectionOutputStatementContentParser contentParser;
+    CSectionOutputCommandContentParser contentParser;
     CAssignmentParser assignmentParser;
     CInputSectionParser inputSectionParser;
 
@@ -114,6 +115,34 @@ std::shared_ptr<CSectionOutputStatement> CSectionOutputStatementParser::TryParse
         {
             case RawEntryType::Comment:
             {
+                std::shared_ptr<CLinkerScriptContentBase> commentObject(new CComment(std::vector<CRawEntry>{*localIterator}, {}));
+                switch (parserState)
+                {
+                    case ParserState::AwaitingHeader:
+                    case ParserState::AwaitingColon:
+                    {
+                        preColonContent.emplace_back(commentObject);
+                        break;
+                    }
+
+                    case ParserState::AwaitingBracketOpen:
+                    {
+                        postColonContent.emplace_back(commentObject);
+                        break;
+                    }
+
+                    case ParserState::AwaitingBracketClosure:
+                    case ParserState::AwaitingEndOfParse:
+                    {
+                        innerContent.emplace_back(commentObject);
+                    }
+
+                    default:
+                        throw CMasterParsingException(
+                                    MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
+                                    "ParserState invalid in CSectionOutpuStatementParser");
+                }
+
                 innerContent.emplace_back(std::shared_ptr<CLinkerScriptContentBase>(new CComment(std::vector<CRawEntry>{*localIterator}, {})));
                 break;
             }
@@ -345,13 +374,6 @@ std::shared_ptr<CSectionOutputStatement> CSectionOutputStatementParser::TryParse
                     {
                         bracketOpenEntry = *localIterator;
                         parserState = ParserState::AwaitingBracketClosure;
-                        // Parse the rest of the content. Presumably the iterator
-                        // returned here will be on "BracketClosure"
-                        if (localIteratorPlusOne != endOfVectorIterator)
-                        {
-                            innerContent = contentParser.TryParse(linkerScriptFile, localIteratorPlusOne, endOfVectorIterator);
-
-                        }
                         break;
                     }
 

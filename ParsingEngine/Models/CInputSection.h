@@ -1,41 +1,40 @@
-#ifndef CFUNCTION_CALL_STATEMENT_H__
-#define CFUNCTION_CALL_STATEMENT_H__
+#ifndef CINPUT_SECTION_H__
+#define CINPUT_SECTION_H__
 
 #include <vector>
 #include "CLinkerScriptContentBase.h"
-#include "CExpression.h"
 
 namespace VisualLinkerScript::ParsingEngine::Models
 {
     /// @brief Represents a procedural call
-    class CFunctionCall : public CLinkerScriptContentBase
-    {   
+    class CInputSection : public CLinkerScriptContentBase
+    {
     private:
-        CRawEntry m_procedureName;
+        CRawEntry m_filterHeader;
         CRawEntry m_openingParenthesis;
         CRawEntry m_closingParenthesis;
         std::vector<std::shared_ptr<CLinkerScriptContentBase>> m_parsedContent;
 
     public:
         /// @brief Default constructor, accessible to inheritors only
-        explicit CFunctionCall(CRawEntry functionName,
+        explicit CInputSection(CRawEntry filterHeader,
                                CRawEntry openingParenthesis,
                                CRawEntry closingParenthesis,
                                std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& parsedContent,
                                std::vector<CRawEntry>&& rawElements,
                                std::vector<CViolation>&& violations)
             : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
-              m_procedureName(functionName),
+              m_filterHeader(filterHeader),
               m_openingParenthesis(openingParenthesis),
               m_closingParenthesis(closingParenthesis),
               m_parsedContent(std::move(parsedContent))
         {}
 
     public:
-        /// @brief Reports back the type of this object.        
+        /// @brief Reports back the type of this object.
         ContentType Type() override
         {
-            return ContentType::ProcedureCall;
+            return ContentType::InputSection;
         }
 
         /// @brief Reports back the list of parameters
@@ -44,10 +43,10 @@ namespace VisualLinkerScript::ParsingEngine::Models
             return this->m_parsedContent;
         }
 
-        /// @brief Reports back the procedure-name
-        const CRawEntry& ProcedureName()
+        /// @brief Reports back the filter header
+        const CRawEntry& FilterHeader()
         {
-            return this->m_procedureName;
+            return this->m_filterHeader;
         }
 
         /// @brief Reports back the opening parenthesis

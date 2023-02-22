@@ -11,7 +11,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
     {  
     private:
         std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& m_versionNodes;
-        CRawEntry m_openningBracketEntry;
+        CRawEntry m_openingBracketEntry;
         CRawEntry m_closingBracketEntry;
         CRawEntry m_versionHeaderEntry;
 
@@ -21,14 +21,14 @@ namespace VisualLinkerScript::ParsingEngine::Models
         /// @param versionNodes A list of version nodes
         /// @param violations Violations found in the current element
         explicit CVersionsRegion(CRawEntry versionHeaderEntry,
-                                 CRawEntry openningBracketEntry,
+                                 CRawEntry openingBracketEntry,
                                  CRawEntry closingBracketEntry,
                                  std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& versionNodes,
                                  std::vector<CRawEntry>&& rawElements,
                                  std::vector<CViolation>&& violations)
             : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
               m_versionNodes(std::move(versionNodes)),
-              m_openningBracketEntry(openningBracketEntry),
+              m_openingBracketEntry(openingBracketEntry),
               m_closingBracketEntry(closingBracketEntry),
               m_versionHeaderEntry(versionHeaderEntry)
         {}        
@@ -53,9 +53,9 @@ namespace VisualLinkerScript::ParsingEngine::Models
         }
 
         /// @brief Reports back the entry containing the "{" symbol
-        const CRawEntry OpenningBracketEntry()
+        const CRawEntry OpeningBracketEntry()
         {
-            return this->m_openningBracketEntry;
+            return this->m_openingBracketEntry;
         }
 
         /// @brief Reports back the entry containing the "}" symbol

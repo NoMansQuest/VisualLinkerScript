@@ -76,14 +76,16 @@ namespace
     {
         return ((input >= 'A') && (input <= 'Z')) ||
                ((input >= 'a') && (input <= 'z')) ||
-               (input == '_') ||               
-               (input == ':') ||   // For example ":phdrs" placed after an output-section
-               (input == '?') ||   // Wildcard support
-               (input == '*') ||   // Wildcard support, could also be an operator
-               (input == '[') ||   // Wildcard support
-               (input == ']') ||   // Wildcard support
-               (input == '/') ||   // Wildcard support, could also be an operator (e.g. /DISCARD/)
-               (input == '!') ||   // Wildcard support, could also be an operator (e.g. Memory-Statement attribute '(!r)')
+               (input == '_')  ||
+               (input == ':')  ||  // For example ":phdrs" placed after an output-section
+               (input == '?')  ||  // Wildcard support
+               (input == '*')  ||  // Wildcard support, could also be an operator
+               (input == '[')  ||  // Wildcard support
+               (input == ']')  ||  // Wildcard support
+               (input == '/')  ||  // Wildcard support, could also be an operator (e.g. /DISCARD/)
+               (input == '\\') ||  // Wildcard support, quoting the following character
+               (input == '-')  ||  // Wildcard support, used in range
+               (input == '!')  ||  // Wildcard support, could also be an operator (e.g. Memory-Statement attribute '(!r)')
                (input == '.');     // Wildcard support, could also be an operator
     }
 
@@ -304,6 +306,9 @@ std::shared_ptr<CRawFile> CPreliminaryParser::ProcessLinkerScript(const std::str
     auto nextCharacterExists = false;
     auto nextCharacter = ' ';
 
+    auto previousCharacterExists = false;
+    auto previousCharacter = ' ';
+
     for (scanPosition = 0;; scanPosition++)
     {        
         auto currentCharacter = rawContent[scanPosition];
@@ -311,6 +316,7 @@ std::shared_ptr<CRawFile> CPreliminaryParser::ProcessLinkerScript(const std::str
 
         nextCharacterExists = !endOfStreamReached;
         nextCharacter = (nextCharacterExists) ? rawContent[scanPosition + 1] : ' ';
+
 
         std::string insightScope = rawContent.substr(scanPosition);
 
@@ -359,25 +365,6 @@ std::shared_ptr<CRawFile> CPreliminaryParser::ProcessLinkerScript(const std::str
                     break;
                 }
 
-                if (CanCharBeStartOfWord(currentCharacter))
-                {
-                    uint32_t longOperatorLength;
-                    if (IsOperator(currentCharacter) && CheckForLongOperator(rawContent, scanPosition, longOperatorLength))
-                    {
-                        parsedContent.emplace_back(CRawEntry(RawEntryType::Operator, lineNumber, scanPosition, longOperatorLength, parenthesisDepth, scopeDepth));
-                        scanPosition += longOperatorLength - 1;
-                        break;
-                    }
-                    else
-                    {
-                        entryStartPosition = scanPosition;
-                        entryStartLine = lineNumber;
-                        currentState = ParserStates::InWord;
-                        scanPosition--;
-                        break;
-                    }
-                }
-
                 if (IsOperator(currentCharacter))
                 {
                     uint32_t longOperatorLength;
@@ -385,9 +372,24 @@ std::shared_ptr<CRawFile> CPreliminaryParser::ProcessLinkerScript(const std::str
                     {
                         parsedContent.emplace_back(CRawEntry(RawEntryType::Operator, lineNumber, scanPosition, longOperatorLength, parenthesisDepth, scopeDepth));
                         scanPosition += longOperatorLength - 1;
+                        break;
                     }
                     else
                     {
+                        // Special cases should be ruled out....
+                        if (CanCharBeStartOfWord(currentCharacter))
+                        {
+                            // Could the next character be part of a word?
+                            if (nextCharacterExists && CanCharBeWithinWord(nextCharacter))
+                            {
+                                entryStartPosition = scanPosition;
+                                entryStartLine = lineNumber;
+                                currentState = ParserStates::InWord;
+                                scanPosition--;
+                                break;
+                            }
+                        }
+
                         auto entyType = (currentCharacter == '{') ? RawEntryType::BracketOpen :
                                         (currentCharacter == '}') ? RawEntryType::BracketClose :
                                         (currentCharacter == '(') ? RawEntryType::ParenthesisOpen :
@@ -396,6 +398,15 @@ std::shared_ptr<CRawFile> CPreliminaryParser::ProcessLinkerScript(const std::str
 
                         parsedContent.emplace_back(CRawEntry(entyType, lineNumber, scanPosition, 1, parenthesisDepth, scopeDepth));
                     }
+                }
+
+                if (CanCharBeStartOfWord(currentCharacter))
+                {
+                    entryStartPosition = scanPosition;
+                    entryStartLine = lineNumber;
+                    currentState = ParserStates::InWord;
+                    scanPosition--;
+                    break;
                 }
 
                 break;
@@ -440,6 +451,12 @@ std::shared_ptr<CRawFile> CPreliminaryParser::ProcessLinkerScript(const std::str
                     break;
                 }
 
+                // Check for special case when a character is being quoted by '\'
+                if (previousCharacterExists && previousCharacter == '\\')
+                {
+                    break;
+                }
+
                 // Note: Words are always placed on the same line. A word cannot be split across two lines.
                 parsedContent.emplace_back(CRawEntry(RawEntryType::Word, entryStartLine, entryStartLine, entryStartPosition, (scanPosition - 1 - entryStartPosition) + 1, parenthesisDepth, scopeDepth));
                 SwitchToState(currentState, scanPosition, ParserLoopActionType::StartFromSamePosition);
@@ -478,6 +495,9 @@ std::shared_ptr<CRawFile> CPreliminaryParser::ProcessLinkerScript(const std::str
         {
             break;
         }
+
+        previousCharacterExists = true;
+        previousCharacter = currentCharacter;
     }
 
     return std::make_shared<CRawFile>(std::move(rawContent), fileName, std::move(parsedContent));

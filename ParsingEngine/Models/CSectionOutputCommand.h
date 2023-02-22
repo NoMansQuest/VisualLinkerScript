@@ -14,7 +14,7 @@
 namespace VisualLinkerScript::ParsingEngine::Models
 {
     /// @brief Represents a single 'Output' segment in the "SECTIONS"
-    class CSectionOutputStatement : public CLinkerScriptContentBase
+    class CSectionOutputCommand : public CLinkerScriptContentBase
     {   
     private:
         CRawEntry m_sectionOutputNameEntry;
@@ -32,7 +32,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
     public:
         /// @brief Default constructor, accessible to inheritors only
         /// @param rawElements A list of object this element is comprised of.
-        explicit CSectionOutputStatement(CRawEntry sectionOutputNameEntry,
+        explicit CSectionOutputCommand(CRawEntry sectionOutputNameEntry,
                                          std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& preColonContent,
                                          std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& postColonContent,
                                          CRawEntry colonEntry,
@@ -63,7 +63,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
         /// @brief Reports back the type of this object.        
         ContentType Type() override
         {
-            return ContentType::SectionsOutputStatement;
+            return ContentType::SectionsOutputCommand;
         }
 
         /// @brief Reports back the name of the SectionOutput

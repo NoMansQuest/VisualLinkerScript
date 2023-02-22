@@ -11,7 +11,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
     {       
     private:
         std::vector<std::shared_ptr<CLinkerScriptContentBase>> m_entries;
-        CRawEntry m_openningBracketEntry;
+        CRawEntry m_openingBracketEntry;
         CRawEntry m_closingBracketEntry;
         CRawEntry m_sectionsHeaderEntry;
 
@@ -19,14 +19,14 @@ namespace VisualLinkerScript::ParsingEngine::Models
         /// @brief Default constructor, accessible to inheritors only
         /// @param rawElements A list of object this element is comprised of.
         explicit CSectionsRegion(CRawEntry sectionsHeaderEntry,
-                                 CRawEntry openningBracketEntry,
+                                 CRawEntry openingBracketEntry,
                                  CRawEntry closingBracketEntry,
                                  std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& entries,
                                  std::vector<CRawEntry>&& rawElements,
                                  std::vector<CViolation>&& violations)
             : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
               m_entries(std::move(entries)),
-              m_openningBracketEntry(openningBracketEntry),
+              m_openingBracketEntry(openingBracketEntry),
               m_closingBracketEntry(closingBracketEntry),
               m_sectionsHeaderEntry(sectionsHeaderEntry)
         {}        
@@ -51,9 +51,9 @@ namespace VisualLinkerScript::ParsingEngine::Models
         }
 
         /// @brief Reports back the entry containing the "{" symbol
-        const CRawEntry OpenningBracketEntry()
+        const CRawEntry OpeningBracketEntry()
         {
-            return this->m_openningBracketEntry;
+            return this->m_openingBracketEntry;
         }
 
         /// @brief Reports back the entry containing the "}" symbol

@@ -41,7 +41,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
         }
 
         /// @brief Reports back the openning parenthesis
-        const CRawEntry& OpenningParenthesis()
+        const CRawEntry& OpeningParenthesis()
         {
             return this->m_openingParenthesis;
         }

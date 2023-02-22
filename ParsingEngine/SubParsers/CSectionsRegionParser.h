@@ -2,7 +2,7 @@
 #define CSECTIONS_REGION_PARSER_H__
 
 #include "SubParserType.h"
-#include "CSectionOutputStatementParser.h"
+#include "CSectionOutputCommandParser.h"
 #include "CScopedRegionParser.h"
 #include "../Models/CSectionsRegion.h"
 

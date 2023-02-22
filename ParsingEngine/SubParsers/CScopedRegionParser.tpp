@@ -19,7 +19,7 @@ namespace
     enum class ParserState
     {
         AwaitingHeader,
-        AwaitingOpenningBracket,
+        AwaitingOpeningBracket,
         AwaitingClosingBracket,
         ParsingComplete
     };
@@ -41,7 +41,7 @@ std::shared_ptr<TProducingOutputType> CScopedRegionParser<TParserType, TContentP
     TContentParserType regionContentParser;
 
     CRawEntry regionHeaderEntry;
-    CRawEntry openningBracketEntry;
+    CRawEntry openingBracketEntry;
     CRawEntry closingBracketEntry;
 
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
@@ -79,9 +79,9 @@ std::shared_ptr<TProducingOutputType> CScopedRegionParser<TParserType, TContentP
                     }
 
                     regionHeaderEntry = *localIterator;
-                    parserState = ParserState::AwaitingOpenningBracket;
+                    parserState = ParserState::AwaitingOpeningBracket;
                 }
-                else if (parserState == ParserState::AwaitingOpenningBracket)
+                else if (parserState == ParserState::AwaitingOpeningBracket)
                 {
                     CViolation detectedViolation({ *localIterator }, ViolationCode::NoSymbolOrKeywordAllowedAfterMemoryHeader);
                     violations.emplace_back(std::move(detectedViolation));
@@ -100,12 +100,12 @@ std::shared_ptr<TProducingOutputType> CScopedRegionParser<TParserType, TContentP
                 {
                     CViolation detectedViolation({ *localIterator }, ViolationCode::EntryInvalidOrMisplaced);
                 }
-                else if (parserState == ParserState::AwaitingOpenningBracket)
+                else if (parserState == ParserState::AwaitingOpeningBracket)
                 {
                     CViolation detectedViolation({ *localIterator }, ViolationCode::NoSymbolOrKeywordAllowedAfterMemoryHeader);
                     violations.emplace_back(std::move(detectedViolation));
                 }
-                else if (parserState == ParserState::AwaitingOpenningBracket)
+                else if (parserState == ParserState::AwaitingOpeningBracket)
                 {
                     parserState = ParserState::ParsingComplete;
                 }
@@ -114,9 +114,9 @@ std::shared_ptr<TProducingOutputType> CScopedRegionParser<TParserType, TContentP
 
             case RawEntryType::BracketOpen:
             {
-                if (parserState == ParserState::AwaitingOpenningBracket)
+                if (parserState == ParserState::AwaitingOpeningBracket)
                 {
-                    openningBracketEntry = *localIterator;
+                    openingBracketEntry = *localIterator;
                     parserState = ParserState::AwaitingClosingBracket;
                 }
                 else if ((parserState == ParserState::AwaitingClosingBracket) ||
@@ -168,7 +168,7 @@ std::shared_ptr<TProducingOutputType> CScopedRegionParser<TParserType, TContentP
 
     return std::shared_ptr<TProducingOutputType>(
                 new TProducingOutputType(regionHeaderEntry,
-                                         openningBracketEntry,
+                                         openingBracketEntry,
                                          closingBracketEntry,
                                          std::move(parsedContent),
                                          std::move(rawEntries),

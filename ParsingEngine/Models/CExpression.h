@@ -14,19 +14,19 @@ namespace VisualLinkerScript::ParsingEngine::Models
     {   
     private:
         std::vector<std::shared_ptr<CLinkerScriptContentBase>> m_composition;
-        CRawEntry m_openningParenthesis;
+        CRawEntry m_openingParenthesis;
         CRawEntry m_closingParenthesis;        
 
     public:
         /// @brief Parameterized constructor, accessible to inheritors only
-        explicit CExpression(CRawEntry openningParenthesis,
+        explicit CExpression(CRawEntry openingParenthesis,
                              CRawEntry closingParenthesis,
                              std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& composition,
                              std::vector<CRawEntry>&& rawElements, 
                              std::vector<CViolation>&& violations)
             : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
               m_composition(composition),
-              m_openningParenthesis(openningParenthesis),
+              m_openingParenthesis(openingParenthesis),
               m_closingParenthesis(closingParenthesis)
         {}        
 
@@ -46,9 +46,9 @@ namespace VisualLinkerScript::ParsingEngine::Models
         }    
 
         /// @brief Reports back openning-parenthesis
-        const CRawEntry& OpenningParenthesis()
+        const CRawEntry& OpeningParenthesis()
         {
-            return this->m_openningParenthesis;
+            return this->m_openingParenthesis;
         }
 
         /// @brief Reports back closing parenthesis

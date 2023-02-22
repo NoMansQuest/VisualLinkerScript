@@ -3,7 +3,7 @@
 
 #include "CSubParserBase.h"
 #include "SubParserType.h"
-#include "../Models/CSectionOutputStatement.h"
+#include "../Models/CSectionOutputCommand.h"
 #include "../Models/Raw/CRawFile.h"
 #include <memory>
 
@@ -12,17 +12,17 @@ using namespace VisualLinkerScript::ParsingEngine::Models::Raw;
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {
     /// @brief Object in charge of parsing the content of the "SECTIONS" region inside a linker-script
-    class CSectionOutputStatementContentParser : public CSubParserBase<CSectionOutputStatement>
+    class CSectionOutputCommandContentParser : public CSubParserBase<CSectionOutputCommand>
     {
     public:
         /// @copydoc CSubParserBase::Type()
         virtual SubParserType Type() override
         {
-            return SubParserType::SectionsOutputStatementContentParser;
+            return SubParserType::SectionsOutputCommandContentParser;
         }
 
         /// @copydoc CSubParserBase::TryParse
-        virtual std::shared_ptr<CSectionOutputStatement> TryParse(
+        virtual std::shared_ptr<CSectionOutputCommand> TryParse(
                 CRawFile& linkerScriptFile,
                 std::vector<CRawEntry>::const_iterator& iterator,
                 std::vector<CRawEntry>::const_iterator& endOfVectorIterator) override;
