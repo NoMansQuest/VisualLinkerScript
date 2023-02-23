@@ -89,6 +89,7 @@ SOURCES += \
     ParsingEngine/SubParsers/CSectionsRegionOverlayParser.cpp \
     ParsingEngine/SubParsers/CVersionRegionContentParser.cpp \
     ParsingEngine/SubParsers/Constants.cpp \
+    ParsingEngine/SubParsers/CInputSectionFunctionParser.cpp \
     main.cpp \
     mainwindow.cpp
 
@@ -292,6 +293,7 @@ HEADERS += \
     ParsingEngine/SubParsers/CSubParserBase.h \
     ParsingEngine/SubParsers/CVersionRegionParser.h \
     ParsingEngine/SubParsers/SubParserType.h \
+    ParsingEngine/SubParsers/CInputSectionFunctionParser.h \
     mainwindow.h
 
 FORMS += \

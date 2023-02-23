@@ -66,6 +66,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
         WasExpectingProgramHeaderName,
         ProgramHeaderNameCannotBeAReservedWord,
         VmaRegionNameCannotBeAReservedWord,
+        EntryNotAllowedInInputSectionDefinition,
 
         // General violations:
         FunctionMissingDefinitionOrInvalidSymbolName,

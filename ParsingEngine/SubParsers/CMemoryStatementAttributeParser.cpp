@@ -17,7 +17,7 @@ namespace
     /// @brief CPhdrsRegionContentParser parser states
     enum class ParserState
     {
-        AwaitingParenthesisOpen,
+        AwaitingParenthesisOverture,
         AwaitingParenthesisClosure,
         ParsingComplete
     };
@@ -139,7 +139,7 @@ std::shared_ptr<CMemoryStatementAttribute> CMemoryStatementAttributeParser::TryP
                 "'CMemoryStatementAttributeParser::TryParse' can only be called with 'iterator' pointing to a 'Parenthesis-Open'");
     }
 
-    auto parserState = ParserState::AwaitingParenthesisOpen;
+    auto parserState = ParserState::AwaitingParenthesisOverture;
     auto doNotAdvance = false;
 
     CRawEntry parenthesisOpen;
@@ -177,7 +177,7 @@ std::shared_ptr<CMemoryStatementAttribute> CMemoryStatementAttributeParser::TryP
             {                
                 switch (parserState)
                 {
-                    case ParserState::AwaitingParenthesisOpen:
+                    case ParserState::AwaitingParenthesisOverture:
                     {
                         return nullptr; // Aborting
                     }
@@ -210,7 +210,7 @@ std::shared_ptr<CMemoryStatementAttribute> CMemoryStatementAttributeParser::TryP
             {
                 switch (parserState)
                 {
-                    case ParserState::AwaitingParenthesisOpen:
+                    case ParserState::AwaitingParenthesisOverture:
                     {
                         parenthesisOpen = *localIterator;
                         parserState = ParserState::AwaitingParenthesisClosure;

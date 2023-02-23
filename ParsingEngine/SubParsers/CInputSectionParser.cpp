@@ -2,6 +2,7 @@
 #include <vector>
 #include <memory>
 #include "CInputSectionParser.h"
+#include "Constants.h"
 #include "../CMasterParserException.h"
 #include "../Models/Raw/CRawEntry.h"
 #include "../Models/CComment.h"
@@ -17,7 +18,8 @@ namespace
     /// @brief CInputSectionParser parser states
     enum class ParserState
     {
-        AwaitingParenthesisOpen,
+        AwaitingHeader,
+        AwaitingParenthesisOverture,
         AwaitingParenthesisClosure,
         ParsingComplete
     };
@@ -31,10 +33,9 @@ std::shared_ptr<CInputSection> CInputSectionParser::TryParse(
     std::vector<CRawEntry>::const_iterator localIterator = iterator;
     std::vector<CRawEntry>::const_iterator previousPositionIterator = iterator;
     std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = iterator;
-    std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
     std::vector<CViolation> violations;
 
-    auto parserState = ParserState::AwaitingParenthesisOpen;
+    auto parserState = ParserState::AwaitingHeader;
     auto doNotAdvance = false;
 
     CRawEntry inputSectionHeader;
@@ -69,22 +70,36 @@ std::shared_ptr<CInputSection> CInputSectionParser::TryParse(
             {
                 switch (parserState)
                 {
-                    case ParserState::AwaitingParenthesisOpen:
+                    case ParserState::AwaitingHeader:
                     {
-                        return nullptr; // Aborting
+                        if (CParserHelpers::IsReservedWord(resolvedContent))
+                        {
+                            return nullptr; // This is not an input-section
+                        }
+
+                        inputSectionHeader = *localIterator;
+                        parserState = ParserState::AwaitingParenthesisOverture;
+                        break;
+                    }
+
+                    case ParserState::AwaitingParenthesisOverture:
+                    {
+                        return nullptr; // This is a deal breaker
                     }
 
                     case ParserState::AwaitingParenthesisClosure:
                     {
-                        ParseAttributeValues(
-                                    *localIterator,
-                                     resolvedContent,
-                                     readOnlySection,
-                                     readWriteSection,
-                                     allocatableSection,
-                                     executableSection,
-                                     initializedSection,
-                                     violations);
+                        if (CParserHelpers::IsReservedWord(resolvedContent))
+                        {
+                            if (CParserHelpers::IsInputSectionFunction(resolvedContent))
+                            {
+
+                            }
+                            else
+                            {
+                                violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryNotAllowedInInputSectionDefinition));
+                            }
+                        }
                         break;
                     }
 
@@ -102,7 +117,7 @@ std::shared_ptr<CInputSection> CInputSectionParser::TryParse(
             {
                 switch (parserState)
                 {
-                    case ParserState::AwaitingParenthesisOpen:
+                    case ParserState::AwaitingParenthesisOverture:
                     {
                         parenthesisOpen = *localIterator;
                         parserState = ParserState::AwaitingParenthesisClosure;

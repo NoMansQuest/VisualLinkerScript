@@ -69,7 +69,7 @@ namespace
     };
 
     std::vector<std::string> ListOfFunctionNames = {
-        "ENTRY",
+        "ENTRY",        
         "ABSOLUTE",
         "ADDR",
         "ALIGN",
@@ -108,12 +108,24 @@ namespace
         "OVERLAY",
     };
 
-    std::vector<std::string> ListOfReservedKeywords = {
+    std::vector<std::string> ListOfScopeNames = {
         "PHDRS",
         "MEMORY",
         "SECTIONS",
-        "VERSIONS",
+        "VERSIONS",        
+        "ORIGIN",
+        "LENGTH",
+    };
+
+    std::vector<std::string> ListOfInpuSectionCommands = {
         "EXCLUDE_FILE",
+        "SORT",
+        "SORT_BY_NAME",
+        "SORT_BY_ALIGNMENT",
+        "SORT_BY_INIT_PRIORITY"
+    };
+
+    std::vector<std::string> ListOfMemorySectionsReserveWords = {
         "ORIGIN",
         "LENGTH",
     };
@@ -174,8 +186,10 @@ using namespace VisualLinkerScript::ParsingEngine::SubParsers;
 bool CParserHelpers::IsReservedWord(const std::string& wordToCheck)
 {
     auto concernedLists =
-    {
-        ListOfReservedKeywords,
+    {        
+        ListOfScopeNames,
+        ListOfInpuSectionCommands,
+        ListOfMemorySectionsReserveWords,
         ListOfOutputSectionTypes,
         ListOfOutputSectionCommandNames,
         ListOfFunctionNames,
@@ -204,6 +218,13 @@ bool CParserHelpers::IsOutputSectionCommand(const std::string& wordToCheck)
     return std::find(ListOfOutputSectionCommandNames.cbegin(),
                      ListOfOutputSectionCommandNames.cend(),
                      wordToCheck) != ListOfOutputSectionCommandNames.cend();
+}
+
+bool CParserHelpers::IsInputSectionFunction(const std::string& wordToCheck)
+{
+    return std::find(ListOfInpuSectionCommands.cbegin(),
+                     ListOfInpuSectionCommands.cend(),
+                     wordToCheck) != ListOfInpuSectionCommands.cend();
 }
 
 bool CParserHelpers::IsIllegalProgramHeaderName(const std::string& wordToCheck)

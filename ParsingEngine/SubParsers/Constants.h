@@ -19,6 +19,9 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
         /// @brief Is the word in question a potential function?
         static bool IsFunctionName(const std::string& wordToCheck);
 
+        /// @brief Is the word in question a potential function in "Input Section"
+        static bool IsInputSectionFunction(const std::string& wordToCheck);
+
         /// @brief Is the word in question a potential Assignment Procedure?
         static bool IsAssignmentProcedure(const std::string& wordToCheck);
 
