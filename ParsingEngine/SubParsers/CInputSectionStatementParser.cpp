@@ -1,12 +1,13 @@
 
 #include <vector>
 #include <memory>
-#include "CInputSectionParser.h"
+#include "CInputSectionStatementParser.h"
+#include "CInputSectionFunctionParser.h"
 #include "Constants.h"
 #include "../CMasterParserException.h"
 #include "../Models/Raw/CRawEntry.h"
 #include "../Models/CComment.h"
-#include "../Models/CInputSection.h"
+#include "../Models/CInputSectionStatement.h"
 #include "../Models/CViolation.h"
 
 using namespace VisualLinkerScript::ParsingEngine::SubParsers;
@@ -25,7 +26,7 @@ namespace
     };
 }
 
-std::shared_ptr<CInputSection> CInputSectionParser::TryParse(
+std::shared_ptr<CInputSectionStatement> CInputSectionStatementParser::TryParse(
         CRawFile& linkerScriptFile,
         std::vector<CRawEntry>::const_iterator& iterator,
         std::vector<CRawEntry>::const_iterator& endOfVectorIterator)
@@ -34,6 +35,8 @@ std::shared_ptr<CInputSection> CInputSectionParser::TryParse(
     std::vector<CRawEntry>::const_iterator previousPositionIterator = iterator;
     std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = iterator;
     std::vector<CViolation> violations;
+
+    CInputSectionFunctionParser inputSectionFunctionParser;
 
     auto parserState = ParserState::AwaitingHeader;
     auto doNotAdvance = false;
@@ -47,15 +50,13 @@ std::shared_ptr<CInputSection> CInputSectionParser::TryParse(
     {
         doNotAdvance = false;
         auto resolvedContent = linkerScriptFile.ResolveRawEntry(*localIterator);
-        auto lineChangeDetected = parsingStartIteratorPosition->EndLineNumber() != localIterator->EndLineNumber();
 
-        if (lineChangeDetected)
+        CRawEntry rawEntryPlusOne;
+        std::string resolvedContentPlusOne;
+        if (localIterator + 1 != endOfVectorIterator)
         {
-            // Any line-change would be rended parsing attempt null and void (however, it may be possible to report
-            // back a type of statement)
-            localIterator = previousPositionIterator;
-            parserState = ParserState::ParsingComplete;
-            break;
+            rawEntryPlusOne = *(localIterator + 1);
+            resolvedContentPlusOne = linkerScriptFile.ResolveRawEntry(rawEntryPlusOne);
         }
 
         switch (localIterator->EntryType())
@@ -78,7 +79,9 @@ std::shared_ptr<CInputSection> CInputSectionParser::TryParse(
                         }
 
                         inputSectionHeader = *localIterator;
-                        parserState = ParserState::AwaitingParenthesisOverture;
+                        parserState = (resolvedContentPlusOne == "(") ?
+                                      ParserState::AwaitingParenthesisOverture :
+                                      ParserState::ParsingComplete;
                         break;
                     }
 
@@ -93,12 +96,24 @@ std::shared_ptr<CInputSection> CInputSectionParser::TryParse(
                         {
                             if (CParserHelpers::IsInputSectionFunction(resolvedContent))
                             {
-
+                                auto parsedInputSectionFunction = inputSectionFunctionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
+                                if (parsedInputSectionFunction == nullptr)
+                                {
+                                    violations.emplace_back(CViolation(*localIterator, ViolationCode::InvalidSyntaxInSectionInputFunctionDeclaration));
+                                }
+                                else
+                                {
+                                    parsedContent.emplace_back(parsedInputSectionFunction);
+                                }
                             }
                             else
                             {
                                 violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryNotAllowedInInputSectionDefinition));
                             }
+                        }
+                        else
+                        {
+                            parsedContent.emplace_back()
                         }
                         break;
                     }

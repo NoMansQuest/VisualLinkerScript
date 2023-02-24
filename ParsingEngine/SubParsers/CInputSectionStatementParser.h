@@ -4,13 +4,13 @@
 #include <memory>
 #include "CSubParserBase.h"
 #include "SubParserType.h"
-#include "../Models/CInputSection.h"
+#include "../Models/CInputSectionStatement.h"
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {
     /// @brief Object in charge parsing a Input-Section: Filter(files)
     ///        Example: *[A-Z](.text)  OR  *(.text .bss*)
-    class CInputSectionParser : public CSubParserBase<CInputSection>
+    class CInputSectionStatementParser : public CSubParserBase<CInputSectionStatement>
     {
     public:
         /// @copydoc CSubParserBase::Type()
@@ -20,7 +20,7 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
         }
 
         /// @copydoc CSubParserBase::TryParse()
-        virtual std::shared_ptr<CInputSection> TryParse(
+        virtual std::shared_ptr<CInputSectionStatement> TryParse(
                 CRawFile& linkerScriptFile,
                 std::vector<CRawEntry>::const_iterator& iterator,
                 std::vector<CRawEntry>::const_iterator& endOfVectorIterator) override;

@@ -9,7 +9,7 @@
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {
     /// @brief Object in charge of parsing the "SECTIONS" region inside a linker-script
-    class CSectionsRegionParser : public CScopedRegionParser<SubParserType::SectionsRegionParser, CSectionOutputStatementParser, CSectionsRegion>
+    class CSectionsRegionParser : public CScopedRegionParser<SubParserType::SectionsRegionParser, CSectionOutputCommandParser, CSectionsRegion>
     {
     protected:
         /// @copydoc CScopedRegionParser:GetHeaderName()

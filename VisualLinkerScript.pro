@@ -79,7 +79,7 @@ SOURCES += \
     ParsingEngine/SubParsers/CDefaultParser.cpp \
     ParsingEngine/SubParsers/CExpressionParser.cpp \
     ParsingEngine/SubParsers/CFunctionParser.cpp \
-    ParsingEngine/SubParsers/CInputSectionParser.cpp \
+    ParsingEngine/SubParsers/CInputSectionStatementParser.cpp \
     ParsingEngine/SubParsers/CMemoryRegionContentParser.cpp \
     ParsingEngine/SubParsers/CMemoryStatementAttributeParser.cpp \
     ParsingEngine/SubParsers/CPhdrsRegionContentParser.cpp \
@@ -195,7 +195,9 @@ HEADERS += \
     ParsingEngine/Models/CExpressionNumber.h \
     ParsingEngine/Models/CExpressionOperator.h \
     ParsingEngine/Models/CFunctionCall.h \
-    ParsingEngine/Models/CInputSection.h \
+    ParsingEngine/Models/CInputSectionFunction.h \
+    ParsingEngine/Models/CInputSectionStatement.h \
+    ParsingEngine/Models/CInputSectionTargetSection.h \
     ParsingEngine/Models/CLinkerScriptContentBase.h \
     ParsingEngine/Models/CLinkerScriptFile.h \
     ParsingEngine/Models/CMemoryRegion.h \
@@ -237,7 +239,7 @@ HEADERS += \
     ParsingEngine/SubParsers/CDefaultParser.h \
     ParsingEngine/SubParsers/CExpressionParser.h \
     ParsingEngine/SubParsers/CFunctionParser.h \
-    ParsingEngine/SubParsers/CInputSectionParser.h \
+    ParsingEngine/SubParsers/CInputSectionStatementParser.h \
     ParsingEngine/SubParsers/CMemoryRegionContentParser.h \
     ParsingEngine/SubParsers/CMemoryRegionParser.h \
     ParsingEngine/SubParsers/CMemoryStatementAttributeParser.h \
@@ -417,7 +419,7 @@ HEADERS += \
     ParsingEngine/Models/CExpressionNumber.h \
     ParsingEngine/Models/CExpressionOperator.h \
     ParsingEngine/Models/CFunctionCall.h \
-    ParsingEngine/Models/CInputSection.h \
+    ParsingEngine/Models/CInputSectionStatement.h \
     ParsingEngine/Models/CLinkerScriptContentBase.h \
     ParsingEngine/Models/CLinkerScriptFile.h \
     ParsingEngine/Models/CMemoryRegion.h \
@@ -458,7 +460,7 @@ HEADERS += \
     ParsingEngine/SubParsers/CDefaultParser.h \
     ParsingEngine/SubParsers/CExpressionParser.h \
     ParsingEngine/SubParsers/CFunctionParser.h \
-    ParsingEngine/SubParsers/CInputSectionParser.h \
+    ParsingEngine/SubParsers/CInputSectionStatementParser.h \
     ParsingEngine/SubParsers/CMemoryRegionContentParser.h \
     ParsingEngine/SubParsers/CMemoryRegionParser.h \
     ParsingEngine/SubParsers/CMemoryStatementAttributeParser.h \

@@ -3,13 +3,13 @@
 
 #include "CSubParserBase.h"
 #include "SubParserType.h"
-#include "../Models/CFunctionCall.h"
+#include "../Models/CInputSectionFunction.h"
 #include <memory>
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {
     /// @brief Object in charge parsing a full function: <NAME>(<EXPRESSION>)
-    class CFunctionParser : public CSubParserBase<CFunctionCall>
+    class CInputSectionFunctionParser : public CSubParserBase<CInputSectionFunction>
     {
     public:
         /// @copydoc CSubParserBase::Type()
@@ -19,11 +19,11 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
         }
 
         /// @copydoc CSubParserBase::TryParse()
-        virtual std::shared_ptr<CFunctionCall> TryParse(
+        virtual std::shared_ptr<CInputSectionFunction> TryParse(
                 CRawFile& linkerScriptFile,
                 std::vector<CRawEntry>::const_iterator& iterator,
                 std::vector<CRawEntry>::const_iterator& endOfVectorIterator) override;
     };
 }
 
-#endif // CINPUTSECTIONFUNCTIONPARSER_H
+#endif
