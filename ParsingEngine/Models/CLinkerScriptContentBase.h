@@ -15,7 +15,8 @@ namespace VisualLinkerScript::ParsingEngine::Models
         ProcedureCall,
         AssignmentStatement,
         Expression,
-        EnclosedExpression,
+        ArithmeticOrLogicalOperator,
+        EnclosedExpression,        
         PhdrsRegion,
         PhdrsStatement,
         ParameterSeparator,
@@ -30,13 +31,15 @@ namespace VisualLinkerScript::ParsingEngine::Models
         SectionOutputToRegion,
         SectionsOverlayStatement,
         SectionOutputFillExpression,
-        SectionOutputPhdr,
-        InputSection,
+        SectionOutputPhdr,              // Example: :phdr
+        InputSectionTargetSection,      // Example: *data.*(... <InputSectionTargetSection> ... )
+        InputSection,                   // Example: *data.*(... target-Sections ... )
         VersionsRegion,        
         VersionNode,
         VersionScope,
         VersionScopeEntry,
         PrimarySymbol,
+        Number,
         SecondarySymbol
     };
 

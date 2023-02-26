@@ -83,7 +83,6 @@ SOURCES += \
     ParsingEngine/SubParsers/CMemoryRegionContentParser.cpp \
     ParsingEngine/SubParsers/CMemoryStatementAttributeParser.cpp \
     ParsingEngine/SubParsers/CPhdrsRegionContentParser.cpp \
-    ParsingEngine/SubParsers/CSectionOutputCommandContentParser.cpp \
     ParsingEngine/SubParsers/CSectionOutputCommandParser.cpp \
     ParsingEngine/SubParsers/CSectionOutputTypeParser.cpp \
     ParsingEngine/SubParsers/CSectionsRegionOverlayParser.cpp \
@@ -212,6 +211,7 @@ HEADERS += \
     ParsingEngine/Models/CSectionOutputCommand.h \
     ParsingEngine/Models/CSectionOutputFillExpression.h \
     ParsingEngine/Models/CSectionOutputPhdr.h \
+    ParsingEngine/Models/CSectionOutputSpecialKeyword.h \
     ParsingEngine/Models/CSectionOutputToVmaRegion.h \
     ParsingEngine/Models/CSectionOutputType.h \
     ParsingEngine/Models/CSectionOverlayStatement.h \
@@ -247,7 +247,6 @@ HEADERS += \
     ParsingEngine/SubParsers/CPhdrsRegionParser.h \
     ParsingEngine/SubParsers/CScopedRegionParser.h \
     ParsingEngine/SubParsers/CScopedRegionParser.tpp \
-    ParsingEngine/SubParsers/CSectionOutputCommandContentParser.h \
     ParsingEngine/SubParsers/CSectionOutputCommandParser.h \
     ParsingEngine/SubParsers/CSectionOutputTypeParser.h \
     ParsingEngine/SubParsers/CSectionsRegionOverlayParser.h \
@@ -468,7 +467,6 @@ HEADERS += \
     ParsingEngine/SubParsers/CPhdrsRegionParser.h \
     ParsingEngine/SubParsers/CScopedRegionParser.h \
     ParsingEngine/SubParsers/CScopedRegionParser.tpp \
-    ParsingEngine/SubParsers/CSectionOutputCommandContentParser.h \
     ParsingEngine/SubParsers/CSectionOutputCommandParser.h \
     ParsingEngine/SubParsers/CSectionOutputTypeParser.h \
     ParsingEngine/SubParsers/CSectionsRegionOverlayParser.h \

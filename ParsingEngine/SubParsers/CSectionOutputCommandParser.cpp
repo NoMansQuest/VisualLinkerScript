@@ -2,7 +2,6 @@
 #include <memory>
 #include <string>
 #include "CSectionOutputCommandParser.h"
-#include "CSectionOutputCommandContentParser.h"
 #include "CExpressionParser.h"
 #include "CInputSectionStatementParser.h"
 #include "CFunctionParser.h"
@@ -48,8 +47,10 @@ namespace
  *   [SUBALIGN(subsection_align)]
  *   [constraint]
  *   {
- *     output-section-command
- *     output-section-command
+ *       - a symbol assignment (refer to Section 4.5 Assigning Values to Symbols)
+ *       - an input section description (refer to Section 4.6.4 Input Section Description)
+ *       - data values to include directly (refer to Section 4.6.5 Output Section Data)
+ *       - a special output section keyword (refer to Section 4.6.6 Output Section Keywords)
  *     …
  *   } [>region] [AT>lma_region] [:phdr :phdr …] [=fillexp] [,]
  *
@@ -65,11 +66,10 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
     std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = iterator;    
     std::vector<CViolation> violations;
 
-    CFunctionParser functionParser;
     CExpressionParser expressionParser(ExpressionParserType::NormalParser, false);
-    CSectionOutputCommandContentParser contentParser;
-    CAssignmentParser assignmentParser;
-    CInputSectionParser inputSectionParser;
+    CFunctionParser functionParser;                             // Example: FILL(0x00000)
+    CAssignmentParser assignmentParser;                         // Example: '. = ALIGN(4);'
+    CInputSectionStatementParser inputSectionStatementParser;   // Example: 'foo.o (.input2)'
 
     auto parserState = ParserState::AwaitingHeader;
     auto doNotAdvance = false;
@@ -115,7 +115,7 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
         {
             case RawEntryType::Comment:
             {
-                std::shared_ptr<CLinkerScriptContentBase> commentObject(new CComment(std::vector<CRawEntry>{*localIterator}, {}));
+                std::shared_ptr<CLinkerScriptContentBase> commentObject(new CComment({*localIterator}, {}));
                 switch (parserState)
                 {
                     case ParserState::AwaitingHeader:
@@ -135,6 +135,7 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
                     case ParserState::AwaitingEndOfParse:
                     {
                         innerContent.emplace_back(commentObject);
+                        break;
                     }
 
                     default:
@@ -142,8 +143,6 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
                                     MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
                                     "ParserState invalid in CSectionOutpuStatementParser");
                 }
-
-                innerContent.emplace_back(std::shared_ptr<CLinkerScriptContentBase>(new CComment(std::vector<CRawEntry>{*localIterator}, {})));
                 break;
             }
 
@@ -194,8 +193,39 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
                     }
 
                     case ParserState::AwaitingBracketClosure:
-                    {
-                        // We need to parse internal content
+                    {                       
+                        if (CParserHelpers::IsInputSectionSpecialFunctionName(resolvedContent))
+                        {
+                            // Such as 'CREATE_OBJECT_SYMBOLS'
+                            innerContent.emplace_back();
+                        }
+                        else if (CParserHelpers::IsOutputSectionDataFunctionName(resolvedContent))
+                        {
+                            // Such as "BYTE(1)", "ALIGN(4)", etc.
+                            innerContent.emplace_back();
+                        }
+                        else
+                        {
+                            // Is this an "Assignment"?
+                            auto parsedAssignment = assignmentParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
+                            if (parsedAssignment == nullptr)
+                            {
+                                // Is this an InputSection definition?
+                                auto inputSectionStatement = inputSectionStatementParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
+                                if (inputSectionStatement == nullptr)
+                                {
+                                    violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
+                                }
+                                else
+                                {
+                                    innerContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(inputSectionStatement));
+                                }
+                            }
+                            else
+                            {
+                                innerContent.emplace_back( std::dynamic_pointer_cast<CLinkerScriptContentBase>(parsedAssignment));
+                            }
+                        }
                         break;
                     }
 
@@ -232,7 +262,6 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
                             localIterator = previousPositionIterator;
                             parserState = ParserState::ParsingComplete;
                         }
-
                         break;
                     }
 
@@ -319,13 +348,12 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
                         {
                             // This could be 'At VMA' definition
                             if (rawEntryPlusOne.EntryType() == RawEntryType::Number)
-                            {
-                                CSectionOutputFillExpression fillExpression(*localIterator,
-                                                                            rawEntryPlusOne,
-                                                                            {*localIterator, rawEntryPlusOne},
-                                                                            {});
-
-                                programHeaders.emplace_back(fillExpression);
+                            {                                
+                                fillExpression =  std::shared_ptr<CSectionOutputFillExpression>(
+                                            new CSectionOutputFillExpression(*localIterator,
+                                                                             rawEntryPlusOne,
+                                                                             {*localIterator, rawEntryPlusOne},
+                                                                             {}));
                                 localIterator = localIteratorPlusOne;
                             }
                             else
@@ -445,18 +473,18 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
 
     iterator = localIterator;
 
-    return std::shared_ptr<CSectionOutputStatement>(
-                new CSectionOutputStatement(sectionOutputNameEntry,
-                                            std::move(preColonContent),
-                                            std::move(postColonContent)
-                                            colonEntry,
-                                            openingBracketEntry,
-                                            closingBracketEntry,
-                                            toVmaRegion,
-                                            atLmaRegion,
-                                            std::move(programHeaders),
-                                            fillExpression,
-                                            std::move(innerContent),
-                                            std::move(rawEntries),
-                                            std::move(violations)));
+    return std::shared_ptr<CSectionOutputCommand>(
+                new CSectionOutputCommand(sectionOutputNameEntry,
+                                          std::move(preColonContent),
+                                          std::move(postColonContent),
+                                          colonEntry,
+                                          bracketOpenEntry,
+                                          bracketCloseEntry,
+                                          toVmaRegion,
+                                          atLmaRegion,
+                                          std::move(programHeaders),
+                                          fillExpression,
+                                          std::move(innerContent),
+                                          std::move(rawEntries),
+                                          std::move(violations)));
 }

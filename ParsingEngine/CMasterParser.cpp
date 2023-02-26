@@ -23,13 +23,12 @@ using namespace VisualLinkerScript::ParsingEngine::SubParsers;
 
 CLinkerScriptFile&& CMasterParser::ProcessLinkerScriptFile(std::shared_ptr<CRawFile> rawFile)
 {
-    CAssignmentParser assignmentParser();
-    CPhdrsRegionParser phdrsRegionParser();
-    CMemoryParserRegion memoryParserRegion();
-    CSectionsRegionParser sectionsRegionParser();
-    CVersionRegionParser versionRegionParser();
-    CDefaultParser defaultParser();
-
+    CAssignmentParser assignmentParser;
+    CPhdrsRegionParser phdrsRegionParser;
+    CMemoryParserRegion memoryParserRegion;
+    CSectionsRegionParser sectionsRegionParser;
+    CVersionRegionParser versionRegionParser;
+    CDefaultParser defaultParser;
 
     std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
     std::vector<CViolation> violations;

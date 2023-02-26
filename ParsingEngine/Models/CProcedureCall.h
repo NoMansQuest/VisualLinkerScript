@@ -26,7 +26,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
                                 CAssignmentStatement&& assignmentStatement,
                                 std::vector<CRawEntry>&& rawElements, 
                                 std::vector<CViolation>&& violations)
-            : CLinkerScriptContentBase(rawElements, violations),
+            : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
               m_procedureName(procedureName),
               m_openningParenthesis(openningParenthesis),
               m_closingParenthesis(closingParenthesis),

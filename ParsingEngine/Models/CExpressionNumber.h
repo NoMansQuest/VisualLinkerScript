@@ -7,7 +7,7 @@
 
 namespace VisualLinkerScript::ParsingEngine::Models
 {
-    /// @brief Represents a Number which is used in expression
+    /// @brief Represents a Number which is used in an expression
     class CExpressionNumber : public CLinkerScriptContentBase
     {
     private:
@@ -25,7 +25,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
         /// @brief Reports back the type of this object.
         ContentType Type() override
         {
-            return ContentType::SecondarySymbol;
+            return ContentType::Number;
         }
 
         /// @brief Gets the number Raw-Entry

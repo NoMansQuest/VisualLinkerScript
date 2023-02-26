@@ -3,11 +3,11 @@
 
 #include <vector>
 #include "CLinkerScriptContentBase.h"
-#include "CExpression.h"
 
 namespace VisualLinkerScript::ParsingEngine::Models
 {
-    /// @brief Represents a procedural call
+    /// @brief Represents a function call
+    /// @brief: Example: ALIGN(4)
     class CFunctionCall : public CLinkerScriptContentBase
     {   
     private:

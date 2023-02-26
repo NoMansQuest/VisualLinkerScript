@@ -185,7 +185,6 @@ std::shared_ptr<CSectionOutputType> CSectionOutputTypeParser::TryParse(
                 new CSectionOutputType(outputSectionTypeEntry,
                                        parenthesisOpen,
                                        parenthesisClose,
-                                       std::move(parsedContent),
                                        std::move(rawEntries),
                                        std::move(violations)));
 }

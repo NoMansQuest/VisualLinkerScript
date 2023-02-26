@@ -111,10 +111,6 @@ std::shared_ptr<CInputSectionStatement> CInputSectionStatementParser::TryParse(
                                 violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryNotAllowedInInputSectionDefinition));
                             }
                         }
-                        else
-                        {
-                            parsedContent.emplace_back()
-                        }
                         break;
                     }
 
@@ -208,14 +204,11 @@ std::shared_ptr<CInputSectionStatement> CInputSectionStatementParser::TryParse(
 
     iterator = localIterator;
 
-    return std::shared_ptr<CMemoryStatementAttribute>(
-                new CMemoryStatementAttribute(parenthesisOpen,
-                                              parenthesisClose,
-                                              readOnlySection,
-                                              readWriteSection,
-                                              allocatableSection,
-                                              executableSection,
-                                              initializedSection,
-                                              std::move(rawEntries),
-                                              std::move(violations)));
+    return std::shared_ptr<CInputSectionStatement>(
+                new CInputSectionStatement(inputSectionHeader,
+                                           parenthesisOpen,
+                                           parenthesisClose,
+                                           std::move(parsedContent),
+                                           std::move(rawEntries),
+                                           std::move(violations)));
 }

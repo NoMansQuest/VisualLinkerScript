@@ -6,7 +6,8 @@
 
 namespace VisualLinkerScript::ParsingEngine::Models
 {
-    /// @brief Represents a procedural call
+    /// @brief Represents a Input-Section declaration
+    /// @brief Example: *(.data)
     class CInputSectionStatement : public CLinkerScriptContentBase
     {
     private:

@@ -7,14 +7,14 @@
 
 namespace VisualLinkerScript::ParsingEngine::Models
 {
-    /// @brief Represents a operator which is used in expression
+    /// @brief Represents a evaluative and arithmetic operators which is used in expressions.
     class CExpressionOperator : public CLinkerScriptContentBase
     {
     private:
         CRawEntry m_expressionOperator;
 
     public:
-        /// @brief Default constructor, accessible to inheritors only
+        /// @brief Default constructor.
         explicit CExpressionOperator(CRawEntry expressionOperator,
                                      std::vector<CRawEntry>&& rawElements,
                                      std::vector<CViolation>&& violations)
@@ -25,7 +25,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
         /// @brief Reports back the type of this object.
         ContentType Type() override
         {
-            return ContentType::SecondarySymbol;
+            return ContentType::ArithmeticOrLogicalOperator;
         }
 
         /// @brief Gets the operator itself

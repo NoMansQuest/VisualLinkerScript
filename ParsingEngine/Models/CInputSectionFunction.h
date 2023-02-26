@@ -6,7 +6,8 @@
 
 namespace VisualLinkerScript::ParsingEngine::Models
 {
-    /// @brief Represents a procedural call
+    /// @brief Represents an input-section function call where paramrers aren't separated with comma.
+    /// @brief Example: the 'EXCLUDE_FILE' call in the statement '*(EXCLUDE_FILE (*crtend.o *otherfile.o) .ctors)'
     class CInputSectionFunction : public CLinkerScriptContentBase
     {
     private:

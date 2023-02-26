@@ -100,6 +100,10 @@ namespace
         "FILL",
     };
 
+    std::vector<std::string> ListOfInputSectionSpecialFunctionNames = {
+        "CREATE_OBJECT_SYMBOLS"
+    };
+
     std::vector<std::string> ListOfOutputSectionTypes = {
         "NOLOAD",
         "DSECT",
@@ -188,6 +192,7 @@ bool CParserHelpers::IsReservedWord(const std::string& wordToCheck)
     auto concernedLists =
     {        
         ListOfScopeNames,
+        ListOfInputSectionSpecialFunctionNames,
         ListOfInpuSectionCommands,
         ListOfMemorySectionsReserveWords,
         ListOfOutputSectionTypes,
@@ -213,11 +218,18 @@ bool CParserHelpers::IsReservedWord(const std::string& wordToCheck)
     return false;
 }
 
-bool CParserHelpers::IsOutputSectionCommand(const std::string& wordToCheck)
+bool CParserHelpers::IsOutputSectionDataFunctionName(const std::string& wordToCheck)
 {
     return std::find(ListOfOutputSectionCommandNames.cbegin(),
                      ListOfOutputSectionCommandNames.cend(),
                      wordToCheck) != ListOfOutputSectionCommandNames.cend();
+}
+
+bool CParserHelpers::IsInputSectionSpecialFunctionName(const std::string& wordToCheck)
+{
+    return std::find(ListOfInputSectionSpecialFunctionNames.cbegin(),
+                     ListOfInputSectionSpecialFunctionNames.cend(),
+                     wordToCheck) != ListOfInputSectionSpecialFunctionNames.cend();
 }
 
 bool CParserHelpers::IsInputSectionFunction(const std::string& wordToCheck)
