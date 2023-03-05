@@ -2,21 +2,28 @@
 #define CSECTIONS_REGION_PARSER_H__
 
 #include "SubParserType.h"
-#include "CSectionOutputCommandParser.h"
-#include "CScopedRegionParser.h"
+#include "CSubParserBase.h"
 #include "../Models/CSectionsRegion.h"
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {
+    using namespace VisualLinkerScript::ParsingEngine::Models;
+
     /// @brief Object in charge of parsing the "SECTIONS" region inside a linker-script
-    class CSectionsRegionParser : public CScopedRegionParser<SubParserType::SectionsRegionParser, CSectionOutputCommandParser, CSectionsRegion>
+    class CSectionsRegionParser: public CSubParserBase<CSectionsRegion>
     {
-    protected:
-        /// @copydoc CScopedRegionParser:GetHeaderName()
-        virtual std::string GetHeaderName() override
+    public:
+        /// @copydoc CSubParserBase::Type()
+        virtual SubParserType Type() override
         {
-            return "SECTIONS";
+            return SubParserType::SectionsRegionParser;
         }
+
+        /// @copydoc CSubParserBase::TryParse(std::vector<CRawEntry>::const_iterator&)
+        virtual std::shared_ptr<CSectionsRegion> TryParse(
+                CRawFile& linkerScriptFile,
+                std::vector<CRawEntry>::const_iterator& iterator,
+                std::vector<CRawEntry>::const_iterator& endOfVectorIterator) override;
     };
 }
 

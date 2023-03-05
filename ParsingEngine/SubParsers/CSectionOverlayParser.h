@@ -3,13 +3,13 @@
 
 #include "CSubParserBase.h"
 #include "SubParserType.h"
-#include "../Models/CSectionOverlayStatement.h"
+#include "../Models/CSectionOverlayCommand.h"
 #include <memory>
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {    
     /// @brief Object in charge of parsing the "OVERLAY" entries found under "SECTIONS" region inside a linker-script
-    class CSectionsRegionOverlayParser : public CSubParserBase<CSectionOverlayStatement>
+    class CSectionOverlayParser : public CSubParserBase<CSectionOverlayCommand>
     {
     public:
         /// @copydoc CSubParserBase::Type()
@@ -19,7 +19,7 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
         }
 
         /// @copydoc CSubParserBase::TryParse(std::vector<CRawEntry>::const_iterator&)
-        virtual std::shared_ptr<CSectionOverlayStatement> TryParse(
+        virtual std::shared_ptr<CSectionOverlayCommand> TryParse(
                 CRawFile& linkerScriptFile,
                 std::vector<CRawEntry>::const_iterator& iterator,
                 std::vector<CRawEntry>::const_iterator& endOfVectorIterator) override;

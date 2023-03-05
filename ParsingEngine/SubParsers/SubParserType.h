@@ -19,6 +19,7 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
         SectionsRegionOverlayParser,
         SectionsOutputCommandParser,
         SectionsOutputCommandContentParser,
+        SectionsOutputOverlayParser,
         SectionsRegionParser,
         InputSectionParser,
         InputSectionFunctionParser,

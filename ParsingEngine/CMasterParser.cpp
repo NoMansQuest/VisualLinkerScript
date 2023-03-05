@@ -9,7 +9,7 @@
 #include "SubParsers/CSectionsRegionParser.h"
 #include "SubParsers/CSubParserBase.h"
 #include "SubParsers/CVersionRegionParser.h"
-#include "SubParsers/CSectionsRegionOverlayParser.h"
+#include "SubParsers/CSectionOverlayParser.h"
 
 #include "Models/CLinkerScriptContentBase.h"
 #include "Models/Raw/RawEntryType.h"

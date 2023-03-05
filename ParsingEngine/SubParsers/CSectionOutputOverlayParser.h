@@ -1,5 +1,5 @@
-#ifndef CSECTIONS_REGION_CONTENT_PARSER_H__
-#define CSECTIONS_REGION_CONTENT_PARSER_H__
+#ifndef CSECTION_OUTPUT_OVERLAYS_PARSER_H__
+#define CSECTION_OUTPUT_OVERLAYS_PARSER_H__
 
 #include "CSubParserBase.h"
 #include "SubParserType.h"
@@ -11,14 +11,14 @@ using namespace VisualLinkerScript::ParsingEngine::Models::Raw;
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {
-    /// @brief Object in charge of parsing the content of the "SECTIONS" region inside a linker-script
-    class CSectionOutputCommandParser : public CSubParserBase<CSectionOutputCommand>
+    /// @brief Object in charge of parsing the "OVERLAY" section command
+    class CSectionOutputOverlayParser : public CSubParserBase<CSectionOutputCommand>
     {
     public:
         /// @copydoc CSubParserBase::Type()
         virtual SubParserType Type() override
         {
-            return SubParserType::SectionsOutputCommandParser;
+            return SubParserType::SectionsOutputOverlayParser;
         }
 
         /// @copydoc CSubParserBase::TryParse

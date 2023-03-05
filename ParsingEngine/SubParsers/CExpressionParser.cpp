@@ -199,17 +199,9 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                         {
                             if (resolvedContent == ":")
                             {
-                                violations.emplace_back(CViolation(*localIterator, ViolationCode::TernaryExpressionMissingFirstPart));
-                                ternaryParserState = TernaryParserState::AwaitingThenExpression; // We circle back, as more ternary expressions may appear
-                                auto parserPostColonExpression = ternaryElseExpressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
-                                if (parserPostColonExpression == nullptr)
-                                {
-                                    violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
-                                }
-                                else
-                                {
-                                    parsedContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(parserPostColonExpression));
-                                }
+                                // We terminate here. This colon could be related to something else...
+                                parserState = ParserState::ParsingComplete;
+                                localIterator = previousPositionIterator;
                             }
                             else
                             {

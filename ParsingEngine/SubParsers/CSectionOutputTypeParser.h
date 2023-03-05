@@ -8,6 +8,7 @@
 #include "../Models/CSectionOutputType.h"
 
 using namespace VisualLinkerScript::ParsingEngine::Models::Raw;
+using namespace VisualLinkerScript::ParsingEngine::Models;
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {

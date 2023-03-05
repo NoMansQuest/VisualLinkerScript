@@ -68,6 +68,15 @@ namespace VisualLinkerScript::ParsingEngine::Models
         VmaRegionNameCannotBeAReservedWord,
         EntryNotAllowedInInputSectionDefinition,
         InvalidSyntaxInSectionInputFunctionDeclaration,
+        OperatorsNotAllowedWithinInputSectionFunctions,
+        MissingParenthesisOvertureForFunction,
+        InputSectionFunctionParsingFailed,
+
+        // OVERLAYS:
+        NotAllowedInOverlayCommand,
+        NoCrossRefsAlreadyDeclared,
+        AtAddressAlreadyDeclared,
+        StartAddressExpressionAlreadyDeclared,
 
         // General violations:
         FunctionMissingDefinitionOrInvalidSymbolName,
