@@ -58,6 +58,9 @@ namespace VisualLinkerScript::ParsingEngine::Models
         RValueExpressionParsingFailed,
         MissingLValue,
 
+        // Assignment procedure parsing violations:
+        WasExpectingSemicolonHere,
+
         // Section Output Content
         OnlyOneSectionOutputTypeIsAllowed,
         SectionOutputNameCannotBeAReservedKeyword,

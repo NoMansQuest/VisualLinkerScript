@@ -76,6 +76,7 @@ SOURCES += \
     ParsingEngine/CMasterParser.cpp \
     ParsingEngine/CPreliminaryParser.cpp \
     ParsingEngine/SubParsers/CAssignmentParser.cpp \
+    ParsingEngine/SubParsers/CAssignmentProcedureParser.cpp \
     ParsingEngine/SubParsers/CDefaultParser.cpp \
     ParsingEngine/SubParsers/CExpressionParser.cpp \
     ParsingEngine/SubParsers/CFunctionParser.cpp \
@@ -189,6 +190,7 @@ HEADERS += \
     ParsingEngine/CMasterParserException.h \
     ParsingEngine/CPreliminaryParser.h \
     ParsingEngine/CPreliminaryParsingException.h \
+    ParsingEngine/Models/CAssignmentProcedureStatement.h \
     ParsingEngine/Models/CAssignmentStatement.h \
     ParsingEngine/Models/CComment.h \
     ParsingEngine/Models/CExpression.h \
@@ -237,6 +239,7 @@ HEADERS += \
     ParsingEngine/Models/Raw/CRawFile.h \
     ParsingEngine/Models/Raw/RawEntryType.h \
     ParsingEngine/SubParsers/CAssignmentParser.h \
+    ParsingEngine/SubParsers/CAssignmentProcedureParser.h \
     ParsingEngine/SubParsers/CCommandParser.h \
     ParsingEngine/SubParsers/CDefaultParser.h \
     ParsingEngine/SubParsers/CExpressionParser.h \

@@ -16,13 +16,13 @@ namespace VisualLinkerScript::ParsingEngine::Models
         CRawEntry m_assignmentOperator;
         CRawEntry m_lValueEntry;
         std::vector<std::shared_ptr<CLinkerScriptContentBase>> m_parsedContent;
-        CRawEntry m_deliminterOperator;
+        CRawEntry m_semicolonEntry;
 
     public:
         /// @brief Detailed Constructor
         explicit CAssignmentStatement(CRawEntry lValueEntry,
                                       CRawEntry assignmentOperator,
-                                      CRawEntry semicolonOperator,
+                                      CRawEntry semicolonEntry,
                                       std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& parsedContent,
                                       std::vector<CRawEntry>&& rawElements, 
                                       std::vector<CViolation>&& violations)
@@ -30,7 +30,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
               m_assignmentOperator(std::move(assignmentOperator)),
               m_lValueEntry(std::move(lValueEntry)),
               m_parsedContent(std::move(parsedContent)),
-              m_deliminterOperator(semicolonOperator)
+              m_semicolonEntry(semicolonEntry)
         {}
 
         /// @brief Reports back the type of this object.        
@@ -57,10 +57,10 @@ namespace VisualLinkerScript::ParsingEngine::Models
             return this->m_parsedContent;
         }
 
-        /// @brief Gets the "SemicolonOperator"
-        const CRawEntry& DelimiterOperator()
+        /// @brief Gets the "SemicolonEntry"
+        const CRawEntry& SemicolonEntry()
         {
-            return this->m_deliminterOperator;
+            return this->m_semicolonEntry;
         }
     };
 }

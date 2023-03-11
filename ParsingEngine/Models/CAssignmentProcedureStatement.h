@@ -3,8 +3,9 @@
 
 #include <vector>
 #include "CLinkerScriptContentBase.h"
-#include "CExpression.h"
+#include "CAssignmentStatement.h"
 #include "../Models/Raw/CRawEntry.h"
+
 
 namespace VisualLinkerScript::ParsingEngine::Models
 {
@@ -13,32 +14,27 @@ namespace VisualLinkerScript::ParsingEngine::Models
     class CAssignmentProcedureStatement : public CLinkerScriptContentBase
     { 
     private:
-        CRawEntry m_procedureName;
+        CRawEntry m_procedureNameEntry;
         CRawEntry m_parenthesisOpenEntry;
         CRawEntry m_parenthesisCloseEntry;
-        CRawEntry m_assignmentOperator;
-        CRawEntry m_lValueEntry;
-        std::vector<std::shared_ptr<CLinkerScriptContentBase>> m_parsedContent;
+        std::shared_ptr<CAssignmentStatement> m_assignmentStatement;
         CRawEntry m_deliminterOperator;
 
     public:
         /// @brief Detailed Constructor
-        explicit CAssignmentStatement(CRawEntry procedureName,
-                                      CRawEntry parenthesisOpenEntry,
-                                      CRawEntry parenthesisCloseEntry,  
-                                      CRawEntry lValueEntry,
-                                      CRawEntry assignmentOperator,
-                                      CRawEntry semicolonOperator,
-                                      std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& parsedContent,
-                                      std::vector<CRawEntry>&& rawElements, 
-                                      std::vector<CViolation>&& violations)
+        explicit CAssignmentProcedureStatement(CRawEntry procedureNameEntry,
+                                               CRawEntry parenthesisOpenEntry,
+                                               CRawEntry parenthesisCloseEntry,
+                                               std::shared_ptr<CAssignmentStatement> assignmentStatement,
+                                               CRawEntry semicolonOperator,
+                                               std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& parsedContent,
+                                               std::vector<CRawEntry>&& rawElements,
+                                               std::vector<CViolation>&& violations)
             : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
-              m_procedureName(procedureName),
+              m_procedureNameEntry(procedureNameEntry),
               m_parenthesisOpenEntry(parenthesisOpenEntry),
-              m_parenthesisCloseEntry(parenthesisClosEntry),
-              m_assignmentOperator(std::move(assignmentOperator)),
-              m_lValueEntry(std::move(lValueEntry)),
-              m_parsedContent(std::move(parsedContent)),
+              m_parenthesisCloseEntry(parenthesisCloseEntry),
+              m_assignmentStatement(assignmentStatement),
               m_deliminterOperator(semicolonOperator)
         {}
 
@@ -66,23 +62,11 @@ namespace VisualLinkerScript::ParsingEngine::Models
             return this->m_parenthesisOpenEntry;
         } 
 
-        /// @brief Gets the "AssignmentOperator"
-        const CRawEntry AssignmentOperator()
+        /// @brief Gets the "AssignmentStatement"
+        std::shared_ptr<CAssignmentStatement> AssignmentStatement()
         {
-            return this->m_assignmentOperator;
+            return this->m_assignmentStatement;
         }        
-
-        /// @brief Gets the "LValue" entry
-        const CRawEntry LValueEntry()
-        {
-            return this->m_lValueEntry;
-        }
-        
-        /// @brief Gets the "RValueComposition"
-        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& ParsedContent()
-        {
-            return this->m_parsedContent;
-        }
 
         /// @brief Gets the "SemicolonOperator"
         const CRawEntry& DelimiterOperator()

@@ -9,7 +9,7 @@
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {
     /// @brief Object in charge of parsing procedural symbol assignment (i.e. PROVIDE(a = b + c);...) inside a linker-script
-    class CAssignmentProcedureParser : public CSubParserBase<CAssignmentStatement>
+    class CAssignmentProcedureParser : public CSubParserBase<CAssignmentProcedureStatement>
     {
     public:
         /// @copydoc CSubParserBase::Type()

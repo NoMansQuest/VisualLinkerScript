@@ -1,10 +1,11 @@
 #include "CAssignmentProcedureParser.h"
-#include "CExpressionParser.h"
+#include "CAssignmentParser.h"
 #include "Constants.h"
 #include <vector>
 #include <memory>
 #include "../CMasterParserException.h"
 #include "../Models/CComment.h"
+#include "../Models/CAssignmentStatement.h"
 #include "../Models/Raw/CRawEntry.h"
 #include "../Models/CAssignmentProcedureStatement.h"
 #include "../Models/CViolation.h"
@@ -18,35 +19,36 @@ namespace
     enum class ParserState
     {
         AwaitingProcedureName,
-        AwaitingParenthesisOpen,
-        AwaitingLValue,
-        AwaitingAssignmentSymbol,
-        AwaitingRValueExpression,        
+        AwaitingParenthesisOverture,
+        AwaitingParenthesisClosure,
         AwaitingSemicolon,
         ParsingComplete
     };
 }
 
-std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
+std::shared_ptr<CAssignmentProcedureStatement> CAssignmentProcedureParser::TryParse(
         CRawFile& linkerScriptFile,
         std::vector<CRawEntry>::const_iterator& iterator,
         std::vector<CRawEntry>::const_iterator& endOfVectorIterator)
 {
     std::vector<CRawEntry>::const_iterator localIterator = iterator;
+    std::vector<CRawEntry>::const_iterator previousPositionIterator = iterator;
     std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = iterator;
     std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
     std::vector<CViolation> violations;
 
-    auto parserState = ParserState::AwaitingLValue;
+    auto parserState = ParserState::AwaitingProcedureName;
     auto doNotAdvance = false;
     auto joiningOperatorsObserved = false;
 
-    CRawEntry lValueSymbol;
-    CRawEntry assignmentSymbol;
+    CRawEntry proceduerNameEntry;
+    CRawEntry parenthesisOpenEntry;
+    CRawEntry parenthesisCloseEntry;
+    CRawEntry lValueSymbol;    
     CRawEntry semicolonOperatorEntry;
+    std::shared_ptr<CAssignmentStatement> assignmentStatement;
 
-    std::shared_ptr<CExpression> parsedRValue;
-    CExpressionParser rValueExpressionParser(ExpressionParserType::NormalParser, false);
+    CAssignmentParser assignmentParser(true);
 
     if (localIterator->EntryType() != RawEntryType::Word)
     {
@@ -57,7 +59,11 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
     {
         doNotAdvance = false;
+        auto localIteratorPlusOne = localIterator + 1;
+        auto nextEntryExists = (localIteratorPlusOne != endOfVectorIterator);
+
         auto resolvedContent = linkerScriptFile.ResolveRawEntry(*localIterator);
+        auto resolvedContentPlusOne = nextEntryExists ? linkerScriptFile.ResolveRawEntry(*localIteratorPlusOne) : "";
 
         switch (localIterator->EntryType())
         {
@@ -69,65 +75,77 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
 
             case RawEntryType::Word:
             {
-
-            }
-            case RawEntryType::ParenthesisOpen:
-            {
                 switch (parserState)
                 {
                     case ParserState::AwaitingProcedureName:
-                    case ParserState::AwaitingParenthesisOpen:
-                    case ParserState::AwaitingLValue:
                     {
-                        if (localIterator->EntryType() == RawEntryType::Word)
-                        {
-                            lValueSymbol = *localIterator;
-                            parserState = ParserState::AwaitingAssignmentSymbol;
-                            break;
-                        }
-                        else
+                        if (!CParserHelpers::IsAssignmentProcedure(resolvedContent))
                         {
                             return nullptr;
                         }
+
+                        proceduerNameEntry = *localIterator;
+                        parserState = ParserState::AwaitingParenthesisOverture;
+                        break;
                     }
 
-                    case ParserState::AwaitingAssignmentSymbol:
+                    case ParserState::AwaitingParenthesisOverture:
                     {
                         return nullptr;
                     }
 
-                    case ParserState::AwaitingRValueExpression:
+
+                    case ParserState::AwaitingParenthesisClosure:
                     {
-                        parsedRValue = rValueExpressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
-                        if (parsedRValue == nullptr)
-                        {
-                            violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
-                        }
-                        else
-                        {
-                            parsedContent.emplace_back(parsedRValue);
-                        }
+                        violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
+                        break;
+                    }
+
+                    case ParserState::AwaitingSemicolon:
+                    {
+                        violations.emplace_back(CViolation(*localIterator, ViolationCode::WasExpectingSemicolonHere));
                         break;
                     }
 
                     default:
                         throw CMasterParsingException(
                                     MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
-                                    "ParserState invalid in CAssignmentParser");
+                                    "ParserState invalid in CAssignmentProcedureParser");
                 }
+                break;
             }
 
-            case RawEntryType::ParenthesisClose:
+            case RawEntryType::ParenthesisOpen:
             {
                 switch (parserState)
                 {
-                    case ParserState::AwaitingLValue:
+                    case ParserState::AwaitingProcedureName:
                     {
-                        return nullptr;
+                        return nullptr; // Grounds to abort.
                     }
 
-                    case ParserState::AwaitingAssignmentSymbol:
-                    case ParserState::AwaitingRValueExpression:
+                    case ParserState::AwaitingParenthesisOverture:
+                    {
+                        parenthesisOpenEntry = *localIterator;
+
+                        if (!nextEntryExists)
+                        {
+                            parserState = ParserState::ParsingComplete;
+                            break;
+                        }
+
+                        // We continue by simply parsing the content for assignment statement.
+                        // Note: In case we fail parsing interio statement, the 'assignmentStatement' will be set to nullptr
+                        //       and we'll contiue looking for 'parenthesisClosure'. Anything found inbetween will be automatically
+                        //       marked as 'misplaced'.
+                        localIterator = localIteratorPlusOne;
+                        assignmentStatement = assignmentParser.TryParser(linkerScriptFile, localIterator);
+                        parserState = ParserState::AwaitingParenthesisClosure;
+                        break;
+                    }
+
+                    case ParserState::AwaitingParenthesisClosure:
+                    case ParserState::AwaitingSemicolon:
                     {
                         violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
                         break;
@@ -136,111 +154,62 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
                     default:
                         throw CMasterParsingException(
                                     MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
-                                    "ParserState invalid in CAssignmentParser");
+                                    "ParserState invalid in CAssignmentProcedureParser");
                 }
             }
 
-            case RawEntryType::Operator:
+            case RawEntryType::ParenthesisClose:
             {
                 switch (parserState)
                 {
-                    case ParserState::AwaitingLValue:
+                    case ParserState::AwaitingProcedureName:
+                    case ParserState::AwaitingParenthesisOverture:
                     {
-                        // We can't proceed, we should have been starting with a word
-                        return nullptr;
+                        return nullptr; // Grounds to abort.
                     }
 
-                    case ParserState::AwaitingAssignmentSymbol:
+                    case ParserState::AwaitingParenthesisClosure:
                     {
-                        if (resolvedContent == ":")
-                        {
-                            // This could be a "Section" definition in the "Sections" region. We may need to abort.
-                            if (joiningOperatorsObserved)
-                            {
-                                // We don't abort, this is a R-Value expression put in L-Value
-                                violations.emplace_back(CViolation(*localIterator, ViolationCode::LValueCannotContainRValueExpression));
-                            }
-                            else
-                            {
-                                // Abort, we're going up the wrong ladder.
-                                return nullptr;
-                            }
-                        }
-                        else if (CParserHelpers::IsArithmeticOperator(resolvedContent))
-                        {
-                            joiningOperatorsObserved = true;
-                            violations.emplace_back(CViolation(*localIterator, ViolationCode::LValueCannotContainRValueExpression));
-                        }
-                        else
-                        {
-                            violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
-                        }
-                        break;
-                    }
-
-                    case ParserState::AwaitingRValueExpression:
-                    {
-                        parsedRValue = rValueExpressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
-                        if (parsedRValue == nullptr)
-                        {
-                            violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
-                        }
-                        else
-                        {
-                            parserState = ParserState::AwaitingSemicolon;
-                        }
+                        parenthesisCloseEntry = *localIterator;
+                        parserState = ParserState::AwaitingSemicolon;
                         break;
                     }
 
                     case ParserState::AwaitingSemicolon:
                     {
-                        if (resolvedContent == ";")
-                        {
-                            semicolonOperatorEntry = *localIterator;
-                            parserState = ParserState::ParsingComplete;
-                        }
-                        else
-                        {
-                            violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
-                        }
+                        violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
                         break;
                     }
 
                     default:
                         throw CMasterParsingException(
                                     MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
-                                    "ParserState invalid in CAssignmentParser");
+                                    "ParserState invalid in CAssignmentProcedureParser");
                 }
-                break;
             }
 
+            case RawEntryType::Operator:
             case RawEntryType::Assignment:
             {
                 switch (parserState)
                 {
-                    case ParserState::AwaitingLValue:
+                    case ParserState::AwaitingProcedureName:
+                    case ParserState::AwaitingParenthesisOverture:
                     {
-                        violations.emplace_back(CViolation(*localIterator, ViolationCode::MissingLValue));
-                        break;
+                        return nullptr; // Grounds to abort.
                     }
 
-                    case ParserState::AwaitingAssignmentSymbol:
+                    case ParserState::AwaitingSemicolon:
+                    case ParserState::AwaitingParenthesisClosure:
                     {
-                        assignmentSymbol = *localIterator;
-                        parserState = ParserState::AwaitingRValueExpression;
-                        break;
-                    }
-
-                    case ParserState::AwaitingRValueExpression:
-                    {
-                        violations.emplace_back(CViolation(*localIterator, ViolationCode::MultipleAssignmentOperatorsDetected));
+                        violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
                         break;
                     }
 
                     default:
                         throw CMasterParsingException(
                                     MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
-                                    "ParserState invalid in CAssignmentParser");
+                                    "ParserState invalid in CAssignmentProcedureParser");
                 }
             }
 
@@ -249,31 +218,23 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
             {
                 switch (parserState)
                 {
-                    case ParserState::AwaitingAssignmentSymbol:
-                    case ParserState::AwaitingLValue:
+                    case ParserState::AwaitingProcedureName:
+                    case ParserState::AwaitingParenthesisOverture:
                     {
-                        violations.emplace_back(CViolation(*localIterator, ViolationCode::LValueCannotContainRValueExpression));
-                        break;
+                        return nullptr; // Grounds to abort.
                     }
 
-                    case ParserState::AwaitingRValueExpression:
+                    case ParserState::AwaitingSemicolon:
+                    case ParserState::AwaitingParenthesisClosure:
                     {
-                        parsedRValue = rValueExpressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
-                        if (parsedRValue == nullptr)
-                        {
-                            violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
-                        }
-                        else
-                        {
-                            parserState = ParserState::AwaitingSemicolon;
-                        }
+                        violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
                         break;
                     }
 
                     default:
                         throw CMasterParsingException(
                                     MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
-                                    "ParserState invalid in CAssignmentParser");
+                                    "ParserState invalid in CAssignmentProcedureParser");
                 }
                 break;
             }
@@ -284,24 +245,25 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
             {
                 switch (parserState)
                 {
-                    case ParserState::AwaitingAssignmentSymbol:
-                    case ParserState::AwaitingLValue:
+                    case ParserState::AwaitingProcedureName:
+                    case ParserState::AwaitingParenthesisOverture:
                     {
-                        return nullptr;
+                        return nullptr; // Grounds to abort.
                     }
 
-                    case ParserState::AwaitingRValueExpression:
+                    case ParserState::AwaitingSemicolon:
+                    case ParserState::AwaitingParenthesisClosure:
                     {
-                        violations.emplace_back(CViolation(*localIterator, ViolationCode::RValueExpressionParsingFailed));
+                        localIterator = previousPositionIterator;
+                        parserState = ParserState::ParsingComplete;
                         break;
                     }
 
                     default:
                         throw CMasterParsingException(
                                     MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
-                                    "ParserState invalid in CAssignmentParser");
+                                    "ParserState invalid in CAssignmentProcedureParser");
                 }
-
                 break;
             }
 
@@ -326,9 +288,10 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
             }
         }
 
-        localIterator = ((parserState != ParserState::ParsingComplete) && !doNotAdvance) ?
-                        localIterator + 1 :
-                        localIterator;
+        if ((parserState != ParserState::ParsingComplete) && !doNotAdvance)
+        {
+            previousPositionIterator = localIterator++;
+        }
     }
 
     std::vector<CRawEntry> rawEntries;
@@ -336,11 +299,13 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
 
     iterator = localIterator;
 
-    return std::shared_ptr<CAssignmentStatement>(
-                new CAssignmentStatement(lValueSymbol,
-                                         assignmentSymbol,
-                                         semicolonOperatorEntry,
-                                         std::move(parsedContent),
-                                         std::move(rawEntries),
-                                         std::move(violations)));
+    return std::shared_ptr<CAssignmentProcedureStatement>(
+                new CAssignmentProcedureStatement(proceduerNameEntry,
+                                                  parenthesisOpenEntry,
+                                                  parenthesisCloseEntry,
+                                                  assignmentStatement,
+                                                  semicolonOperatorEntry,
+                                                  std::move(parsedContent),
+                                                  std::move(rawEntries),
+                                                  std::move(violations)));
 }
