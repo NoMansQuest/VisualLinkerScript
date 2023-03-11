@@ -77,6 +77,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
         NoCrossRefsAlreadyDeclared,
         AtAddressAlreadyDeclared,
         StartAddressExpressionAlreadyDeclared,
+        UnableToUnderstandOverlaySection,
 
         // General violations:
         FunctionMissingDefinitionOrInvalidSymbolName,

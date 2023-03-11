@@ -8,6 +8,7 @@
 #include "CFunctionParser.h"
 #include "CAssignmentParser.h"
 #include "Constants.h"
+#include "CSectionOverlayParser.h"
 #include "../CMasterParserException.h"
 #include "../Models/CInputSectionStatement.h"
 #include "../Models/CFunctionCall.h"
@@ -85,7 +86,9 @@ std::shared_ptr<CLinkerScriptContentBase> CSectionsRegionParser::TryParse(
 
     CFunctionParser functionParser;                             // Example: FILL(0x00000)
     CAssignmentParser assignmentParser;                         // Example: '. = ALIGN(4);'
-    CSectionOutputCommandParser sectionOutputCommandParser;   // Example: 'foo.o (.input2)'
+    CAssignmentProcedureParser assignmentCommandParser;         // Example: PROVIDE(a = b + c);
+    CSectionOutputCommandParser sectionOutputCommandParser;     // Example: 'foo.o (.input2)'
+    CSectionOverlayParser sectionOverlayParser;                 // Example: OVERLAY...
 
     auto parserState = ParserState::AwaitingHeader;
     auto doNotAdvance = false;
@@ -153,10 +156,42 @@ std::shared_ptr<CLinkerScriptContentBase> CSectionsRegionParser::TryParse(
 
                     case ParserState::AwaitingBracketClosure:
                     {
-                        if (CParserHelpers::IsInputSectionSpecialFunctionName(resolvedContent))
+                        if (resolvedContent == "OVERLAY")
                         {
                             // Such as 'CREATE_OBJECT_SYMBOLS'
-                            innerContent.emplace_back();
+                            auto parsedOverlayStatement = sectionOverlayParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
+                            if (parsedOverlayStatement == nullptr)
+                            {
+                                violations.emplace_back(CViolation(*localIterator, ViolationCode::UnableToUnderstandOverlaySection));
+                            }
+                            else
+                            {
+                                parsedContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(parsedOverlayStatement));
+                            }
+                        }
+                        else if (CParserHelpers::IsOutputSectionDataFunctionName(resolvedContent))
+                        {                            
+                            auto parsedFunction = functionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
+                            if (parsedFunction == nullptr)
+                            {
+                                violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
+                            }
+                            else
+                            {
+                                parsedContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(parsedFunction));
+                            }
+                        }
+                        else if (CParserHelpers::IsAssignmentProcedure(resolvedContent))
+                        {                            
+                            auto parsedAssignmentProcedure = assignmentCommandParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
+                            if (parsedFunction == nullptr)
+                            {
+                                violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
+                            }
+                            else
+                            {
+                                parsedContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(parsedAssignmentProcedure));
+                            }
                         }
                         else if (CParserHelpers::IsOutputSectionDataFunctionName(resolvedContent))
                         {
@@ -237,7 +272,7 @@ std::shared_ptr<CLinkerScriptContentBase> CSectionsRegionParser::TryParse(
                                     "ParserState invalid in CSectionsRegionParser");
                 }
             }
-
+;
             case RawEntryType::BracketClose:
             {
                 switch (parserState)

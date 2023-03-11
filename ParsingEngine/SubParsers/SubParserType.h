@@ -10,6 +10,7 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
     enum class SubParserType
     {        
         AssignmentParser,
+        AssignmentProcedureParser,
         DefaultParser,
         MemoryRegionParser,
         MemoryRegionContentParser,
