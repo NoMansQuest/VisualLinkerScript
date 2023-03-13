@@ -3,12 +3,9 @@
 
 #include <memory>
 #include "CSubParserBase.h"
-#include "CExpressionParser.h"
 #include "SubParserType.h"
 #include "../Models/Raw/CRawFile.h"
 #include "../Models/CPhdrsStatement.h"
-
-using namespace VisualLinkerScript::ParsingEngine::Models::Raw;
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {   

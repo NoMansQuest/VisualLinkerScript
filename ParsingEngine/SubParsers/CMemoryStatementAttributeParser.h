@@ -7,8 +7,6 @@
 #include "../Models/Raw/CRawFile.h"
 #include "../Models/CMemoryStatementAttribute.h"
 
-using namespace VisualLinkerScript::ParsingEngine::Models::Raw;
-
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {
     /// @brief Object in charge of parsing the "PHDRS" region inside a linker-script

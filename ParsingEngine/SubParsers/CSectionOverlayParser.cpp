@@ -596,9 +596,8 @@ std::shared_ptr<CSectionOverlayCommand> CSectionOverlayParser::TryParse(
 
     iterator = localIterator;
 
-    return std::shared_ptr<CSectionOverlayStatement>(
-                new CSectionOverlayStatement(sectionOutputNameEntry,
-
+    return std::shared_ptr<CSectionOverlayCommand>(
+                new CSectionOverlayCommand(sectionOutputNameEntry,
                                              colonEntry,
                                              bracketOpenEntry,
                                              bracketCloseEntry,

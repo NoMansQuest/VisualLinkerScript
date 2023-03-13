@@ -3,7 +3,7 @@
 
 #include <vector>
 #include "CLinkerScriptContentBase.h"
-#include "CAssignmentStatement.h"
+#include "../Models/CAssignmentStatement.h"
 #include "../Models/Raw/CRawEntry.h"
 
 

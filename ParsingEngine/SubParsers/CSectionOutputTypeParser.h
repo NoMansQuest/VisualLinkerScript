@@ -7,9 +7,6 @@
 #include "../Models/Raw/CRawFile.h"
 #include "../Models/CSectionOutputType.h"
 
-using namespace VisualLinkerScript::ParsingEngine::Models::Raw;
-using namespace VisualLinkerScript::ParsingEngine::Models;
-
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {
     /// @brief Object in charge of parsing the "PHDRS" region inside a linker-script

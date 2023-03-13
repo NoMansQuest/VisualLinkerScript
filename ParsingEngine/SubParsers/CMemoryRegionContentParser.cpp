@@ -1,4 +1,6 @@
 #include "CMemoryRegionContentParser.h"
+#include "CAssignmentParser.h"
+#include "CMemoryStatementAttributeParser.h"
 #include <vector>
 #include <memory>
 #include <string>
@@ -39,6 +41,9 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
     std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = iterator;
     std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
     std::vector<CViolation> violations;
+
+    CAssignmentParser assignmentParser;
+    CMemoryStatementAttributeParser attributeParser;
 
     auto parserState = ParserState::AwaitingName;
     auto doNotAdvance = false;
@@ -95,7 +100,7 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
 
                     case ParserState::AwaitingOriginAssignment:
                     {
-                        originAssignment = this->m_assignmentParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
+                        originAssignment = assignmentParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
                         if (originAssignment == nullptr)
                         {
                             violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
@@ -110,7 +115,7 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
 
                     case ParserState::AwaitingLengthAssignment:
                     {
-                        lengthAssignment = this->m_assignmentParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
+                        lengthAssignment = assignmentParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
                         if (lengthAssignment == nullptr)
                         {
                             violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
@@ -140,7 +145,7 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
                     {
                         if (resolvedContent[0] == '(')
                         {
-                            attributes = this->m_attributeParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
+                            attributes = attributeParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
                             if (attributes == nullptr)
                             {
                                 // Parsing failed, mark this entry as invalid

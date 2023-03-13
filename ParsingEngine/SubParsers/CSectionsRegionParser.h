@@ -7,8 +7,6 @@
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {
-    using namespace VisualLinkerScript::ParsingEngine::Models;
-
     /// @brief Object in charge of parsing the "SECTIONS" region inside a linker-script
     class CSectionsRegionParser: public CSubParserBase<CSectionsRegion>
     {

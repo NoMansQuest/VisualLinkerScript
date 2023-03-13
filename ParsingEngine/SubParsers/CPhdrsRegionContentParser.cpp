@@ -1,4 +1,5 @@
 #include "CPhdrsRegionContentParser.h"
+#include "CExpressionParser.h"
 #include <vector>
 #include <memory>
 #include <string>

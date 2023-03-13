@@ -7,8 +7,6 @@
 #include "../Models/CVersionScope.h"
 #include <memory>
 
-using namespace VisualLinkerScript::ParsingEngine::Models::Raw;
-
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {
     /// @brief Object in charge of parsing the content found inside "VERSION" region within a linker-script

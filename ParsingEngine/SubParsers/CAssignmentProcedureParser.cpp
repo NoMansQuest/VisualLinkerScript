@@ -139,7 +139,7 @@ std::shared_ptr<CAssignmentProcedureStatement> CAssignmentProcedureParser::TryPa
                         //       and we'll contiue looking for 'parenthesisClosure'. Anything found inbetween will be automatically
                         //       marked as 'misplaced'.
                         localIterator = localIteratorPlusOne;
-                        assignmentStatement = assignmentParser.TryParser(linkerScriptFile, localIterator);
+                        assignmentStatement = assignmentParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
                         parserState = ParserState::AwaitingParenthesisClosure;
                         break;
                     }

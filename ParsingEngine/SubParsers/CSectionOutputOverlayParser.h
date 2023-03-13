@@ -7,8 +7,6 @@
 #include "../Models/Raw/CRawFile.h"
 #include <memory>
 
-using namespace VisualLinkerScript::ParsingEngine::Models::Raw;
-
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {
     /// @brief Object in charge of parsing the "OVERLAY" section command

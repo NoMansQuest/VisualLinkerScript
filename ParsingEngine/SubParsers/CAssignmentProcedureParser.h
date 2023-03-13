@@ -1,5 +1,5 @@
-#ifndef CASSIGNMENT_PARSER_H__
-#define CASSIGNMENT_PARSER_H__
+#ifndef CASSIGNMENT_PROCEDURE_PARSER_H__
+#define CASSIGNMENT_PROCEDURE_PARSER_H__
 
 #include "CSubParserBase.h"
 #include "SubParserType.h"
