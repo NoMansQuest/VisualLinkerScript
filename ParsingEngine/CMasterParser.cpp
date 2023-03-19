@@ -21,7 +21,7 @@ using namespace VisualLinkerScript::ParsingEngine;
 using namespace VisualLinkerScript::ParsingEngine::Models::Raw;
 using namespace VisualLinkerScript::ParsingEngine::SubParsers;
 
-CLinkerScriptFile&& CMasterParser::ProcessLinkerScriptFile(std::shared_ptr<CRawFile> rawFile)
+std::shared_ptr<CLinkerScriptFile> CMasterParser::ProcessLinkerScriptFile(std::shared_ptr<CRawFile> rawFile)
 {
     CAssignmentParser assignmentParser;
     CPhdrsRegionParser phdrsRegionParser;
@@ -102,5 +102,5 @@ CLinkerScriptFile&& CMasterParser::ProcessLinkerScriptFile(std::shared_ptr<CRawF
         }
     }
 
-    return std::move(CLinkerScriptFile(rawFile, std::move(parsedContent), std::move(violations)));
+    return std::make_shared<CLinkerScriptFile>(rawFile, std::move(parsedContent), std::move(violations));
 }

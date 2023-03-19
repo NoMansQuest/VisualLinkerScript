@@ -20,8 +20,8 @@ namespace VisualLinkerScript::ParsingEngine::Models
         CRawEntry m_colonEntry;
         CRawEntry m_noCrossRefsEntry;
         std::shared_ptr<CFunctionCall> m_atAddressFunction;
-        CRawEntry m_brackOpenEntry;
-        CRawEntry m_brackCloseEntry;
+        CRawEntry m_bracketOpenEntry;
+        CRawEntry m_bracketCloseEntry;
         std::vector<std::shared_ptr<CSectionOutputPhdr>> m_programHeaders;
         std::shared_ptr<CSectionOutputFillExpression> m_fillExpression;
         std::vector<std::shared_ptr<CLinkerScriptContentBase>> m_parsedContent;
@@ -33,14 +33,24 @@ namespace VisualLinkerScript::ParsingEngine::Models
                                         CRawEntry colonEntry,
                                         CRawEntry noCrossRefsEntry,
                                         std::shared_ptr<CFunctionCall> atAddressFunction,
-                                        CRawEntry brackOpenEntry,
-                                        CRawEntry brackCloseEntry,
-                                        std::vector<std::shared_ptr<CSectionOutputPhdr>> programHeaders,
+                                        CRawEntry bracketOpenEntry,
+                                        CRawEntry bracketCloseEntry,
+                                        std::vector<std::shared_ptr<CSectionOutputPhdr>>&& programHeaders,
                                         std::shared_ptr<CSectionOutputFillExpression> fillExpression,
-                                        std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent,
+                                        std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& parsedContent,
                                         std::vector<CRawEntry>&& rawElements,
                                         std::vector<CViolation>&& violations)
-            : CLinkerScriptContentBase(std::move(rawElements), std::move(violations))
+            : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
+              m_headerEntry(headerEntry),
+              m_startAddressExpression(startAddressExpression),
+              m_colonEntry(colonEntry),
+              m_noCrossRefsEntry(noCrossRefsEntry),
+              m_atAddressFunction(atAddressFunction),
+              m_bracketOpenEntry(bracketOpenEntry),
+              m_bracketCloseEntry(bracketCloseEntry),
+              m_programHeaders(std::move(programHeaders)),
+              m_fillExpression(fillExpression),
+              m_parsedContent(std::move(parsedContent))
         {}        
 
     public:
@@ -76,15 +86,15 @@ namespace VisualLinkerScript::ParsingEngine::Models
         }
 
         /// @brief [Non-Optional] Reports the curly-bracket open entry.
-        CRawEntry BrackOpenEntry()
+        CRawEntry BracketOpenEntry()
         {
-            return this->m_brackOpenEntry;
+            return this->m_bracketOpenEntry;
         }
 
         /// @brief [Non-Optional] Reports the curly-bracket close entry.
-        CRawEntry BrackCloseEntry()
+        CRawEntry BracketCloseEntry()
         {
-            return this->m_brackCloseEntry;
+            return this->m_bracketCloseEntry;
         }
 
         /// @brief [Optional] Reports the ':phdr' entries at the end of the bracket.

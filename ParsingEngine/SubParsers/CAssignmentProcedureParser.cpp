@@ -39,7 +39,6 @@ std::shared_ptr<CAssignmentProcedureStatement> CAssignmentProcedureParser::TryPa
 
     auto parserState = ParserState::AwaitingProcedureName;
     auto doNotAdvance = false;
-    auto joiningOperatorsObserved = false;
 
     CRawEntry proceduerNameEntry;
     CRawEntry parenthesisOpenEntry;

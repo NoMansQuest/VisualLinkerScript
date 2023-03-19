@@ -13,6 +13,7 @@ std::shared_ptr<CUnrecognizableContent> CDefaultParser::TryParse(
         std::vector<CRawEntry>::const_iterator& iterator,
         std::vector<CRawEntry>::const_iterator& endOfVectorIterator)
 {
+    UNREFERENCED_PARAMETER(linkerScriptFile);
     CViolation violation({*iterator}, ViolationCode::EntryInvalidOrMisplaced);
     return std::shared_ptr<CUnrecognizableContent>(new CUnrecognizableContent({*iterator++}, {violation}));
 }

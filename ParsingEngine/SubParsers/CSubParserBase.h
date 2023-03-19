@@ -13,6 +13,8 @@ using namespace VisualLinkerScript::ParsingEngine::Models;
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {
+    #define UNREFERENCED_PARAMETER(P) (P)
+
     /// @brief Base class for all sub-parsers
     template<typename TOutputType>
     class CSubParserBase

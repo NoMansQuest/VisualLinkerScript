@@ -19,7 +19,7 @@ namespace VisualLinkerScript::ParsingEngine
         {}
 
         /// @brief Processes a @see {CRawFile} and produces a @see {CLinkerScriptFile}
-        CLinkerScriptFile&& ProcessLinkerScriptFile(std::shared_ptr<CRawFile> rawFile);
+        std::shared_ptr<CLinkerScriptFile> ProcessLinkerScriptFile(std::shared_ptr<CRawFile> rawFile);
     };
 }
 

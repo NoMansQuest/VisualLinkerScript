@@ -19,6 +19,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
         CRawEntry m_parenthesisCloseEntry;
         std::shared_ptr<CAssignmentStatement> m_assignmentStatement;
         CRawEntry m_deliminterOperator;
+        std::vector<std::shared_ptr<CLinkerScriptContentBase>> m_parsedContent;
 
     public:
         /// @brief Detailed Constructor
@@ -35,7 +36,8 @@ namespace VisualLinkerScript::ParsingEngine::Models
               m_parenthesisOpenEntry(parenthesisOpenEntry),
               m_parenthesisCloseEntry(parenthesisCloseEntry),
               m_assignmentStatement(assignmentStatement),
-              m_deliminterOperator(semicolonOperator)
+              m_deliminterOperator(semicolonOperator),
+              m_parsedContent(std::move(parsedContent))
         {}
 
         /// @brief Reports back the type of this object.        
@@ -72,6 +74,12 @@ namespace VisualLinkerScript::ParsingEngine::Models
         const CRawEntry& DelimiterOperator()
         {
             return this->m_deliminterOperator;
+        }
+
+        /// @brief Gets the "Parsed Content". This this scenario it is most likely to contain comments only...
+        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& ParsedContent()
+        {
+            return this->m_parsedContent;
         }
     };
 }

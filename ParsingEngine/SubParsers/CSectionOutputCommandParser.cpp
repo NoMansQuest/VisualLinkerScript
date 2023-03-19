@@ -473,6 +473,7 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
 
     iterator = localIterator;
 
+
     return std::shared_ptr<CSectionOutputCommand>(
                 new CSectionOutputCommand(sectionOutputNameEntry,
                                           std::move(preColonContent),

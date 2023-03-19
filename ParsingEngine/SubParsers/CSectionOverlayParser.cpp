@@ -3,12 +3,12 @@
 #include <string>
 #include "CSectionOverlayParser.h"
 #include "CExpressionParser.h"
-#include "CInputSectionStatementParser.h"
+#include "CSectionOutputCommandParser.h"
+#include "CAssignmentProcedureParser.h"
 #include "CFunctionParser.h"
 #include "CAssignmentParser.h"
 #include "Constants.h"
 #include "../CMasterParserException.h"
-#include "../Models/CInputSectionStatement.h"
 #include "../Models/CFunctionCall.h"
 #include "../Models/CSectionOutputPhdr.h"
 #include "../Models/CSectionOutputFillExpression.h"
@@ -82,7 +82,8 @@ std::shared_ptr<CSectionOverlayCommand> CSectionOverlayParser::TryParse(
     CExpressionParser expressionParser(ExpressionParserType::NormalParser, false);
     CFunctionParser functionParser;                             // Example: FILL(0x00000)
     CAssignmentParser assignmentParser;                         // Example: '. = ALIGN(4);'
-    CInputSectionStatementParser inputSectionStatementParser;   // Example: 'foo.o (.input2)'
+    CAssignmentProcedureParser assignmentProcedureParser;       // Example: PROVIDE(a = b);'
+    CSectionOutputCommandParser inputSectionStatementParser;    // Example: A section-output command
 
     auto parserState = ParserState::AwaitingHeader;
     auto doNotAdvance = false;
@@ -233,6 +234,11 @@ std::shared_ptr<CSectionOverlayCommand> CSectionOverlayParser::TryParse(
                         else if (CParserHelpers::IsOutputSectionDataFunctionName(resolvedContent))
                         {
                             // Such as "BYTE(1)", "ALIGN(4)", etc.
+                            parsedContent.emplace_back();
+                        }
+                        else if (CParserHelpers::IsAssignmentProcedure(resolvedContent))
+                        {
+                            // Such as: PROVIDE(a = b);
                             parsedContent.emplace_back();
                         }
                         else
@@ -598,13 +604,15 @@ std::shared_ptr<CSectionOverlayCommand> CSectionOverlayParser::TryParse(
 
     return std::shared_ptr<CSectionOverlayCommand>(
                 new CSectionOverlayCommand(sectionOutputNameEntry,
-                                             colonEntry,
-                                             bracketOpenEntry,
-                                             bracketCloseEntry,
-                                             toVmaRegion,
-                                             atLmaRegion,
-                                             std::move(programHeaders),
-                                             fillExpression,
-                                             std::move(innerContent),
-                                             std::move(rawEntries),
-                                             std::move(violations)));}
+                                           startAddressExpression,
+                                           colonEntry,
+                                           noCrossRefsEntry,
+                                           atAddressFunction,
+                                           bracketOpenEntry,
+                                           bracketCloseEntry,
+                                           std::move(programHeaders),
+                                           fillExpression,
+                                           std::move(parsedContent),
+                                           std::move(rawEntries),
+                                           std::move(violations)));
+}

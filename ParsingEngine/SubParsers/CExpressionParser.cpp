@@ -374,10 +374,12 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
             // Brackets are sensitive and the matter needs to be escalated to higher-up
             case RawEntryType::BracketOpen:
             case RawEntryType::BracketClose:
+            {
                 violations.emplace_back(CViolation(*localIterator, ViolationCode::UnexpectedTerminationOfExpression));
                 localIterator = previousPositionIterator;
                 parserState = ParserState::ParsingComplete;
                 break;
+            }
 
             case RawEntryType::Unknown:
             {

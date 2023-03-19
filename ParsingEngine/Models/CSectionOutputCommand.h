@@ -25,7 +25,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
         CRawEntry m_closingBracketEntry;
         std::shared_ptr<CSectionOutputToVmaRegion> m_toVmaRegion;
         std::shared_ptr<CSectionOutputAtLmaRegion> m_atLmaRegionFunction;
-        std::vector<CSectionOutputPhdr> m_programHeaders;
+        std::vector<std::shared_ptr<CSectionOutputPhdr>> m_programHeaders;
         std::shared_ptr<CSectionOutputFillExpression> m_fillExpression;
         std::vector<std::shared_ptr<CLinkerScriptContentBase>> m_innerContent;
 
@@ -40,7 +40,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
                                        CRawEntry closingBracketEntry,
                                        std::shared_ptr<CSectionOutputToVmaRegion> toVmaRegion,
                                        std::shared_ptr<CSectionOutputAtLmaRegion> atLmaRegionFunction,
-                                       std::vector<CSectionOutputPhdr>&& programHeaders,
+                                       std::vector<std::shared_ptr<CSectionOutputPhdr>>&& programHeaders,
                                        std::shared_ptr<CSectionOutputFillExpression> fillExpression,
                                        std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& innerContent,
                                        std::vector<CRawEntry>&& rawElements,
@@ -115,7 +115,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
         }
 
         /// @brief Reports back the program headers defined, if present.
-        std::vector<CSectionOutputPhdr> ProgramHeaders()
+        std::vector<std::shared_ptr<CSectionOutputPhdr>> ProgramHeaders()
         {
             return this->m_programHeaders;
         }
