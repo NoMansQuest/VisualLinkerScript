@@ -59,7 +59,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
         MissingLValue,
 
         // Assignment procedure parsing violations:
-        WasExpectingSemicolonHere,
+        WasExpectingSemicolonHere,        
 
         // Section Output Content
         OnlyOneSectionOutputTypeIsAllowed,
@@ -81,6 +81,11 @@ namespace VisualLinkerScript::ParsingEngine::Models
         AtAddressAlreadyDeclared,
         StartAddressExpressionAlreadyDeclared,
         UnableToUnderstandOverlaySection,
+
+        // VERSION:
+        WasExpectingBracketOverture,
+        InvalidParentScope,
+        ParentScopeIsAlreadyDefined,
 
         // General violations:
         FunctionMissingDefinitionOrInvalidSymbolName,

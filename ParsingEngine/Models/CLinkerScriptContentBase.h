@@ -36,6 +36,7 @@ namespace VisualLinkerScript::ParsingEngine::Models
         InputSection,                   // Example: *data.*(... target-Sections ... )
         VersionsRegion,        
         VersionNode,
+        VersionTag,
         VersionScope,
         VersionScopeEntry,
         PrimarySymbol,

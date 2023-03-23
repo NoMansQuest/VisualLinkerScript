@@ -224,6 +224,7 @@ HEADERS += \
     ParsingEngine/Models/CUnrecognizableContent.h \
     ParsingEngine/Models/CVersionNode.h \
     ParsingEngine/Models/CVersionScope.h \
+    ParsingEngine/Models/CVersionTag.h \
     ParsingEngine/Models/CVersionsRegion.h \
     ParsingEngine/Models/CViolation.h \
     ParsingEngine/Models/Evaluation/ArithmeticOperationType.h \
