@@ -4,7 +4,10 @@
 #include "CVersionRegionContentParser.h"
 #include "Constants.h"
 #include "../CMasterParserException.h"
+#include "../Models/CLinkerScriptContentBase.h"
 #include "../Models/CVersionScope.h"
+#include "../Models/CVersionTag.h"
+#include "../Models/CVersionNode.h"
 #include "../Models/Raw/CRawEntry.h"
 #include "../Models/Raw/RawEntryType.h"
 #include "../Models/Raw/CRawFile.h"
@@ -65,6 +68,8 @@ std::shared_ptr<CVersionScope> CVersionRegionContentParser::TryParse(
 
     auto parserState = ParserState::AwaitingHeader;
     auto doNotAdvance = false;
+
+    CRawEntry currentVersionTag; // Set to 'Not Present' by default
 
     CRawEntry scopeHeaderEntry;
     CRawEntry bracketOpenEntry;
@@ -127,13 +132,23 @@ std::shared_ptr<CVersionScope> CVersionRegionContentParser::TryParse(
                         }
                         else if (resolvedContent.size() > 0 && resolvedContent[resolvedContent.size() - 1] == ':')
                         {
-                            /// TODO: We have a VersionScope
+                            std::shared_ptr<CVersionTag> versionScope(new CVersionTag(*localIterator, {*localIterator}, {}));
+                            currentVersionTag = *localIterator;
+                            parsedContent.emplace_back(versionScope);
                         }
                         else
                         {
                             if (resolvedContentPlusOne == ";")
                             {
-                                /// TODO: We have a VersionNode
+                                std::shared_ptr<CVersionNode> versionScope(
+                                            new CVersionNode(
+                                                *localIterator,
+                                                rawEntryPlusOne,
+                                                currentVersionTag,
+                                                {*localIterator, rawEntryPlusOne},
+                                                {}));
+                                parsedContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(versionScope));
+                                localIterator++; // We advance by one, as we've alredy consume the successor entry.
                             }
                             else
                             {

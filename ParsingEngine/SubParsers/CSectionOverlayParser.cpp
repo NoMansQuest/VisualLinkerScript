@@ -355,10 +355,11 @@ std::shared_ptr<CSectionOverlayCommand> CSectionOverlayParser::TryParse(
                                 }
 
 
-                                CSectionOutputPhdr programHeader(*localIterator,
-                                                                 rawEntryPlusOne,
-                                                                 {*localIterator, rawEntryPlusOne},
-                                                                 std::move(programHeaderViolations));
+                                std::shared_ptr<CSectionOutputPhdr> programHeader(
+                                            new CSectionOutputPhdr(*localIterator,
+                                                                   rawEntryPlusOne,
+                                                                   {*localIterator, rawEntryPlusOne},
+                                                                  std::move(programHeaderViolations)));
 
                                 programHeaders.emplace_back(programHeader);
                                 localIterator = localIteratorPlusOne;

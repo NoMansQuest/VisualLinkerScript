@@ -12,16 +12,19 @@ namespace VisualLinkerScript::ParsingEngine::Models
     private:
         CRawEntry m_nodeEntry;
         CRawEntry m_semicolonEntry;
+        CRawEntry m_parentTagEntry;
 
     public:
         /// @brief Default constructor, accessible to inheritors only        
         explicit CVersionNode(CRawEntry nodeEntry,
                               CRawEntry semicolonEntry,
+                              CRawEntry parentTagEntry,
                               std::vector<CRawEntry>&& rawElements,
                               std::vector<CViolation>&& violations)
             : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
               m_nodeEntry(nodeEntry),
-              m_semicolonEntry(semicolonEntry)
+              m_semicolonEntry(semicolonEntry),
+              m_parentTagEntry(parentTagEntry)
         {}        
 
         /// @brief Reports back the type of this object.        
@@ -41,7 +44,13 @@ namespace VisualLinkerScript::ParsingEngine::Models
         {
             return this->m_semicolonEntry;
         }
-    };
+
+        /// @brief Reports back the parent tage entry for this node.
+        CRawEntry ParentTagEntry()
+        {
+            return this->m_parentTagEntry;
+        }
+    };    
 }
 
 #endif

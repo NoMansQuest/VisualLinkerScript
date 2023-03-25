@@ -6,7 +6,8 @@
 
 namespace VisualLinkerScript::ParsingEngine::Models
 {
-    /// @brief Represents a single entry in the "MEMORIES" region
+    /// @brief Represents a tag found within a Version-Scope in VERSION region
+    /// @brief Example: "Something:"
     class CVersionTag : public CLinkerScriptContentBase
     {
     private:
