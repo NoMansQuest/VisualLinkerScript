@@ -11,7 +11,18 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
     /// @brief Object in charge parsing a full function: <NAME>(<EXPRESSION>)
     class CFunctionParser : public CSubParserBase<CFunctionCall>
     {
+    private:
+        bool m_onlyCommaAsParamterSeparator;
+        bool m_multipleParametersSupported;
+
     public:
+        /// @brief Default constructor
+        CFunctionParser(bool onlyCommaAsParameterSeparator = true,
+                        bool multipleParametersSupported = false)
+            : m_onlyCommaAsParamterSeparator(onlyCommaAsParameterSeparator),
+              m_multipleParametersSupported(multipleParametersSupported)
+        {}
+
         /// @copydoc CSubParserBase::Type()
         virtual SubParserType Type() override 
         {

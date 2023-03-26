@@ -11,7 +11,6 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
     {        
         AssignmentParser,
         AssignmentProcedureParser,
-        DefaultParser,
         MemoryRegionParser,
         MemoryRegionContentParser,
         MemoryStatementAttributeParser,

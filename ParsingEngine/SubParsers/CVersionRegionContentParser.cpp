@@ -31,31 +31,6 @@ namespace
     };
 }
 
-/*
- *
- * VERS_1.1 {
- * 	 global:
- * 		 foo1;
- * 	 local:
- * 		 old*;
- * 		 original*;
- * 		 new*;
- * };
- *
- * VERS_1.2 {
- * 		 foo2;
- * } VERS_1.1;
- *
- * VERS_2.0 {
- * 		 bar1; bar2;
- * } VERS_1.2;
- *
- *
- *                    CViolation detectedViolation({ *localIterator }, ViolationCode::NoSymbolOrKeywordAllowedAfterMemoryHeader);
-                    violations.emplace_back(std::move(detectedViolation));
- *
- */
-
 std::shared_ptr<CVersionScope> CVersionRegionContentParser::TryParse(
         CRawFile& linkerScriptFile,
         std::vector<CRawEntry>::const_iterator& iterator,

@@ -77,7 +77,6 @@ SOURCES += \
     ParsingEngine/CPreliminaryParser.cpp \
     ParsingEngine/SubParsers/CAssignmentParser.cpp \
     ParsingEngine/SubParsers/CAssignmentProcedureParser.cpp \
-    ParsingEngine/SubParsers/CDefaultParser.cpp \
     ParsingEngine/SubParsers/CExpressionParser.cpp \
     ParsingEngine/SubParsers/CFunctionParser.cpp \
     ParsingEngine/SubParsers/CInputSectionStatementParser.cpp \
@@ -197,6 +196,7 @@ HEADERS += \
     ParsingEngine/Models/CExpressionNumber.h \
     ParsingEngine/Models/CExpressionOperator.h \
     ParsingEngine/Models/CFunctionCall.h \
+    ParsingEngine/Models/CIncludeCommand.h \
     ParsingEngine/Models/CInputSectionFunction.h \
     ParsingEngine/Models/CInputSectionStatement.h \
     ParsingEngine/Models/CInputSectionTargetSection.h \
@@ -241,7 +241,6 @@ HEADERS += \
     ParsingEngine/SubParsers/CAssignmentParser.h \
     ParsingEngine/SubParsers/CAssignmentProcedureParser.h \
     ParsingEngine/SubParsers/CCommandParser.h \
-    ParsingEngine/SubParsers/CDefaultParser.h \
     ParsingEngine/SubParsers/CExpressionParser.h \
     ParsingEngine/SubParsers/CFunctionParser.h \
     ParsingEngine/SubParsers/CInputSectionStatementParser.h \
@@ -292,7 +291,6 @@ HEADERS += \
     ParsingEngine/Models/CSectionOverlayCommand.h \
     ParsingEngine/Models/Raw/RawEntryType.h \
     ParsingEngine/SubParsers/CAssignmentParser.h \
-    ParsingEngine/SubParsers/CDefaultParser.h \
     ParsingEngine/SubParsers/CExpressionParser.h \
     ParsingEngine/SubParsers/CMemoryRegionParser.h \
     ParsingEngine/SubParsers/CPhdrsRegionContentParser.h \

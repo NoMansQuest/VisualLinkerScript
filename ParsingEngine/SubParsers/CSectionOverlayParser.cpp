@@ -23,38 +23,6 @@ using namespace VisualLinkerScript::ParsingEngine::Models;
 using namespace VisualLinkerScript::ParsingEngine::Models::Raw;
 using namespace VisualLinkerScript::ParsingEngine::SubParsers;
 
-/*
- * Structure:
- *
- * OVERLAY [start] : [NOCROSSREFS] [AT ( ldaddr )]
- * {
- *   secname1
- *     {
- *       output-section-command
- *       output-section-command
- *       …
- *     } [:phdr…] [=fill]
- *   secname2
- *     {
- *       output-section-command
- *       output-section-command
- *       …
- *     } [:phdr…] [=fill]
- *   …
- * } [>region] [:phdr…] [=fill]
- *
- *
- *
- * Example:
- *
- * OVERLAY 0x1000 : AT (0x4000)
- * {
- *   .text0 { o1/*.o(.text) }
- *   .text1 { o2/*.o(.text) }
- * }
- *
- */
-
 namespace
 {
     /// @brief Parse states for Sections Region Content Parser

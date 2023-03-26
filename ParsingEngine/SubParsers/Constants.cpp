@@ -183,6 +183,16 @@ namespace
         "|=",
         "%="
     };
+
+    std::string ToUpper(const std::string& source)
+    {
+        std::string convertionResult = source;
+        for (auto & character: convertionResult)
+        {
+            character = toupper(character);
+        }
+        return convertionResult;
+    }
 };
 
 using namespace VisualLinkerScript::ParsingEngine::SubParsers;
@@ -205,11 +215,13 @@ bool CParserHelpers::IsReservedWord(const std::string& wordToCheck)
         ListOfAssignmentCommandNames
     };
 
+    auto wordToCheckInUpperCase = ToUpper(wordToCheck);
+
     for (auto listToCheckAgainst: concernedLists)
     {
        if (std::find(listToCheckAgainst.cbegin(),
                      listToCheckAgainst.cend(),
-                     wordToCheck ) != listToCheckAgainst.cend())
+                     wordToCheckInUpperCase) != listToCheckAgainst.cend())
        {
            return true;
        }
@@ -220,58 +232,66 @@ bool CParserHelpers::IsReservedWord(const std::string& wordToCheck)
 
 bool CParserHelpers::IsOutputSectionDataFunctionName(const std::string& wordToCheck)
 {
+    auto wordToCheckInUpperCase = ToUpper(wordToCheck);
     return std::find(ListOfOutputSectionCommandNames.cbegin(),
                      ListOfOutputSectionCommandNames.cend(),
-                     wordToCheck) != ListOfOutputSectionCommandNames.cend();
+                     wordToCheckInUpperCase) != ListOfOutputSectionCommandNames.cend();
 }
 
 bool CParserHelpers::IsInputSectionSpecialFunctionName(const std::string& wordToCheck)
 {
+    auto wordToCheckInUpperCase = ToUpper(wordToCheck);
     return std::find(ListOfInputSectionSpecialFunctionNames.cbegin(),
                      ListOfInputSectionSpecialFunctionNames.cend(),
-                     wordToCheck) != ListOfInputSectionSpecialFunctionNames.cend();
+                     wordToCheckInUpperCase) != ListOfInputSectionSpecialFunctionNames.cend();
 }
 
 bool CParserHelpers::IsInputSectionFunction(const std::string& wordToCheck)
 {
+    auto wordToCheckInUpperCase = ToUpper(wordToCheck);
     return std::find(ListOfInpuSectionCommands.cbegin(),
                      ListOfInpuSectionCommands.cend(),
-                     wordToCheck) != ListOfInpuSectionCommands.cend();
+                     wordToCheckInUpperCase) != ListOfInpuSectionCommands.cend();
 }
 
 bool CParserHelpers::IsIllegalProgramHeaderName(const std::string& wordToCheck)
 {
+    auto wordToCheckInUpperCase = ToUpper(wordToCheck);
     return std::find(ListOfIllegalProgramHeaderNames.cbegin(),
                      ListOfIllegalProgramHeaderNames.cend(),
-                     wordToCheck) != ListOfOutputSectionTypes.cend();
+                     wordToCheckInUpperCase) != ListOfOutputSectionTypes.cend();
 }
 
 bool CParserHelpers::IsLegalProgramHeaderType(const std::string& wordToCheck)
 {
+    auto wordToCheckInUpperCase = ToUpper(wordToCheck);
     return std::find(ListOfProgramHeaderTypes.cbegin(),
                      ListOfProgramHeaderTypes.cend(),
-                     wordToCheck) != ListOfOutputSectionTypes.cend();
+                     wordToCheckInUpperCase) != ListOfOutputSectionTypes.cend();
 }
 
 bool CParserHelpers::IsSectionOutputType(const std::string& wordToCheck)
 {
+    auto wordToCheckInUpperCase = ToUpper(wordToCheck);
     return std::find(ListOfOutputSectionTypes.cbegin(),
                      ListOfOutputSectionTypes.cend(),
-                     wordToCheck) != ListOfOutputSectionTypes.cend();
+                     wordToCheckInUpperCase) != ListOfOutputSectionTypes.cend();
 }
 
 bool CParserHelpers::IsFunctionName(const std::string& wordToCheck)
 {
+    auto wordToCheckInUpperCase = ToUpper(wordToCheck);
     return std::find(ListOfFunctionNames.cbegin(),
                      ListOfFunctionNames.cend(),
-                     wordToCheck) != ListOfFunctionNames.cend();
+                     wordToCheckInUpperCase) != ListOfFunctionNames.cend();
 }
 
 bool CParserHelpers::IsAssignmentProcedure(const std::string& wordToCheck)
 {
+    auto wordToCheckInUpperCase = ToUpper(wordToCheck);
     return std::find(ListOfAssignmentCommandNames.cbegin(),
                      ListOfAssignmentCommandNames.cend(),
-                     wordToCheck) != ListOfAssignmentCommandNames.cend();
+                     wordToCheckInUpperCase) != ListOfAssignmentCommandNames.cend();
 }
 
 bool CParserHelpers::IsAssignmentOperator(const std::string& operatorToCheck)
@@ -307,4 +327,18 @@ bool CParserHelpers::IsTernaryOperator(const std::string& operatorToCheck)
     return std::find(ListOfTernaryOperators.cbegin(),
                      ListOfTernaryOperators.cend(),
                      operatorToCheck) != ListOfTernaryOperators.cend();
+}
+
+bool CParserHelpers::StringCompare(const std::string& a, const std::string& b, bool caseSensitive)
+{
+    if (caseSensitive)
+    {
+        return a == b;
+    }
+
+    return std::equal(a.begin(), a.end(),
+                      b.begin(), b.end(),
+                      [](char a, char b) {
+                          return tolower(a) == tolower(b);
+                      });
 }

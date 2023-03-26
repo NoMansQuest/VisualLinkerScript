@@ -39,23 +39,6 @@ namespace
     };
 }
 
-/*
- *
- * section [startAddress] [Block(align)] [(type)] :
- *   [AT(lma)]
- *   [ALIGN(section_align) | ALIGN_WITH_INPUT]
- *   [SUBALIGN(subsection_align)]
- *   [constraint]
- *   {
- *       - a symbol assignment (refer to Section 4.5 Assigning Values to Symbols)
- *       - an input section description (refer to Section 4.6.4 Input Section Description)
- *       - data values to include directly (refer to Section 4.6.5 Output Section Data)
- *       - a special output section keyword (refer to Section 4.6.6 Output Section Keywords)
- *     …
- *   } [>region] [AT>lma_region] [:phdr :phdr …] [=fillexp] [,]
- *
- */
-
 std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
         CRawFile& linkerScriptFile,
         std::vector<CRawEntry>::const_iterator& iterator,

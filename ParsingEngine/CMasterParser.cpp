@@ -1,13 +1,15 @@
 #include "CMasterParser.h"
 #include "Models/CComment.h"
+#include <algorithm>
 
 #include "CMasterParserException.h"
 #include "SubParsers/CAssignmentParser.h"
-#include "SubParsers/CDefaultParser.h"
 #include "SubParsers/CMemoryRegionParser.h"
+#include "SubParsers/CFunctionParser.h"
 #include "SubParsers/CPhdrsRegionParser.h"
 #include "SubParsers/CSectionsRegionParser.h"
 #include "SubParsers/CSubParserBase.h"
+#include "SubParsers/Constants.h"
 #include "SubParsers/CVersionRegionParser.h"
 #include "SubParsers/CSectionOverlayParser.h"
 
@@ -28,78 +30,77 @@ std::shared_ptr<CLinkerScriptFile> CMasterParser::ProcessLinkerScriptFile(std::s
     CMemoryParserRegion memoryParserRegion;
     CSectionsRegionParser sectionsRegionParser;
     CVersionRegionParser versionRegionParser;
-    CDefaultParser defaultParser;
+    CFunctionParser singleParameterFunctionParser;
+    CFunctionParser multiParameterFunctionParser(false, true);
 
+    std::vector<CRawEntry>::const_iterator localIterator =  rawFile->Content().cbegin();
+    std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition =  rawFile->Content().cbegin();
+    std::vector<CRawEntry>::const_iterator endOfVectorIterator = rawFile->Content().cend();
     std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
     std::vector<CViolation> violations;
-    auto iterator = rawFile->Content().cbegin();
-    auto iteratorEnding = rawFile->Content().cend();
 
-    while (iterator != rawFile->Content().cend())
-    {   
-        auto rawEntry = *iterator;
-        std::vector<CRawEntry>::const_iterator preParsingIterator = iterator;
+    while (localIterator != endOfVectorIterator)
+    {
+        auto resolvedContent = rawFile->ResolveRawEntry(*localIterator);
 
-        switch (rawEntry.EntryType())
+        switch (localIterator->EntryType())
         {
             case RawEntryType::Comment:
             {
-                auto comment = std::shared_ptr<CComment>(new CComment({rawEntry},{}));
-                parsedContent.emplace_back(comment);
+                parsedContent.emplace_back(std::shared_ptr<CComment>(new CComment({*localIterator},{})));
                 break;
             }
 
             case RawEntryType::Word:
             {
+                if (CParserHelpers::StringCompare(resolvedContent, "MEMORY", false))
+                {
+
+                }
+                else if (CParserHelpers::StringCompare(resolvedContent, "SECTIONS", false))
+                {
+
+                }
+                else if (CParserHelpers::StringCompare(resolvedContent, "VERSION", false))
+                {
+
+                }
+                else
+                {
+                    // These would be special function calls
+                    if ()
+
+                }
+
                 break;
             }
 
-            case RawEntryType::String:
-            {
-
-            }
-
-            case RawEntryType::Operator:
-            case RawEntryType::Assignment:
-            case RawEntryType::Number:            
             case RawEntryType::ParenthesisOpen:
             case RawEntryType::ParenthesisClose:
             case RawEntryType::BracketOpen:
             case RawEntryType::BracketClose:
+            case RawEntryType::Operator:
+            case RawEntryType::Assignment:
+            case RawEntryType::Number:
+            case RawEntryType::String:
             case RawEntryType::Unknown:
             {
-                /*
-                std::shared_ptr<CLinkerScriptContentBase> returnedContent;
-
-                for (auto parser: this->m_subParsers)
-                {                    
-                    returnedContent = parser->TryParse( *rawFile, iterator, iteratorEnding);
-                    if (returnedContent == nullptr)
-                    {
-                        continue;
-                    }
-                }
-
-                if (returnedContent == nullptr)
-                {
-                    throw CMasterParsingException(MasterParsingExceptionType::NoParserWasAbleToProceed);
-                }
-
-                parsedContent.emplace_back(returnedContent);
-                */
+                violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
                 break;
             }
 
             case RawEntryType::NotPresent:
-            {
-                throw CMasterParsingException(MasterParsingExceptionType::NotPresentEntryDetected);
-            }
+                throw CMasterParsingException(
+                        MasterParsingExceptionType::NotPresentEntryDetected,
+                        "A 'non-present' entry was detected.");
 
-            default:    
-            {
-                throw CMasterParsingException(MasterParsingExceptionType::UnrecognizableRawEntryTypeValueFound);
-            }
+            default:
+                throw CMasterParsingException(
+                        MasterParsingExceptionType::UnrecognizableRawEntryTypeValueFound,
+                        "Unrecognized raw-entry type detected.");
         }
+
+        localIterator++;
     }
 
     return std::make_shared<CLinkerScriptFile>(rawFile, std::move(parsedContent), std::move(violations));

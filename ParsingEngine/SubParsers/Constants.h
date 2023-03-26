@@ -51,6 +51,9 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
 
         /// @brief Checks if the given word is an Output-Section special function name (e.g. CREATE_OBJECT_SYMBOLS)
         static bool IsInputSectionSpecialFunctionName(const std::string& wordToCheck);
+
+        /// @brief Compares strings
+        static bool StringCompare(const std::string& a, const std::string& b, bool caseSensitive);
     };    
 }
 

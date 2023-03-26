@@ -170,6 +170,15 @@ std::shared_ptr<CInputSectionStatement> CInputSectionStatementParser::TryParse(
             }
 
             case RawEntryType::Operator:
+            {
+                // We ignore commas
+                if ((parserState != ParserState::AwaitingParenthesisClosure) || (resolvedContent != ","))
+                {
+                    violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
+                }
+                break;
+            }
+
             case RawEntryType::Assignment:
             case RawEntryType::Number:
             case RawEntryType::String:
