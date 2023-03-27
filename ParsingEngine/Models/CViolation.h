@@ -87,6 +87,12 @@ namespace VisualLinkerScript::ParsingEngine::Models
         InvalidParentScope,
         ParentScopeIsAlreadyDefined,
 
+        // Master Parser Errors
+        MemoryRegionParsingFailed,
+        SectionsRegionParsingFailed,
+        PhdrsRegionParsingFailed,
+        VersionRegionParsingFailed,
+
         // General violations:
         FunctionMissingDefinitionOrInvalidSymbolName,
         MissingOpeningCurlyBracket,

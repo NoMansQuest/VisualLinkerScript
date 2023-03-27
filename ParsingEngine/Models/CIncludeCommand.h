@@ -16,9 +16,9 @@ namespace VisualLinkerScript::ParsingEngine::Models
     public:
         /// @brief Default constructor, accessible to inheritors only
         explicit CIncludeCommand(CRawEntry includeCommandHeaderEntry,
-                               CRawEntry includeFileEntry,
-                               std::vector<CRawEntry>&& rawElements,
-                               std::vector<CViolation>&& violations)
+                                 CRawEntry includeFileEntry,
+                                 std::vector<CRawEntry>&& rawElements,
+                                 std::vector<CViolation>&& violations)
             : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
               m_includeCommandHeaderEntry(includeCommandHeaderEntry),
               m_includeFileEntry(includeFileEntry)
@@ -30,7 +30,6 @@ namespace VisualLinkerScript::ParsingEngine::Models
         {
             return ContentType::ProcedureCall;
         }
-
 
         /// @brief Reports the entry contianing the "INCLUDE" part
         const CRawEntry& IncludeCommandHeaderEntry()

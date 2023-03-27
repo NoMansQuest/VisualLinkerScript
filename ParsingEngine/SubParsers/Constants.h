@@ -54,7 +54,10 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
 
         /// @brief Compares strings
         static bool StringCompare(const std::string& a, const std::string& b, bool caseSensitive);
-    };    
+
+        /// @brief Searches for a given string in a vector to see if it is present.
+        static bool StringIn(const std::string& a, std::vector<std::string>&& listToCheck, bool caseSensitive);
+    };
 }
 
 #endif // CONSTANTS_H

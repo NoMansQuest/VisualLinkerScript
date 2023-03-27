@@ -9,6 +9,7 @@
 #include "SubParsers/CPhdrsRegionParser.h"
 #include "SubParsers/CSectionsRegionParser.h"
 #include "SubParsers/CSubParserBase.h"
+#include "Models/CIncludeCommand.h"
 #include "SubParsers/Constants.h"
 #include "SubParsers/CVersionRegionParser.h"
 #include "SubParsers/CSectionOverlayParser.h"
@@ -42,6 +43,15 @@ std::shared_ptr<CLinkerScriptFile> CMasterParser::ProcessLinkerScriptFile(std::s
     while (localIterator != endOfVectorIterator)
     {
         auto resolvedContent = rawFile->ResolveRawEntry(*localIterator);
+        CRawEntry rawEntryPlusOne;
+        std::string resolvedContentPlusOne;
+        if (localIterator + 1 != endOfVectorIterator)
+        {
+            rawEntryPlusOne = *(localIterator+1);
+            resolvedContentPlusOne = rawFile->ResolveRawEntry(rawEntryPlusOne);
+        }
+
+        auto resolvedContentPl = rawFile->ResolveRawEntry(*localIterator);
 
         switch (localIterator->EntryType())
         {
@@ -55,21 +65,93 @@ std::shared_ptr<CLinkerScriptFile> CMasterParser::ProcessLinkerScriptFile(std::s
             {
                 if (CParserHelpers::StringCompare(resolvedContent, "MEMORY", false))
                 {
-
+                    auto parsedMemoryRegion = memoryParserRegion.TryParse(*rawFile, localIterator, endOfVectorIterator);
+                    if (parsedMemoryRegion == nullptr)
+                    {
+                        violations.emplace_back(CViolation(*localIterator, ViolationCode::MemoryRegionParsingFailed));
+                    }
+                    else
+                    {
+                        parsedContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(parsedMemoryRegion));
+                    }
+                    break;
                 }
                 else if (CParserHelpers::StringCompare(resolvedContent, "SECTIONS", false))
                 {
-
+                    auto parsedSectionsRegion = sectionsRegionParser.TryParse(*rawFile, localIterator, endOfVectorIterator);
+                    if (parsedSectionsRegion == nullptr)
+                    {
+                        violations.emplace_back(CViolation(*localIterator, ViolationCode::SectionsRegionParsingFailed));
+                    }
+                    else
+                    {
+                        parsedContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(parsedSectionsRegion));
+                    }
+                    break;
+                }
+                else if (CParserHelpers::StringCompare(resolvedContent, "PHDRS", false))
+                {
+                    auto parsedPhdrsRegion = sectionsRegionParser.TryParse(*rawFile, localIterator, endOfVectorIterator);
+                    if (parsedPhdrsRegion == nullptr)
+                    {
+                        violations.emplace_back(CViolation(*localIterator, ViolationCode::PhdrsRegionParsingFailed));
+                    }
+                    else
+                    {
+                        parsedContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(parsedPhdrsRegion));
+                    }
+                    break;
                 }
                 else if (CParserHelpers::StringCompare(resolvedContent, "VERSION", false))
                 {
-
+                    auto parsedVersionRegion = sectionsRegionParser.TryParse(*rawFile, localIterator, endOfVectorIterator);
+                    if (parsedVersionRegion == nullptr)
+                    {
+                        violations.emplace_back(CViolation(*localIterator, ViolationCode::VersionRegionParsingFailed));
+                    }
+                    else
+                    {
+                        parsedContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(parsedVersionRegion));
+                    }
+                    break;
                 }
                 else
                 {
                     // These would be special function calls
-                    if ()
-
+                    if (CParserHelpers::StringCompare(resolvedContent, "INCLUDE", false) &&
+                        rawEntryPlusOne.IsPresent() &&
+                        ((rawEntryPlusOne.EntryType() == RawEntryType::String) || (rawEntryPlusOne.EntryType() == RawEntryType::Word)))
+                    {
+                        parsedContent.emplace_back(CIncludeCommand(*localIterator, rawEntryPlusOne, {*localIterator, rawEntryPlusOne},{}));
+                    }
+                    else if (CParserHelpers::StringIn(resolvedContent, {"INPUT", "GROUP", "AS_NEEDED",}, false))
+                    {
+                        auto parsedMultiParamFunctionCall = multiParameterFunctionParser.TryParse(*rawFile, localIterator, endOfVectorIterator);
+                        if (parsedMultiParamFunctionCall == nullptr)
+                        {
+                            violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
+                        }
+                        else
+                        {
+                            parsedContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(parsedMultiParamFunctionCall));
+                        }
+                    }
+                    else if (CParserHelpers::StringIn(resolvedContent, {"OUTPUT","SEARCH_DIR", "STARTUP"}, false))
+                    {
+                        auto parsedSingleParamFunctionCall = singleParameterFunctionParser.TryParse(*rawFile, localIterator, endOfVectorIterator);
+                        if (parsedSingleParamFunctionCall == nullptr)
+                        {
+                            violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
+                        }
+                        else
+                        {
+                            parsedContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(parsedSingleParamFunctionCall));
+                        }
+                    }
+                    else
+                    {
+                        violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
+                    }
                 }
 
                 break;
