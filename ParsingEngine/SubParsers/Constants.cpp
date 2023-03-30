@@ -338,20 +338,21 @@ bool CParserHelpers::StringCompare(const std::string& a, const std::string& b, b
 
     return std::equal(a.begin(), a.end(),
                       b.begin(), b.end(),
-                      [](char a, char b) {
-                          return tolower(a) == tolower(b);
+                      [](char leftStringChar, char rightStringChar) {
+                          return std::tolower(leftStringChar) == std::tolower(rightStringChar);
                       });
 }
 
 bool CParserHelpers::StringIn(const std::string& a, std::vector<std::string>&& listToCheck, bool caseSensitive)
 {
-    return std::find(
-                std::begin(listToCheck),
-                std::end(listToCheck),
-                [&](std::string& vectorEntry)
+    for (const auto &vectorEntry: listToCheck)
     {
-       return CParserHelpers::StringCompare(a, vectorEntry, caseSensitive);
-    }) != std::end(listToCheck);
+        if (CParserHelpers::StringCompare(a, vectorEntry, true))
+        {
+            return true;
+        }
+    }
+    return true;
 }
 
 

@@ -8,11 +8,9 @@
 #include "SubParsers/CFunctionParser.h"
 #include "SubParsers/CPhdrsRegionParser.h"
 #include "SubParsers/CSectionsRegionParser.h"
-#include "SubParsers/CSubParserBase.h"
 #include "Models/CIncludeCommand.h"
 #include "SubParsers/Constants.h"
 #include "SubParsers/CVersionRegionParser.h"
-#include "SubParsers/CSectionOverlayParser.h"
 
 #include "Models/CLinkerScriptContentBase.h"
 #include "Models/Raw/RawEntryType.h"
@@ -91,7 +89,7 @@ std::shared_ptr<CLinkerScriptFile> CMasterParser::ProcessLinkerScriptFile(std::s
                 }
                 else if (CParserHelpers::StringCompare(resolvedContent, "PHDRS", false))
                 {
-                    auto parsedPhdrsRegion = sectionsRegionParser.TryParse(*rawFile, localIterator, endOfVectorIterator);
+                    auto parsedPhdrsRegion = phdrsRegionParser.TryParse(*rawFile, localIterator, endOfVectorIterator);
                     if (parsedPhdrsRegion == nullptr)
                     {
                         violations.emplace_back(CViolation(*localIterator, ViolationCode::PhdrsRegionParsingFailed));
@@ -104,7 +102,7 @@ std::shared_ptr<CLinkerScriptFile> CMasterParser::ProcessLinkerScriptFile(std::s
                 }
                 else if (CParserHelpers::StringCompare(resolvedContent, "VERSION", false))
                 {
-                    auto parsedVersionRegion = sectionsRegionParser.TryParse(*rawFile, localIterator, endOfVectorIterator);
+                    auto parsedVersionRegion = versionRegionParser.TryParse(*rawFile, localIterator, endOfVectorIterator);
                     if (parsedVersionRegion == nullptr)
                     {
                         violations.emplace_back(CViolation(*localIterator, ViolationCode::VersionRegionParsingFailed));
@@ -122,9 +120,11 @@ std::shared_ptr<CLinkerScriptFile> CMasterParser::ProcessLinkerScriptFile(std::s
                         rawEntryPlusOne.IsPresent() &&
                         ((rawEntryPlusOne.EntryType() == RawEntryType::String) || (rawEntryPlusOne.EntryType() == RawEntryType::Word)))
                     {
-                        parsedContent.emplace_back(CIncludeCommand(*localIterator, rawEntryPlusOne, {*localIterator, rawEntryPlusOne},{}));
+                        auto parsedIncludeCommand = std::shared_ptr<CIncludeCommand>(
+                                    new CIncludeCommand(*localIterator, rawEntryPlusOne, {*localIterator, rawEntryPlusOne},{}));
+                        parsedContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(parsedIncludeCommand));
                     }
-                    else if (CParserHelpers::StringIn(resolvedContent, {"INPUT", "GROUP", "AS_NEEDED",}, false))
+                    else if (CParserHelpers::StringIn(resolvedContent, {"INPUT", "GROUP", "AS_NEEDED"}, false))
                     {
                         auto parsedMultiParamFunctionCall = multiParameterFunctionParser.TryParse(*rawFile, localIterator, endOfVectorIterator);
                         if (parsedMultiParamFunctionCall == nullptr)
