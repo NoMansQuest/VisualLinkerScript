@@ -9,6 +9,8 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    Compiler/CCompiler.cpp \
+    Compiler/ExpressionEvaluation/CExpressionEvaluator.cpp \
     Components/QScintilla/ComponentHelpers.cpp \
     Components/QScintilla/scintilla/lexers/LexCPP.cpp \
     Components/QScintilla/scintilla/lexers/LexLinkerScript.cpp \
@@ -95,6 +97,18 @@ SOURCES += \
     mainwindow.cpp
 
 HEADERS += \
+    Compiler/CCompiler.h \
+    Compiler/ExpressionEvaluation/ArithmeticOperationType.h \
+    Compiler/ExpressionEvaluation/CArithmeticResultOp.h \
+    Compiler/ExpressionEvaluation/CCompoundResult.h \
+    Compiler/ExpressionEvaluation/CEvaluatableBase.h \
+    Compiler/ExpressionEvaluation/CExpressionEvaluator.h \
+    Compiler/ExpressionEvaluation/CNumericResult.h \
+    Compiler/ExpressionEvaluation/CResultBase.h \
+    Compiler/ExpressionEvaluation/CSymbolResult.h \
+    Compiler/ExpressionEvaluation/EvaluationResultType.h \
+    Compiler/FunctionEvaluation/CFunctionEvaluatorBase.h \
+    Compiler/ProcedureExecution/CProcedureExecutorBase.h \
     Components/QScintilla/ComponentHelpers.h \
     Components/QScintilla/scintilla/include/ILexer.h \
     Components/QScintilla/scintilla/include/ILoader.h \
@@ -230,14 +244,6 @@ HEADERS += \
     ParsingEngine/Models/CVersionTag.h \
     ParsingEngine/Models/CVersionsRegion.h \
     ParsingEngine/Models/CViolation.h \
-    ParsingEngine/Models/Evaluation/ArithmeticOperationType.h \
-    ParsingEngine/Models/Evaluation/CArithmeticResultOp.h \
-    ParsingEngine/Models/Evaluation/CCompoundResult.h \
-    ParsingEngine/Models/Evaluation/CEvaluatableBase.h \
-    ParsingEngine/Models/Evaluation/CNumericResult.h \
-    ParsingEngine/Models/Evaluation/CResultBase.h \
-    ParsingEngine/Models/Evaluation/CSymbolResult.h \
-    ParsingEngine/Models/Evaluation/EvaluationResultType.h \
     ParsingEngine/Models/Raw/CRawEntry.h \
     ParsingEngine/Models/Raw/CRawFile.h \
     ParsingEngine/Models/Raw/RawEntryType.h \
@@ -281,14 +287,6 @@ HEADERS += \
     ParsingEngine/Models/CVersionScope.h \
     ParsingEngine/Models/CVersionsRegion.h \
     ParsingEngine/Models/CViolation.h \
-    ParsingEngine/Models/Evaluation/ArithmeticOperationType.h \
-    ParsingEngine/Models/Evaluation/CArithmeticResultOp.h \
-    ParsingEngine/Models/Evaluation/CCompoundResult.h \
-    ParsingEngine/Models/Evaluation/CEvaluatableBase.h \
-    ParsingEngine/Models/Evaluation/CNumericResult.h \
-    ParsingEngine/Models/Evaluation/CResultBase.h \
-    ParsingEngine/Models/Evaluation/CSymbolResult.h \
-    ParsingEngine/Models/Evaluation/EvaluationResultType.h \
     ParsingEngine/Models/Raw/CRawEntry.h \
     ParsingEngine/Models/Raw/CRawFile.h \
     ParsingEngine/Models/CSectionOverlayCommand.h \
