@@ -90,8 +90,8 @@ MainWindow::MainWindow(QWidget *parent)
                 break;
         }
 
-       /*
-        auto formatTemplate = "Type: %1\t\t, From line %2\t to %3\t, BytePos: %4\t (%5\t bytes). P-Depth: %6\t, S-Depth: %7\t Content: %8\n";
+
+        /*auto formatTemplate = "Type: %1\t\t, From line %2\t to %3\t, BytePos: %4\t (%5\t bytes). P-Depth: %6\t, S-Depth: %7\t Content: %8\n";
         auto formattedOutput = QString(formatTemplate)
                 .arg(translatedType)
                 .arg(entry.StartLineNumber())
@@ -102,8 +102,8 @@ MainWindow::MainWindow(QWidget *parent)
                 .arg(entry.ScopeDepth())
                 .arg(fileContent.mid(entry.StartPosition(), entry.Length()));
 
-        debugOutput.append(formattedOutput);
-        */
+        debugOutput.append(formattedOutput);*/
+
         debugOutput.append(fileContent.mid(entry.StartPosition(), entry.Length()));
     }
 

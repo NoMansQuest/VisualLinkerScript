@@ -73,6 +73,7 @@ SOURCES += \
     Components/QScintilla/src/qsciscintillabase.cpp \
     Components/QScintilla/src/qscistyle.cpp \
     Components/QScintilla/src/qscistyledtext.cpp \
+    DrcEngine/DrcEngineManager.cpp \    
     ParsingEngine/CMasterParser.cpp \
     ParsingEngine/CPreliminaryParser.cpp \
     ParsingEngine/SubParsers/CAssignmentParser.cpp \
@@ -174,6 +175,8 @@ HEADERS += \
     Components/QScintilla/src/SciAccessibility.h \
     Components/QScintilla/src/SciClasses.h \
     Components/QScintilla/src/ScintillaQt.h \
+    DrcEngine/DrcEngineManager.h \
+    DrcEngine/Rules/DrcRuleBase.h \
     Models/LinkerScript/CLinkerScriptEntity.h \
     Models/LinkerScript/CMemoryEntry.h \
     Models/LinkerScript/CMemoryRegion.h \

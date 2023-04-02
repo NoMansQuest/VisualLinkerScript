@@ -399,14 +399,12 @@ std::shared_ptr<CRawFile> CPreliminaryParser::ProcessLinkerScript(const std::str
                         parsedContent.emplace_back(CRawEntry(entyType, lineNumber, scanPosition, 1, parenthesisDepth, scopeDepth));
                     }
                 }
-
-                if (CanCharBeStartOfWord(currentCharacter))
+                else if (CanCharBeStartOfWord(currentCharacter))
                 {
                     entryStartPosition = scanPosition;
                     entryStartLine = lineNumber;
                     currentState = ParserStates::InWord;
                     scanPosition--;
-                    break;
                 }
 
                 break;
