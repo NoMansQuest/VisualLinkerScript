@@ -12,16 +12,42 @@
 using namespace VisualLinkerScript::ParsingEngine;
 using namespace VisualLinkerScript::ParsingEngine::Models;
 
+void ConstructUi(MainWindow& mainWindow);
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);    
-    this->scintilla = new QsciScintilla;
-    Components::QScintilla::SetComponentStyles(*this->scintilla);    
+    this->BuildUserInterface();
+}
+
+
+void MainWindow::BuildUserInterface()
+{
+    // Build Scintilla Editor
+    this->m_scintilla = new QsciScintilla;
+    Components::QScintilla::SetComponentStyles(*this->m_scintilla);
     auto lexer = new QsciLexerLinkerScript;
-    this->scintilla->setLexer((QsciLexer*)lexer);
-    ui->splitter->addWidget(this->scintilla);    
+    this->m_scintilla->setLexer((QsciLexer*)lexer);
+
+    // Add widget to Layout
+    this->m_leftSegmentVerticalSpliter = new QSplitter();
+    this->m_centralWidget = new QWidget();
+    this->m_leftSegmentCentralWidget = new QWidget();
+    this->m_leftSegmentCentralHBoxLayout = new QHBoxLayout();
+    this->m_rightSegmentCentralWidget = new QWidget();
+    this->m_rightSegmentCentralHBoxLayout = new QHBoxLayout();
+    this->m_mainViewHorizontalSplitter = new QSplitter();
+    this->m_issueTreeView = new QTreeView();
+    this->m_mainViewHorizontalSplitter->addWidget(this->m_leftSegmentCentralWidget);
+    this->m_mainViewHorizontalSplitter->addWidget(this->m_rightSegmentCentralWidget);
+    this->m_leftSegmentCentralWidget->setLayout(this->m_leftSegmentCentralHBoxLayout);
+    this->m_rightSegmentCentralWidget->setLayout(this->m_rightSegmentCentralHBoxLayout);
+
+    ui->mainGridLayout->addWidget(this->scintilla, 0, 0, Qt::AlignCenter);
+    //ui->mainGriLayout->
+
 
     // OK, We need to generate the content here
     CPreliminaryParser preliminaryParser;
@@ -34,7 +60,7 @@ MainWindow::MainWindow(QWidget *parent)
     auto contentToAnalyze = preliminaryParseResult->Content();
 
     // Generate result
-    QString debugOutput = "";    
+    QString debugOutput = "";
     for (auto entry: contentToAnalyze)
     {
         QString translatedType;
@@ -90,7 +116,6 @@ MainWindow::MainWindow(QWidget *parent)
                 break;
         }
 
-
         /*auto formatTemplate = "Type: %1\t\t, From line %2\t to %3\t, BytePos: %4\t (%5\t bytes). P-Depth: %6\t, S-Depth: %7\t Content: %8\n";
         auto formattedOutput = QString(formatTemplate)
                 .arg(translatedType)
@@ -118,7 +143,11 @@ MainWindow::MainWindow(QWidget *parent)
     this->scintilla->setText(debugOutput);
 }
 
+
 MainWindow::~MainWindow()
 {
     delete ui;
 }
+
+
+
