@@ -1,0 +1,11 @@
+@baseM1Background = #ff1d1d1d
+@baseBackground = #ff1e1e1e
+@paperBackground = #ff1e1e1e
+@constrast5pc = #0cffffff
+@constrast7pc = #11ffffff
+@constrast10pc = #19ffffff
+@constrast13pc = #21ffffff
+@constrast16pc = #28ffffff
+@constrast20pc = #33ffffff
+@constrast24pc = #3dffffff
+@constrast28pc = #49ffffff

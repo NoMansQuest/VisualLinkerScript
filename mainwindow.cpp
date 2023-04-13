@@ -32,22 +32,36 @@ void MainWindow::BuildUserInterface()
     this->m_scintilla->setLexer((QsciLexer*)lexer);
 
     // Add widget to Layout
-    this->m_leftSegmentVerticalSpliter = new QSplitter();
-    this->m_centralWidget = new QWidget();
-    this->m_leftSegmentCentralWidget = new QWidget();
-    this->m_leftSegmentCentralHBoxLayout = new QHBoxLayout();
-    this->m_rightSegmentCentralWidget = new QWidget();
-    this->m_rightSegmentCentralHBoxLayout = new QHBoxLayout();
-    this->m_mainViewHorizontalSplitter = new QSplitter();
-    this->m_issueTreeView = new QTreeView();
-    this->m_mainViewHorizontalSplitter->addWidget(this->m_leftSegmentCentralWidget);
-    this->m_mainViewHorizontalSplitter->addWidget(this->m_rightSegmentCentralWidget);
-    this->m_leftSegmentCentralWidget->setLayout(this->m_leftSegmentCentralHBoxLayout);
-    this->m_rightSegmentCentralWidget->setLayout(this->m_rightSegmentCentralHBoxLayout);
+    this->m_memoryVisualizer = new QWidget;
+    this->m_centralWidgetLayout = new QHBoxLayout;
+    this->m_centralWidgetVSplitter = new QSplitter;
+    this->m_centralWidgetVSplitter->setHandleWidth(10);
+    this->m_topHalfWidget = new QWidget;
+    this->m_topHalfWidgetHSplitter = new QSplitter;
+    this->m_topHalfWidgetHSplitter->setHandleWidth(10);
+    this->m_topHalfWidgetLayout = new QHBoxLayout;
+    this->m_bottomHalfWidgetLayout = new QHBoxLayout;
+    this->m_bottomtHalfWidget = new QWidget;
+    this->m_issuesTreeView = new QTreeView;
 
-    ui->mainGridLayout->addWidget(this->scintilla, 0, 0, Qt::AlignCenter);
-    //ui->mainGriLayout->
+    this->m_topHalfWidgetHSplitter->setOrientation(Qt::Orientation::Horizontal);
+    this->m_topHalfWidgetHSplitter->addWidget(this->m_scintilla);
+    this->m_topHalfWidgetHSplitter->addWidget(this->m_memoryVisualizer);
+    //this->m_topHalfWidgetHSplitter->addWidget(this->_)
+    this->m_topHalfWidgetLayout->addWidget(this->m_topHalfWidgetHSplitter);
+    this->m_topHalfWidget->setLayout(this->m_topHalfWidgetLayout);
+    this->m_centralWidgetVSplitter->setOrientation(Qt::Orientation::Vertical);
+    this->m_centralWidgetVSplitter->addWidget(this->m_topHalfWidget);
+    this->m_bottomHalfWidgetLayout->addWidget(this->m_issuesTreeView);
+    this->m_bottomtHalfWidget->setLayout(this->m_bottomHalfWidgetLayout);
+    this->m_centralWidgetVSplitter->addWidget(this->m_bottomtHalfWidget);
+    this->m_centralWidgetLayout->addWidget(this->m_centralWidgetVSplitter);
+    this->ui->centralwidget->setLayout(this->m_centralWidgetLayout);
 
+    this->ui->centralwidget->setObjectName("baseM1");
+    this->m_bottomtHalfWidget->setObjectName("baseM1");
+    this->m_topHalfWidget->setObjectName("baseM1");
+    this->m_memoryVisualizer->setObjectName("baseM1");
 
     // OK, We need to generate the content here
     CPreliminaryParser preliminaryParser;
@@ -140,9 +154,19 @@ void MainWindow::BuildUserInterface()
 
 
     // Produce output.
-    this->scintilla->setText(debugOutput);
+    this->m_scintilla->setText(fileContent);
 }
 
+
+void MainWindow::BuildBottomHalfOfScreen(QWidget* centralWidget)
+{
+
+}
+
+void MainWindow::BuildTopHalfOfScreen(QWidget* centralWidget)
+{
+
+}
 
 MainWindow::~MainWindow()
 {

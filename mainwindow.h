@@ -23,21 +23,23 @@ public:
 
 private slots:
 
-private:
-    /// @brief Constructs user-interface of this window
+private:    
     void BuildUserInterface();
+    void BuildBottomHalfOfScreen(QWidget* centralWidget);
+    void BuildTopHalfOfScreen(QWidget* centralWidget);
 
 private:
-    QWidget* m_centralWidget;
-    QWidget* m_leftSegmentCentralWidget;
-    QHBoxLayout* m_leftSegmentCentralHBoxLayout;
-    QWidget* m_rightSegmentCentralWidget;
-    QHBoxLayout* m_rightSegmentCentralHBoxLayout;
-    QSplitter* m_mainViewHorizontalSplitter;
-    QSplitter* m_leftSegmentVerticalSpliter;
+    QHBoxLayout* m_centralWidgetLayout;
+    QSplitter* m_centralWidgetVSplitter;
+    QWidget* m_topHalfWidget;
+    QHBoxLayout* m_topHalfWidgetLayout;
+    QSplitter* m_topHalfWidgetHSplitter;
+    QWidget* m_bottomtHalfWidget;
+    QHBoxLayout* m_bottomHalfWidgetLayout;
 
+    QWidget* m_memoryVisualizer;
     QsciScintilla* m_scintilla;
-    QTreeView* m_issueTreeView;
+    QTreeView* m_issuesTreeView;
     Ui::MainWindow *ui;
 };
 #endif // MAINWINDOW_H

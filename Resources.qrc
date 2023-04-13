@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/resources">
         <file>Stylesheets/default.qss</file>
+        <file>Stylesheets/colorpalette.txt</file>
     </qresource>
 </RCC>
