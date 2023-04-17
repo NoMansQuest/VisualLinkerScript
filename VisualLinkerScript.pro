@@ -190,7 +190,14 @@ HEADERS += \
     Components/QScintilla/src/SciClasses.h \
     Components/QScintilla/src/ScintillaQt.h \
     DrcEngine/DrcEngineManager.h \
-    DrcEngine/Rules/DrcRuleBase.h \
+    DrcEngine/Rules/CDirectivesDeclaredOnlyOnceRule.h \
+    DrcEngine/Rules/CDrcRuleBase.h \
+    DrcEngine/Rules/CEntryIsDefinedRule.h \
+    DrcEngine/Rules/CInputFilesAreFoundRule.h \
+    DrcEngine/Rules/CLocationCounterCannotGoBackwards.h \
+    DrcEngine/Rules/CNoDuplicateMemoryRegionNameRule.h \
+    DrcEngine/Rules/CSectionsDefinedOnlyOnceRule.h \
+    DrcEngine/Rules/CSymbolsDefinedInAdvance.h \
     Models/LinkerScript/CLinkerScriptEntity.h \
     Models/LinkerScript/CMemoryEntry.h \
     Models/LinkerScript/CMemoryRegion.h \

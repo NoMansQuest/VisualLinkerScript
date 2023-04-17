@@ -35,10 +35,8 @@ void MainWindow::BuildUserInterface()
     this->m_memoryVisualizer = new QWidget;
     this->m_centralWidgetLayout = new QHBoxLayout;
     this->m_centralWidgetVSplitter = new QSplitter;
-    this->m_centralWidgetVSplitter->setHandleWidth(10);
     this->m_topHalfWidget = new QWidget;
     this->m_topHalfWidgetHSplitter = new QSplitter;
-    this->m_topHalfWidgetHSplitter->setHandleWidth(10);
     this->m_topHalfWidgetLayout = new QHBoxLayout;
     this->m_bottomHalfWidgetLayout = new QHBoxLayout;
     this->m_bottomtHalfWidget = new QWidget;
@@ -153,7 +151,7 @@ void MainWindow::BuildUserInterface()
     // Add more information to the output text
 
 
-    // Produce output.
+    // Produce output.    
     this->m_scintilla->setText(fileContent);
 }
 

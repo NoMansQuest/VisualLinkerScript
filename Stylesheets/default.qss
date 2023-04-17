@@ -89,10 +89,30 @@ QScrollBar::sub-page:vertical {
     background: none;
 }
 
+/* QSplitters */
+QSplitter::handle
+{
+    background: @splitterBackground;
+}
+
+QSplitter::handle:horizontal {
+    width: 10px;
+    background: blue;
+    border: 0px;
+    margin: 0px;
+}
+
+QSplitter::handle:vertical {
+    height: 10px;
+    background: blue;
+    border: 0px;
+    margin: 0px;
+}
+
 /* Components */
 QsciScintilla
 {
-    padding-top: 10px;
+    padding: 0px;
     border: 0px solid #000000;
     background: @baseBackground;
 }

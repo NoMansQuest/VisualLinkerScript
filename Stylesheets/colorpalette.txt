@@ -1,6 +1,7 @@
 @baseM1Background = #ff1d1d1d
-@baseBackground = #ff1e1e1e
-@paperBackground = #ff1e1e1e
+@splitterBackground = #ff202020
+@baseBackground = #ff252525
+@paperBackground = #ff292929
 @constrast5pc = #0cffffff
 @constrast7pc = #11ffffff
 @constrast10pc = #19ffffff
