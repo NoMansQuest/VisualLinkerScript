@@ -1,4 +1,3 @@
-
 #include "ComponentHelpers.h"
 #include <QScrollBar>
 #include <QStyle>
@@ -7,15 +6,12 @@
 
 void Components::QScintilla::SetComponentStyles(QsciScintilla& target)
 {
-    // Color styling    
-    target.setWhitespaceBackgroundColor(QColor::fromRgb(0xff1e1e1e));
-    target.setPaper(QColor::fromRgba(0xff1e1e1e));
+    // Color styling            
     target.setCaretForegroundColor(QColor::fromRgba(0xFFF0F0F0));
     target.setColor(QColor::fromRgba(0xffffffff));
 
-
     target.setMargins(2);
-    target.setMarginsBackgroundColor(QColor::fromRgba(0xff1e1e1e));
+    target.setMarginsBackgroundColor(QColor::fromRgba(0xff353535)); // This is equivalent to @level2
     target.setMarginsForegroundColor(QColor::fromRgba(0xff858585));
 
     target.setMarginType(0, QsciScintilla::NumberMargin);

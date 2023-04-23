@@ -11,7 +11,7 @@ namespace VisualLinkerScript::DrcEngine::Rules
     class CDrcRuleBase
     {
     public:
-        void PerformCheck(const CLinkerScriptFile& linkerScriptFile);
+        std::vector<> PerformCheck(const CLinkerScriptFile& linkerScriptFile);
     };
 }
 

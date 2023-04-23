@@ -26,21 +26,43 @@ MainWindow::MainWindow(QWidget *parent)
 void MainWindow::BuildUserInterface()
 {
     // Build Scintilla Editor
-    this->m_scintilla = new QsciScintilla;
-    Components::QScintilla::SetComponentStyles(*this->m_scintilla);
+    this->m_scintilla = new QsciScintilla;    
     auto lexer = new QsciLexerLinkerScript;
     this->m_scintilla->setLexer((QsciLexer*)lexer);
+    this->ui->centralwidget->setObjectName("baseM1");
+    Components::QScintilla::SetComponentStyles(*this->m_scintilla);
 
     // Add widget to Layout
     this->m_memoryVisualizer = new QWidget;
-    this->m_centralWidgetLayout = new QHBoxLayout;
+    this->m_memoryVisualizer->setObjectName("baseM1");
+    this->m_memoryVisualizer->setContentsMargins(0,0,0,0);
+
+    this->m_centralWidgetLayout = new QHBoxLayout;    
+    this->m_centralWidgetLayout->setContentsMargins(0,0,0,0);
+
     this->m_centralWidgetVSplitter = new QSplitter;
+    this->m_centralWidgetVSplitter->setContentsMargins(0,0,0,0);
+
     this->m_topHalfWidget = new QWidget;
+    this->m_topHalfWidget->setObjectName("baseM1");
+    this->m_topHalfWidget->setContentsMargins(0,0,0,0);
+
     this->m_topHalfWidgetHSplitter = new QSplitter;
+    this->m_topHalfWidgetHSplitter->setContentsMargins(0,0,0,0);
+
     this->m_topHalfWidgetLayout = new QHBoxLayout;
-    this->m_bottomHalfWidgetLayout = new QHBoxLayout;
+    this->m_topHalfWidgetLayout->setObjectName("baseM1");
+    this->m_topHalfWidgetLayout->setContentsMargins(0,0,0,0);
+
+    this->m_bottomHalfWidgetLayout = new QHBoxLayout;    
+    this->m_bottomHalfWidgetLayout->setContentsMargins(0,0,0,0);
+
     this->m_bottomtHalfWidget = new QWidget;
+    this->m_bottomtHalfWidget->setObjectName("baseM1");
+    this->m_bottomtHalfWidget->setContentsMargins(0,0,0,0);
+
     this->m_issuesTreeView = new QTreeView;
+    this->m_issuesTreeView->setContentsMargins(0,0,0,0);
 
     this->m_topHalfWidgetHSplitter->setOrientation(Qt::Orientation::Horizontal);
     this->m_topHalfWidgetHSplitter->addWidget(this->m_scintilla);
@@ -55,11 +77,6 @@ void MainWindow::BuildUserInterface()
     this->m_centralWidgetVSplitter->addWidget(this->m_bottomtHalfWidget);
     this->m_centralWidgetLayout->addWidget(this->m_centralWidgetVSplitter);
     this->ui->centralwidget->setLayout(this->m_centralWidgetLayout);
-
-    this->ui->centralwidget->setObjectName("baseM1");
-    this->m_bottomtHalfWidget->setObjectName("baseM1");
-    this->m_topHalfWidget->setObjectName("baseM1");
-    this->m_memoryVisualizer->setObjectName("baseM1");
 
     // OK, We need to generate the content here
     CPreliminaryParser preliminaryParser;

@@ -33,10 +33,8 @@ namespace
     QColor colorVividBlue(185,156,214);
     QColor colorYellow(255,215,4);
     QColor colorVividRed(237,28,36);
-    QColor colorDarkPaper(30,30,30);
+    QColor colorDarkPaper(36,36,36); // Equals to 'Level1' : #ff242424
 }
-
-
 
 // The ctor.
 QsciLexerLinkerScript::QsciLexerLinkerScript(QObject *parent)

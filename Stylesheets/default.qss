@@ -1,4 +1,75 @@
-/* Menu bar and items */
+/*
+ *
+ * Generic background color application
+ *
+ */
+
+QWidget[objectName^="baseM1"]
+{
+    margin: 0px;
+    border: 0px solid #000000;
+    background: @level1;
+}
+
+QWidget[objectName^="baseM2"]
+{
+    margin: 0px;
+    border: 0px solid #000000;
+    background: @level2;
+}
+
+QWidget[objectName^="baseM3"]
+{
+    margin: 0px;
+    border: 0px solid #000000;
+    background: @level3;
+}
+
+QWidget[objectName^="baseM4"]
+{
+    margin: 0px;
+    border: 0px solid #000000;
+    background: @level4;
+}
+
+QWidget[objectName^="baseM5"]
+{
+    margin: 0px;
+    border: 0px solid #000000;
+    background: @level5;
+}
+
+QWidget[objectName^="baseM6"]
+{
+    margin: 0px;
+    border: 0px solid #000000;
+    background: @level6;
+}
+
+QWidget[objectName^="baseM7"]
+{
+    margin: 0px;
+    border: 0px solid #000000;
+    background: @level4;
+}
+
+QWidget[objectName^="baseM8"]
+{
+    margin: 0px;
+    border: 0px solid #000000;
+    background: @level4;
+}
+
+
+
+
+
+
+/*
+ *
+ * Menu bar and items
+ *
+ */
 QMenuBar 
 {    
     padding-left: 5px;
@@ -6,7 +77,7 @@ QMenuBar
     padding-right: 5px;
     padding-bottom: 2px;
     border-top: 1px solid #E0E0E0;
-    background: #2c2c2c;
+    background: @baseBackground;
     font-family: 'Segoe UI' ;
     font-size: 10pt;
 }
@@ -18,7 +89,7 @@ QMenuBar::item
     padding-top: 1px;
     padding-bottom: 1px;
     background: transparent;
-    color: #E0E0E0;
+    color: @controlActiveTextColor;
 }
 
 QMenuBar::item:selected
@@ -28,8 +99,8 @@ QMenuBar::item:selected
     padding-top: 4px;
     padding-bottom: 4px;
     border: 0px solid @baseBackground;
-    background: #23FFFFFF;
-    color: #E0E0E0;
+    background: @level1;
+    color: @controlActiveTextColor;
 }
 
 QMenu
@@ -39,18 +110,35 @@ QMenu
     padding-top: 6px;
     padding-bottom: 6px;
     border: 0px solid @baseBackground;
-    background: #23FFFFFF;
-    color: #E0E0E0;
+    background: @level1;
+    color: @controlActiveTextColor;
 }
 
-/* Scroll Bars */
+QMenu:selected
+{
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    border: 0px solid @baseBackground;
+    background: @level2;
+    color: @controlActiveTextColor;
+}
+
+
+/*
+ *
+ * Scroll Bars
+ *
+ */
 QScrollBar {
-    background: @baseBackground;
+    background: @level2;
     border-radius: 0px;
 }
 
 QScrollBar:horizontal {
     height: 13px;
+    background: @level1;
 }
 
 QScrollBar:vertical {
@@ -58,12 +146,12 @@ QScrollBar:vertical {
 }
 
 QScrollBar::handle {
-    background: #33ffffff;
+    background: @level3;
     border-radius: 0px; 
 }
 
 QScrollBar::handle:hover {
-    background: #49ffffff;    
+    background: @level4;
 }
 
 QScrollBar::handle:horizontal {
@@ -89,38 +177,56 @@ QScrollBar::sub-page:vertical {
     background: none;
 }
 
-/* QSplitters */
+/*
+ *
+ * Splitters
+ *
+ */
 QSplitter::handle
 {
     background: @splitterBackground;
 }
 
 QSplitter::handle:horizontal {
-    width: 10px;
-    background: blue;
+    width: 5px;
+    background: @level1;
     border: 0px;
     margin: 0px;
+    padding: 0px;
 }
 
 QSplitter::handle:vertical {
-    height: 10px;
-    background: blue;
+    height: 5px;
+    background: @level1;
     border: 0px;
     margin: 0px;
+    padding: 0px;
 }
 
-/* Components */
+QSplitter::handle:horizontal:hover {
+    background: @splitterHandleHover;
+}
+
+QSplitter::handle:vertical:hover {
+    background: @splitterHandleHover;
+}
+
+QSplitter::handle:pressed {
+    background: @splitterHandlePressed;
+}
+
+/*
+ *
+ * QScintilla
+ *
+ */
 QsciScintilla
 {
     padding: 0px;
     border: 0px solid #000000;
-    background: @baseBackground;
+    background: @level2;
 }
 
-QWidget[objectName^="baseM1"]
-{
-    margin: 0px;
-    border: 0px solid #000000;
-    background: @baseM1Background;
-}
+
+
 

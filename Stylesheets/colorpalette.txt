@@ -1,12 +1,17 @@
-@baseM1Background = #ff1d1d1d
+@baseBackground = #ff0a0a0a
+@level1 = #ff242424
+@level2 = #ff353535
+@level3 = #ff454545
+@level4 = #ff555555
+@level5 = #ff656565
+@level6 = #ff757575
+@level7 = #ff868686
+@level8 = #ff999999
+
+@splitterHandleHover = #ff005a97
+@splitterHandlePressed = #ff007fd4
 @splitterBackground = #ff202020
-@baseBackground = #ff252525
+
 @paperBackground = #ff292929
-@constrast5pc = #0cffffff
-@constrast7pc = #11ffffff
-@constrast10pc = #19ffffff
-@constrast13pc = #21ffffff
-@constrast16pc = #28ffffff
-@constrast20pc = #33ffffff
-@constrast24pc = #3dffffff
-@constrast28pc = #49ffffff
+@controlActiveTextColor = #ffe0e0e0
+@controlDisabledTextColor = #ffe0e0e0
