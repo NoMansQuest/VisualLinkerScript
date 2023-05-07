@@ -6,6 +6,7 @@
 #include <QGridLayout>
 #include <QSplitter>
 #include <QWidget>
+#include <QTabWidget>
 #include <QHBoxLayout>
 #include "Components/QScintilla/src/qsci/qsciscintilla.h"
 
@@ -39,6 +40,7 @@ private:
 
     QWidget* m_memoryVisualizer;
     QsciScintilla* m_scintilla;
+    QTabWidget* m_contentTabRegion;
     QTreeView* m_issuesTreeView;
     Ui::MainWindow *ui;
 };

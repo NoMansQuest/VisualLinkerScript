@@ -1,4 +1,5 @@
 @baseBackground = #ff0a0a0a
+@level0 = #ff161616
 @level1 = #ff242424
 @level2 = #ff353535
 @level3 = #ff454545
@@ -14,4 +15,5 @@
 
 @paperBackground = #ff292929
 @controlActiveTextColor = #ffe0e0e0
-@controlDisabledTextColor = #ffe0e0e0
+@controlInactiveTextColor = #ffa0a0a0
+@controlDisabledTextColor = #ff707070

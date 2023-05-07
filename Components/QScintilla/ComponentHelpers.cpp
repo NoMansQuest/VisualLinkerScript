@@ -10,8 +10,8 @@ void Components::QScintilla::SetComponentStyles(QsciScintilla& target)
     target.setCaretForegroundColor(QColor::fromRgba(0xFFF0F0F0));
     target.setColor(QColor::fromRgba(0xffffffff));
 
-    target.setMargins(2);
-    target.setMarginsBackgroundColor(QColor::fromRgba(0xff353535)); // This is equivalent to @level2
+    target.setMargins(2);    
+    target.setMarginsBackgroundColor(QColor::fromRgba(0xff161616)); // This is equivalent to @level0
     target.setMarginsForegroundColor(QColor::fromRgba(0xff858585));
 
     target.setMarginType(0, QsciScintilla::NumberMargin);

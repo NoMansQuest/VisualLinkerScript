@@ -1,0 +1,6 @@
+#ifndef CMEMORYOBJECT_H__
+#define CMEMORYOBJECT_H__
+
+
+
+#endif // CMMEORYOBJECT_H__

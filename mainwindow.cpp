@@ -7,6 +7,7 @@
 #include <QFile>
 #include <memory.h>
 #include <QString>
+#include <QTabWidget>
 #include "ParsingEngine/CMasterParser.h"
 
 using namespace VisualLinkerScript::ParsingEngine;
@@ -34,7 +35,7 @@ void MainWindow::BuildUserInterface()
 
     // Add widget to Layout
     this->m_memoryVisualizer = new QWidget;
-    this->m_memoryVisualizer->setObjectName("baseM1");
+    this->m_memoryVisualizer->setObjectName("baseM0");
     this->m_memoryVisualizer->setContentsMargins(0,0,0,0);
 
     this->m_centralWidgetLayout = new QHBoxLayout;    
@@ -44,28 +45,35 @@ void MainWindow::BuildUserInterface()
     this->m_centralWidgetVSplitter->setContentsMargins(0,0,0,0);
 
     this->m_topHalfWidget = new QWidget;
-    this->m_topHalfWidget->setObjectName("baseM1");
+    this->m_topHalfWidget->setObjectName("baseM0");
     this->m_topHalfWidget->setContentsMargins(0,0,0,0);
 
     this->m_topHalfWidgetHSplitter = new QSplitter;
     this->m_topHalfWidgetHSplitter->setContentsMargins(0,0,0,0);
 
     this->m_topHalfWidgetLayout = new QHBoxLayout;
-    this->m_topHalfWidgetLayout->setObjectName("baseM1");
+    this->m_topHalfWidgetLayout->setObjectName("baseM0");
     this->m_topHalfWidgetLayout->setContentsMargins(0,0,0,0);
 
     this->m_bottomHalfWidgetLayout = new QHBoxLayout;    
     this->m_bottomHalfWidgetLayout->setContentsMargins(0,0,0,0);
 
     this->m_bottomtHalfWidget = new QWidget;
-    this->m_bottomtHalfWidget->setObjectName("baseM1");
+    this->m_bottomtHalfWidget->setObjectName("baseM0");
     this->m_bottomtHalfWidget->setContentsMargins(0,0,0,0);
 
     this->m_issuesTreeView = new QTreeView;
     this->m_issuesTreeView->setContentsMargins(0,0,0,0);
 
+    this->m_contentTabRegion = new QTabWidget;
+    this->m_contentTabRegion->setTabsClosable(true);
+    this->m_contentTabRegion->addTab(this->m_scintilla, "MainLinkerScrip.ld");
+    this->m_contentTabRegion->addTab(new QWidget, "MainLinkerScrip.ld2");
+    this->m_contentTabRegion->addTab(new QWidget, "MainLinkerScrip.ld3");
+    this->m_contentTabRegion->widget(0)->setContentsMargins(0, 10, 0, 0);
+
     this->m_topHalfWidgetHSplitter->setOrientation(Qt::Orientation::Horizontal);
-    this->m_topHalfWidgetHSplitter->addWidget(this->m_scintilla);
+    this->m_topHalfWidgetHSplitter->addWidget(this->m_contentTabRegion);
     this->m_topHalfWidgetHSplitter->addWidget(this->m_memoryVisualizer);
     //this->m_topHalfWidgetHSplitter->addWidget(this->_)
     this->m_topHalfWidgetLayout->addWidget(this->m_topHalfWidgetHSplitter);

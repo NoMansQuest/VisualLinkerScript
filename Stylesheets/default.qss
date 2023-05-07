@@ -3,6 +3,13 @@
  * Generic background color application
  *
  */
+QWidget[objectName^="baseM0"]
+{
+    margin: 0px;
+    border: 0px solid #000000;
+    background: @level0;
+}
+
 
 QWidget[objectName^="baseM1"]
 {
@@ -61,7 +68,106 @@ QWidget[objectName^="baseM8"]
 }
 
 
+/*
+ *
+ * QTabWidget Styling
+ *
+ */
+ QTabWidget::pane {
+     border-top: 0px solid transparent;
+     background: @level0;
+ }
 
+ QTabWidget::tab-bar:top {
+     top: 1px;
+ }
+
+ QTabWidget::tab-bar:bottom {
+     bottom: 1px;
+ }
+
+ QTabWidget::tab-bar:left {
+     right: 1px;
+ }
+
+ QTabWidget::tab-bar:right {
+     left: 1px;
+ }
+
+ QTabBar::tab {
+     border: 1px solid transparent;
+     color: @controlActiveTextColor;
+ }
+
+ QTabBar::tab:selected {
+     background: @level2;
+     color: @controlActiveTextColor;
+ }
+
+ QTabBar::tab:!selected {
+     background: @level1;
+     color: @controlInactiveTextColor;
+ }
+
+ QTabBar::tab:!selected:hover {
+     background: @level4;
+     color: @controlActiveTextColor;
+ }
+
+ QTabBar::tab:top:!selected {
+     margin-top: 3px;
+     background: @level1;
+ }
+
+ QTabBar::tab:bottom:!selected {
+     margin-bottom: 3px;
+ }
+
+ QTabBar::tab:top, QTabBar::tab:bottom {
+     min-width: 8ex;
+     margin-right: -1px;
+     padding: 5px 10px 5px 10px;
+ }
+
+ QTabBar::tab:top:selected {
+     border-bottom-color: none;
+ }
+
+ QTabBar::tab:bottom:selected {
+     border-top-color: none;
+ }
+
+ QTabBar::tab:top:last, QTabBar::tab:bottom:last,
+ QTabBar::tab:top:only-one, QTabBar::tab:bottom:only-one {
+     margin-right: 0;
+ }
+
+ QTabBar::tab:left:!selected {
+     margin-right: 3px;
+ }
+
+ QTabBar::tab:right:!selected {
+     margin-left: 3px;
+ }
+
+ QTabBar::tab:left, QTabBar::tab:right {
+     min-height: 8ex;
+     margin-bottom: -1px;
+     padding: 10px 5px 10px 5px;
+ }
+
+ QTabBar::tab:left:selected {
+     border-left-color: none;
+ }
+
+ QTabBar::tab:right:selected {
+     border-right-color: none;
+ }
+
+ QTabBar::tab:left:last, QTabBar::tab:right:last,
+ QTabBar::tab:left:only-one, QTabBar::tab:right:only-one {
+     margin-bottom: 0;
+ }
 
 
 
@@ -126,19 +232,20 @@ QMenu:selected
 }
 
 
+
+
 /*
  *
  * Scroll Bars
  *
  */
 QScrollBar {
-    background: @level2;
+    background: @level1;
     border-radius: 0px;
 }
 
 QScrollBar:horizontal {
     height: 13px;
-    background: @level1;
 }
 
 QScrollBar:vertical {
@@ -177,6 +284,10 @@ QScrollBar::sub-page:vertical {
     background: none;
 }
 
+
+
+
+
 /*
  *
  * Splitters
@@ -188,16 +299,16 @@ QSplitter::handle
 }
 
 QSplitter::handle:horizontal {
-    width: 5px;
-    background: @level1;
+    width: 10px;
+    background: transparent;
     border: 0px;
     margin: 0px;
     padding: 0px;
 }
 
 QSplitter::handle:vertical {
-    height: 5px;
-    background: @level1;
+    height: 10px;
+    background: transparent;
     border: 0px;
     margin: 0px;
     padding: 0px;
@@ -214,6 +325,14 @@ QSplitter::handle:vertical:hover {
 QSplitter::handle:pressed {
     background: @splitterHandlePressed;
 }
+
+QSplitter::handle:hover {
+    background: @splitterHandleHover;
+}
+
+
+
+
 
 /*
  *

@@ -1,0 +1,5 @@
+#ifndef CSECTIOOBJECT_H__
+#define CSECTIOOBJECT_H__
+
+
+#endif // CSECTIOOBJECT_H__

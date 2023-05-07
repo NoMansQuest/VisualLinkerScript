@@ -11,6 +11,13 @@ CONFIG += c++17
 SOURCES += \
     Compiler/CCompiler.cpp \
     Compiler/ExpressionEvaluation/CExpressionEvaluator.cpp \
+    Components/MemoryVisualizer/CGraphicsProcessor.cpp \
+    Components/MemoryVisualizer/CMemoryVisualizer.cpp \
+    Components/MemoryVisualizer/Models/CLinkerScriptObject.cpp \
+    Components/MemoryVisualizer/Models/CMemoryObject.cpp \
+    Components/MemoryVisualizer/Models/CPointerAssignmentObject.cpp \
+    Components/MemoryVisualizer/Models/CSectionObject.cpp \
+    Components/MemoryVisualizer/Models/CSymbolAssignmentObject.cpp \
     Components/QScintilla/ComponentHelpers.cpp \
     Components/QScintilla/scintilla/lexers/LexCPP.cpp \
     Components/QScintilla/scintilla/lexers/LexLinkerScript.cpp \
@@ -109,6 +116,13 @@ HEADERS += \
     Compiler/ExpressionEvaluation/EvaluationResultType.h \
     Compiler/FunctionEvaluation/CFunctionEvaluatorBase.h \
     Compiler/ProcedureExecution/CProcedureExecutorBase.h \
+    Components/MemoryVisualizer/CGraphicsProcessor.h \
+    Components/MemoryVisualizer/CMemoryVisualizer.h \
+    Components/MemoryVisualizer/Models/CLinkerScriptObject.h \
+    Components/MemoryVisualizer/Models/CMemoryObject.h \
+    Components/MemoryVisualizer/Models/CPointerAssignmentObject.h \
+    Components/MemoryVisualizer/Models/CSectionObject.h \
+    Components/MemoryVisualizer/Models/CSymbolAssignmentObject.h \
     Components/QScintilla/ComponentHelpers.h \
     Components/QScintilla/scintilla/include/ILexer.h \
     Components/QScintilla/scintilla/include/ILoader.h \
@@ -198,17 +212,6 @@ HEADERS += \
     DrcEngine/Rules/CNoDuplicateMemoryRegionNameRule.h \
     DrcEngine/Rules/CSectionsDefinedOnlyOnceRule.h \
     DrcEngine/Rules/CSymbolsDefinedInAdvance.h \
-    Models/LinkerScript/CLinkerScriptEntity.h \
-    Models/LinkerScript/CMemoryEntry.h \
-    Models/LinkerScript/CMemoryRegion.h \
-    Models/LinkerScript/CProgramHeader.h \
-    Models/LinkerScript/CProgramHeadersRegion.h \
-    Models/LinkerScript/CSectionsRegion.h \
-    Models/LinkerScript/CSectionsRegionEntry.h \
-    Models/LinkerScript/CSectionsRegionObjectBase.h \
-    Models/LinkerScript/CSectionsRegionOverlay.h \
-    Models/LinkerScript/CSectionsRegionSection.h \
-    Models/LinkerScript/CSymbolAssignment.h \
     ParsingEngine/CMasterParser.h \
     ParsingEngine/CMasterParserException.h \
     ParsingEngine/CPreliminaryParser.h \
