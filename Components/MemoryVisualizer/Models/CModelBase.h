@@ -1,17 +1,15 @@
-#ifndef CLINKERSCRIPTOBJECT_H__
-#define CLINKERSCRIPTOBJECT_H__
+#ifndef CMODELBASE_H
+#define CMODELBASE_H
 
 #include <vector>
 
 namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 {
-    class CMemoryObject;
-
-    class CLinkerScriptObject
+    class CModelBase
     {
     public:
         /// @brief Default Constructor;
-        CLinkerScriptObject(uint64_t origin, uint64_t size, std::vector<CMemoryObject>&& memoryObjects)
+        CModelBase(uint64_t origin, uint64_t size, std::vector<CMemoryObject>&& memoryObjects)
             : m_origin(origin), m_size(size), m_memoryObjects(std::move(memoryObjects))
         {}
 
@@ -21,9 +19,14 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 
     // Member fields
     private:
-        uint64_t m_origin;
-        uint64_t m_size;
-        std::vector<CMemoryObject> m_memoryObjects;
+        bool m_isHoveringOver;
+        bool m_isSelected;
+
+        float m_xPos;
+        float m_yPos;
+        float m_width;
+        float m_height;
+
 
     public:
         /// @brief Origin of the memory object
@@ -41,4 +44,4 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
     };
 };
 
-#endif // CLINKERSCRIPTOBJECT_H__
+#endif // CMODELBASE_H
