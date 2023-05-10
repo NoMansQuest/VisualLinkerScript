@@ -19,6 +19,8 @@ SOURCES += \
     Components/MemoryVisualizer/Models/CSectionObject.cpp \
     Components/MemoryVisualizer/Models/CSymbolAssignmentObject.cpp \
     Components/MemoryVisualizer/Models/CModelBase.cpp \
+    Components/MemoryVisualizer/Models/CModelDrag.cpp \
+    Components/MemoryVisualizer/Models/CModelTooltip.cpp \
     Components/QScintilla/ComponentHelpers.cpp \
     Components/QScintilla/scintilla/lexers/LexCPP.cpp \
     Components/QScintilla/scintilla/lexers/LexLinkerScript.cpp \
@@ -125,6 +127,10 @@ HEADERS += \
     Components/MemoryVisualizer/Models/CSectionObject.h \
     Components/MemoryVisualizer/Models/CSymbolAssignmentObject.h \
     Components/MemoryVisualizer/Models/CModelBase.h \
+    Components/MemoryVisualizer/Models/CModelDrag.h \
+    Components/MemoryVisualizer/Models/CModelTooltip.h \
+    Components/MemoryVisualizer/Models/SPointF.h \
+    Components/MemoryVisualizer/Models/SRectangleF.h \
     Components/QScintilla/ComponentHelpers.h \
     Components/QScintilla/scintilla/include/ILexer.h \
     Components/QScintilla/scintilla/include/ILoader.h \

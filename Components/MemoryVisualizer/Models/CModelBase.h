@@ -2,9 +2,15 @@
 #define CMODELBASE_H
 
 #include <vector>
+#include <string>
+#include "SPointF.h"
+#include "SRectangleF.h"
+#include "CModelDrag.h"
+#include "CModelTooltip.h"
 
 namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 {
+    /// @brief Base class of all memory visualizer models
     class CModelBase
     {
     public:
@@ -20,27 +26,54 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
     // Member fields
     private:
         bool m_isHoveringOver;
+        uint64_t m_hoverStartTimestamp;
+
         bool m_isSelected;
+        bool m_isPressed;
+        bool m_isEnabled;
 
-        float m_xPos;
-        float m_yPos;
-        float m_width;
-        float m_height;
+        SRectangleF m_coordinates;
+        CModelDrag m_dragObject;
+        CModelToolTip m_tooltipObject;        
 
-
+    // Functions
     public:
-        /// @brief Origin of the memory object
-        uint64_t Origin() { return this->m_origin; }
-
-        /// @brief Size of the memory object
-        uint64_t Size() { return this->m_size; }
-
-        /// @brief Memory objects declared within this Linker-Script
-        const std::vector<CMemoryObject>& MemoryObjects()
-        {
-            return this->m_memoryObjects;
+    
+        /// @brief Return current coordinates.
+        SRectangleF Coordinates() 
+        { 
+            return this->Coordinates; 
         }
 
+        /// @brief Update coordinates
+        void SetCoordinates(SRectangleF newCoordinates) 
+        { 
+            this->m_coordinates = newCoordinates; 
+        }    
+
+        /// @brief Returns back the 'Drag' data object.
+        CModelDragData& DragObject() { return this->m_dragData; }
+
+        /// @brief Returns back the Tool-Tip object
+        CModelToolTipData& TooltipObject() { return this->m_tooltipObject; }
+
+        /// @brief When did the mouse enter this control (mainly used for ToolTip management)
+        uint64_t HoverStartTimestamp() { return this->m_hoverStartTimestamp; };
+
+        /// @brief Report is the object is selected
+        bool IsSelected() { return this->m_isSelected; }
+
+        /// @brief Report if the object is pressed.
+        bool IsPressed() { return this->m_isPressed; }
+
+        /// @brief Report if the object is enabled.
+        bool IsEnabled() { return this->m_isEnabled; }
+
+        /// @brief Report if the tool-tip is being shown
+        bool IsToolTipShowing() { return this->m_isToolTipShowing; }
+
+        /// @brief Report back the tool-tip content
+        std::string ToolTipContent() { return this->m_toolTipContent; }
     };
 };
 
