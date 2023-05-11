@@ -15,8 +15,7 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
     {
     public:
         /// @brief Default Constructor;
-        CModelBase(uint64_t origin, uint64_t size, std::vector<CMemoryObject>&& memoryObjects)
-            : m_origin(origin), m_size(size), m_memoryObjects(std::move(memoryObjects))
+        CModelBase()
         {}
 
         /// @brief Destructor
@@ -68,9 +67,6 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 
         /// @brief Report if the object is enabled.
         bool IsEnabled() { return this->m_isEnabled; }
-
-        /// @brief Report if the tool-tip is being shown
-        bool IsToolTipShowing() { return this->m_isToolTipShowing; }
 
         /// @brief Report back the tool-tip content
         std::string ToolTipContent() { return this->m_toolTipContent; }
