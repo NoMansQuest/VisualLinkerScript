@@ -11,7 +11,7 @@
 namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 {
     /// @brief Base class of all memory visualizer models
-    class CModelBase
+    class CModelBase 
     {
     public:
         /// @brief Default Constructor;
@@ -19,7 +19,7 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
         {}
 
         /// @brief Destructor
-        ~CLinkerScriptObject()
+        ~CModelBase()
         {}
 
     // Member fields
@@ -31,17 +31,26 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
         bool m_isPressed;
         bool m_isEnabled;
 
-        SRectangleF m_coordinates;
+        SRectangleF m_fixedCoordinates;
+        SRectangleF m_hoveringCoordinates;
+        bool m_isBeingDragged
         CModelDrag m_dragObject;
-        CModelToolTip m_tooltipObject;        
+        CModelToolTip m_tooltipObject;     
+        std::string m_objectPath;   
 
     // Functions
     public:
     
-        /// @brief Return current coordinates.
-        SRectangleF Coordinates() 
+        /// @brief Return current fixed coordinates.
+        SRectangleF FixedCoordinates() 
         { 
-            return this->Coordinates; 
+            return this->m_fixedCoordinates; 
+        }
+
+        /// @brief Return hovering coordinates (if hovering).
+        SRectangleF HoveringCoordinates() 
+        { 
+            return this->m_hoveringCoordinates; 
         }
 
         /// @brief Update coordinates
@@ -68,8 +77,18 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
         /// @brief Report if the object is enabled.
         bool IsEnabled() { return this->m_isEnabled; }
 
-        /// @brief Report back the tool-tip content
-        std::string ToolTipContent() { return this->m_toolTipContent; }
+        /// @brief Reports back if the object is being dragged
+        bool IsBeingDragged() { return this->m_dragObject.IsBeingDragged(); }
+
+        /// @brief Reports back the path of the object
+        const std::string& ObjectPath() { return this->m_objectPath; }
+
+        /// @brief Sets the object path
+        void SetObjectPath(std::string bewobjectPath);
+
+    signals:
+
+
     };
 };
 
