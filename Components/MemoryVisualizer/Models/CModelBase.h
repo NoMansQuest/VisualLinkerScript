@@ -5,6 +5,7 @@
 #include <string>
 #include "SPointF.h"
 #include "SRectangleF.h"
+#include "EObjectState.h"
 #include "CModelDrag.h"
 #include "CModelTooltip.h"
 
@@ -32,63 +33,84 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
         bool m_isEnabled;
 
         SRectangleF m_fixedCoordinates;
-        SRectangleF m_hoveringCoordinates;
-        bool m_isBeingDragged
+        SRectangleF m_proposedCoordinates;
         CModelDrag m_dragObject;
-        CModelToolTip m_tooltipObject;     
-        std::string m_objectPath;   
+        CModelTooltip m_tooltipObject;
+        std::string m_path;
+        EObjectState m_state;
 
     // Functions
     public:
     
         /// @brief Return current fixed coordinates.
-        SRectangleF FixedCoordinates() 
-        { 
+        SRectangleF FixedCoordinates() {
             return this->m_fixedCoordinates; 
         }
 
-        /// @brief Return hovering coordinates (if hovering).
-        SRectangleF HoveringCoordinates() 
-        { 
-            return this->m_hoveringCoordinates; 
+        /// @brief Update coordinates
+        void SetFixedCoordinates(SRectangleF newCoordinates) {
+            this->m_fixedCoordinates = newCoordinates;
+        }    
+
+        /// @brief Return current proposed coordinates.
+        SRectangleF ProposedCoordinates() {
+            return this->m_proposedCoordinates;
         }
 
         /// @brief Update coordinates
-        void SetCoordinates(SRectangleF newCoordinates) 
-        { 
-            this->m_coordinates = newCoordinates; 
-        }    
+        void SetProposedCoordinates(SRectangleF newCoordinates) {
+            this->m_proposedCoordinates = newCoordinates;
+        }
 
         /// @brief Returns back the 'Drag' data object.
-        CModelDragData& DragObject() { return this->m_dragData; }
+        CModelDrag& DragObject() {
+            return this->m_dragObject;
+        }
 
         /// @brief Returns back the Tool-Tip object
-        CModelToolTipData& TooltipObject() { return this->m_tooltipObject; }
+        CModelTooltip& TooltipObject() {
+            return this->m_tooltipObject;
+        }
 
         /// @brief When did the mouse enter this control (mainly used for ToolTip management)
-        uint64_t HoverStartTimestamp() { return this->m_hoverStartTimestamp; };
+        uint64_t HoverStartTimestamp() {
+            return this->m_hoverStartTimestamp;
+        };
 
         /// @brief Report is the object is selected
-        bool IsSelected() { return this->m_isSelected; }
+        bool IsSelected() {
+            return this->m_isSelected;
+        }
 
         /// @brief Report if the object is pressed.
-        bool IsPressed() { return this->m_isPressed; }
+        bool IsPressed() {
+            return this->m_isPressed;
+        }
 
         /// @brief Report if the object is enabled.
-        bool IsEnabled() { return this->m_isEnabled; }
-
-        /// @brief Reports back if the object is being dragged
-        bool IsBeingDragged() { return this->m_dragObject.IsBeingDragged(); }
+        bool IsEnabled() {
+            return this->m_isEnabled;
+        }
 
         /// @brief Reports back the path of the object
-        const std::string& ObjectPath() { return this->m_objectPath; }
+        const std::string& Path() {
+            return this->m_path;
+        }
 
         /// @brief Sets the object path
-        void SetObjectPath(std::string bewobjectPath);
+        void SetObjectPath(std::string newPath){
+            this->m_path = newPath;
+        }
 
-    signals:
+        /// @brief Reports back current object state
+        EObjectState State() {
+            return this->m_state;
+        }
 
-
+        /// @brief Updates the state.
+        void SetState(EObjectState newState) {
+            this->m_state = newState;
+        }
     };
 };
 

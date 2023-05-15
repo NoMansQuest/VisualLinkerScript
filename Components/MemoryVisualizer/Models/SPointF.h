@@ -8,8 +8,7 @@
 namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 {
     /// @brief Point-F used across the model
-    struct SPointF
-    {
+    struct SPointF {
         float x = 0.0f;
         float y = 0.0f;
     };

@@ -26,20 +26,17 @@ namespace VisualLinkerScript::ParsingEngine::Models
 
     public:
         /// @brief Reports back the type of this object.
-        ContentType Type() override
-        {
+        ContentType Type() override {
             return ContentType::ProcedureCall;
         }
 
         /// @brief Reports the entry contianing the "INCLUDE" part
-        const CRawEntry& IncludeCommandHeaderEntry()
-        {
+        const CRawEntry& IncludeCommandHeaderEntry() {
             return this->m_includeCommandHeaderEntry;
         }
 
         /// @brief Reports the entry contianing the "file" part
-        const CRawEntry& IncludeFileEntry()
-        {
+        const CRawEntry& IncludeFileEntry() {
             return this->m_includeFileEntry;
         }
     };

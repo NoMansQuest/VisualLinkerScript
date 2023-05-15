@@ -123,6 +123,8 @@ HEADERS += \
     Components/MemoryVisualizer/CGraphicsProcessor.h \
     Components/MemoryVisualizer/CMemoryVisualizer.h \
     Components/MemoryVisualizer/Models/CLinkerScriptObject.h \
+    Components/MemoryVisualizer/Models/CLoadMapperArrow.h \
+    Components/MemoryVisualizer/Models/CLoadMapperArrowCoordinates.h \
     Components/MemoryVisualizer/Models/CMemoryObject.h \
     Components/MemoryVisualizer/Models/CPointerAssignmentObject.h \
     Components/MemoryVisualizer/Models/CSectionObject.h \
@@ -130,6 +132,7 @@ HEADERS += \
     Components/MemoryVisualizer/Models/CModelBase.h \
     Components/MemoryVisualizer/Models/CModelDrag.h \
     Components/MemoryVisualizer/Models/CModelTooltip.h \
+    Components/MemoryVisualizer/Models/EObjectState.h \
     Components/MemoryVisualizer/Models/SPointF.h \
     Components/MemoryVisualizer/Models/SRectangleF.h \
     Components/MemoryVisualizer/Models/CEntryPoint.h \

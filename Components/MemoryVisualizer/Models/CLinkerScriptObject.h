@@ -20,13 +20,12 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
     // Member fields
     private:  
               
-        std::vector<CMemoryObject> m_memoryObjects;
+        std::vector<CModelBase> m_children;
 
     public:
         /// @brief Memory objects declared within this Linker-Script
-        const std::vector<CMemoryObject>& MemoryObjects()
-        {
-            return this->m_memoryObjects;
+        const std::vector<CModelBase>& Children() {
+            return this->m_children;
         }
     };
 };

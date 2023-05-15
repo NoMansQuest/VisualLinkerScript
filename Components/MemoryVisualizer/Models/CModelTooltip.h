@@ -29,30 +29,38 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 
     public:
         /// @brief Content of the tool-tip
-        std::string ToolTipContent() { return this->m_toolTipContent; }
+        std::string ToolTipContent() {
+            return this->m_toolTipContent;
+        }
 
         /// @brief Reports back the display duration in milliseconds
-        uint64_t DisplayDurationInMilliseconds() { return this->m_displayDurationInMilliseconds; }
+        uint64_t DisplayDurationInMilliseconds() {
+            return this->m_displayDurationInMilliseconds;
+        }
 
         /// @brief Coordinates of the cursor where Tool-Tip began showing
-        SPointF ShowingCoordinates() { return this->m_showingCoordinates; }
+        SPointF ShowingCoordinates() {
+            return this->m_showingCoordinates;
+        }
 
         /// @brief Returns back if the Tool-Tip is being shown
-        bool IsShowing() { return this->m_isShowing; }
+        bool IsShowing() {
+            return this->m_isShowing;
+        }
 
         /// @brief Returns the timestamp of the moment tool-tip started being displayed
-        uint64_t AppearanceTimestampInMilliseconds() {return this->m_appearanceTimestampInMilliseconds; }
+        uint64_t AppearanceTimestampInMilliseconds() {
+            return this->m_appearanceTimestampInMilliseconds;
+        }
 
         /// @brief Sets the tool-tip content
-        void SetToolTipContent(std::string newContent)
-        {
+        void SetToolTipContent(std::string newContent) {
             this->m_toolTipContent = newContent;
         }
 
         /// @brief Signals the system to start showing the tool-tip. 
         /// @param timestamp 
-        void StartShowing(uint64_t timestampInMilliseconds, SPointF cursorCoordinates)
-        {
+        void StartShowing(uint64_t timestampInMilliseconds, SPointF cursorCoordinates) {
             this->m_showingCoordinates = cursorCoordinates;
             this->m_appearanceTimestampInMilliseconds = timestampInMilliseconds;
         }
