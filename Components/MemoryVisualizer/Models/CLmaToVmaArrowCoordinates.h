@@ -1,5 +1,5 @@
-#ifndef CLOADMAPPERARROWCOORDINATES_H
-#define CLOADMAPPERARROWCOORDINATES_H
+#ifndef CLMATOVMAARROWCOORDINATES_H
+#define CLMATOVMAARROWCOORDINATES_H
 
 #include "SPointF.h"
 #include "SRectangleF.h"
@@ -7,15 +7,15 @@
 namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 {
     /// @brief Represents full coordinates of a load-mapper aarrow
-    class CLoadMapperArrowCoordinates
+    class CLmaToVmaArrowCoordinates
     {
     public:
         /// @brief Constructor
-        CLoadMapperArrowCoordinates()
+        CLmaToVmaArrowCoordinates()
         {}
 
         /// @brief Destructor
-        ~CLoadMapperArrowCoordinates()
+        ~CLmaToVmaArrowCoordinates()
         {}
 
     private:
@@ -74,4 +74,4 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
     };
 };
 
-#endif // CLOADMAPPERARROWCOORDINATES_H
+#endif // CLMATOVMAARROWCOORDINATES_H

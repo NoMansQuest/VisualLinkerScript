@@ -1,5 +1,5 @@
-#ifndef CMODELDRAG_H__
-#define CMODELDRAG_H__
+#ifndef CDRAGSTATE_H__
+#define CDRAGSTATE_H__
 
 #include <vector>
 #include <string>
@@ -9,7 +9,7 @@
 namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 {
     /// @brief Drag data shared across models.
-    class CModelDrag
+    class CDragState
     {
     private:
         bool m_isBeingDragged;
@@ -18,11 +18,11 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 
     public:
         /// @brief Default constructor
-        CModelDrag()
+        CDragState()
         {}
 
         /// @brief Default destructor
-        ~CModelDrag()
+        ~CDragState()
         {}
 
     public:
@@ -61,4 +61,4 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
     };
 }
 
-#endif // CMODELDRAG_H__
+#endif // CDRAGSTATE_H__

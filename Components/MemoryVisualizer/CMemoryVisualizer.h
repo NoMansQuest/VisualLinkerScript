@@ -22,12 +22,11 @@ namespace VisualLinkerScript::Components::MemoryVisualizer
         virtual void paintEvent(QPaintEvent* paintEvent) override;        
 
     signals:
-        /// @brief Signal emitted before any change is requested. If model is in valid state, the control
-        ///        will then resume with further requests
-        void ModelUpdateRequest(bool& modelCanBeUpdated);
-
         /// @brief Requests
-        void MemoryRegionCreationRequest(std::string proposedName, uint64_t propsedStartRegion, uint64_t proposedLength, bool& granted)
+        void MemoryRegionCreationRequest(std::string proposedName, uint64_t propsedStartRegion, uint64_t proposedLength, bool& granted);
+
+        void MemoryRegionP
+        hdr(std::string proposedName, uint64_t propsedStartRegion, uint64_t proposedLength, bool& granted);
 
         void MemoryRegionSelection(std::string path);
 

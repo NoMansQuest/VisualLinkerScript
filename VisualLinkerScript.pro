@@ -13,15 +13,22 @@ SOURCES += \
     Compiler/ExpressionEvaluation/CExpressionEvaluator.cpp \
     Components/MemoryVisualizer/CGraphicsProcessor.cpp \
     Components/MemoryVisualizer/CMemoryVisualizer.cpp \
+    Components/MemoryVisualizer/Models/CArrowObject.cpp \
+    Components/MemoryVisualizer/Models/CContentlBase.cpp \
+    Components/MemoryVisualizer/Models/CDragState.cpp \
     Components/MemoryVisualizer/Models/CLinkerScriptObject.cpp \
     Components/MemoryVisualizer/Models/CMemoryObject.cpp \
-    Components/MemoryVisualizer/Models/CPointerAssignmentObject.cpp \
+    Components/MemoryVisualizer/Models/COverlapObject.cpp \
     Components/MemoryVisualizer/Models/CSectionObject.cpp \
-    Components/MemoryVisualizer/Models/CSymbolAssignmentObject.cpp \
-    Components/MemoryVisualizer/Models/CModelBase.cpp \
-    Components/MemoryVisualizer/Models/CModelDrag.cpp \
-    Components/MemoryVisualizer/Models/CModelTooltip.cpp \
     Components/MemoryVisualizer/Models/CEntryPoint.cpp \
+    Components/MemoryVisualizer/Models/CStatementObject.cpp \
+    Components/MemoryVisualizer/Models/CTooltip.cpp \
+    Components/MemoryVisualizer/Rendering/CArrowsRenderer.cpp \
+    Components/MemoryVisualizer/Rendering/CMemoryObjectRenderer.cpp \
+    Components/MemoryVisualizer/Rendering/COverlapObjectRenderer.cpp \
+    Components/MemoryVisualizer/Rendering/CSectionObjectRenderer.cpp \
+    Components/MemoryVisualizer/Rendering/CStatementRenderer.cpp \
+    Components/MemoryVisualizer/Rendering/CTooltipRenderer.cpp \
     Components/QScintilla/ComponentHelpers.cpp \
     Components/QScintilla/scintilla/lexers/LexCPP.cpp \
     Components/QScintilla/scintilla/lexers/LexLinkerScript.cpp \
@@ -122,20 +129,27 @@ HEADERS += \
     Compiler/ProcedureExecution/CProcedureExecutorBase.h \
     Components/MemoryVisualizer/CGraphicsProcessor.h \
     Components/MemoryVisualizer/CMemoryVisualizer.h \
+    Components/MemoryVisualizer/Models/CArrowObject.h \
+    Components/MemoryVisualizer/Models/CContentlBase.h \
+    Components/MemoryVisualizer/Models/CDragState.h \
     Components/MemoryVisualizer/Models/CLinkerScriptObject.h \
-    Components/MemoryVisualizer/Models/CLoadMapperArrow.h \
-    Components/MemoryVisualizer/Models/CLoadMapperArrowCoordinates.h \
+    Components/MemoryVisualizer/Models/CLmaToVmaArrow.h \
+    Components/MemoryVisualizer/Models/CLmaToVmaArrowCoordinates.h \
     Components/MemoryVisualizer/Models/CMemoryObject.h \
-    Components/MemoryVisualizer/Models/CPointerAssignmentObject.h \
+    Components/MemoryVisualizer/Models/COverlapObject.h \
     Components/MemoryVisualizer/Models/CSectionObject.h \
-    Components/MemoryVisualizer/Models/CSymbolAssignmentObject.h \
-    Components/MemoryVisualizer/Models/CModelBase.h \
-    Components/MemoryVisualizer/Models/CModelDrag.h \
-    Components/MemoryVisualizer/Models/CModelTooltip.h \
+    Components/MemoryVisualizer/Models/CStatementObject.h \
+    Components/MemoryVisualizer/Models/CTooltip.h \
     Components/MemoryVisualizer/Models/EObjectState.h \
     Components/MemoryVisualizer/Models/SPointF.h \
     Components/MemoryVisualizer/Models/SRectangleF.h \
     Components/MemoryVisualizer/Models/CEntryPoint.h \
+    Components/MemoryVisualizer/Rendering/CArrowsRenderer.h \
+    Components/MemoryVisualizer/Rendering/CMemoryObjectRenderer.h \
+    Components/MemoryVisualizer/Rendering/COverlapObjectRenderer.h \
+    Components/MemoryVisualizer/Rendering/CSectionObjectRenderer.h \
+    Components/MemoryVisualizer/Rendering/CStatementRenderer.h \
+    Components/MemoryVisualizer/Rendering/CTooltipRenderer.h \
     Components/QScintilla/ComponentHelpers.h \
     Components/QScintilla/scintilla/include/ILexer.h \
     Components/QScintilla/scintilla/include/ILoader.h \

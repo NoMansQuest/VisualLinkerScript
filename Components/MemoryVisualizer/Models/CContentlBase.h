@@ -1,46 +1,50 @@
-#ifndef CMODELBASE_H
-#define CMODELBASE_H
+#ifndef CCONTENTLBASE_H
+#define CCONTENTLBASE_H
 
 #include <vector>
 #include <string>
-#include "SPointF.h"
 #include "SRectangleF.h"
 #include "EObjectState.h"
-#include "CModelDrag.h"
-#include "CModelTooltip.h"
+#include "CDragState.h"
+#include "CTooltip.h"
 
 namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 {
     /// @brief Base class of all memory visualizer models
-    class CModelBase 
+    class CContentBase
     {
     public:
         /// @brief Default Constructor;
-        CModelBase()
+        CContentBase(bool isDraggable)
+            : m_isDraggable(isDraggable),
+              m_state(EObjectState::Neutral)
         {}
 
         /// @brief Destructor
-        ~CModelBase()
+        ~CContentBase()
         {}
 
     // Member fields
-    private:
-        bool m_isHoveringOver;
+    private:        
         uint64_t m_hoverStartTimestamp;
 
         bool m_isSelected;
         bool m_isPressed;
         bool m_isEnabled;
+        bool m_isDraggable;
 
         SRectangleF m_fixedCoordinates;
         SRectangleF m_proposedCoordinates;
-        CModelDrag m_dragObject;
-        CModelTooltip m_tooltipObject;
+        CDragState m_dragObject;
+        CTooltip m_tooltipObject;
         std::string m_path;
         EObjectState m_state;
 
     // Functions
     public:
+
+        /// @brief Z-Index will be fixed and determined by the caller
+        virtual uint8_t ZIndex() = 0;
     
         /// @brief Return current fixed coordinates.
         SRectangleF FixedCoordinates() {
@@ -63,19 +67,24 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
         }
 
         /// @brief Returns back the 'Drag' data object.
-        CModelDrag& DragObject() {
+        CDragState& DragObject() {
             return this->m_dragObject;
         }
 
         /// @brief Returns back the Tool-Tip object
-        CModelTooltip& TooltipObject() {
+        CTooltip& TooltipObject() {
             return this->m_tooltipObject;
         }
 
         /// @brief When did the mouse enter this control (mainly used for ToolTip management)
         uint64_t HoverStartTimestamp() {
             return this->m_hoverStartTimestamp;
-        };
+        }
+
+        /// @brief Sets the Hover Start Timestamp
+        void SetHoverStartTimestamp(uint64_t hoverStartTimestamp){
+            this->m_hoverStartTimestamp = hoverStartTimestamp;
+        }
 
         /// @brief Report is the object is selected
         bool IsSelected() {
@@ -97,9 +106,14 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
             return this->m_path;
         }
 
-        /// @brief Sets the object path
+        /// @brief Sets the object path. Path could be updated as object moves
         void SetObjectPath(std::string newPath){
             this->m_path = newPath;
+        }
+
+        /// @brief Reports back whether the object is draggable or fixed
+        bool IsDraggable(){
+            return this->m_isDraggable;
         }
 
         /// @brief Reports back current object state
@@ -114,4 +128,4 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
     };
 };
 
-#endif // CMODELBASE_H
+#endif // CCONTENTLBASE_H

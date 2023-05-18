@@ -1,0 +1,14 @@
+#ifndef CARROWOBJECT_H__
+#define CARROWOBJECT_H__
+
+namespace VisualLinkerScript::Components::MemoryVisualizer::Models
+{
+    /// @brief Represents an 'Arrow' connecting LMA to VMA
+    class CArrowObject
+    {
+
+    };
+};
+
+
+#endif // CARROWOBJECT_H__

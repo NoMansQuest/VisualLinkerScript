@@ -1,5 +1,5 @@
-#ifndef CMODELTOOLTIP_H__
-#define CMODELTOOLTIP_H__
+#ifndef CTOOLTIP_H__
+#define CTOOLTIP_H__
 
 #include <vector>
 #include <string>
@@ -9,15 +9,15 @@
 namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 {
     /// @brief Represents a Tool-Tip Object for the visualizer
-    class CModelTooltip
+    class CTooltip
     {
     public:
         /// @brief Default constructor
-        CModelTooltip()
+        CTooltip()
         {}
 
         /// @brief Destructor
-        ~CModelTooltip()
+        ~CTooltip()
         {}
 
     private:

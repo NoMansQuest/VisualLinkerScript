@@ -1,24 +1,24 @@
-#ifndef CLOADMAPPERARROW_H
-#define CLOADMAPPERARROW_H
+#ifndef CLMATOVMAARROW_H
+#define CLMATOVMAARROW_H
 
 #include "SPointF.h"
 #include "SRectangleF.h"
-#include "CLoadMapperArrowCoordinates.h"
+#include "CLmaToVmaArrowCoordinates.h"
 
 namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 {
     /// @brief A laod-mapper links areas where VMA and LMA are separated.
     ///        One exmaple is flash code which is located in ROM (LMA) and
     ///        through CRT-0 operation is loaded into execution region (VMA).
-    class CLoadMapperArrow
+    class CLmaToVmaArrow
     {
     public:
         /// @brief Constructor
-        CLoadMapperArrow()
+        CLmaToVmaArrow()
         {}
 
         /// @brief Destructor
-        ~CLoadMapperArrow()
+        ~CLmaToVmaArrow()
         {}
 
     private:
@@ -32,5 +32,5 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
     };
 };
 
-#endif // CLOADMAPPERARROW_H
+#endif // CLMATOVMAARROW_H
 
