@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <string>
-#include "CContentlBase.h"
+#include "CContentBase.h"
 
 namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 {
@@ -25,7 +25,6 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 
     public:
         std::vector<std::string> m_phdrList;
-
     };
 };
 

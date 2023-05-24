@@ -2,7 +2,7 @@
 #define CLINKERSCRIPTOBJECT_H__
 
 #include <vector>
-#include "CContentlBase.h"
+#include "CContentBase.h"
 
 namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 {

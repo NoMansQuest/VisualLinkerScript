@@ -71,6 +71,11 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
         int AllocatingVerticalSlot() {
             return this->m_allocatingVerticalSlot;
         }
+
+        /// @brief Updates the allocating-slot of the arrow
+        void SetAllocatingVerticalSlot(int allocatingVerticalSlot) {
+            this->m_allocatingVerticalSlot = allocatingVerticalSlot;
+        }
     };
 };
 

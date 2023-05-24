@@ -14,7 +14,7 @@ SOURCES += \
     Components/MemoryVisualizer/CGraphicsProcessor.cpp \
     Components/MemoryVisualizer/CMemoryVisualizer.cpp \
     Components/MemoryVisualizer/Models/CArrowObject.cpp \
-    Components/MemoryVisualizer/Models/CContentlBase.cpp \
+    Components/MemoryVisualizer/Models/CContentBase.cpp \
     Components/MemoryVisualizer/Models/CDragState.cpp \
     Components/MemoryVisualizer/Models/CLinkerScriptObject.cpp \
     Components/MemoryVisualizer/Models/CMemoryObject.cpp \
@@ -130,7 +130,7 @@ HEADERS += \
     Components/MemoryVisualizer/CGraphicsProcessor.h \
     Components/MemoryVisualizer/CMemoryVisualizer.h \
     Components/MemoryVisualizer/Models/CArrowObject.h \
-    Components/MemoryVisualizer/Models/CContentlBase.h \
+    Components/MemoryVisualizer/Models/CContentBase.h \
     Components/MemoryVisualizer/Models/CDragState.h \
     Components/MemoryVisualizer/Models/CLinkerScriptObject.h \
     Components/MemoryVisualizer/Models/CLmaToVmaArrow.h \

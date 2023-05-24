@@ -1,5 +1,5 @@
-#ifndef CCONTENTLBASE_H
-#define CCONTENTLBASE_H
+#ifndef CCONTENTBASE_H
+#define CCONTENTBASE_H
 
 #include <vector>
 #include <string>
@@ -42,7 +42,6 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 
     // Functions
     public:
-
         /// @brief Z-Index will be fixed and determined by the caller
         virtual uint8_t ZIndex() = 0;
     
@@ -128,4 +127,4 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
     };
 };
 
-#endif // CCONTENTLBASE_H
+#endif // CCONTENTBASE_H
