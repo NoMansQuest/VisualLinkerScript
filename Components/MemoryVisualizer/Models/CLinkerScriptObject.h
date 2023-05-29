@@ -3,29 +3,29 @@
 
 #include <vector>
 #include "CContentBase.h"
+#include "CLmaToVmaArrow.h"
 
 namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 {
-    class CLinkerScriptObject : public CModelBase
+    /// @brief Represents a Linker-Script object.
+    class CLinkerScriptObject
     {
-    public:
-        /// @brief Default Constructor;
-        CLinkerScriptObject()
-        {}
-
-        /// @brief Destructor
-        ~CLinkerScriptObject()
-        {}
 
     // Member fields
-    private:  
-              
-        std::vector<CModelBase> m_children;
+    private:                
+        std::vector<CContentBase> m_content;
+        std::vector<CLmaToVmaArrow> m_arrows;
+
 
     public:
-        /// @brief Memory objects declared within this Linker-Script
-        const std::vector<CModelBase>& Children() {
-            return this->m_children;
+        /// @brief Memory content
+        const std::vector<CContentBase>& Content() {
+            return this->m_content;
+        }
+
+        /// @brief Arrows
+        const std::vector<CLmaToVmaArrow>& Arrows() {
+            return this->m_arrows;
         }
     };
 };

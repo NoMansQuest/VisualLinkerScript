@@ -23,6 +23,7 @@ SOURCES += \
     Components/MemoryVisualizer/Models/CEntryPoint.cpp \
     Components/MemoryVisualizer/Models/CStatementObject.cpp \
     Components/MemoryVisualizer/Models/CTooltip.cpp \
+    Components/MemoryVisualizer/Placement/CPlacementEngine.cpp \
     Components/MemoryVisualizer/Rendering/CArrowsRenderer.cpp \
     Components/MemoryVisualizer/Rendering/CMemoryObjectRenderer.cpp \
     Components/MemoryVisualizer/Rendering/COverlapObjectRenderer.cpp \
@@ -93,7 +94,8 @@ SOURCES += \
     Components/QScintilla/src/qsciscintillabase.cpp \
     Components/QScintilla/src/qscistyle.cpp \
     Components/QScintilla/src/qscistyledtext.cpp \
-    DrcEngine/DrcEngineManager.cpp \    
+    DrcEngine/DrcEngineManager.cpp \
+    LinkerScriptManager/CLinkerScriptManager.cpp \
     ParsingEngine/CMasterParser.cpp \
     ParsingEngine/CPreliminaryParser.cpp \
     ParsingEngine/SubParsers/CAssignmentParser.cpp \
@@ -129,12 +131,14 @@ HEADERS += \
     Compiler/ProcedureExecution/CProcedureExecutorBase.h \
     Components/MemoryVisualizer/CGraphicsProcessor.h \
     Components/MemoryVisualizer/CMemoryVisualizer.h \
+    Components/MemoryVisualizer/EInsertObjectType.h \
     Components/MemoryVisualizer/Models/CArrowObject.h \
     Components/MemoryVisualizer/Models/CContentBase.h \
     Components/MemoryVisualizer/Models/CDragState.h \
     Components/MemoryVisualizer/Models/CLinkerScriptObject.h \
     Components/MemoryVisualizer/Models/CLmaToVmaArrow.h \
     Components/MemoryVisualizer/Models/CLmaToVmaArrowCoordinates.h \
+    Components/MemoryVisualizer/Models/CMemoryLocationIndicator.h \
     Components/MemoryVisualizer/Models/CMemoryObject.h \
     Components/MemoryVisualizer/Models/COverlapObject.h \
     Components/MemoryVisualizer/Models/CSectionObject.h \
@@ -144,12 +148,14 @@ HEADERS += \
     Components/MemoryVisualizer/Models/SPointF.h \
     Components/MemoryVisualizer/Models/SRectangleF.h \
     Components/MemoryVisualizer/Models/CEntryPoint.h \
+    Components/MemoryVisualizer/Placement/CPlacementEngine.h \
     Components/MemoryVisualizer/Rendering/CArrowsRenderer.h \
     Components/MemoryVisualizer/Rendering/CMemoryObjectRenderer.h \
     Components/MemoryVisualizer/Rendering/COverlapObjectRenderer.h \
     Components/MemoryVisualizer/Rendering/CSectionObjectRenderer.h \
     Components/MemoryVisualizer/Rendering/CStatementRenderer.h \
     Components/MemoryVisualizer/Rendering/CTooltipRenderer.h \
+    Components/MemoryVisualizer/SBackendResponse.h \
     Components/QScintilla/ComponentHelpers.h \
     Components/QScintilla/scintilla/include/ILexer.h \
     Components/QScintilla/scintilla/include/ILoader.h \
@@ -239,6 +245,7 @@ HEADERS += \
     DrcEngine/Rules/CNoDuplicateMemoryRegionNameRule.h \
     DrcEngine/Rules/CSectionsDefinedOnlyOnceRule.h \
     DrcEngine/Rules/CSymbolsDefinedInAdvance.h \
+    LinkerScriptManager/CLinkerScriptManager.h \
     ParsingEngine/CMasterParser.h \
     ParsingEngine/CMasterParserException.h \
     ParsingEngine/CPreliminaryParser.h \
@@ -337,6 +344,17 @@ HEADERS += \
     ParsingEngine/SubParsers/CVersionRegionParser.h \
     ParsingEngine/SubParsers/SubParserType.h \
     ParsingEngine/SubParsers/CInputSectionFunctionParser.h \
+    RenderingModels/CLinkerScriptEntity.h \
+    RenderingModels/CMemoryEntry.h \
+    RenderingModels/CMemoryRegion.h \
+    RenderingModels/CProgramHeader.h \
+    RenderingModels/CProgramHeadersRegion.h \
+    RenderingModels/CSectionsRegion.h \
+    RenderingModels/CSectionsRegionEntry.h \
+    RenderingModels/CSectionsRegionObjectBase.h \
+    RenderingModels/CSectionsRegionOverlay.h \
+    RenderingModels/CSectionsRegionSection.h \
+    RenderingModels/CSymbolAssignment.h \
     mainwindow.h
 
 FORMS += \

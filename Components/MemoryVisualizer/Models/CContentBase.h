@@ -70,7 +70,7 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
             return this->m_dragObject;
         }
 
-        /// @brief Returns back the Tool-Tip object
+        /// @brief Returns back the 34618Tool-Tip object
         CTooltip& TooltipObject() {
             return this->m_tooltipObject;
         }
