@@ -97,6 +97,7 @@ SOURCES += \
     DrcEngine/DrcEngineManager.cpp \
     LinkerScriptManager/CLinkerScriptManager.cpp \
     ParsingEngine/CMasterParser.cpp \
+    ParsingEngine/CModelTranslator.cpp \
     ParsingEngine/CPreliminaryParser.cpp \
     ParsingEngine/SubParsers/CAssignmentParser.cpp \
     ParsingEngine/SubParsers/CAssignmentProcedureParser.cpp \
@@ -246,8 +247,22 @@ HEADERS += \
     DrcEngine/Rules/CSectionsDefinedOnlyOnceRule.h \
     DrcEngine/Rules/CSymbolsDefinedInAdvance.h \
     LinkerScriptManager/CLinkerScriptManager.h \
+    Models/SComment.h \
+    Models/SLinkerScriptEntity.h \
+    Models/SMemoryEntry.h \
+    Models/SMemoryRegion.h \
+    Models/SModelBase.h \
+    Models/SProgramHeader.h \
+    Models/SProgramHeadersRegion.h \
+    Models/SSectionsRegion.h \
+    Models/SSectionsRegionEntry.h \
+    Models/SSectionsRegionObjectBase.h \
+    Models/SSectionsRegionOverlay.h \
+    Models/SSectionsRegionSection.h \
+    Models/SSymbolAssignment.h \
     ParsingEngine/CMasterParser.h \
     ParsingEngine/CMasterParserException.h \
+    ParsingEngine/CModelTranslator.h \
     ParsingEngine/CPreliminaryParser.h \
     ParsingEngine/CPreliminaryParsingException.h \
     ParsingEngine/Models/CAssignmentProcedureStatement.h \
@@ -344,17 +359,6 @@ HEADERS += \
     ParsingEngine/SubParsers/CVersionRegionParser.h \
     ParsingEngine/SubParsers/SubParserType.h \
     ParsingEngine/SubParsers/CInputSectionFunctionParser.h \
-    RenderingModels/CLinkerScriptEntity.h \
-    RenderingModels/CMemoryEntry.h \
-    RenderingModels/CMemoryRegion.h \
-    RenderingModels/CProgramHeader.h \
-    RenderingModels/CProgramHeadersRegion.h \
-    RenderingModels/CSectionsRegion.h \
-    RenderingModels/CSectionsRegionEntry.h \
-    RenderingModels/CSectionsRegionObjectBase.h \
-    RenderingModels/CSectionsRegionOverlay.h \
-    RenderingModels/CSectionsRegionSection.h \
-    RenderingModels/CSymbolAssignment.h \
     mainwindow.h
 
 FORMS += \
