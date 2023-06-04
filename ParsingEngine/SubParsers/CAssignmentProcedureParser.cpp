@@ -1,14 +1,17 @@
+#include <vector>
+#include <memory>
+
 #include "CAssignmentProcedureParser.h"
 #include "CAssignmentParser.h"
 #include "Constants.h"
-#include <vector>
-#include <memory>
+
 #include "../CMasterParserException.h"
-#include "../Models/CComment.h"
-#include "../Models/CAssignmentStatement.h"
-#include "../Models/Raw/CRawEntry.h"
-#include "../Models/CAssignmentProcedureStatement.h"
-#include "../Models/CViolation.h"
+
+#include "../../Models/CComment.h"
+#include "../../Models/CAssignmentStatement.h"
+#include "../../Models/Raw/CRawEntry.h"
+#include "../../Models/CAssignmentProcedureStatement.h"
+#include "../../Models/CViolation.h"
 
 using namespace VisualLinkerScript::ParsingEngine::SubParsers;
 using namespace VisualLinkerScript::ParsingEngine::Models;

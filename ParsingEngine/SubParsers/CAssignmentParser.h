@@ -1,10 +1,12 @@
 #ifndef CASSIGNMENT_PARSER_H__
 #define CASSIGNMENT_PARSER_H__
 
+#include <memory>
+
 #include "CSubParserBase.h"
 #include "SubParserType.h"
-#include <memory>
-#include "../Models/CAssignmentStatement.h"
+
+#include "../../Models/CAssignmentStatement.h"
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {

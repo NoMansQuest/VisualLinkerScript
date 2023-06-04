@@ -3,11 +3,11 @@
 #include "CInputSectionFunctionParser.h"
 #include "Constants.h"
 #include "../CMasterParserException.h"
-#include "../Models/CInputSectionTargetSection.h"
-#include "../Models/CComment.h"
-#include "../Models/Raw/CRawEntry.h"
-#include "../Models/CInputSectionFunction.h"
-#include "../Models/CViolation.h"
+#include "../../Models/CInputSectionTargetSection.h"
+#include "../../Models/CComment.h"
+#include "../../Models/Raw/CRawEntry.h"
+#include "../../Models/CInputSectionFunction.h"
+#include "../../Models/CViolation.h"
 
 using namespace VisualLinkerScript::ParsingEngine::SubParsers;
 using namespace VisualLinkerScript::ParsingEngine::Models;

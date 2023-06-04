@@ -1,11 +1,13 @@
 #ifndef CSECTION_OUTPUT_OVERLAYS_PARSER_H__
 #define CSECTION_OUTPUT_OVERLAYS_PARSER_H__
 
+#include <memory>
+
 #include "CSubParserBase.h"
 #include "SubParserType.h"
-#include "../Models/CSectionOutputCommand.h"
-#include "../Models/Raw/CRawFile.h"
-#include <memory>
+
+#include "../../Models/CSectionOutputCommand.h"
+#include "../../Models/Raw/CRawFile.h"
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {

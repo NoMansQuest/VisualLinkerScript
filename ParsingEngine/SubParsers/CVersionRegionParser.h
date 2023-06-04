@@ -2,10 +2,13 @@
 #define CVERSION_REGION_PARSER_H__
 
 #include <memory>
+
 #include "CScopedRegionParser.h"
-#include "../Models/CVersionsRegion.h"
 #include "CVersionRegionContentParser.h"
 #include "SubParserType.h"
+
+#include "../../Models/CVersionsRegion.h"
+
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {

@@ -1,10 +1,12 @@
 #ifndef CFUNCTION_PARSER_H__
 #define CFUNCTION_PARSER_H__
 
+#include <memory>
+
 #include "CSubParserBase.h"
 #include "SubParserType.h"
-#include "../Models/CFunctionCall.h"
-#include <memory>
+
+#include "../../Models/CFunctionCall.h"
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {   

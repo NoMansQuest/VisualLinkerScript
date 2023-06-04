@@ -3,8 +3,8 @@
 
 #include "CSubParserBase.h"
 #include "SubParserType.h"
-#include "../Models/CSectionOutputCommand.h"
-#include "../Models/Raw/CRawFile.h"
+#include "../../Models/CSectionOutputCommand.h"
+#include "../../Models/Raw/CRawFile.h"
 #include <memory>
 
 using namespace VisualLinkerScript::ParsingEngine::Models::Raw;

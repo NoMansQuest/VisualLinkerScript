@@ -1,25 +1,28 @@
 #include <vector>
 #include <memory>
 #include <string>
+
 #include "CSectionOutputCommandParser.h"
 #include "CExpressionParser.h"
 #include "CInputSectionStatementParser.h"
 #include "CFunctionParser.h"
 #include "CAssignmentParser.h"
 #include "Constants.h"
+
 #include "../CMasterParserException.h"
-#include "../Models/CInputSectionStatement.h"
-#include "../Models/CFunctionCall.h"
-#include "../Models/CSectionOutputToVmaRegion.h"
-#include "../Models/CSectionOutputAtLmaRegion.h"
-#include "../Models/CSectionOutputPhdr.h"
-#include "../Models/CSectionOutputFillExpression.h"
-#include "../Models/CSectionOutputCommand.h"
-#include "../Models/Raw/CRawEntry.h"
-#include "../Models/Raw/RawEntryType.h"
-#include "../Models/Raw/CRawFile.h"
-#include "../Models/CComment.h"
-#include "../Models/CViolation.h"
+
+#include "../../Models/CInputSectionStatement.h"
+#include "../../Models/CFunctionCall.h"
+#include "../../Models/CSectionOutputToVmaRegion.h"
+#include "../../Models/CSectionOutputAtLmaRegion.h"
+#include "../../Models/CSectionOutputPhdr.h"
+#include "../../Models/CSectionOutputFillExpression.h"
+#include "../../Models/CSectionOutputCommand.h"
+#include "../../Models/Raw/CRawEntry.h"
+#include "../../Models/Raw/RawEntryType.h"
+#include "../../Models/Raw/CRawFile.h"
+#include "../../Models/CComment.h"
+#include "../../Models/CViolation.h"
 
 using namespace VisualLinkerScript::ParsingEngine::Models;
 using namespace VisualLinkerScript::ParsingEngine::Models::Raw;

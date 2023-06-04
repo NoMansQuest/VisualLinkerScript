@@ -1,16 +1,19 @@
-#include "CExpressionParser.h"
+
 #include <vector>
 #include <memory>
+
+#include "CExpressionParser.h"
 #include "Constants.h"
-#include "../Models/Raw/CRawEntry.h"
-#include "../Models/CViolation.h"
-#include "../Models/CComment.h"
-#include "../Models/CExpression.h"
-#include "../Models/CSymbol.h"
-#include "../Models/CExpressionNumber.h"
-#include "../Models/CExpressionOperator.h"
-#include "../Models/CStringEntry.h"
 #include "../CMasterParserException.h"
+
+#include "../../Models/Raw/CRawEntry.h"
+#include "../../Models/CViolation.h"
+#include "../../Models/CComment.h"
+#include "../../Models/CExpression.h"
+#include "../../Models/CSymbol.h"
+#include "../../Models/CExpressionNumber.h"
+#include "../../Models/CExpressionOperator.h"
+#include "../../Models/CStringEntry.h"
 
 using namespace VisualLinkerScript::ParsingEngine::SubParsers;
 using namespace VisualLinkerScript::ParsingEngine::Models;

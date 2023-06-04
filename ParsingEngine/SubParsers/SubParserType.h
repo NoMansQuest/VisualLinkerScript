@@ -28,6 +28,6 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
         ExpressionParser,
         FunctionParser,
     };
-}
+};
 
 #endif

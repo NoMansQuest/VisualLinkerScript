@@ -6,9 +6,8 @@
 #include <stdexcept>
 #include "Models/Raw/CRawFile.h"
 
-using namespace VisualLinkerScript::ParsingEngine::Models;
-using namespace VisualLinkerScript::ParsingEngine::Models::Raw;
-
+using namespace VisualLinkerScript::Models;
+using namespace VisualLinkerScript::Models::Raw;
 
 namespace VisualLinkerScript::ParsingEngine 
 {

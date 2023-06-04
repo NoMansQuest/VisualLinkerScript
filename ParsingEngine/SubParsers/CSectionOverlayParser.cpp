@@ -1,6 +1,7 @@
 #include <vector>
 #include <memory>
 #include <string>
+
 #include "CSectionOverlayParser.h"
 #include "CExpressionParser.h"
 #include "CSectionOutputCommandParser.h"
@@ -8,16 +9,18 @@
 #include "CFunctionParser.h"
 #include "CAssignmentParser.h"
 #include "Constants.h"
+
 #include "../CMasterParserException.h"
-#include "../Models/CFunctionCall.h"
-#include "../Models/CSectionOutputPhdr.h"
-#include "../Models/CSectionOutputFillExpression.h"
-#include "../Models/CSectionOverlayCommand.h"
-#include "../Models/Raw/CRawEntry.h"
-#include "../Models/Raw/RawEntryType.h"
-#include "../Models/Raw/CRawFile.h"
-#include "../Models/CComment.h"
-#include "../Models/CViolation.h"
+
+#include "../../Models/CFunctionCall.h"
+#include "../../Models/CSectionOutputPhdr.h"
+#include "../../Models/CSectionOutputFillExpression.h"
+#include "../../Models/CSectionOverlayCommand.h"
+#include "../../Models/Raw/CRawEntry.h"
+#include "../../Models/Raw/RawEntryType.h"
+#include "../../Models/Raw/CRawFile.h"
+#include "../../Models/CComment.h"
+#include "../../Models/CViolation.h"
 
 using namespace VisualLinkerScript::ParsingEngine::Models;
 using namespace VisualLinkerScript::ParsingEngine::Models::Raw;

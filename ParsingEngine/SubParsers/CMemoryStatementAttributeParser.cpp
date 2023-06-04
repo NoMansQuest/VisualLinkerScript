@@ -3,10 +3,10 @@
 #include <memory>
 #include "CMemoryStatementAttributeParser.h"
 #include "../CMasterParserException.h"
-#include "../Models/Raw/CRawEntry.h"
-#include "../Models/CComment.h"
-#include "../Models/CMemoryStatementAttribute.h"
-#include "../Models/CViolation.h"
+#include "../../Models/Raw/CRawEntry.h"
+#include "../../Models/CComment.h"
+#include "../../Models/CMemoryStatementAttribute.h"
+#include "../../Models/CViolation.h"
 
 using namespace VisualLinkerScript::ParsingEngine::SubParsers;
 using namespace VisualLinkerScript::ParsingEngine::Models;

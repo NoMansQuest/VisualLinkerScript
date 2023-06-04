@@ -1,6 +1,7 @@
 #include <vector>
 #include <memory>
 #include <string>
+
 #include "CSectionsRegionParser.h"
 #include "CSectionOutputCommandParser.h"
 #include "CFunctionParser.h"
@@ -8,14 +9,16 @@
 #include "CAssignmentProcedureParser.h"
 #include "Constants.h"
 #include "CSectionOverlayParser.h"
+
 #include "../CMasterParserException.h"
-#include "../Models/CFunctionCall.h"
-#include "../Models/CSectionsRegion.h"
-#include "../Models/Raw/CRawEntry.h"
-#include "../Models/Raw/RawEntryType.h"
-#include "../Models/Raw/CRawFile.h"
-#include "../Models/CComment.h"
-#include "../Models/CViolation.h"
+
+#include "../../Models/CFunctionCall.h"
+#include "../../Models/CSectionsRegion.h"
+#include "../../Models/Raw/CRawEntry.h"
+#include "../../Models/Raw/RawEntryType.h"
+#include "../../Models/Raw/CRawFile.h"
+#include "../../Models/CComment.h"
+#include "../../Models/CViolation.h"
 
 using namespace VisualLinkerScript::ParsingEngine::Models;
 using namespace VisualLinkerScript::ParsingEngine::Models::Raw;

@@ -2,10 +2,12 @@
 #define CPHDRS_REGION_CONTENT_PARSER_H__
 
 #include <memory>
+
 #include "CSubParserBase.h"
 #include "SubParserType.h"
-#include "../Models/Raw/CRawFile.h"
-#include "../Models/CPhdrsStatement.h"
+
+#include "../../Models/Raw/CRawFile.h"
+#include "../../Models/CPhdrsStatement.h"
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {   

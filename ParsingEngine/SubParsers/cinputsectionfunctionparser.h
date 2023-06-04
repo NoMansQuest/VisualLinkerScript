@@ -3,7 +3,7 @@
 
 #include "CSubParserBase.h"
 #include "SubParserType.h"
-#include "../Models/CInputSectionFunction.h"
+#include "../../Models/CInputSectionFunction.h"
 #include <memory>
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers

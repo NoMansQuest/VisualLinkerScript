@@ -1,5 +1,0 @@
-#ifndef CSECTIONS_REGION_OVERLAY_H__
-#define CSECTIONS_REGION_OVERLAY_H__
-
-
-#endif

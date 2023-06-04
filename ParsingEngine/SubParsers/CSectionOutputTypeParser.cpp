@@ -1,13 +1,16 @@
 #include <vector>
 #include <memory>
+
 #include "CSectionOutputTypeParser.h"
 #include "Constants.h"
+
 #include "../CMasterParserException.h"
-#include "../Models/CSectionOutputType.h"
-#include "../Models/Raw/CRawEntry.h"
-#include "../Models/CComment.h"
-#include "../Models/CSectionOutputType.h"
-#include "../Models/CViolation.h"
+
+#include "../../Models/CSectionOutputType.h"
+#include "../../Models/Raw/CRawEntry.h"
+#include "../../Models/CComment.h"
+#include "../../Models/CSectionOutputType.h"
+#include "../../Models/CViolation.h"
 
 using namespace VisualLinkerScript::ParsingEngine::SubParsers;
 using namespace VisualLinkerScript::ParsingEngine::Models;

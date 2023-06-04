@@ -1,15 +1,16 @@
-#include "CPreliminaryParser.h"
-#include "CPreliminaryParsingException.h"
-#include "Models/Raw/CRawEntry.h"
-#include "Models/Raw/CRawFile.h"
-#include "Models/Raw/RawEntryType.h"
-
 #include <memory>
 #include <string>
 #include <vector>
 
-using namespace VisualLinkerScript::ParsingEngine::Models;
-using namespace VisualLinkerScript::ParsingEngine::Models::Raw;
+#include "CPreliminaryParser.h"
+#include "CPreliminaryParsingException.h"
+
+#include "../Models/Raw/CRawEntry.h"
+#include "../Models/Raw/CRawFile.h"
+#include "../Models/Raw/RawEntryType.h"
+
+using namespace VisualLinkerScript::Models;
+using namespace VisualLinkerScript::Models::Raw;
 using namespace VisualLinkerScript::ParsingEngine;
 
 namespace

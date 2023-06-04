@@ -1,12 +1,13 @@
 #ifndef CMASTER_PARSER_H__
 #define CMASTER_PARSER_H__
 
-#include "Models/Raw/CRawFile.h"
-#include "Models/CLinkerScriptFile.h"
+#include "../Models/Raw/CRawFile.h"
+#include "../Models/CLinkerScriptFile.h"
+
 #include <vector>
 #include <memory>
 
-using namespace VisualLinkerScript::ParsingEngine::Models;
+using namespace VisualLinkerScript::Models;
 
 namespace VisualLinkerScript::ParsingEngine
 {

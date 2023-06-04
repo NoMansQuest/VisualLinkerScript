@@ -4,7 +4,7 @@
 #include "CMemoryRegionContentParser.h"
 #include "CScopedRegionParser.h"
 #include "SubParserType.h"
-#include "../Models/CMemoryRegion.h"
+#include "../../Models/CMemoryRegion.h"
 #include <memory>
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers

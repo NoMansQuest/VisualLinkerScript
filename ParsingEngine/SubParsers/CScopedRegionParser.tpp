@@ -1,13 +1,17 @@
 #include <vector>
 #include <memory>
 #include <string>
+
 #include "CScopedRegionParser.h"
-#include "../Models/Raw/CRawEntry.h"
-#include "../Models/Raw/CRawFile.h"
-#include "../Models/Raw/RawEntryType.h"
-#include "../Models/CComment.h"
-#include "../Models/CViolation.h"
+
 #include "../CMasterParserException.h"
+
+#include "../../Models/Raw/CRawEntry.h"
+#include "../../Models/Raw/CRawFile.h"
+#include "../../Models/Raw/RawEntryType.h"
+#include "../../Models/CComment.h"
+#include "../../Models/CViolation.h"
+
 
 using namespace VisualLinkerScript::ParsingEngine::SubParsers;
 using namespace VisualLinkerScript::ParsingEngine::Models;

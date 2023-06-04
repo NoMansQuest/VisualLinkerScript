@@ -1,26 +1,28 @@
-#include "CMasterParser.h"
-#include "Models/CComment.h"
+
+#include <vector>
+#include <memory>
 #include <algorithm>
 
 #include "CMasterParserException.h"
+#include "CMasterParser.h"
+
 #include "SubParsers/CAssignmentParser.h"
 #include "SubParsers/CMemoryRegionParser.h"
 #include "SubParsers/CFunctionParser.h"
 #include "SubParsers/CPhdrsRegionParser.h"
 #include "SubParsers/CSectionsRegionParser.h"
-#include "Models/CIncludeCommand.h"
 #include "SubParsers/Constants.h"
 #include "SubParsers/CVersionRegionParser.h"
 
-#include "Models/CLinkerScriptContentBase.h"
-#include "Models/Raw/RawEntryType.h"
-
-#include <vector>
-#include <memory>
+#include "../Models/CComment.h"
+#include "../Models/CIncludeCommand.h"
+#include "../Models/CLinkerScriptContentBase.h"
+#include "../Models/Raw/RawEntryType.h"
 
 using namespace VisualLinkerScript::ParsingEngine;
-using namespace VisualLinkerScript::ParsingEngine::Models::Raw;
 using namespace VisualLinkerScript::ParsingEngine::SubParsers;
+using namespace VisualLinkerScript::Models::Raw;
+
 
 std::shared_ptr<CLinkerScriptFile> CMasterParser::ProcessLinkerScriptFile(std::shared_ptr<CRawFile> rawFile)
 {

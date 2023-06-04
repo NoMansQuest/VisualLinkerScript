@@ -1,18 +1,21 @@
 #include <vector>
 #include <memory>
 #include <string>
+
 #include "CVersionRegionContentParser.h"
 #include "Constants.h"
+
 #include "../CMasterParserException.h"
-#include "../Models/CLinkerScriptContentBase.h"
-#include "../Models/CVersionScope.h"
-#include "../Models/CVersionTag.h"
-#include "../Models/CVersionNode.h"
-#include "../Models/Raw/CRawEntry.h"
-#include "../Models/Raw/RawEntryType.h"
-#include "../Models/Raw/CRawFile.h"
-#include "../Models/CComment.h"
-#include "../Models/CViolation.h"
+
+#include "../../Models/CLinkerScriptContentBase.h"
+#include "../../Models/CVersionScope.h"
+#include "../../Models/CVersionTag.h"
+#include "../../Models/CVersionNode.h"
+#include "../../Models/Raw/CRawEntry.h"
+#include "../../Models/Raw/RawEntryType.h"
+#include "../../Models/Raw/CRawFile.h"
+#include "../../Models/CComment.h"
+#include "../../Models/CViolation.h"
 
 using namespace VisualLinkerScript::ParsingEngine::Models;
 using namespace VisualLinkerScript::ParsingEngine::Models::Raw;

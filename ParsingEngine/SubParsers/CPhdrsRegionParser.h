@@ -4,7 +4,7 @@
 #include "SubParserType.h"
 #include "CPhdrsRegionContentParser.h"
 #include "CScopedRegionParser.h"
-#include "../Models/CPhdrsRegion.h"
+#include "../../Models/CPhdrsRegion.h"
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {   

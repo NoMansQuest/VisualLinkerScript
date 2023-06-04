@@ -4,8 +4,6 @@
 #include <exception>
 #include <string>
 
-using namespace std;
-
 namespace VisualLinkerScript::ParsingEngine 
 {
     /// @brief Each exception will have its own assigned enum entry

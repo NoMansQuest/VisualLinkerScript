@@ -4,8 +4,8 @@
 #include <memory>
 #include "CSubParserBase.h"
 #include "SubParserType.h"
-#include "../Models/Raw/CRawFile.h"
-#include "../Models/CMemoryStatementAttribute.h"
+#include "../../Models/Raw/CRawFile.h"
+#include "../../Models/CMemoryStatementAttribute.h"
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {

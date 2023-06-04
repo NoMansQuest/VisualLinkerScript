@@ -1,16 +1,19 @@
-#include "CPhdrsRegionContentParser.h"
-#include "CExpressionParser.h"
 #include <vector>
 #include <memory>
 #include <string>
+
+#include "CPhdrsRegionContentParser.h"
+#include "CExpressionParser.h"
 #include "Constants.h"
-#include "../Models/Raw/CRawEntry.h"
-#include "../Models/Raw/RawEntryType.h"
-#include "../Models/CPhdrsStatement.h"
+
 #include "../CMasterParserException.h"
-#include "../Models/CComment.h"
-#include "../Models/CViolation.h"
-#include "../Models/Raw/CRawFile.h"
+
+#include "../../Models/Raw/CRawEntry.h"
+#include "../../Models/Raw/RawEntryType.h"
+#include "../../Models/CPhdrsStatement.h"
+#include "../../Models/CComment.h"
+#include "../../Models/CViolation.h"
+#include "../../Models/Raw/CRawFile.h"
 
 using namespace VisualLinkerScript::ParsingEngine::SubParsers;
 using namespace VisualLinkerScript::ParsingEngine::Models;

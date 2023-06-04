@@ -3,13 +3,15 @@
 
 #include <vector>
 #include <memory>
-#include "../Models/CLinkerScriptContentBase.h"
-#include "../Models/Raw/CRawFile.h"
-#include "SubParserType.h"
 #include <type_traits>
 
-using namespace VisualLinkerScript::ParsingEngine::Models::Raw;    
-using namespace VisualLinkerScript::ParsingEngine::Models;
+#include "SubParserType.h"
+
+#include "../../Models/CLinkerScriptContentBase.h"
+#include "../../Models/Raw/CRawFile.h"
+
+using namespace VisualLinkerScript::Models::Raw;    
+using namespace VisualLinkerScript::Models;
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {

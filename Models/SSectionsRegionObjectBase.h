@@ -1,5 +1,0 @@
-#ifndef CSECTIONS_REGION_OBJECT_BASE_H__
-#define CSECTIONS_REGION_OBJECT_BASE_H__
-
-
-#endif

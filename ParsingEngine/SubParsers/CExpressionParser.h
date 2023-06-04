@@ -1,10 +1,12 @@
 #ifndef CEXPRESSION_PARSER_H__
 #define CEXPRESSION_PARSER_H__
 
+#include <memory>
+
 #include "CSubParserBase.h"
 #include "SubParserType.h"
-#include <memory>
-#include "../Models/CExpression.h"
+
+#include "../../Models/CExpression.h"
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {   

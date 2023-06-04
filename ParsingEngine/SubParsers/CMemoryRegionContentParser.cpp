@@ -5,13 +5,13 @@
 #include <memory>
 #include <string>
 #include "Constants.h"
-#include "../Models/Raw/CRawEntry.h"
-#include "../Models/Raw/RawEntryType.h"
+#include "../../Models/Raw/CRawEntry.h"
+#include "../../Models/Raw/RawEntryType.h"
 #include "../CMasterParserException.h"
-#include "../Models/CComment.h"
-#include "../Models/CViolation.h"
-#include "../Models/Raw/CRawFile.h"
-#include "../Models/CMemoryStatement.h"
+#include "../../Models/CComment.h"
+#include "../../Models/CViolation.h"
+#include "../../Models/Raw/CRawFile.h"
+#include "../../Models/CMemoryStatement.h"
 
 using namespace VisualLinkerScript::ParsingEngine::SubParsers;
 using namespace VisualLinkerScript::ParsingEngine::Models;

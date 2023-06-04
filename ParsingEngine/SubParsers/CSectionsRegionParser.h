@@ -3,7 +3,8 @@
 
 #include "SubParserType.h"
 #include "CSubParserBase.h"
-#include "../Models/CSectionsRegion.h"
+
+#include "../../Models/CSectionsRegion.h"
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {

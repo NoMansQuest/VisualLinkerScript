@@ -247,65 +247,53 @@ HEADERS += \
     DrcEngine/Rules/CSectionsDefinedOnlyOnceRule.h \
     DrcEngine/Rules/CSymbolsDefinedInAdvance.h \
     LinkerScriptManager/CLinkerScriptManager.h \
-    Models/SComment.h \
-    Models/SLinkerScriptEntity.h \
-    Models/SMemoryEntry.h \
-    Models/SMemoryRegion.h \
-    Models/SModelBase.h \
-    Models/SProgramHeader.h \
-    Models/SProgramHeadersRegion.h \
-    Models/SSectionsRegion.h \
-    Models/SSectionsRegionEntry.h \
-    Models/SSectionsRegionObjectBase.h \
-    Models/SSectionsRegionOverlay.h \
-    Models/SSectionsRegionSection.h \
-    Models/SSymbolAssignment.h \
+    Models/CAssignmentProcedureStatement.h \
+    Models/CAssignmentStatement.h \
+    Models/CComment.h \
+    Models/CExpression.h \
+    Models/CExpressionNumber.h \
+    Models/CExpressionOperator.h \
+    Models/CFunctionCall.h \
+    Models/CIncludeCommand.h \
+    Models/CInputSectionFunction.h \
+    Models/CInputSectionStatement.h \
+    Models/CInputSectionTargetSection.h \
+    Models/CLinkerScriptContentBase.h \
+    Models/CLinkerScriptFile.h \
+    Models/CMemoryRegion.h \
+    Models/CMemoryStatement.h \
+    Models/CMemoryStatementAttribute.h \
+    Models/CParameterSeparator.h \
+    Models/CPhdrsRegion.h \
+    Models/CPhdrsStatement.h \
+    Models/CProcedureCall.h \
+    Models/CSectionOutputAtLmaRegion.h \
+    Models/CSectionOutputCommand.h \
+    Models/CSectionOutputCommand.h \
+    Models/CSectionOutputFillExpression.h \
+    Models/CSectionOutputOverlay.h \
+    Models/CSectionOutputPhdr.h \
+    Models/CSectionOutputSpecialKeyword.h \
+    Models/CSectionOutputToVmaRegion.h \
+    Models/CSectionOutputType.h \
+    Models/CSectionsRegion.h \
+    Models/CStringEntry.h \
+    Models/CSymbol.h \
+    Models/CUnrecognizableContent.h \
+    Models/CVersionNode.h \
+    Models/CVersionScope.h \
+    Models/CVersionTag.h \
+    Models/CVersionsRegion.h \
+    Models/CViolation.h \
+    Models/Raw/CRawEntry.h \
+    Models/Raw/CRawFile.h \
+    Models/Raw/RawEntryType.h \
+    Models/CSectionOverlayCommand.h \
     ParsingEngine/CMasterParser.h \
     ParsingEngine/CMasterParserException.h \
     ParsingEngine/CModelTranslator.h \
     ParsingEngine/CPreliminaryParser.h \
     ParsingEngine/CPreliminaryParsingException.h \
-    ParsingEngine/Models/CAssignmentProcedureStatement.h \
-    ParsingEngine/Models/CAssignmentStatement.h \
-    ParsingEngine/Models/CComment.h \
-    ParsingEngine/Models/CExpression.h \
-    ParsingEngine/Models/CExpressionNumber.h \
-    ParsingEngine/Models/CExpressionOperator.h \
-    ParsingEngine/Models/CFunctionCall.h \
-    ParsingEngine/Models/CIncludeCommand.h \
-    ParsingEngine/Models/CInputSectionFunction.h \
-    ParsingEngine/Models/CInputSectionStatement.h \
-    ParsingEngine/Models/CInputSectionTargetSection.h \
-    ParsingEngine/Models/CLinkerScriptContentBase.h \
-    ParsingEngine/Models/CLinkerScriptFile.h \
-    ParsingEngine/Models/CMemoryRegion.h \
-    ParsingEngine/Models/CMemoryStatement.h \
-    ParsingEngine/Models/CMemoryStatementAttribute.h \
-    ParsingEngine/Models/CParameterSeparator.h \
-    ParsingEngine/Models/CPhdrsRegion.h \
-    ParsingEngine/Models/CPhdrsStatement.h \
-    ParsingEngine/Models/CProcedureCall.h \
-    ParsingEngine/Models/CSectionOutputAtLmaRegion.h \
-    ParsingEngine/Models/CSectionOutputCommand.h \
-    ParsingEngine/Models/CSectionOutputCommand.h \
-    ParsingEngine/Models/CSectionOutputFillExpression.h \
-    ParsingEngine/Models/CSectionOutputOverlay.h \
-    ParsingEngine/Models/CSectionOutputPhdr.h \
-    ParsingEngine/Models/CSectionOutputSpecialKeyword.h \
-    ParsingEngine/Models/CSectionOutputToVmaRegion.h \
-    ParsingEngine/Models/CSectionOutputType.h \
-    ParsingEngine/Models/CSectionsRegion.h \
-    ParsingEngine/Models/CStringEntry.h \
-    ParsingEngine/Models/CSymbol.h \
-    ParsingEngine/Models/CUnrecognizableContent.h \
-    ParsingEngine/Models/CVersionNode.h \
-    ParsingEngine/Models/CVersionScope.h \
-    ParsingEngine/Models/CVersionTag.h \
-    ParsingEngine/Models/CVersionsRegion.h \
-    ParsingEngine/Models/CViolation.h \
-    ParsingEngine/Models/Raw/CRawEntry.h \
-    ParsingEngine/Models/Raw/CRawFile.h \
-    ParsingEngine/Models/Raw/RawEntryType.h \
     ParsingEngine/SubParsers/CAssignmentParser.h \
     ParsingEngine/SubParsers/CAssignmentProcedureParser.h \
     ParsingEngine/SubParsers/CCommandParser.h \
@@ -323,41 +311,12 @@ HEADERS += \
     ParsingEngine/SubParsers/CSectionOutputOverlayParser.h \
     ParsingEngine/SubParsers/CSectionOutputTypeParser.h \
     ParsingEngine/SubParsers/CSectionOverlayParser.h \
-    ParsingEngine/SubParsers/CSectionOverlayParser.h \
-    ParsingEngine/SubParsers/CSectionsRegionParser.h \
     ParsingEngine/SubParsers/CSubParserBase.h \
     ParsingEngine/SubParsers/CVersionRegionContentParser.h \
     ParsingEngine/SubParsers/CVersionRegionParser.h \
     ParsingEngine/SubParsers/Constants.h \
     ParsingEngine/SubParsers/SubParserType.h \
-    ParsingEngine/Models/CExpression.h \
-    ParsingEngine/Models/CFunctionCall.h \
-    ParsingEngine/Models/CLinkerScriptContentBase.h \
-    ParsingEngine/Models/CLinkerScriptFile.h \
-    ParsingEngine/Models/CMemoryRegion.h \
-    ParsingEngine/Models/CMemoryStatement.h \
-    ParsingEngine/Models/CPhdrsRegion.h \
-    ParsingEngine/Models/CPhdrsStatement.h \
-    ParsingEngine/Models/CProcedureCall.h \
-    ParsingEngine/Models/CSectionsRegion.h \
-    ParsingEngine/Models/CSymbol.h \
-    ParsingEngine/Models/CUnrecognizableContent.h \
-    ParsingEngine/Models/CVersionNode.h \
-    ParsingEngine/Models/CVersionScope.h \
-    ParsingEngine/Models/CVersionsRegion.h \
-    ParsingEngine/Models/CViolation.h \
-    ParsingEngine/Models/Raw/CRawEntry.h \
-    ParsingEngine/Models/Raw/CRawFile.h \
-    ParsingEngine/Models/CSectionOverlayCommand.h \
-    ParsingEngine/Models/Raw/RawEntryType.h \
-    ParsingEngine/SubParsers/CAssignmentParser.h \
-    ParsingEngine/SubParsers/CExpressionParser.h \
-    ParsingEngine/SubParsers/CMemoryRegionParser.h \
-    ParsingEngine/SubParsers/CPhdrsRegionContentParser.h \
     ParsingEngine/SubParsers/CSectionsRegionParser.h \
-    ParsingEngine/SubParsers/CSubParserBase.h \
-    ParsingEngine/SubParsers/CVersionRegionParser.h \
-    ParsingEngine/SubParsers/SubParserType.h \
     ParsingEngine/SubParsers/CInputSectionFunctionParser.h \
     mainwindow.h
 

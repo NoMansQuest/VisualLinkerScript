@@ -2,9 +2,11 @@
 #define CINPUT_SECTION_PARSER_H__
 
 #include <memory>
+
 #include "CSubParserBase.h"
 #include "SubParserType.h"
-#include "../Models/CInputSectionStatement.h"
+
+#include "../../Models/CInputSectionStatement.h"
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {

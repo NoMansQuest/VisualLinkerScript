@@ -2,8 +2,8 @@
 #define CSCOPED_REGION_PARSER_H__
 
 #include "CSubParserBase.h"
-#include "../Models/Raw/CRawEntry.h"
-#include "../Models/Raw/CRawFile.h"
+#include "../../Models/Raw/CRawEntry.h"
+#include "../../Models/Raw/CRawFile.h"
 #include "SubParserType.h"
 #include <vector>
 #include <memory>

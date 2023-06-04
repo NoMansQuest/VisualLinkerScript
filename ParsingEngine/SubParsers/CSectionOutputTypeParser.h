@@ -2,10 +2,12 @@
 #define CSECTION_OUTPUT_TYPE_PARSER_H__
 
 #include <memory>
+
 #include "CSubParserBase.h"
 #include "SubParserType.h"
-#include "../Models/Raw/CRawFile.h"
-#include "../Models/CSectionOutputType.h"
+
+#include "../../Models/Raw/CRawFile.h"
+#include "../../Models/CSectionOutputType.h"
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {

@@ -1,5 +1,0 @@
-#ifndef CPROGRAM_HEADERS_REGION_H__
-#define CPROGRAM_HEADERS_REGION_H__
-
-
-#endif
