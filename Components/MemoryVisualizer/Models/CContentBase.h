@@ -15,8 +15,11 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
     {
     public:
         /// @brief Default Constructor;
-        CContentBase(bool isDraggable)
+        /// @param isDraggable Is the object dragabble?
+        /// @param isExternal Is the object present as a result of an 'Include' directive?
+        CContentBase(bool isDraggable, bool isExternal)
             : m_isDraggable(isDraggable),
+              m_isExternal(isExternal),
               m_state(EObjectState::Neutral)
         {}
 
@@ -32,6 +35,7 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
         bool m_isPressed;
         bool m_isEnabled;
         bool m_isDraggable;
+        bool m_isExternal;
 
         SRectangleF m_fixedCoordinates;
         SRectangleF m_proposedCoordinates;
@@ -66,12 +70,12 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
         }
 
         /// @brief Returns back the 'Drag' data object.
-        CDragState& DragObject() {
+        const CDragState& DragObject() {
             return this->m_dragObject;
         }
 
         /// @brief Returns back the 34618Tool-Tip object
-        CTooltip& TooltipObject() {
+        const CTooltip& TooltipObject() {
             return this->m_tooltipObject;
         }
 
@@ -98,6 +102,12 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
         /// @brief Report if the object is enabled.
         bool IsEnabled() {
             return this->m_isEnabled;
+        }
+
+        /// @brief Reports back whether the object is referenced in a separate file
+        ///        via an 'INCLUDE' statement, or local to the loaded linker-script object
+        bool IsExternal() {
+            return this->m_isExternal;
         }
 
         /// @brief Reports back the path of the object

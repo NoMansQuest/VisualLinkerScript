@@ -9,15 +9,6 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
     /// @brief Represents full coordinates of a load-mapper aarrow
     class CLmaToVmaArrowCoordinates
     {
-    public:
-        /// @brief Constructor
-        CLmaToVmaArrowCoordinates()
-        {}
-
-        /// @brief Destructor
-        ~CLmaToVmaArrowCoordinates()
-        {}
-
     private:
         SPointF m_vmaSideCoordinates;
         SPointF m_lmaSideCoordinates;

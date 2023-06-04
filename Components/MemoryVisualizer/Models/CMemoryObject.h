@@ -10,14 +10,10 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
     /// @brief Represents a Memory-Object.
     class CMemoryObject : public CContentBase
     {
-
     public:
         /// @brief Default constructor
-        CMemoryObject() : CContentBase(true)
-        {}
-
-        /// @brief Default destructor
-        ~CMemoryObject()
+        CMemoryObject(bool isExternal)
+            : CContentBase(true, isExternal)
         {}
 
     private:

@@ -13,16 +13,8 @@ SOURCES += \
     Compiler/ExpressionEvaluation/CExpressionEvaluator.cpp \
     Components/MemoryVisualizer/CGraphicsProcessor.cpp \
     Components/MemoryVisualizer/CMemoryVisualizer.cpp \
-    Components/MemoryVisualizer/Models/CArrowObject.cpp \
-    Components/MemoryVisualizer/Models/CContentBase.cpp \
-    Components/MemoryVisualizer/Models/CDragState.cpp \
-    Components/MemoryVisualizer/Models/CLinkerScriptObject.cpp \
-    Components/MemoryVisualizer/Models/CMemoryObject.cpp \
-    Components/MemoryVisualizer/Models/COverlapObject.cpp \
-    Components/MemoryVisualizer/Models/CSectionObject.cpp \
-    Components/MemoryVisualizer/Models/CEntryPoint.cpp \
-    Components/MemoryVisualizer/Models/CStatementObject.cpp \
-    Components/MemoryVisualizer/Models/CTooltip.cpp \
+    Components/MemoryVisualizer/CMouseInteractivity.cpp \
+    Components/MemoryVisualizer/ModelTranslator.cpp \
     Components/MemoryVisualizer/Placement/CPlacementEngine.cpp \
     Components/MemoryVisualizer/Rendering/CArrowsRenderer.cpp \
     Components/MemoryVisualizer/Rendering/CMemoryObjectRenderer.cpp \
@@ -132,11 +124,13 @@ HEADERS += \
     Compiler/ProcedureExecution/CProcedureExecutorBase.h \
     Components/MemoryVisualizer/CGraphicsProcessor.h \
     Components/MemoryVisualizer/CMemoryVisualizer.h \
+    Components/MemoryVisualizer/CMouseInteractivity.h \
     Components/MemoryVisualizer/EInsertObjectType.h \
+    Components/MemoryVisualizer/ModelTranslator.h \
     Components/MemoryVisualizer/Models/CArrowObject.h \
     Components/MemoryVisualizer/Models/CContentBase.h \
     Components/MemoryVisualizer/Models/CDragState.h \
-    Components/MemoryVisualizer/Models/CLinkerScriptObject.h \
+    Components/MemoryVisualizer/Models/CFloorplan.h \
     Components/MemoryVisualizer/Models/CLmaToVmaArrow.h \
     Components/MemoryVisualizer/Models/CLmaToVmaArrowCoordinates.h \
     Components/MemoryVisualizer/Models/CMemoryLocationIndicator.h \
@@ -242,10 +236,10 @@ HEADERS += \
     DrcEngine/Rules/CDrcRuleBase.h \
     DrcEngine/Rules/CEntryIsDefinedRule.h \
     DrcEngine/Rules/CInputFilesAreFoundRule.h \
-    DrcEngine/Rules/CLocationCounterCannotGoBackwards.h \
+    DrcEngine/Rules/CLocationCounterCannotGoBackwardsRule.h \
     DrcEngine/Rules/CNoDuplicateMemoryRegionNameRule.h \
     DrcEngine/Rules/CSectionsDefinedOnlyOnceRule.h \
-    DrcEngine/Rules/CSymbolsDefinedInAdvance.h \
+    DrcEngine/Rules/CSymbolsDefinedInAdvanceRule.h \
     LinkerScriptManager/CLinkerScriptManager.h \
     Models/CAssignmentProcedureStatement.h \
     Models/CAssignmentStatement.h \

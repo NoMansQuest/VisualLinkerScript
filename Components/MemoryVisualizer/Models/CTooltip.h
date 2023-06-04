@@ -11,21 +11,13 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
     /// @brief Represents a Tool-Tip Object for the visualizer
     class CTooltip
     {
-    public:
-        /// @brief Default constructor
-        CTooltip()
-        {}
-
-        /// @brief Destructor
-        ~CTooltip()
-        {}
-
     private:
         std::string m_toolTipContent = "";
         SPointF m_showingCoordinates;
         uint64_t m_appearanceTimestampInMilliseconds = 0;
         uint64_t m_displayDurationInMilliseconds = 0;
         bool m_isShowing = false;
+        bool m_isEnabled = false;
 
     public:
         /// @brief Content of the tool-tip
@@ -46,6 +38,16 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
         /// @brief Returns back if the Tool-Tip is being shown
         bool IsShowing() {
             return this->m_isShowing;
+        }
+
+        /// @brief Reports back whether the tool-tip is enabled or not
+        bool IsEnabled(){
+            return m_isEnabled;
+        }
+
+        /// @brief Updates the 'Enabled' state of the object.
+        void SetEnabled(bool enabled){
+            m_isEnabled = enabled;
         }
 
         /// @brief Returns the timestamp of the moment tool-tip started being displayed

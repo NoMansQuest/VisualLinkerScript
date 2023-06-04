@@ -1,5 +1,5 @@
-#ifndef CLINKERSCRIPTOBJECT_H__
-#define CLINKERSCRIPTOBJECT_H__
+#ifndef CFLOORPLAN_H__
+#define CFLOORPLAN_H__
 
 #include <vector>
 #include "CContentBase.h"
@@ -8,14 +8,12 @@
 namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 {
     /// @brief Represents a Linker-Script object.
-    class CLinkerScriptObject
+    class CFloorplan
     {
-
     // Member fields
     private:                
         std::vector<CContentBase> m_content;
         std::vector<CLmaToVmaArrow> m_arrows;
-
 
     public:
         /// @brief Memory content
@@ -30,4 +28,4 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
     };
 };
 
-#endif // CLINKERSCRIPTOBJECT_H__
+#endif // CFLOORPLAN_H__

@@ -13,7 +13,7 @@
 #include "../../Models/CViolation.h"
 
 using namespace VisualLinkerScript::ParsingEngine::SubParsers;
-using namespace VisualLinkerScript::ParsingEngine::Models;
+using namespace VisualLinkerScript::Models;
 
 namespace
 {

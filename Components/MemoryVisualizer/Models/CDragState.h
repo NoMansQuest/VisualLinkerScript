@@ -17,15 +17,6 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
         SPointF m_dragCurrentPosition;
 
     public:
-        /// @brief Default constructor
-        CDragState()
-        {}
-
-        /// @brief Default destructor
-        ~CDragState()
-        {}
-
-    public:
         /// @brief Returns if the object is being dragged
         float IsBeingDragged() {
             return this->m_isBeingDragged;
