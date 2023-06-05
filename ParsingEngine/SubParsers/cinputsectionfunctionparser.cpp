@@ -7,8 +7,10 @@
 #include "../../Models/CComment.h"
 #include "../../Models/Raw/CRawEntry.h"
 #include "../../Models/CInputSectionFunction.h"
-#include "../../Models/CViolation.h"
+#include "../CParserViolation.h"
+#include "../EParserViolationCode.h"
 
+using namespace VisualLinkerScript::ParsingEngine;
 using namespace VisualLinkerScript::ParsingEngine::SubParsers;
 using namespace VisualLinkerScript::Models;
 
@@ -33,7 +35,7 @@ std::shared_ptr<CInputSectionFunction> CInputSectionFunctionParser::TryParse(
     std::vector<CRawEntry>::const_iterator previousPositionIterator = iterator;
     std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = iterator;
     std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
-    std::vector<CViolation> violations;
+    std::vector<CParserViolation> violations;
 
     CInputSectionFunctionParser nestedFunctionParser;
 
@@ -67,7 +69,7 @@ std::shared_ptr<CInputSectionFunction> CInputSectionFunctionParser::TryParse(
 
         if (lineChangeDetected)
         {
-            violations.emplace_back(CViolation(*localIterator, ViolationCode::FunctionsCannotExpandToMultipleLines));
+            violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::FunctionsCannotExpandToMultipleLines));
             break;
         }
 
@@ -87,7 +89,7 @@ std::shared_ptr<CInputSectionFunction> CInputSectionFunctionParser::TryParse(
                     {
                         if (!CParserHelpers::IsInputSectionSpecialFunctionName(resolvedContent))
                         {
-                            violations.emplace_back(CViolation(*localIterator, ViolationCode::FunctionNotRecognized));
+                            violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::FunctionNotRecognized));
                         }
                         functionNameEntry = *localIterator;
                         break;
@@ -95,7 +97,7 @@ std::shared_ptr<CInputSectionFunction> CInputSectionFunctionParser::TryParse(
 
                     case ParserState::AwaitingParenthesisOverture:
                     {
-                        violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
+                        violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
                         break;
                     }
 
@@ -109,7 +111,7 @@ std::shared_ptr<CInputSectionFunction> CInputSectionFunctionParser::TryParse(
                                 auto parsedInnerFunction = nestedFunctionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
                                 if (parsedInnerFunction == nullptr)
                                 {
-                                    violations.emplace_back(CViolation(*localIterator, ViolationCode::InputSectionFunctionParsingFailed));
+                                    violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::InputSectionFunctionParsingFailed));
                                 }
                                 else
                                 {
@@ -118,7 +120,7 @@ std::shared_ptr<CInputSectionFunction> CInputSectionFunctionParser::TryParse(
                             }
                             else
                             {
-                                violations.emplace_back(CViolation(*localIterator, ViolationCode::MissingParenthesisOvertureForFunction));
+                                violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::MissingParenthesisOvertureForFunction));
                             }
                         }
                         else
@@ -144,7 +146,7 @@ std::shared_ptr<CInputSectionFunction> CInputSectionFunctionParser::TryParse(
                 {
                     case ParserState::AwaitingName:
                     {
-                        violations.emplace_back(CViolation(*localIterator, ViolationCode::WasExpectingFunctioNameHere));
+                        violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::WasExpectingFunctioNameHere));
                         break;
                     }
 
@@ -157,7 +159,7 @@ std::shared_ptr<CInputSectionFunction> CInputSectionFunctionParser::TryParse(
 
                     case ParserState::AwaitingParenthesisClosure:
                     {
-                        violations.emplace_back(CViolation(*localIterator, ViolationCode::WasExpectingAnotherParameterOrParenthesisClosure));
+                        violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::WasExpectingAnotherParameterOrParenthesisClosure));
                         break;
                     }
 
@@ -174,13 +176,13 @@ std::shared_ptr<CInputSectionFunction> CInputSectionFunctionParser::TryParse(
                 {
                     case ParserState::AwaitingName:
                     {
-                        violations.emplace_back(CViolation(*localIterator, ViolationCode::WasExpectingFunctioNameHere));
+                        violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::WasExpectingFunctioNameHere));
                         break;
                     }
 
                     case ParserState::AwaitingParenthesisOverture:
                     {
-                        violations.emplace_back(CViolation(*localIterator, ViolationCode::WasExpectingParenthesisOverture));
+                        violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::WasExpectingParenthesisOverture));
                         break;
                     }
 
@@ -207,7 +209,7 @@ std::shared_ptr<CInputSectionFunction> CInputSectionFunctionParser::TryParse(
                     case ParserState::AwaitingParenthesisOverture:
                     case ParserState::AwaitingParenthesisClosure:
                     {
-                        violations.emplace_back(CViolation(*localIterator, ViolationCode::OperatorsNotAllowedWithinInputSectionFunctions));
+                        violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::OperatorsNotAllowedWithinInputSectionFunctions));
                         break;
                     }
 
@@ -223,7 +225,7 @@ std::shared_ptr<CInputSectionFunction> CInputSectionFunctionParser::TryParse(
             case RawEntryType::Number:
             case RawEntryType::String:
             {
-                violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
+                violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
                 break;
             }
 
@@ -231,7 +233,7 @@ std::shared_ptr<CInputSectionFunction> CInputSectionFunctionParser::TryParse(
             case RawEntryType::BracketOpen:
             case RawEntryType::BracketClose:
             {
-                violations.emplace_back(CViolation(*localIterator, ViolationCode::UnexpectedTerminationOfExpression));
+                violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::UnexpectedTerminationOfExpression));
                 localIterator = previousPositionIterator;
                 parserState = ParserState::ParsingComplete;
                 break;
@@ -239,7 +241,7 @@ std::shared_ptr<CInputSectionFunction> CInputSectionFunctionParser::TryParse(
 
             case RawEntryType::Unknown:
             {
-                violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
+                violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
                 break;
             }
 

@@ -25,7 +25,7 @@ namespace VisualLinkerScript::Models
                                       CRawEntry semicolonEntry,
                                       std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& parsedContent,
                                       std::vector<CRawEntry>&& rawElements, 
-                                      std::vector<CViolation>&& violations)
+                                      std::vector<CParserViolation>&& violations)
             : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
               m_assignmentOperator(std::move(assignmentOperator)),
               m_lValueEntry(std::move(lValueEntry)),

@@ -9,7 +9,7 @@
 #include "CSectionOutputPhdr.h"
 #include "CSectionOutputFillExpression.h"
 #include "Raw/CRawEntry.h"
-#include "CViolation.h"
+#include "CParserViolation.h"
 
 namespace VisualLinkerScript::Models
 {
@@ -44,7 +44,7 @@ namespace VisualLinkerScript::Models
                                        std::shared_ptr<CSectionOutputFillExpression> fillExpression,
                                        std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& innerContent,
                                        std::vector<CRawEntry>&& rawElements,
-                                       std::vector<CViolation>&& violations)
+                                       std::vector<CParserViolation>&& violations)
             : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
               m_sectionOutputNameEntry(sectionOutputNameEntry),
               m_preColonContent(std::move(preColonContent)),

@@ -195,6 +195,7 @@ namespace
     }
 };
 
+using namespace VisualLinkerScript::ParsingEngine;
 using namespace VisualLinkerScript::ParsingEngine::SubParsers;
 
 bool CParserHelpers::IsReservedWord(const std::string& wordToCheck)

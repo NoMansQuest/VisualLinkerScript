@@ -16,14 +16,14 @@ namespace VisualLinkerScript::Models
     {
     private:
         std::vector<std::shared_ptr<CLinkerScriptContentBase>> m_content;
-        std::vector<CViolation> m_violations;
+        std::vector<CParserViolation> m_violations;
         std::shared_ptr<CRawFile> m_rawFile;
 
     public:
         /// @brief Default constructor
         explicit CLinkerScriptFile(std::shared_ptr<CRawFile> rawFile,
                                    std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& content,
-                                   std::vector<CViolation>&& violations)
+                                   std::vector<CParserViolation>&& violations)
             : m_content(std::move(content)), 
               m_violations(std::move(violations)),
               m_rawFile(rawFile)
@@ -37,7 +37,7 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Reports back violations detected at root level of the linker-script file
-        const std::vector<CViolation>& Violations()
+        const std::vector<CParserViolation>& Violations()
         {
             return this->m_violations;
         }

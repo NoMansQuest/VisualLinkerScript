@@ -11,8 +11,10 @@
 #include "../../Models/CAssignmentStatement.h"
 #include "../../Models/Raw/CRawEntry.h"
 #include "../../Models/CAssignmentProcedureStatement.h"
-#include "../../Models/CViolation.h"
+#include "../CParserViolation.h"
+#include "../EParserViolationCode.h"
 
+using namespace VisualLinkerScript::ParsingEngine;
 using namespace VisualLinkerScript::ParsingEngine::SubParsers;
 using namespace VisualLinkerScript::Models;
 
@@ -38,7 +40,7 @@ std::shared_ptr<CAssignmentProcedureStatement> CAssignmentProcedureParser::TryPa
     std::vector<CRawEntry>::const_iterator previousPositionIterator = iterator;
     std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = iterator;
     std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
-    std::vector<CViolation> violations;
+    std::vector<CParserViolation> violations;
 
     auto parserState = ParserState::AwaitingProcedureName;
     auto doNotAdvance = false;
@@ -99,13 +101,13 @@ std::shared_ptr<CAssignmentProcedureStatement> CAssignmentProcedureParser::TryPa
 
                     case ParserState::AwaitingParenthesisClosure:
                     {
-                        violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
+                        violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
                         break;
                     }
 
                     case ParserState::AwaitingSemicolon:
                     {
-                        violations.emplace_back(CViolation(*localIterator, ViolationCode::WasExpectingSemicolonHere));
+                        violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::WasExpectingSemicolonHere));
                         break;
                     }
 
@@ -149,7 +151,7 @@ std::shared_ptr<CAssignmentProcedureStatement> CAssignmentProcedureParser::TryPa
                     case ParserState::AwaitingParenthesisClosure:
                     case ParserState::AwaitingSemicolon:
                     {
-                        violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
+                        violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
                         break;
                     }
 
@@ -179,7 +181,7 @@ std::shared_ptr<CAssignmentProcedureStatement> CAssignmentProcedureParser::TryPa
 
                     case ParserState::AwaitingSemicolon:
                     {
-                        violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
+                        violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
                         break;
                     }
 
@@ -204,7 +206,7 @@ std::shared_ptr<CAssignmentProcedureStatement> CAssignmentProcedureParser::TryPa
                     case ParserState::AwaitingSemicolon:
                     case ParserState::AwaitingParenthesisClosure:
                     {
-                        violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
+                        violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
                         break;
                     }
 
@@ -229,7 +231,7 @@ std::shared_ptr<CAssignmentProcedureStatement> CAssignmentProcedureParser::TryPa
                     case ParserState::AwaitingSemicolon:
                     case ParserState::AwaitingParenthesisClosure:
                     {
-                        violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
+                        violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
                         break;
                     }
 
@@ -271,7 +273,7 @@ std::shared_ptr<CAssignmentProcedureStatement> CAssignmentProcedureParser::TryPa
 
             case RawEntryType::Unknown:
             {
-                violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
+                violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
                 break;
             }
 

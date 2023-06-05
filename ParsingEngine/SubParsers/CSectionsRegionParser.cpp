@@ -18,10 +18,12 @@
 #include "../../Models/Raw/RawEntryType.h"
 #include "../../Models/Raw/CRawFile.h"
 #include "../../Models/CComment.h"
-#include "../../Models/CViolation.h"
+#include "../CParserViolation.h"
+#include "../EParserViolationCode.h"
 
 using namespace VisualLinkerScript::Models;
 using namespace VisualLinkerScript::Models::Raw;
+using namespace VisualLinkerScript::ParsingEngine;
 using namespace VisualLinkerScript::ParsingEngine::SubParsers;
 
 namespace
@@ -44,7 +46,7 @@ std::shared_ptr<CSectionsRegion> CSectionsRegionParser::TryParse(
     std::vector<CRawEntry>::const_iterator localIterator = iterator;
     std::vector<CRawEntry>::const_iterator previousPositionIterator = iterator;
     std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = iterator;
-    std::vector<CViolation> violations;
+    std::vector<CParserViolation> violations;
 
     CFunctionParser functionParser;                             // Example: FILL(0x00000)
     CAssignmentParser assignmentParser;                         // Example: '. = ALIGN(4);'
@@ -103,7 +105,7 @@ std::shared_ptr<CSectionsRegion> CSectionsRegionParser::TryParse(
                         headerEntry = *localIterator;
                         if (CParserHelpers::IsReservedWord(resolvedContent))
                         {
-                            violations.emplace_back(CViolation(*localIterator, ViolationCode::SectionOutputNameCannotBeAReservedKeyword));
+                            violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::SectionOutputNameCannotBeAReservedKeyword));
                         }
 
                         parserState = ParserState::AwaitingBracketOpen;
@@ -112,7 +114,7 @@ std::shared_ptr<CSectionsRegion> CSectionsRegionParser::TryParse(
 
                     case ParserState::AwaitingBracketOpen:
                     {
-                        violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
+                        violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
                         break;
                     }
 
@@ -124,7 +126,7 @@ std::shared_ptr<CSectionsRegion> CSectionsRegionParser::TryParse(
                             auto parsedOverlayStatement = sectionOverlayParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
                             if (parsedOverlayStatement == nullptr)
                             {
-                                violations.emplace_back(CViolation(*localIterator, ViolationCode::UnableToUnderstandOverlaySection));
+                                violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::UnableToUnderstandOverlaySection));
                             }
                             else
                             {
@@ -136,7 +138,7 @@ std::shared_ptr<CSectionsRegion> CSectionsRegionParser::TryParse(
                             auto parsedFunction = functionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
                             if (parsedFunction == nullptr)
                             {
-                                violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
+                                violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
                             }
                             else
                             {
@@ -148,7 +150,7 @@ std::shared_ptr<CSectionsRegion> CSectionsRegionParser::TryParse(
                             auto parsedAssignmentProcedure = assignmentCommandParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
                             if (parsedAssignmentProcedure == nullptr)
                             {
-                                violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
+                                violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
                             }
                             else
                             {
@@ -165,7 +167,7 @@ std::shared_ptr<CSectionsRegion> CSectionsRegionParser::TryParse(
                                 auto sectionOutputCommand = sectionOutputCommandParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
                                 if (sectionOutputCommand == nullptr)
                                 {
-                                    violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
+                                    violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
                                 }
                                 else
                                 {
@@ -196,7 +198,7 @@ std::shared_ptr<CSectionsRegion> CSectionsRegionParser::TryParse(
             case RawEntryType::ParenthesisOpen:
             case RawEntryType::ParenthesisClose:
             {
-                violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
+                violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
                 break;
             }
 

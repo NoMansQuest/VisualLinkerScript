@@ -17,7 +17,7 @@ namespace VisualLinkerScript::Models
         /// @brief Default constructor, accessible to inheritors only
         explicit CStringEntry(CRawEntry stringEntry,
                               std::vector<CRawEntry>&& rawElements,
-                              std::vector<CViolation>&& violations)
+                              std::vector<CParserViolation>&& violations)
             : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
               m_stringEntry(stringEntry)
         {}

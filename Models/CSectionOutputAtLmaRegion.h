@@ -20,7 +20,7 @@ namespace VisualLinkerScript::Models
                                 CRawEntry greatherThanSign,
                                 CRawEntry regionName,
                                 std::vector<CRawEntry>&& rawElements,
-                                std::vector<CViolation>&& violations)
+                                std::vector<CParserViolation>&& violations)
             : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
               m_atEntry(atEntry),
               m_greatherThanSign(greatherThanSign),
@@ -31,7 +31,7 @@ namespace VisualLinkerScript::Models
         explicit CSectionOutputAtLmaRegion(CRawEntry atEntry,
                                 CRawEntry greatherThanSign,
                                 CRawEntry regionName,
-                                std::vector<CViolation>&& violations)
+                                std::vector<CParserViolation>&& violations)
             : CLinkerScriptContentBase({atEntry, greatherThanSign, regionName}, std::move(violations)),
               m_atEntry(atEntry),
               m_greatherThanSign(greatherThanSign),

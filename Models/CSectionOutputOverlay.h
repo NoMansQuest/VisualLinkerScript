@@ -9,7 +9,7 @@
 #include "CSectionOutputPhdr.h"
 #include "CSectionOutputFillExpression.h"
 #include "Raw/CRawEntry.h"
-#include "CViolation.h"
+#include "CParserViolation.h"
 
 namespace VisualLinkerScript::Models
 {
@@ -44,7 +44,7 @@ namespace VisualLinkerScript::Models
                                        std::shared_ptr<CSectionOutputFillExpression> fillExpression,
                                        std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& innerContent,
                                        std::vector<CRawEntry>&& rawElements,
-                                       std::vector<CViolation>&& violations)
+                                       std::vector<CParserViolation>&& violations)
             : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
               m_sectionOutputNameEntry(sectionOutputNameEntry),
               m_preColonContent(std::move(preColonContent)),
@@ -105,7 +105,8 @@ namespace VisualLinkerScript::Models
         /// @brief Reports back the 'ToVma' expression, if present.
         std::shared_ptr<CSectionOutputToVmaRegion> ToVmaRegion()
         {
-            return this->m_toVmaRegion;
+            return thi   
+s->m_toVmaRegion;
         }
 
         /// @brief Reports back the 'AtLma' region, if present.

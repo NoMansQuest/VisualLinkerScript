@@ -10,9 +10,11 @@
 #include "../../Models/Raw/CRawFile.h"
 #include "../../Models/Raw/RawEntryType.h"
 #include "../../Models/CComment.h"
-#include "../../Models/CViolation.h"
+#include "../CParserViolation.h"
+#include "../EParserViolationCode.h"
 
 
+using namespace VisualLinkerScript::ParsingEngine;
 using namespace VisualLinkerScript::ParsingEngine::SubParsers;
 using namespace VisualLinkerScript::ParsingEngine::Models;
 using namespace VisualLinkerScript::ParsingEngine::Models::Raw;
@@ -38,7 +40,7 @@ std::shared_ptr<TProducingOutputType> CScopedRegionParser<TParserType, TContentP
     std::vector<CRawEntry>::const_iterator localIterator = iterator;
     std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = iterator;
     std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
-    std::vector<CViolation> violations;
+    std::vector<CParserViolation> violations;
 
     auto parserState = ParserState::AwaitingHeader;
 
@@ -65,7 +67,7 @@ std::shared_ptr<TProducingOutputType> CScopedRegionParser<TParserType, TContentP
                     auto parsedStatement = regionContentParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
                     if (parsedStatement == nullptr)
                     {
-                        CViolation detectedViolation({*localIterator},ViolationCode::EntryInvalidOrMisplaced);
+                        CParserViolation detectedViolation({*localIterator},EParserViolationCode::EntryInvalidOrMisplaced);
                         violations.emplace_back(detectedViolation);
                     }
                     else
@@ -87,7 +89,7 @@ std::shared_ptr<TProducingOutputType> CScopedRegionParser<TParserType, TContentP
                 }
                 else if (parserState == ParserState::AwaitingOpeningBracket)
                 {
-                    CViolation detectedViolation({ *localIterator }, ViolationCode::NoSymbolOrKeywordAllowedAfterMemoryHeader);
+                    CParserViolation detectedViolation({ *localIterator }, EParserViolationCode::NoSymbolOrKeywordAllowedAfterMemoryHeader);
                     violations.emplace_back(std::move(detectedViolation));
                 }
                 break;
@@ -102,11 +104,11 @@ std::shared_ptr<TProducingOutputType> CScopedRegionParser<TParserType, TContentP
             {
                 if (parserState == ParserState::AwaitingClosingBracket)
                 {
-                    CViolation detectedViolation({ *localIterator }, ViolationCode::EntryInvalidOrMisplaced);
+                    CParserViolation detectedViolation({ *localIterator }, EParserViolationCode::EntryInvalidOrMisplaced);
                 }
                 else if (parserState == ParserState::AwaitingOpeningBracket)
                 {
-                    CViolation detectedViolation({ *localIterator }, ViolationCode::NoSymbolOrKeywordAllowedAfterMemoryHeader);
+                    CParserViolation detectedViolation({ *localIterator }, EParserViolationCode::NoSymbolOrKeywordAllowedAfterMemoryHeader);
                     violations.emplace_back(std::move(detectedViolation));
                 }
                 else if (parserState == ParserState::AwaitingOpeningBracket)

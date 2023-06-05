@@ -6,8 +6,10 @@
 #include "../../Models/Raw/CRawEntry.h"
 #include "../../Models/CComment.h"
 #include "../../Models/CMemoryStatementAttribute.h"
-#include "../../Models/CViolation.h"
+#include "../CParserViolation.h"
+#include "../EParserViolationCode.h"
 
+using namespace VisualLinkerScript::ParsingEngine;
 using namespace VisualLinkerScript::ParsingEngine::SubParsers;
 using namespace VisualLinkerScript::Models;
 using namespace VisualLinkerScript::Models::Raw;
@@ -26,12 +28,12 @@ namespace
     void ProcessAttribute(CRawEntry rawEntry,
                           bool negatingSymbolDetected,
                           AttributeDefinitionState& sectionToAssign,
-                          std::vector<CViolation>& violations,
-                          ViolationCode violationCode)
+                          std::vector<CParserViolation>& violations,
+                          EParserViolationCode violationCode)
     {
         if (sectionToAssign != AttributeDefinitionState::Undefined)
         {
-            CViolation detectedViolation({ rawEntry }, violationCode);
+            CParserViolation detectedViolation({ rawEntry }, violationCode);
             violations.emplace_back(detectedViolation);
             return;
         }
@@ -47,7 +49,7 @@ namespace
                               AttributeDefinitionState& allocatableSection,
                               AttributeDefinitionState& executableSection,
                               AttributeDefinitionState& initializedSection,
-                              std::vector<CViolation>&  detectedViolations) noexcept
+                              std::vector<CParserViolation>&  detectedViolations) noexcept
     {
         auto inversion = false;
 
@@ -58,7 +60,7 @@ namespace
                 case 'R':
                 case 'r':
                 {
-                    ProcessAttribute(rawEntry, inversion, readOnlySection, detectedViolations, ViolationCode::ReadAttributeIsAlreadySet);
+                    ProcessAttribute(rawEntry, inversion, readOnlySection, detectedViolations, EParserViolationCode::ReadAttributeIsAlreadySet);
                     inversion = false;
                     break;
                 }
@@ -66,7 +68,7 @@ namespace
                 case 'W':
                 case 'w':
                 {
-                    ProcessAttribute(rawEntry, inversion, readWriteSection, detectedViolations, ViolationCode::ReadWriteAttributeIsAlreadySet);
+                    ProcessAttribute(rawEntry, inversion, readWriteSection, detectedViolations, EParserViolationCode::ReadWriteAttributeIsAlreadySet);
                     inversion = false;
                     break;
                 }
@@ -74,7 +76,7 @@ namespace
                 case 'A':
                 case 'a':
                 {
-                    ProcessAttribute(rawEntry, inversion, allocatableSection, detectedViolations, ViolationCode::AlloctableAttributeIsAlreadySet);
+                    ProcessAttribute(rawEntry, inversion, allocatableSection, detectedViolations, EParserViolationCode::AlloctableAttributeIsAlreadySet);
                     inversion = false;
                     break;
                 }
@@ -82,7 +84,7 @@ namespace
                 case 'X':
                 case 'x':
                 {
-                    ProcessAttribute(rawEntry, inversion, executableSection, detectedViolations, ViolationCode::ExecutableAttributeIsAlreadySet);
+                    ProcessAttribute(rawEntry, inversion, executableSection, detectedViolations, EParserViolationCode::ExecutableAttributeIsAlreadySet);
                     inversion = false;
                     break;
                 }
@@ -92,7 +94,7 @@ namespace
                 case 'L':
                 case 'l':
                 {
-                    ProcessAttribute(rawEntry, inversion, initializedSection, detectedViolations, ViolationCode::InitializedAttributeIsAlreadySet);
+                    ProcessAttribute(rawEntry, inversion, initializedSection, detectedViolations, EParserViolationCode::InitializedAttributeIsAlreadySet);
                     inversion = false;
                     break;
                 }
@@ -101,7 +103,7 @@ namespace
                 {
                     if (inversion)
                     {
-                        CViolation detectedViolation({ rawEntry }, ViolationCode::NegatingSymbolIsAlreadySet);
+                        CParserViolation detectedViolation({ rawEntry }, EParserViolationCode::NegatingSymbolIsAlreadySet);
                         detectedViolations.emplace_back(detectedViolation);
                         break;
                     }
@@ -112,7 +114,7 @@ namespace
 
                 default:
                 {
-                    CViolation detectedViolation({ rawEntry }, ViolationCode::UnrecognizedAttributeSymbolWasFound);
+                    CParserViolation detectedViolation({ rawEntry }, EParserViolationCode::UnrecognizedAttributeSymbolWasFound);
                     detectedViolations.emplace_back(detectedViolation);
                 }
             }
@@ -130,7 +132,7 @@ std::shared_ptr<CMemoryStatementAttribute> CMemoryStatementAttributeParser::TryP
     std::vector<CRawEntry>::const_iterator previousPositionIterator = iterator;
     std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = iterator;
     std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
-    std::vector<CViolation> violations;
+    std::vector<CParserViolation> violations;
 
     if (iterator->EntryType() != RawEntryType::ParenthesisOpen)
     {
@@ -257,7 +259,7 @@ std::shared_ptr<CMemoryStatementAttribute> CMemoryStatementAttributeParser::TryP
             case RawEntryType::String:            
             case RawEntryType::Unknown:
             {
-                violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
+                violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
                 break;
             }
 

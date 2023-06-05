@@ -2,7 +2,7 @@
 #define CLINKERSCRIPT_CONTENT_BASE_H__
 
 #include <vector>
-#include "CViolation.h"
+#include "CParserViolation.h"
 #include "Raw/CRawEntry.h"
 
 namespace VisualLinkerScript::Models
@@ -49,14 +49,14 @@ namespace VisualLinkerScript::Models
     {
     private:
         std::vector<CRawEntry> m_rawEntries;
-        std::vector<CViolation> m_violations;
+        std::vector<CParserViolation> m_violations;
 
     protected:
         /// @brief Constructor, accessible to inheritors only
         /// @param rawEntries A list of object this element is comprised of
         /// @param violations Violations related to this content (if any)
         explicit CLinkerScriptContentBase(std::vector<CRawEntry>&& rawEntries,
-                                          std::vector<CViolation>&& violations)
+                                          std::vector<CParserViolation>&& violations)
             : m_rawEntries(std::move(rawEntries)),
               m_violations(std::move(violations))
         {}
@@ -78,7 +78,7 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Returns list detected violations
-        const std::vector<CViolation>& Violations()
+        const std::vector<CParserViolation>& Violations()
         {
             return m_violations;
         }

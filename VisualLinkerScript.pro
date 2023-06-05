@@ -278,7 +278,7 @@ HEADERS += \
     Models/CVersionScope.h \
     Models/CVersionTag.h \
     Models/CVersionsRegion.h \
-    Models/CViolation.h \
+    Models/CParserViolation.h \
     Models/Raw/CRawEntry.h \
     Models/Raw/CRawFile.h \
     Models/Raw/RawEntryType.h \

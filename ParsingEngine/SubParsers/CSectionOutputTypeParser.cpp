@@ -10,8 +10,10 @@
 #include "../../Models/Raw/CRawEntry.h"
 #include "../../Models/CComment.h"
 #include "../../Models/CSectionOutputType.h"
-#include "../../Models/CViolation.h"
+#include "../CParserViolation.h"
+#include "../EParserViolationCode.h"
 
+using namespace VisualLinkerScript::ParsingEngine;
 using namespace VisualLinkerScript::ParsingEngine::SubParsers;
 using namespace VisualLinkerScript::Models;
 using namespace VisualLinkerScript::Models::Raw;
@@ -36,7 +38,7 @@ std::shared_ptr<CSectionOutputType> CSectionOutputTypeParser::TryParse(
     std::vector<CRawEntry>::const_iterator previousPositionIterator = iterator;
     std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = iterator;
     std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
-    std::vector<CViolation> violations;
+    std::vector<CParserViolation> violations;
 
     if (iterator->EntryType() != RawEntryType::ParenthesisOpen)
     {
@@ -92,7 +94,7 @@ std::shared_ptr<CSectionOutputType> CSectionOutputTypeParser::TryParse(
                         }
                         else
                         {
-                            violations.emplace_back(CViolation(*localIterator, ViolationCode::OnlyOneSectionOutputTypeIsAllowed));
+                            violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::OnlyOneSectionOutputTypeIsAllowed));
                         }
                         break;
                     }
@@ -159,7 +161,7 @@ std::shared_ptr<CSectionOutputType> CSectionOutputTypeParser::TryParse(
             case RawEntryType::String:
             case RawEntryType::Unknown:
             {
-                violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
+                violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
                 break;
             }
 

@@ -13,7 +13,7 @@ namespace VisualLinkerScript::Models
     public:
         /// @brief Default constructor
         explicit CInputSectionTargetSection(CRawEntry targetSection,
-                                            std::vector<CViolation>&& violations)
+                                            std::vector<CParserViolation>&& violations)
             : CLinkerScriptContentBase({targetSection}, std::move(violations))
         {}
 

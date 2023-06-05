@@ -10,8 +10,10 @@
 #include "../../Models/CComment.h"
 #include "../../Models/Raw/CRawEntry.h"
 #include "../../Models/CAssignmentStatement.h"
-#include "../../Models/CViolation.h"
+#include "../CParserViolation.h"
+#include "../EParserViolationCode.h"
 
+using namespace VisualLinkerScript::ParsingEngine;
 using namespace VisualLinkerScript::ParsingEngine::SubParsers;
 using namespace VisualLinkerScript::Models;
 
@@ -37,7 +39,7 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
     std::vector<CRawEntry>::const_iterator previousPositionIterator = iterator;
     std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = iterator;
     std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
-    std::vector<CViolation> violations;
+    std::vector<CParserViolation> violations;
 
     auto parserState = ParserState::AwaitingLValue;
     auto doNotAdvance = false;
@@ -98,7 +100,7 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
                         parsedRValue = rValueExpressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
                         if (parsedRValue == nullptr)
                         {
-                            violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
+                            violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
                         }
                         else
                         {
@@ -110,7 +112,7 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
 
                     case ParserState::AwaitingSemicolon:
                     {
-                        violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
+                        violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
                         break;
                     }
 
@@ -133,7 +135,7 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
                     case ParserState::AwaitingAssignmentSymbol:
                     case ParserState::AwaitingRValueExpression:
                     {
-                        violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
+                        violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
                         break;
                     }
 
@@ -146,7 +148,7 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
                         }
                         else
                         {
-                            violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
+                            violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
                         }
                         break;
                     }
@@ -176,7 +178,7 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
                             if (joiningOperatorsObserved)
                             {
                                 // We don't abort, this is a R-Value expression put in L-Value
-                                violations.emplace_back(CViolation(*localIterator, ViolationCode::LValueCannotContainRValueExpression));
+                                violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::LValueCannotContainRValueExpression));
                             }
                             else
                             {
@@ -187,11 +189,11 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
                         else if (CParserHelpers::IsArithmeticOperator(resolvedContent))
                         {
                             joiningOperatorsObserved = true;
-                            violations.emplace_back(CViolation(*localIterator, ViolationCode::LValueCannotContainRValueExpression));
+                            violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::LValueCannotContainRValueExpression));
                         }
                         else
                         {
-                            violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
+                            violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
                         }
                         break;
                     }
@@ -201,7 +203,7 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
                         parsedRValue = rValueExpressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
                         if (parsedRValue == nullptr)
                         {
-                            violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
+                            violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
                         }
                         else
                         {
@@ -219,7 +221,7 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
                         }
                         else
                         {
-                            violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
+                            violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
                         }
                         break;
                     }
@@ -238,7 +240,7 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
                 {
                     case ParserState::AwaitingLValue:
                     {
-                        violations.emplace_back(CViolation(*localIterator, ViolationCode::MissingLValue));
+                        violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::MissingLValue));
                         break;
                     }
 
@@ -251,13 +253,13 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
 
                     case ParserState::AwaitingRValueExpression:
                     {
-                        violations.emplace_back(CViolation(*localIterator, ViolationCode::MultipleAssignmentOperatorsDetected));
+                        violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::MultipleAssignmentOperatorsDetected));
                         break;
                     }
 
                     case ParserState::AwaitingSemicolon:
                     {
-                        violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
+                        violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
                         break;
                     }
 
@@ -276,7 +278,7 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
                     case ParserState::AwaitingAssignmentSymbol:
                     case ParserState::AwaitingLValue:
                     {
-                        violations.emplace_back(CViolation(*localIterator, ViolationCode::LValueCannotContainRValueExpression));
+                        violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::LValueCannotContainRValueExpression));
                         break;
                     }
 
@@ -285,7 +287,7 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
                         parsedRValue = rValueExpressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
                         if (parsedRValue == nullptr)
                         {
-                            violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
+                            violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
                         }
                         else
                         {
@@ -296,7 +298,7 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
 
                     case ParserState::AwaitingSemicolon:
                     {
-                        violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
+                        violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
                         break;
                     }
 
@@ -325,7 +327,7 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
                     {
                         // Need to mark this error
                         localIterator = previousPositionIterator;
-                        violations.emplace_back(CViolation(*localIterator, ViolationCode::RValueExpressionParsingFailed));
+                        violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::RValueExpressionParsingFailed));
                         parserState = ParserState::ParsingComplete;
                         break;
                     }
@@ -341,7 +343,7 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
 
             case RawEntryType::Unknown:
             {
-                violations.emplace_back(CViolation(*localIterator, ViolationCode::EntryInvalidOrMisplaced));
+                violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
                 break;
             }
 

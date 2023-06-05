@@ -25,7 +25,7 @@ namespace VisualLinkerScript::Models
                                   std::shared_ptr<CLinkerScriptContentBase> originAssignment,
                                   std::shared_ptr<CLinkerScriptContentBase> lengthAssignment,
                                   std::vector<CRawEntry>&& rawEntries,
-                                  std::vector<CViolation>&& violations)
+                                  std::vector<CParserViolation>&& violations)
             : CLinkerScriptContentBase(std::move(rawEntries), std::move(violations)),
               m_nameEntry(nameEntry),
               m_attributes(attributes),

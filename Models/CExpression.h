@@ -23,7 +23,7 @@ namespace VisualLinkerScript::Models
                              CRawEntry closingParenthesis,
                              std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& composition,
                              std::vector<CRawEntry>&& rawElements, 
-                             std::vector<CViolation>&& violations)
+                             std::vector<CParserViolation>&& violations)
             : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
               m_composition(composition),
               m_openingParenthesis(openingParenthesis),
@@ -33,7 +33,7 @@ namespace VisualLinkerScript::Models
         /// @brief Simplified constructor, no parenthesis
         explicit CExpression(std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& composition,
                              std::vector<CRawEntry>&& rawElements,
-                             std::vector<CViolation>&& violations)
+                             std::vector<CParserViolation>&& violations)
             : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
               m_composition(composition)
         {}

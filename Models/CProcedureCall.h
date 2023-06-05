@@ -25,7 +25,7 @@ namespace VisualLinkerScript::Models
                                 CRawEntry terminatingSemicolon,    
                                 CAssignmentStatement&& assignmentStatement,
                                 std::vector<CRawEntry>&& rawElements, 
-                                std::vector<CViolation>&& violations)
+                                std::vector<CParserViolation>&& violations)
             : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
               m_procedureName(procedureName),
               m_openningParenthesis(openningParenthesis),

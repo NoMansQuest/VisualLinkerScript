@@ -37,7 +37,7 @@ namespace VisualLinkerScript::Models
                                            AttributeDefinitionState allocatableSection,
                                            AttributeDefinitionState initializedSection,
                                            std::vector<CRawEntry>&& rawEntries,
-                                           std::vector<CViolation>&& violations)
+                                           std::vector<CParserViolation>&& violations)
             : CLinkerScriptContentBase(std::move(rawEntries), std::move(violations)),
               m_parenthesisOpen(parenthesisOpen),
               m_parenthesisClose(parenthesisClose),
