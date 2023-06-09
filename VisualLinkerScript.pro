@@ -106,6 +106,7 @@ SOURCES += \
     ParsingEngine/SubParsers/CVersionRegionContentParser.cpp \
     ParsingEngine/SubParsers/Constants.cpp \
     ParsingEngine/SubParsers/CInputSectionFunctionParser.cpp \
+    QueryEngine/QueryCenter.tpp \
     main.cpp \
     mainwindow.cpp
 
@@ -312,6 +313,7 @@ HEADERS += \
     ParsingEngine/SubParsers/SubParserType.h \
     ParsingEngine/SubParsers/CSectionsRegionParser.h \
     ParsingEngine/SubParsers/CInputSectionFunctionParser.h \
+    QueryEngine/QueryCenter.h \
     mainwindow.h
 
 FORMS += \
