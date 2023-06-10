@@ -18,7 +18,7 @@ namespace VisualLinkerScript::Models
         explicit CSectionOutputToVmaRegion(CRawEntry greatherThanSign,
                                            CRawEntry regionName,
                                            std::vector<CRawEntry>&& rawElements,
-                                           std::vector<CParserViolation>&& violations)
+                                           std::vector<CViolationBase>&& violations)
             : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
               m_greatherThanSign(greatherThanSign),
               m_regionName(regionName)

@@ -18,7 +18,7 @@ namespace VisualLinkerScript::Models
         /// @param composingRawElements A list of object this element is comprised of.
         explicit CVersionTag(CRawEntry tagEntry,
                              std::vector<CRawEntry>&& rawElements,
-                             std::vector<CParserViolation>&& violations)
+                             std::vector<CViolationBase>&& violations)
             : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
               m_tagEntry(tagEntry)
         {}

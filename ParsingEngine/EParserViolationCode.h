@@ -74,9 +74,7 @@ namespace VisualLinkerScript::ParsingEngine
         NotAllowedInOverlayCommand,
         NoCrossRefsAlreadyDeclared,
         AtAddressAlreadyDeclared,
-        StartAddressExptring>
-#include <vector>
-#include <memory>ressionAlreadyDeclared,
+        StartAddressExpressionAlreadyDeclared,
         UnableToUnderstandOverlaySection,
 
         // VERSION:

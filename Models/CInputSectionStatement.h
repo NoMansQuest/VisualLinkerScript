@@ -23,7 +23,7 @@ namespace VisualLinkerScript::Models
                                         CRawEntry closingParenthesis,
                                         std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& parsedContent,
                                         std::vector<CRawEntry>&& rawElements,
-                                        std::vector<CParserViolation>&& violations)
+                                        std::vector<CViolationBase>&& violations)
             : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
               m_filterHeader(filterHeader),
               m_openingParenthesis(openingParenthesis),
@@ -34,7 +34,7 @@ namespace VisualLinkerScript::Models
         /// @brief Default constructor, including desired sections
         explicit CInputSectionStatement(CRawEntry filterHeader,
                                         std::vector<CRawEntry>&& rawElements,
-                                        std::vector<CParserViolation>&& violations)
+                                        std::vector<CViolationBase>&& violations)
             : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
               m_filterHeader(filterHeader)
         {}

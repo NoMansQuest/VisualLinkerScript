@@ -20,12 +20,12 @@ namespace VisualLinkerScript::Models
 
     public:
         /// @brief Default constructor, reporting the @see {involvedEntries} only
-        explicit CViolationBase(std::vector<CRawEntry>&& involvedEntries, EParserViolationCode violationCode) 
+        explicit CViolationBase(std::vector<CRawEntry>&& involvedEntries)
             : m_involvedEntries(std::move(involvedEntries))
         {}
 
         /// @brief Simplified constructor accepting only CRawEntry. the @see {involvedEntries} only
-        explicit CViolationBase(CRawEntry involvedEntry, EParserViolationCode violationCode)
+        explicit CViolationBase(CRawEntry involvedEntry)
             : m_involvedEntries(std::move(std::vector<CRawEntry> { involvedEntry }))
         {}
 
@@ -34,8 +34,7 @@ namespace VisualLinkerScript::Models
         explicit CViolationBase(
                    std::vector<CRawEntry>&& involvedEntries, 
                    CRawEntry entryBeforeViolation,
-                   CRawEntry entryAfterViolation,
-                   EParserViolationCode violationCode) 
+                   CRawEntry entryAfterViolation)
             : m_entryBeforeViolation(entryBeforeViolation),
               m_entryAfterViolation(entryAfterViolation),
               m_involvedEntries(std::move(involvedEntries))
@@ -44,8 +43,7 @@ namespace VisualLinkerScript::Models
         /// @brief Constructor with only @see {entryBeforeViolation} and @see {entryAfterViolation}
         explicit CViolationBase(
                    CRawEntry entryBeforeViolation,
-                   CRawEntry entryAfterViolation,
-                   EParserViolationCode violationCode) 
+                   CRawEntry entryAfterViolation)
             : m_entryBeforeViolation(entryBeforeViolation),
               m_entryAfterViolation(entryAfterViolation)
         {}        

@@ -25,7 +25,7 @@ namespace VisualLinkerScript::Models
                                  CRawEntry closingBracketEntry,
                                  std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& versionNodes,
                                  std::vector<CRawEntry>&& rawElements,
-                                 std::vector<CParserViolation>&& violations)
+                                 std::vector<CViolationBase>&& violations)
             : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
               m_versionNodes(std::move(versionNodes)),
               m_openingBracketEntry(openingBracketEntry),

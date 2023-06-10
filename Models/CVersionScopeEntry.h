@@ -13,7 +13,7 @@ namespace VisualLinkerScript::Models
         /// @brief Default constructor, accessible to inheritors only
         /// @param composingRawElements A list of object this element is comprised of.
         explicit CVersionScopeEntry(std::vector<CRawEntry>&& rawElements,
-                                    std::vector<CParserViolation>&& violations)
+                                    std::vector<CViolationBase>&& violations)
             : CLinkerScriptContentBase(std::move(rawElements), std::move(violations))
         {}        
 

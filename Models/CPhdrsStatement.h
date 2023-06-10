@@ -28,7 +28,7 @@ namespace VisualLinkerScript::Models
                                  std::shared_ptr<CLinkerScriptContentBase> flagsFunction,
                                  CRawEntry semicolonEntry,
                                  std::vector<CRawEntry>&& rawElements, 
-                                 std::vector<CParserViolation>&& violations)
+                                 std::vector<CViolationBase>&& violations)
             : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
               m_headerNameEntry(headerNameEntry),
               m_headerTypeEntry(headerTypeEntry),

@@ -18,7 +18,7 @@ namespace VisualLinkerScript::Models
         explicit CSectionOutputPhdr(CRawEntry colonEntry,
                                     CRawEntry phdrRegion,
                                     std::vector<CRawEntry>&& rawElements,
-                                    std::vector<CParserViolation>&& violations)
+                                    std::vector<CViolationBase>&& violations)
             : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
               m_phdrName(phdrRegion),
               m_colonEntry(colonEntry)

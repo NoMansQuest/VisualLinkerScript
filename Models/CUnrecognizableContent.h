@@ -12,7 +12,7 @@ namespace VisualLinkerScript::Models
     public:
         /// @brief Construct an "Unrecognizable" object
         explicit CUnrecognizableContent(std::vector<CRawEntry>&& composingRawElements, 
-                                        std::vector<CParserViolation>&& violations = {})
+                                        std::vector<CViolationBase>&& violations = {})
             : CLinkerScriptContentBase(
                   std::move(composingRawElements),
                   std::move(violations))

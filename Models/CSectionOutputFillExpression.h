@@ -18,7 +18,7 @@ namespace VisualLinkerScript::Models
         explicit CSectionOutputFillExpression(CRawEntry equalSign,
                                               CRawEntry fillExpressionValue,
                                               std::vector<CRawEntry>&& rawElements,
-                                              std::vector<CParserViolation>&& violations)
+                                              std::vector<CViolationBase>&& violations)
             : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
               m_equalSign(equalSign),
               m_fillExpressionValue(fillExpressionValue)
