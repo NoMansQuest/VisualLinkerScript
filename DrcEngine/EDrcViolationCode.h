@@ -5,7 +5,7 @@
 
 namespace VisualLinkerScript::DrcEngine
 {
-    /// @brief An exhaustive list of all known violations.
+    /// @brief An exhaustive list of all known DRC related violations 
     enum class EDrcViolationCode : uint32_t
     {
         WasExpectingProgramHeaderTypeHere,
