@@ -37,7 +37,7 @@ namespace VisualLinkerScript::ParsingEngine
                    CRawEntry entryBeforeViolation,
                    CRawEntry entryAfterViolation,
                    EParserViolationCode violationCode) 
-            : CViolationBase(involvedEntries, entryBeforeViolation, entryAfterViolation),
+            : CViolationBase(std::move(involvedEntries), entryBeforeViolation, entryAfterViolation),
               m_violationCode(violationCode)
         {}
 

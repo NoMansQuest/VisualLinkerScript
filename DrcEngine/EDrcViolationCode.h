@@ -9,5 +9,7 @@ namespace VisualLinkerScript::DrcEngine
     enum class EDrcViolationCode : uint32_t
     {
         WasExpectingProgramHeaderTypeHere,
-    }
+    };
 }
+
+#endif // EPARSERVIOLATIONCODE_H__

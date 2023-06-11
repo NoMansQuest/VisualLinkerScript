@@ -19,33 +19,32 @@ namespace VisualLinkerScript::DrcEngine
 
     public:
         /// @brief Default constructor, reporting the @see {involvedEntries} only
-        explicit CDrcViolation(std::vector<CRawEntry>&& involvedEntries, EParserViolationCode violationCode) 
+        explicit CDrcViolation(std::vector<CRawEntry>&& involvedEntries, EDrcViolationCode violationCode)
             : CViolationBase(std::move(involvedEntries)), 
               m_violationCode(violationCode)
         {}
 
         /// @brief Simplified constructor accepting only CRawEntry. the @see {involvedEntries} only
-        explicit CDrcViolation(CRawEntry involvedEntry, EParserViolationCode violationCode)
-            : CViolationBase(std::move(std::vector<CRawEntry> { involvedEntry })),
+        explicit CDrcViolation(CRawEntry involvedEntry, EDrcViolationCode violationCode)
+            : CViolationBase(std::vector<CRawEntry> { involvedEntry }),
               m_violationCode(violationCode)
         {}
-
         
-        /// @brief Constructor with @see {involvedEntries}, @see {entryBeforeViolation} and @see {entryAfterViolation}
+        /// @brief Default constructor
         explicit CDrcViolation(
                    std::vector<CRawEntry>&& involvedEntries, 
                    CRawEntry entryBeforeViolation,
                    CRawEntry entryAfterViolation,
-                   EParserViolationCode violationCode) 
-            : CViolationBase(involvedEntries, entryBeforeViolation, entryAfterViolation),
+                   EDrcViolationCode violationCode)
+            : CViolationBase(std::move(involvedEntries), entryBeforeViolation, entryAfterViolation),
               m_violationCode(violationCode)
         {}
 
-        /// @brief Constructor with only @see {entryBeforeViolation} and @see {entryAfterViolation}
+        /// @brief Compact constructor
         explicit CDrcViolation(
                    CRawEntry entryBeforeViolation,
                    CRawEntry entryAfterViolation,
-                   EParserViolationCode violationCode) 
+                   EDrcViolationCode violationCode)
             : CViolationBase(entryBeforeViolation, entryAfterViolation),
               m_violationCode(violationCode)
         {}        

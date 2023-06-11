@@ -86,7 +86,7 @@ SOURCES += \
     Components/QScintilla/src/qsciscintillabase.cpp \
     Components/QScintilla/src/qscistyle.cpp \
     Components/QScintilla/src/qscistyledtext.cpp \
-    DrcEngine/DrcEngineManager.cpp \
+    DrcEngine/CDrcManager.cpp \
     LinkerScriptManager/CLinkerScriptManager.cpp \
     ParsingEngine/CMasterParser.cpp \
     ParsingEngine/CModelTranslator.cpp \
@@ -232,15 +232,18 @@ HEADERS += \
     Components/QScintilla/src/SciAccessibility.h \
     Components/QScintilla/src/SciClasses.h \
     Components/QScintilla/src/ScintillaQt.h \
-    DrcEngine/DrcEngineManager.h \
+    DrcEngine/CDrcManager.h \
+    DrcEngine/CDrcViolation.h \
+    DrcEngine/EDrcViolationCode.h \
     DrcEngine/Rules/CDirectivesDeclaredOnlyOnceRule.h \
-    DrcEngine/Rules/CDrcRuleBase.h \
+    DrcEngine/Rules/CDrcCommon.h \
     DrcEngine/Rules/CEntryIsDefinedRule.h \
     DrcEngine/Rules/CInputFilesAreFoundRule.h \
     DrcEngine/Rules/CLocationCounterCannotGoBackwardsRule.h \
     DrcEngine/Rules/CNoDuplicateMemoryRegionNameRule.h \
     DrcEngine/Rules/CSectionsDefinedOnlyOnceRule.h \
     DrcEngine/Rules/CSymbolsDefinedInAdvanceRule.h \
+    DrcEngine/Rules/IDrcRuleBase.h \
     LinkerScriptManager/CLinkerScriptManager.h \
     Models/CAssignmentProcedureStatement.h \
     Models/CAssignmentStatement.h \
@@ -280,6 +283,10 @@ HEADERS += \
     Models/CVersionTag.h \
     Models/CVersionsRegion.h \
     Models/CParserViolation.h \
+    Models/Intervention/CActionBase.h \
+    Models/Intervention/CAddTextAction.h \
+    Models/Intervention/CIntervention.h \
+    Models/Intervention/CRemoveTextAction.h \
     Models/Raw/CRawEntry.h \
     Models/Raw/CRawFile.h \
     Models/Raw/RawEntryType.h \
@@ -287,8 +294,10 @@ HEADERS += \
     ParsingEngine/CMasterParser.h \
     ParsingEngine/CMasterParserException.h \
     ParsingEngine/CModelTranslator.h \
+    ParsingEngine/CParserViolation.h \
     ParsingEngine/CPreliminaryParser.h \
     ParsingEngine/CPreliminaryParsingException.h \
+    ParsingEngine/EParserViolationCode.h \
     ParsingEngine/SubParsers/CAssignmentParser.h \
     ParsingEngine/SubParsers/CAssignmentProcedureParser.h \
     ParsingEngine/SubParsers/CCommandParser.h \

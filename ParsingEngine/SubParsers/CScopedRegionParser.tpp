@@ -1,7 +1,3 @@
-#include <vector>
-#include <memory>
-#include <string>
-
 #include "CScopedRegionParser.h"
 
 #include "../CMasterParserException.h"
@@ -16,8 +12,8 @@
 
 using namespace VisualLinkerScript::ParsingEngine;
 using namespace VisualLinkerScript::ParsingEngine::SubParsers;
-using namespace VisualLinkerScript::ParsingEngine::Models;
-using namespace VisualLinkerScript::ParsingEngine::Models::Raw;
+using namespace VisualLinkerScript::Models;
+using namespace VisualLinkerScript::Models::Raw;
 
 namespace
 {

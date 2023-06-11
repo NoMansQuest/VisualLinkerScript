@@ -2,13 +2,6 @@
 #define CSCOPED_REGION_PARSER_H__
 
 #include "CSubParserBase.h"
-#include "../../Models/Raw/CRawEntry.h"
-#include "../../Models/Raw/CRawFile.h"
-#include "SubParserType.h"
-#include <vector>
-#include <memory>
-#include <string>
-#include <type_traits>
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {
@@ -29,7 +22,7 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
             std::is_constructible< TProducingOutputType, CRawEntry, CRawEntry, CRawEntry,
                                    std::vector<std::shared_ptr<CLinkerScriptContentBase>>&&,
                                    std::vector<CRawEntry>&&,
-                                   std::vector<CParserViolation>&& >::value,
+                                   std::vector<CViolationBase>&& >::value,
             "TProducingOutputType is not compatible. Please check the constructor." );
 
     protected:
