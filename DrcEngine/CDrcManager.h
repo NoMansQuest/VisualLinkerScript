@@ -15,21 +15,27 @@ namespace VisualLinkerScript::DrcEngine::Rules
     {
         typedef std::vector<std::shared_ptr<IDrcRuleBase>> DrcRulesType;
 
-        public:
-            /// @brief Implementation of the singleton
-            CDrcManager& instance() {
-                static CDrcManager drcManager;
-                return drcManager;
-            }
+    private:
+        DrcRulesType m_drcRules;
+        std::vector<std::shared_ptr<CDrcViolation>> m_violations;
 
-            bool RegisterInterface(std::shared_ptr<IDrcRuleBase> drcRule)
-            {
-                CDrcManager::instance().m_drcRules.emplace_back(drcRule);
-                return true;
-            }
+    public:
+        /// @brief Implementation of the singleton
+        CDrcManager& instance() {
+            static CDrcManager drcManager;
+            return drcManager;
+        }
 
-        private:
-            DrcRulesType m_drcRules;
+        /// @brief Registers a class as DRC-Rule
+        bool RegisterInterface(std::shared_ptr<IDrcRuleBase> drcRule) {
+            CDrcManager::instance().m_drcRules.emplace_back(drcRule);
+            return true;
+        }
+
+        /// @brief Reports back a list of currently identified violations
+        std::vector<std::shared_ptr<CDrcViolation>> Violations(){
+            return this->m_violations;
+        }
     };
 }
 
