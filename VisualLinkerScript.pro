@@ -88,6 +88,7 @@ SOURCES += \
     Components/QScintilla/src/qscistyledtext.cpp \
     DrcEngine/CDrcManager.cpp \
     LinkerScriptManager/CLinkerScriptManager.cpp \
+    LinkerScriptManager/CUndoRedoManager.cpp \
     ParsingEngine/CMasterParser.cpp \
     ParsingEngine/CModelTranslator.cpp \
     ParsingEngine/CPreliminaryParser.cpp \
@@ -245,6 +246,7 @@ HEADERS += \
     DrcEngine/Rules/CSymbolsDefinedInAdvanceRule.h \
     DrcEngine/Rules/IDrcRuleBase.h \
     LinkerScriptManager/CLinkerScriptManager.h \
+    LinkerScriptManager/CUndoRedoManager.h \
     Models/CAssignmentProcedureStatement.h \
     Models/CAssignmentStatement.h \
     Models/CComment.h \
@@ -283,6 +285,7 @@ HEADERS += \
     Models/CVersionTag.h \
     Models/CVersionsRegion.h \
     Models/CParserViolation.h \
+    Models/CViolationBase.h \
     Models/Intervention/CActionBase.h \
     Models/Intervention/CAddTextAction.h \
     Models/Intervention/CIntervention.h \
