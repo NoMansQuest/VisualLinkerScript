@@ -1,6 +1,8 @@
 #ifndef CDIRECTIVESDECLAREDONLYONCERULE_H
 #define CDIRECTIVESDECLAREDONLYONCERULE_H
 
+#include "../IDrcRuleBase.h"
+
 // Example: ENTRY, OUTPUT_FORMAT, etc.
 
 

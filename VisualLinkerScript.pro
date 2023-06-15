@@ -235,16 +235,17 @@ HEADERS += \
     Components/QScintilla/src/ScintillaQt.h \
     DrcEngine/CDrcManager.h \
     DrcEngine/CDrcViolation.h \
+    DrcEngine/DrcCommons.h \
     DrcEngine/EDrcViolationCode.h \
+    DrcEngine/EDrcViolationSeverity.h \
+    DrcEngine/IDrcRuleBase.h \
     DrcEngine/Rules/CDirectivesDeclaredOnlyOnceRule.h \
-    DrcEngine/Rules/CDrcCommon.h \
     DrcEngine/Rules/CEntryIsDefinedRule.h \
     DrcEngine/Rules/CInputFilesAreFoundRule.h \
     DrcEngine/Rules/CLocationCounterCannotGoBackwardsRule.h \
     DrcEngine/Rules/CNoDuplicateMemoryRegionNameRule.h \
     DrcEngine/Rules/CSectionsDefinedOnlyOnceRule.h \
-    DrcEngine/Rules/CSymbolsDefinedInAdvanceRule.h \
-    DrcEngine/Rules/IDrcRuleBase.h \
+    DrcEngine/Rules/CSymbolsDefinedInAdvanceRule.h \    
     LinkerScriptManager/CLinkerScriptManager.h \
     LinkerScriptManager/CUndoRedoManager.h \
     Models/CAssignmentProcedureStatement.h \
