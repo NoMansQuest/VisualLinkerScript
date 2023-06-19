@@ -2,15 +2,23 @@
 #define CENTRYISDEFINEDRULE_H
 
 #include "../IDrcRuleBase.h"
+#include <memory>
 
 namespace VisualLinkerScript::DrcEngine::Rules
 {
-    using namespace VisualLinkerScript::DrcEngine;    
-
     class CEntryIsDefinedRule : public IDrcRuleBase
     {
+    public:
+        /// @brief Default constructor
+        CEntryIsDefinedRule()
+        {}
 
+        /// @copydoc
+        virtual std::vector<std::shared_ptr<CDrcViolation>> PerformCheck(const CLinkerScriptFile& linkerScriptFile) override;
 
+        /// @brief Default destructor
+        ~CEntryIsDefinedRule()
+        {}
     };
 }
 

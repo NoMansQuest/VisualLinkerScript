@@ -11,8 +11,6 @@
 
 namespace VisualLinkerScript::DrcEngine
 {
-    using namespace VisualLinkerScript::DrcEngine;
-
     /// @brief In charge of Design-Rule-Check operations
     class CDrcManager
     {
@@ -30,7 +28,7 @@ namespace VisualLinkerScript::DrcEngine
         }
 
         /// @brief Registers a class as DRC-Rule
-        bool RegisterInterface(std::shared_ptr<IDrcRuleBase> drcRule);
+        bool RegisterRule(std::shared_ptr<IDrcRuleBase> drcRule);
 
         /// @brief Reports back a list of currently identified violations
         std::vector<std::shared_ptr<CDrcViolation>> Violations();

@@ -87,6 +87,15 @@ SOURCES += \
     Components/QScintilla/src/qscistyle.cpp \
     Components/QScintilla/src/qscistyledtext.cpp \
     DrcEngine/CDrcManager.cpp \
+    DrcEngine/Rules/CDirectivesDeclaredOnlyOnceRule.cpp \
+    DrcEngine/Rules/CEntryIsDefinedRule.cpp \
+    DrcEngine/Rules/CIncludeRecursionGuard.cpp \
+    DrcEngine/Rules/CInputFilesAreFoundRule.cpp \
+    DrcEngine/Rules/CLocationCounterCannotGoBackwardsRule.cpp \
+    DrcEngine/Rules/CNoDuplicateMemoryRegionNameRule.cpp \
+    DrcEngine/Rules/CSectionsDefinedOnlyOnceRule.cpp \
+    DrcEngine/Rules/CSymbolsDefinedInAdvanceRule.cpp \
+    Helpers.cpp \
     LinkerScriptManager/CLinkerScriptManager.cpp \
     LinkerScriptManager/CUndoRedoManager.cpp \
     ParsingEngine/CMasterParser.cpp \
@@ -245,7 +254,9 @@ HEADERS += \
     DrcEngine/Rules/CLocationCounterCannotGoBackwardsRule.h \
     DrcEngine/Rules/CNoDuplicateMemoryRegionNameRule.h \
     DrcEngine/Rules/CSectionsDefinedOnlyOnceRule.h \
-    DrcEngine/Rules/CSymbolsDefinedInAdvanceRule.h \    
+    DrcEngine/Rules/CSymbolsDefinedInAdvanceRule.h \     \
+    Helpers.h \
+    QueryEngine/QueryCenter.h
     LinkerScriptManager/CLinkerScriptManager.h \
     LinkerScriptManager/CUndoRedoManager.h \
     Models/CAssignmentProcedureStatement.h \
