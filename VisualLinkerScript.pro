@@ -254,9 +254,9 @@ HEADERS += \
     DrcEngine/Rules/CLocationCounterCannotGoBackwardsRule.h \
     DrcEngine/Rules/CNoDuplicateMemoryRegionNameRule.h \
     DrcEngine/Rules/CSectionsDefinedOnlyOnceRule.h \
-    DrcEngine/Rules/CSymbolsDefinedInAdvanceRule.h \     \
+    DrcEngine/Rules/CSymbolsDefinedInAdvanceRule.h \
     Helpers.h \
-    QueryEngine/QueryCenter.h
+    QueryEngine/QueryCenter.h \
     LinkerScriptManager/CLinkerScriptManager.h \
     LinkerScriptManager/CUndoRedoManager.h \
     Models/CAssignmentProcedureStatement.h \

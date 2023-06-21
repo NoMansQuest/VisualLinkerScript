@@ -9,6 +9,7 @@ namespace VisualLinkerScript::DrcEngine
     enum class EDrcViolationCode : uint32_t
     {
         WasExpectingProgramHeaderTypeHere,
+        EntryDirectiveDefinedMoreThanOnce,
     };
 }
 

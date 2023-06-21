@@ -7,8 +7,7 @@ REGISTER_DRC_RULE(CInputFilesAreFoundRule)
 
 using namespace VisualLinkerScript::DrcEngine::Rules;
 
-std::vector<std::shared_ptr<CDrcViolation>> CInputFilesAreFoundRule::PerformCheck(const CLinkerScriptFile& linkerScriptFile)
-{
+std::vector<std::shared_ptr<CDrcViolation>> CInputFilesAreFoundRule::PerformCheck(const CLinkerScriptFile& linkerScriptFile) {
     std::vector<std::shared_ptr<CDrcViolation>> violations;
 
 

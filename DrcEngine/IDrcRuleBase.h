@@ -19,7 +19,7 @@ namespace VisualLinkerScript::DrcEngine
 
     public:
         /// @brief Perform the check and report back found violations
-        virtual std::vector<std::shared_ptr<CDrcViolation>> PerformCheck(const CLinkerScriptFile& linkerScriptFile) = 0;
+        virtual std::vector<std::shared_ptr<CDrcViolation>> PerformCheck(const std::vector<std::shared_ptr<CLinkerScriptFile>>& linkerScriptFiles) = 0;
 
         /// @brief Updated 'Enabled' state of the rule.
         virtual void SetEnabled(bool enabled){
@@ -30,6 +30,9 @@ namespace VisualLinkerScript::DrcEngine
         virtual bool IsEnabled(){
             return this->m_isEnabled;
         };
+
+        /// @brief Returns the title of the DRC rule, which will be shown in the DRC-Violations.
+        virtual std::string DrcRuleTitle() = 0;
     };
 }
 

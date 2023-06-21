@@ -14,7 +14,13 @@ namespace VisualLinkerScript::DrcEngine::Rules
         {}
 
         /// @copydoc
-        virtual std::vector<std::shared_ptr<CDrcViolation>> PerformCheck(const CLinkerScriptFile& linkerScriptFile) override;
+        virtual std::string DrcRuleTitle() override
+        {
+            return "Entry Is Defined Rule";
+        }
+
+        /// @copydoc
+        virtual std::vector<std::shared_ptr<CDrcViolation>> PerformCheck(const std::vector<std::shared_ptr<CLinkerScriptFile>>& linkerScriptFiles) override;
 
         /// @brief Default destructor
         ~CLocationCounterCannotGoBackwardsRule()
