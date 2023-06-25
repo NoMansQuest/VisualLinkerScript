@@ -10,8 +10,10 @@
 #include "../../Models/CComment.h"
 #include "../../Models/Raw/CRawEntry.h"
 #include "../../Models/CAssignmentStatement.h"
+
 #include "../CParserViolation.h"
 #include "../EParserViolationCode.h"
+
 
 using namespace VisualLinkerScript::ParsingEngine;
 using namespace VisualLinkerScript::ParsingEngine::SubParsers;

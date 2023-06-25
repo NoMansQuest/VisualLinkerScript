@@ -1,8 +1,9 @@
 #include "CDirectivesDeclaredOnlyOnceRule.h"
 #include "../DrcCommons.h"
 #include "../CDrcManager.h"
-#include "../../Models/CLinkerScriptFile.h"
 #include "../IDrcRuleBase.h"
+
+#include "../../Models/CLinkerScriptFile.h"
 #include "../../Models/CFunctionCall.h"
 #include "../../Helpers.h"
 #include "../../QueryEngine/QueryCenter.h"

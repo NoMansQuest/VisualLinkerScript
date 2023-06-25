@@ -1,5 +1,5 @@
-#ifndef CINPUTFILESAREFOUNDRULE_H
-#define CINPUTFILESAREFOUNDRULE_H
+#ifndef CINCLUDEDFILESAREPRESENT_H
+#define CINCLUDEDFILESAREPRESENT_H
 
 #include "../IDrcRuleBase.h"
 #include <memory>
@@ -28,4 +28,4 @@ namespace VisualLinkerScript::DrcEngine::Rules
     };
 }
 
-#endif // CINPUTFILESAREFOUNDRULE_H
+#endif // CINCLUDEDFILESAREPRESENT_H
