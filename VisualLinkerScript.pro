@@ -90,7 +90,7 @@ SOURCES += \
     DrcEngine/Rules/CDirectivesDeclaredOnlyOnceRule.cpp \
     DrcEngine/Rules/CEntryIsDefinedRule.cpp \
     DrcEngine/Rules/CIncludeRecursionGuard.cpp \
-    DrcEngine/Rules/CIncludedFilesArePresent.cpp \
+    DrcEngine/Rules/CIncludedFilesArePresentRule.cpp \
     DrcEngine/Rules/CLocationCounterCannotGoBackwardsRule.cpp \
     DrcEngine/Rules/CNoDuplicateMemoryRegionNameRule.cpp \
     DrcEngine/Rules/CSectionsDefinedOnlyOnceRule.cpp \
@@ -251,7 +251,7 @@ HEADERS += \
     DrcEngine/Rules/CDirectivesDeclaredOnlyOnceRule.h \
     DrcEngine/Rules/CEntryIsDefinedRule.h \
     DrcEngine/Rules/CIncludeRecursionGuard.h \
-    DrcEngine/Rules/CIncludedFilesArePresent.h \
+    DrcEngine/Rules/CIncludedFilesArePresentRule.h \
     DrcEngine/Rules/CLocationCounterCannotGoBackwardsRule.h \
     DrcEngine/Rules/CNoDuplicateMemoryRegionNameRule.h \
     DrcEngine/Rules/CSectionsDefinedOnlyOnceRule.h \

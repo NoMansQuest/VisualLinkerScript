@@ -11,6 +11,7 @@ namespace VisualLinkerScript::DrcEngine
         WasExpectingProgramHeaderTypeHere,
         EntryDirectiveDefinedMoreThanOnce,
         IncludedFilesArePresentRule,
+        RecursiveIncludeChainDetected,
     };
 }
 
