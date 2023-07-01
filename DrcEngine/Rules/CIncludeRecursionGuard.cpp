@@ -27,12 +27,12 @@ using namespace VisualLinkerScript::Models;
 typedef std::unordered_map<std::shared_ptr<CLinkerScriptFile>, std::shared_ptr<CIncludeCommand>> RecursionMap;
 
 /// @brief Recursively checks the given scope to see if @see {sourceFile} is re-observed in the 'include' chain
-bool RecursiveCheck(const std::vector<std::shared_ptr<CLinkerScriptFile>>& scope,
+bool RecursiveCheck(const SharedPtrVector<CLinkerScriptFile>& scope,
                     std::shared_ptr<CLinkerScriptFile> fileToCheck,
                     std::shared_ptr<CLinkerScriptFile> subjectOfInterest,
                     RecursionMap& recursionMap);
 
-std::vector<std::shared_ptr<CDrcViolation>> CIncludeRecursionGuard::PerformCheck(const std::vector<std::shared_ptr<CLinkerScriptFile>>& linkerScriptFiles) {
+std::vector<std::shared_ptr<CDrcViolation>> CIncludeRecursionGuard::PerformCheck(const SharedPtrVector<CLinkerScriptFile>& linkerScriptFiles) {
 
     std::vector<std::shared_ptr<CDrcViolation>> violations;
 
@@ -112,7 +112,7 @@ std::vector<std::shared_ptr<CDrcViolation>> CIncludeRecursionGuard::PerformCheck
 }
 
 
-bool RecursiveCheck(const std::vector<std::shared_ptr<CLinkerScriptFile>>& scope,
+bool RecursiveCheck(const SharedPtrVector<CLinkerScriptFile>& scope,
                     std::shared_ptr<CLinkerScriptFile> fileToCheck,
                     std::shared_ptr<CLinkerScriptFile> subjectOfInterest,
                     RecursionMap& recursionMap)

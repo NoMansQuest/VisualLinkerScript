@@ -82,6 +82,12 @@ namespace VisualLinkerScript::Models
         {
             return m_violations;
         }
+
+        /// @brief Returns list detected violations
+        const uint32_t StartPosition()
+        {
+            return this->m_rawEntries[0].StartPosition();
+        }
     };
 }
 

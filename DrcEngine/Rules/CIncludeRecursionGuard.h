@@ -20,7 +20,7 @@ namespace VisualLinkerScript::DrcEngine::Rules
         }
 
         /// @copydoc
-        virtual std::vector<std::shared_ptr<CDrcViolation>> PerformCheck(const std::vector<std::shared_ptr<CLinkerScriptFile>>& linkerScriptFiles) override;
+        virtual std::vector<std::shared_ptr<CDrcViolation>> PerformCheck(const SharedPtrVector<CLinkerScriptFile>& linkerScriptFiles) override;
 
         /// @brief Default destructor
         ~CIncludeRecursionGuard()

@@ -11,6 +11,9 @@ using namespace VisualLinkerScript::Models::Intervention;
 
 namespace VisualLinkerScript::DrcEngine
 {
+    template <typename T>
+    using SharedPtrVector = std::vector<std::shared_ptr<T>>;
+
     /// @brief Base class for all DRC Rule checkers
     class IDrcRuleBase
     {
@@ -19,7 +22,7 @@ namespace VisualLinkerScript::DrcEngine
 
     public:
         /// @brief Perform the check and report back found violations
-        virtual std::vector<std::shared_ptr<CDrcViolation>> PerformCheck(const std::vector<std::shared_ptr<CLinkerScriptFile>>& linkerScriptFiles) = 0;
+        virtual std::vector<std::shared_ptr<CDrcViolation>> PerformCheck(const SharedPtrVector<CLinkerScriptFile>& linkerScriptFiles) = 0;
 
         /// @brief Updated 'Enabled' state of the rule.
         virtual void SetEnabled(bool enabled){

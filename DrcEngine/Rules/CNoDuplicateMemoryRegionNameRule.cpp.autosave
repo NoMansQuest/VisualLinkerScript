@@ -1,6 +1,7 @@
 #include "CNoDuplicateMemoryRegionNameRule.h"
 #include "../../Models/CMemoryStatement.h"
 #include "../../QueryEngine/QueryCenter.h"
+#include "../../Helpers.h"
 #include "../DrcCommons.h"
 #include "../CDrcManager.h"
 #include "../IDrcRuleBase.h"
@@ -10,6 +11,7 @@ REGISTER_DRC_RULE(CNoDuplicateMemoryRegionNameRule)
 using namespace VisualLinkerScript::DrcEngine::Rules;
 using namespace VisualLinkerScript::Models;
 using namespace VisualLinkerScript::QueryEngine;
+using namespace VisualLinkerScript;
 
 std::vector<std::shared_ptr<CDrcViolation>> CNoDuplicateMemoryRegionNameRule::PerformCheck(const SharedPtrVector<CLinkerScriptFile>& linkerScriptFiles) {
     std::vector<std::shared_ptr<CDrcViolation>> violations;
@@ -18,16 +20,18 @@ std::vector<std::shared_ptr<CDrcViolation>> CNoDuplicateMemoryRegionNameRule::Pe
 
     for (auto memoryStatementToInspect: foundMemoryStatements) {
         // Check if any other file has the name described
-        SharedPtrVector<CMemoryStatement> foundDuplicates;
+        SharedPtrVector<CMemoryStatement> foundDuplicates { memoryStatementToInspect.second };
 
         for (auto memoryStatementSecondLoop: foundMemoryStatements) {
-            if (memoryStatementSecondLoop.second->StartPosition() == memoryStatementToInspect->StartPosition()) {
+            if (memoryStatementSecondLoop.second->StartPosition() == memoryStatementToInspect.second->StartPosition()) {
                 continue;
             }
 
-            if (hoveringFile->FileName().compare(targetFile) == 0) {
-                targetFileFound = true;
-                break;
+            auto inpsectS
+            if (StringEquals(
+                        memoryStatementSecondLoop.first->ResolveEntryText(memoryStatementSecondLoop.second->NameEntry()), 
+                        memoryStatementToInspect.first->ResolveEntryText(memoryStatementToInspect.second->NameEntry())))            {
+                
             }
         }
 
