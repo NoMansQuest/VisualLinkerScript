@@ -8,19 +8,23 @@
 #include <Models/Intervention/CIntervention.h>
 #include "EDrcViolationCode.h"
 #include "EDrcViolationSeverity.h"
-
-using namespace VisualLinkerScript::Models;
-using namespace VisualLinkerScript::Models::Intervention;
+#include "../Models/CViolationBase.h"
+#include "../Helpers.h"
 
 namespace VisualLinkerScript::DrcEngine 
 {
+    using namespace VisualLinkerScript;
+    using namespace VisualLinkerScript::Models;
+    using namespace VisualLinkerScript::Models::Intervention;
+
     /// @brief This object contains information about a detected violation in the Linker Script
-    class CDrcViolation
+    class CDrcViolation : public CViolationBase
     {
     private:
         EDrcViolationCode m_violationCode;
         EDrcViolationSeverity m_violationSeverity;
-        std::vector<std::shared_ptr<CLinkerScriptContentBase>> m_involvedElements;
+        SharedPtrVector<CLinkerScriptContentBase> m_involvedElements;
+        SharedPtrVector<CDrcViolation> m_subitems;
         std::string m_violationMessage;
         std::string m_title;
         std::string m_contentSensitivePath;        
@@ -28,24 +32,27 @@ namespace VisualLinkerScript::DrcEngine
 
     public:
         /// @brief Default constructor, reporting the @see {involvedEntries} only
-        explicit CDrcViolation(std::vector<std::shared_ptr<CLinkerScriptContentBase>> involvedElements,
-                               std::string&& title,
-                               std::string&& violationMessage,
-                               std::string&& contentSensitivePath,
-                               std::shared_ptr<CIntervention> correctiveAction,
+        explicit CDrcViolation(SharedPtrVector<CLinkerScriptContentBase> involvedElements,
+                               std::string title,
+                               std::string violationMessage,
+                               std::string contentSensitivePath,
+                               SharedPtrVector<CDrcViolation>&& subitems,
+                               std::shared_ptr<CIntervention> correctiveAction,                                
                                EDrcViolationCode violationCode,
                                EDrcViolationSeverity drcViolationSeverity)
             : m_violationCode(violationCode),
               m_violationSeverity(drcViolationSeverity),
               m_involvedElements(std::move(involvedElements)),
-              m_violationMessage(std::move(violationMessage)),
-              m_title(std::move(title)),
-              m_contentSensitivePath(std::move(contentSensitivePath))
+              m_subitems(subitems),
+              m_violationMessage(violationMessage),
+              m_title(title),
+              m_contentSensitivePath(contentSensitivePath),
+              m_correctiveAction(correctiveAction)
         {}
 
     public:
         /// @brief Reports back a list of involved elements
-        const std::vector<std::shared_ptr<CLinkerScriptContentBase>> InvolvedElements(){
+        const SharedPtrVector<CLinkerScriptContentBase> InvolvedElements(){
             return this->m_involvedElements;
         }
 
@@ -78,6 +85,11 @@ namespace VisualLinkerScript::DrcEngine
         /// @brief Reports back the severity of the violation
         const EDrcViolationSeverity Severity() {
             return m_violationSeverity;
+        }
+
+        /// @brief Reports back sub items (if any) belonging to this violation
+        const SharedPtrVector<CDrcViolation> Subitems(){
+            return this->m_subitems;
         }
     };
 }

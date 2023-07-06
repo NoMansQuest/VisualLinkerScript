@@ -19,14 +19,13 @@ std::vector<std::shared_ptr<CDrcViolation>> CInputFilesAreFoundRule::PerformChec
     auto foundIncludeCommands = QueryObject<CIncludeCommand>(linkerScriptFiles);
 
     for (auto includeCommand: foundIncludeCommands) {
-        // Check if file exists
-        auto linkerScriptFile = includeCommand.first;
-        auto targetFile = linkerScriptFile->ResolveEntryText(*includeCommand.second);
+        // Check if file exists        
+        auto targetFile = includeCommand->ParentLinkerScriptFile()->ResolveEntryText(includeCommand->IncludeFileEntry());
 
         // Check if any other file has the name described
         auto targetFileFound = false;
         for (auto hoveringFile: linkerScriptFiles) {
-            if (hoveringFile->AbsoluteFilePath().compare(includeCommand.first->AbsoluteFilePath()) == 0) {
+            if (hoveringFile->AbsoluteFilePath().compare(includeCommand.ParentLinkerScriptFile()->AbsoluteFilePath()) == 0) {
                 continue;
             }
 

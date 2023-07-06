@@ -98,6 +98,7 @@ SOURCES += \
     Helpers.cpp \
     LinkerScriptManager/CLinkerScriptManager.cpp \
     LinkerScriptManager/CUndoRedoManager.cpp \
+    Models/CLinkerScriptFile.cpp \
     ParsingEngine/CMasterParser.cpp \
     ParsingEngine/CModelTranslator.cpp \
     ParsingEngine/CPreliminaryParser.cpp \
@@ -257,6 +258,7 @@ HEADERS += \
     DrcEngine/Rules/CSectionsDefinedOnlyOnceRule.h \
     DrcEngine/Rules/CSymbolsDefinedInAdvanceRule.h \
     Helpers.h \
+    QueryEngine/CLinq.h \
     QueryEngine/QueryCenter.h \
     LinkerScriptManager/CLinkerScriptManager.h \
     LinkerScriptManager/CUndoRedoManager.h \

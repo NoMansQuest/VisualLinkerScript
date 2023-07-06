@@ -4,13 +4,15 @@
 #include <memory>
 #include <vector>
 #include <string>
-#include "CLinkerScriptContentBase.h"
 #include "Raw/CRawFile.h"
 
 using namespace VisualLinkerScript::Models::Raw;
 
 namespace VisualLinkerScript::Models 
 {
+    class CLinkerScriptContentBase;
+    class CViolationBase;
+
     /// @brief Object representing a parsed Linker-Script
     class CLinkerScriptFile
     {
@@ -65,22 +67,12 @@ namespace VisualLinkerScript::Models
         /// @brief Returns the full text the input component is composed of.
         /// @param entryToResolve Component to process
         /// @return The full text that constitutes the component.
-        const std::string ResolveEntryText(CLinkerScriptContentBase& contentToResolve) const {
-            auto startPosition = contentToResolve.RawEntries().front().StartPosition();
-            auto endPosition = contentToResolve.RawEntries().back().StartPosition() +
-                               contentToResolve.RawEntries().back().Length() - 1;
-
-            return this->m_rawFile->FileContent().substr(startPosition, endPosition - startPosition + 1);
-        }
+        const std::string ResolveEntryText(CLinkerScriptContentBase& contentToResolve) const;
 
         /// @brief Returns the full text the input component is composed of.
         /// @param entryToResolve Component to process
         /// @return The full text that constitutes the component.
-        const std::string ResolveEntryText(const CRawEntry& rawEntryToResolve) const {
-            return this->m_rawFile->FileContent().substr(
-                        rawEntryToResolve.StartPosition(),
-                        rawEntryToResolve.Length());
-        }
+        const std::string ResolveEntryText(const CRawEntry& rawEntryToResolve) const;
     };
 }
 

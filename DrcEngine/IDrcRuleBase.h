@@ -4,6 +4,7 @@
 #include <vector>
 #include <cstdint>
 #include <DrcEngine/CDrcViolation.h>
+#include "../Helpers.h"
 #include "../Models/CLinkerScriptFile.h"
 
 using namespace VisualLinkerScript::Models;
@@ -11,9 +12,6 @@ using namespace VisualLinkerScript::Models::Intervention;
 
 namespace VisualLinkerScript::DrcEngine
 {
-    template <typename T>
-    using SharedPtrVector = std::vector<std::shared_ptr<T>>;
-
     /// @brief Base class for all DRC Rule checkers
     class IDrcRuleBase
     {

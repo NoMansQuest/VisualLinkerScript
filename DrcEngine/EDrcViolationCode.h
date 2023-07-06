@@ -12,6 +12,8 @@ namespace VisualLinkerScript::DrcEngine
         EntryDirectiveDefinedMoreThanOnce,
         IncludedFilesArePresentRule,
         RecursiveIncludeChainDetected,
+        DuplicateNameForMemoryStatement,
+        SectionsRegionDefinedMultipleTimes,
     };
 }
 

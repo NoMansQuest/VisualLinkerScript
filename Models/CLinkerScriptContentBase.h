@@ -2,11 +2,16 @@
 #define CLINKERSCRIPT_CONTENT_BASE_H__
 
 #include <vector>
+#include <memory>
+#include <string>
 #include "Raw/CRawEntry.h"
-#include "CViolationBase.h"
 
 namespace VisualLinkerScript::Models
 {
+    class CViolationBase;
+    class CLinkerScriptFile;
+    using namespace VisualLinkerScript::Models::Raw;
+
     /// @brief Type of content. This is to simplifying type-casting
     enum class ContentType
     {
@@ -50,6 +55,8 @@ namespace VisualLinkerScript::Models
     private:
         std::vector<CRawEntry> m_rawEntries;
         std::vector<CViolationBase> m_violations;
+        std::shared_ptr<CLinkerScriptFile> m_parentLinkerScriptFile;
+        std::string m_objectPath;
 
     protected:
         /// @brief Constructor, accessible to inheritors only
@@ -83,10 +90,33 @@ namespace VisualLinkerScript::Models
             return m_violations;
         }
 
+        /// @brief Content-Sensitive path.
+        void SetObjectPath(std::string objectPath){
+            this->m_objectPath = objectPath;
+        }
+
+        /// @brief Returns object's path. Example:
+        /// @remarks '<linker-script-file-name>/<region>/[sub-region]/<object-type>#index
+        std::string ObjectPath(){
+            return this->m_objectPath;
+        }
+
         /// @brief Returns list detected violations
         const uint32_t StartPosition()
         {
             return this->m_rawEntries[0].StartPosition();
+        }
+
+        /// @brief Updates the parent linker script file.
+        /// @remarks This cannot be set via constructor, as the parent linker-script file is not
+        ///          created until parsing is complete, which is long after this objects creation.
+        void SetParentLinkerScriptfile(std::shared_ptr<CLinkerScriptFile> newParent) {
+            this->m_parentLinkerScriptFile = newParent;
+        }
+
+        /// @brief Returns the ParentLinkerScriptFile for this object.
+        std::shared_ptr<CLinkerScriptFile> ParentLinkerScriptFile(){
+            return this->m_parentLinkerScriptFile;
         }
     };
 }

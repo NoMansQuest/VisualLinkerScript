@@ -5,11 +5,34 @@
 #include <memory>
 #include <stdexcept>
 #include <cstdint>
+#include <vector>
+#include <functional>
 
 namespace VisualLinkerScript
 {
+    /// @brief Type widely used across the code-base
+    template <typename T>
+    using SharedPtrVector = std::vector<std::shared_ptr<T>>;
+
     /// @brief Compares strings
     bool StringEquals(const std::string& a, const std::string& b, bool ignoreCase = false);    
+
+    /// @brief Compares strings
+    template <typename T>
+    SharedPtrVector<T> LinqWhere(
+            SharedPtrVector<T> source,
+            std::function<bool(std::shared_ptr<T> element)> filterInput);
+
+    /// @brief Compares strings
+    template <typename TElement, typename TReturn>
+    SharedPtrVector<TReturn> LinqSelect(
+            SharedPtrVector<TElement> source,
+            std::function<TReturn(std::shared_ptr<TElement> element)> transformFunction);
+
+    /// @brief Compares strings
+    template <typename TElement, typename TReturn>
+    SharedPtrVector<TReturn> LinqDynamicPointerCast(
+            SharedPtrVector<TElement> source);
 
     /// @brief Performs C++20 equivalent std::format.
     template<typename ... Args>
