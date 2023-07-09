@@ -1,5 +1,5 @@
-#include "CSectionsDefinedOnlyOnceRule.h"
-#include "../../Models/CSectionsRegion.h"
+#include "CMemoryRegionDefinedOnlyOnceRule.h"
+#include "../../Models/CMemoryRegion.h"
 #include "../../QueryEngine/QueryCenter.h"
 #include "../../Helpers.h"
 
@@ -7,7 +7,7 @@
 #include "../CDrcManager.h"
 #include "../IDrcRuleBase.h"
 
-REGISTER_DRC_RULE(CSectionsDefinedOnlyOnceRule)
+REGISTER_DRC_RULE(CMemoryRegionDefinedOnlyOnceRule)
 
 using namespace VisualLinkerScript::DrcEngine::Rules;
 using namespace VisualLinkerScript::Models;
@@ -16,11 +16,11 @@ using namespace VisualLinkerScript;
 
 using namespace VisualLinkerScript::DrcEngine::Rules;
 
-SharedPtrVector<CDrcViolation> CSectionsDefinedOnlyOnceRule::PerformCheck(const SharedPtrVector<CLinkerScriptFile>& linkerScriptFiles) {
+SharedPtrVector<CDrcViolation> CMemoryRegionDefinedOnlyOnceRule::PerformCheck(const SharedPtrVector<CLinkerScriptFile>& linkerScriptFiles) {
     SharedPtrVector<CDrcViolation> violations;
 
     for (auto linkerScriptFile: linkerScriptFiles) {
-       auto foundSectionsRegion = QueryObject<CSectionsRegion>(linkerScriptFiles, nullptr, true);
+       auto foundSectionsRegion = QueryObject<CMemoryRegion>(linkerScriptFiles, nullptr, true);
 
         // Check if any other file has the name described
        if (foundSectionsRegion.size() <= 1) {
@@ -36,11 +36,10 @@ SharedPtrVector<CDrcViolation> CSectionsDefinedOnlyOnceRule::PerformCheck(const 
                                        sectionsRegion->ObjectPath(),
                                        {},
                                        nullptr,
-                                       EDrcViolationCode::SectionsRegionDefinedMultipleTimes,
+                                       EDrcViolationCode::MemoryRegionDefinedMultipleTimes,
                                        EDrcViolationSeverity::Error)));
        }
     }
 
     return violations;
 }
-

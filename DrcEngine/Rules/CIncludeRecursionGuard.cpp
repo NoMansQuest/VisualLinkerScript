@@ -32,10 +32,8 @@ bool RecursiveCheck(const SharedPtrVector<CLinkerScriptFile>& scope,
                     std::shared_ptr<CLinkerScriptFile> subjectOfInterest,
                     RecursionMap& recursionMap);
 
-std::vector<std::shared_ptr<CDrcViolation>> CIncludeRecursionGuard::PerformCheck(const SharedPtrVector<CLinkerScriptFile>& linkerScriptFiles) {
-
-    std::vector<std::shared_ptr<CDrcViolation>> violations;
-
+SharedPtrVector<CDrcViolation> CIncludeRecursionGuard::PerformCheck(const SharedPtrVector<CLinkerScriptFile>& linkerScriptFiles) {
+    SharedPtrVector<CDrcViolation> violations;
     auto foundIncludeCommands = QueryObject<CIncludeCommand>(linkerScriptFiles);
 
     for (auto file: linkerScriptFiles) {
@@ -51,7 +49,7 @@ std::vector<std::shared_ptr<CDrcViolation>> CIncludeRecursionGuard::PerformCheck
 
             // Check if any other file has the name described
             for (auto hoveringFile: linkerScriptFiles) {
-                if (hoveringFile->AbsoluteFilePath().compare(includeCommand.first->AbsoluteFilePath()) == 0) {
+                if (hoveringFile->AbsoluteFilePath().compare(includeCommand->ParentLinkerScriptFile()->AbsoluteFilePath()) == 0) {
                     continue; // The file isn not cross-checked against itself
                 }
 

@@ -15,8 +15,8 @@ using namespace VisualLinkerScript::DrcEngine::Rules;
 using namespace VisualLinkerScript::QueryEngine;
 using namespace VisualLinkerScript::Models;
 
-std::vector<std::shared_ptr<CDrcViolation>> CDirectivesDeclaredOnlyOnceRule::PerformCheck(const SharedPtrVector<CLinkerScriptFile>& linkerScriptFiles) {
-    std::vector<std::shared_ptr<CDrcViolation>> violations;
+SharedPtrVector<CDrcViolation> CDirectivesDeclaredOnlyOnceRule::PerformCheck(const SharedPtrVector<CLinkerScriptFile>& linkerScriptFiles) {
+    SharedPtrVector<CDrcViolation> violations;
 
     std::vector<std::string> directives {
         "ENTRY",

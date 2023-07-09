@@ -15,8 +15,8 @@ using namespace VisualLinkerScript::Models;
 using namespace VisualLinkerScript::QueryEngine;
 using namespace VisualLinkerScript;
 
-std::vector<std::shared_ptr<CDrcViolation>> CNoDuplicateMemoryRegionNameRule::PerformCheck(const SharedPtrVector<CLinkerScriptFile>& linkerScriptFiles) {
-    std::vector<std::shared_ptr<CDrcViolation>> violations;
+SharedPtrVector<CDrcViolation> CNoDuplicateMemoryRegionNameRule::PerformCheck(const SharedPtrVector<CLinkerScriptFile>& linkerScriptFiles) {
+    SharedPtrVector<CDrcViolation> violations;
 
     auto foundMemoryStatements = QueryObject<CMemoryStatement>(linkerScriptFiles, nullptr, true);
 

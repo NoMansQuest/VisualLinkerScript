@@ -17,17 +17,7 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 
 
     public:
-        /// @brief Memory objects declared within this Linker-Script
-        const std::string& EntryPointContent()
-        {
-            return this->m_entryPointContent;
-        }
 
-        /// @brief Updates the @see{m_entryPointContent}.
-        void SetEntryPointContent(std::string newContent)
-        {
-            m_entryPointContent = newContent;
-        }
     };
 };
 

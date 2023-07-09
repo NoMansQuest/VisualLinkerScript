@@ -3,24 +3,41 @@
 
 #include <vector>
 #include <string>
-#include "CContentBase.h"
+#include <cstdint>
+
+#include "CSizableObject.h"
+#include "../../../Helpers.h"
 
 namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 {
     /// @brief Represents a Memory-Object.
-    class CMemoryObject : public CContentBase
+    class CMemoryObject : public CSizableObject
     {
     public:
         /// @brief Default constructor
         CMemoryObject(bool isExternal)
-            : CContentBase(true, isExternal)
+            : CSizableObject(false, isExternal)
         {}
 
     private:
-
+        std::string m_title;
+        SharedPtrVector<CContentBase> m_childContent;
 
     public:
-        std::vector<std::string> m_phdrList;
+        /// @brief Return title
+        std::string Title(){
+            return this->m_title;
+        }
+
+        /// @brief Upate title
+        void SetTitle(std::string value){
+            this->m_title = value;
+        }
+
+        /// @brief Returns back child content
+        SharedPtrVector<CContentBase> ChildContent(){
+            return this->m_childContent;
+        }
     };
 };
 

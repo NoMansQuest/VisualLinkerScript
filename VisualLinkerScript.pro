@@ -92,6 +92,7 @@ SOURCES += \
     DrcEngine/Rules/CIncludeRecursionGuard.cpp \
     DrcEngine/Rules/CIncludedFilesArePresentRule.cpp \
     DrcEngine/Rules/CLocationCounterCannotGoBackwardsRule.cpp \
+    DrcEngine/Rules/CMemoryRegionDefinedOnlyOnceRule.cpp \
     DrcEngine/Rules/CNoDuplicateMemoryRegionNameRule.cpp \
     DrcEngine/Rules/CSectionsDefinedOnlyOnceRule.cpp \
     DrcEngine/Rules/CSymbolsDefinedInAdvanceRule.cpp \
@@ -147,8 +148,11 @@ HEADERS += \
     Components/MemoryVisualizer/Models/CLmaToVmaArrowCoordinates.h \
     Components/MemoryVisualizer/Models/CMemoryLocationIndicator.h \
     Components/MemoryVisualizer/Models/CMemoryObject.h \
+    Components/MemoryVisualizer/Models/CMemoryStatement.h \
     Components/MemoryVisualizer/Models/COverlapObject.h \
     Components/MemoryVisualizer/Models/CSectionObject.h \
+    Components/MemoryVisualizer/Models/CSizableObject.h \
+    Components/MemoryVisualizer/Models/CSizeIndicator.h \
     Components/MemoryVisualizer/Models/CStatementObject.h \
     Components/MemoryVisualizer/Models/CTooltip.h \
     Components/MemoryVisualizer/Models/EObjectState.h \
@@ -254,6 +258,7 @@ HEADERS += \
     DrcEngine/Rules/CIncludeRecursionGuard.h \
     DrcEngine/Rules/CIncludedFilesArePresentRule.h \
     DrcEngine/Rules/CLocationCounterCannotGoBackwardsRule.h \
+    DrcEngine/Rules/CMemoryRegionDefinedOnlyOnceRule.h \
     DrcEngine/Rules/CNoDuplicateMemoryRegionNameRule.h \
     DrcEngine/Rules/CSectionsDefinedOnlyOnceRule.h \
     DrcEngine/Rules/CSymbolsDefinedInAdvanceRule.h \

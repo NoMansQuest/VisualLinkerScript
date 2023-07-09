@@ -13,8 +13,8 @@ REGISTER_DRC_RULE(CInputFilesAreFoundRule)
 
 using namespace VisualLinkerScript::DrcEngine::Rules;
 
-std::vector<std::shared_ptr<CDrcViolation>> CInputFilesAreFoundRule::PerformCheck(const SharedPtrVector<CLinkerScriptFile>& linkerScriptFiles) {
-    std::vector<std::shared_ptr<CDrcViolation>> violations;
+SharedPtrVector<CDrcViolation> CInputFilesAreFoundRule::PerformCheck(const SharedPtrVector<CLinkerScriptFile>& linkerScriptFiles) {
+    SharedPtrVector<CDrcViolation> violations;
 
     auto foundIncludeCommands = QueryObject<CIncludeCommand>(linkerScriptFiles);
 
@@ -25,7 +25,7 @@ std::vector<std::shared_ptr<CDrcViolation>> CInputFilesAreFoundRule::PerformChec
         // Check if any other file has the name described
         auto targetFileFound = false;
         for (auto hoveringFile: linkerScriptFiles) {
-            if (hoveringFile->AbsoluteFilePath().compare(includeCommand.ParentLinkerScriptFile()->AbsoluteFilePath()) == 0) {
+            if (hoveringFile->AbsoluteFilePath().compare(includeCommand->ParentLinkerScriptFile()->AbsoluteFilePath()) == 0) {
                 continue;
             }
 
@@ -42,7 +42,7 @@ std::vector<std::shared_ptr<CDrcViolation>> CInputFilesAreFoundRule::PerformChec
 
         auto errorMessage = StringFormat("Included files are expected to be present, but '{}' was not found", targetFile);
         violations.emplace_back(std::make_shared<CDrcViolation>(
-                                std::vector<std::shared_ptr<CLinkerScriptContentBase>> { std::dynamic_pointer_cast<CLinkerScriptContentBase>(includeCommand.second) },
+                                std::vector<std::shared_ptr<CLinkerScriptContentBase>> { std::dynamic_pointer_cast<CLinkerScriptContentBase>(includeCommand) },
                                 this->DrcRuleTitle(),
                                 errorMessage,
                                 nullptr,

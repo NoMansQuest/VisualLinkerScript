@@ -14,6 +14,7 @@ namespace VisualLinkerScript::DrcEngine
         RecursiveIncludeChainDetected,
         DuplicateNameForMemoryStatement,
         SectionsRegionDefinedMultipleTimes,
+        MemoryRegionDefinedMultipleTimes,
     };
 }
 

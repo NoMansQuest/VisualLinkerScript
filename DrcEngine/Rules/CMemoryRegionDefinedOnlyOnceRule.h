@@ -1,32 +1,31 @@
-#ifndef CSECTIONSDEFINEDONLYONCERULE_H
-#define CSECTIONSDEFINEDONLYONCERULE_H
+#ifndef CMEMORYREGIONDEFINEDONLYONCERULE_H
+#define CMEMORYREGIONDEFINEDONLYONCERULE_H
 
 #include "../IDrcRuleBase.h"
 #include <memory>
 
 namespace VisualLinkerScript::DrcEngine::Rules
 {
-    class CSectionsDefinedOnlyOnceRule : public IDrcRuleBase
+    class CMemoryRegionDefinedOnlyOnceRule : public IDrcRuleBase
     {
     public:
         /// @brief Default constructor
-        CSectionsDefinedOnlyOnceRule()
+        CMemoryRegionDefinedOnlyOnceRule()
         {}
 
         /// @copydoc
         virtual std::string DrcRuleTitle() override
         {
-            return "Sections Region Defined Only Once Rule";
+            return "Memory Region Defined Only Once Rule";
         }
 
         /// @copydoc
         virtual SharedPtrVector<CDrcViolation> PerformCheck(const SharedPtrVector<CLinkerScriptFile>& linkerScriptFiles) override;
 
         /// @brief Default destructor
-        ~CSectionsDefinedOnlyOnceRule()
+        ~CMemoryRegionDefinedOnlyOnceRule()
         {}
     };
 }
 
-
-#endif // CSECTIONSDEFINEDONLYONCERULE_H
+#endif // CMEMORYREGIONDEFINEDONLYONCERULE_H
