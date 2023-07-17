@@ -25,6 +25,15 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
         SharedPtrVector<CContentBase> m_childContent;
 
     public:
+        std::string Title(){
+            return this->m_title;
+        }
+
+        void SetTitle(std::string value){
+            this->m_title = value;
+        }
+
+        std::string
 
 
     };

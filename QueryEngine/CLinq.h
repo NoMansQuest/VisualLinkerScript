@@ -50,25 +50,24 @@ namespace VisualLinkerScript::QueryEngine
         }
 
 
-        TInput FirstOrDefault() {
+        std::shared_ptr<TInput> FirstOrDefault() {
             if (m_sourceVector.empty()) {
-                return TInput {};
+                return nullptr;
             }
-            return *m_sourceVector[0];
+            return m_sourceVector[0];
         }
 
-
-        TInput FirstOrDefault(std::function<bool(TInput inputElement)> predicate) {
-            for (TInput element : m_sourceVector) {
+        std::shared_ptr<TInput> FirstOrDefault(std::function<bool(std::shared_ptr<TInput> inputElement)> predicate) {
+            for (auto element : m_sourceVector) {
                 if (predicate(element)) {
-                    return *element;
+                    return element;
                 }
             }
-            return TInput {};
+            return nullptr;
         }
 
-        bool Any(std::function<bool(TInput inputElement)> predicate) {
-            for (TInput element : m_sourceVector) {
+        bool Any(std::function<bool(std::shared_ptr<TInput> inputElement)> predicate) {
+            for (auto element : m_sourceVector) {
                 if (predicate(element)) {
                     return true;
                 }
@@ -76,8 +75,8 @@ namespace VisualLinkerScript::QueryEngine
             return false;
         }
 
-        bool All(std::function<bool(TInput inputElement)> predicate) {
-            for (TInput element : m_sourceVector) {
+        bool All(std::function<bool(std::shared_ptr<TInput> inputElement)> predicate) {
+            for (auto element : m_sourceVector) {
                 if (!predicate(element)) {
                     return false;
                 }

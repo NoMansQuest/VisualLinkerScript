@@ -13,31 +13,14 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
     /// @brief Represents a Memory-Object.
     class CMemoryObject : public CSizableObject
     {
+        DECLARE_STANDARD_PROPERTY( std::string, Title )
+        DECLARE_READONLY_PROPERTY( SharedPtrVector<CContentBase>, ChildContent )
+
     public:
         /// @brief Default constructor
         CMemoryObject(bool isExternal)
             : CSizableObject(false, isExternal)
         {}
-
-    private:
-        std::string m_title;
-        SharedPtrVector<CContentBase> m_childContent;
-
-    public:
-        /// @brief Return title
-        std::string Title(){
-            return this->m_title;
-        }
-
-        /// @brief Upate title
-        void SetTitle(std::string value){
-            this->m_title = value;
-        }
-
-        /// @brief Returns back child content
-        SharedPtrVector<CContentBase> ChildContent(){
-            return this->m_childContent;
-        }
     };
 };
 

@@ -1,6 +1,8 @@
 #ifndef CCONTENTBASE_H
 #define CCONTENTBASE_H
 
+#include "../../../../Helpers.h"
+
 #include <vector>
 #include <string>
 #include "SRectangleF.h"
@@ -12,128 +14,39 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 {
     /// @brief Base class of all memory visualizer models
     class CContentBase
-    {
+    {        
+        DECLARE_STANDARD_PROPERTY( bool, IsDraggable )
+        DECLARE_STANDARD_PROPERTY( bool, IsFromExternalLinkerScript )
+        DECLARE_STANDARD_PROPERTY( bool, IsSelected )
+        DECLARE_STANDARD_PROPERTY( bool, IsPressed )
+        DECLARE_STANDARD_PROPERTY( bool, IsEnabled )
+        DECLARE_STANDARD_PROPERTY( EObjectState, State )
+        DECLARE_STANDARD_PROPERTY( SRectangleF, ProposedCoordinatesDuringHover )
+        DECLARE_STANDARD_PROPERTY( SRectangleF, FixedCoordinates )
+        DECLARE_STANDARD_PROPERTY( CDragState, DragObject )
+        DECLARE_STANDARD_PROPERTY( CTooltip, TooltipObject )
+        DECLARE_STANDARD_PROPERTY( std::string, Path )
+        DECLARE_STANDARD_PROPERTY( uint64_t, HoverStartTimestamp )
+
     public:
         /// @brief Default Constructor;
         /// @param isDraggable Is the object dragabble?
         /// @param isExternal Is the object present as a result of an 'Include' directive?
         CContentBase(bool isDraggable, bool isExternal)
-            : m_isDraggable(isDraggable),
-              m_isExternal(isExternal),
-              m_state(EObjectState::Neutral)
-        {}
+        {
+            this->m_IsDraggable = isDraggable;
+            this->m_IsFromExternalLinkerScript = isExternal;
+            this->m_State = EObjectState::Neutral;
+        }
 
         /// @brief Destructor
         ~CContentBase()
         {}
 
-    // Member fields
-    private:        
-        uint64_t m_hoverStartTimestamp;
-
-        bool m_isSelected;
-        bool m_isPressed;
-        bool m_isEnabled;
-        bool m_isDraggable;
-        bool m_isExternal;
-
-        SRectangleF m_fixedCoordinates;
-        SRectangleF m_proposedCoordinates;
-        CDragState m_dragObject;
-        CTooltip m_tooltipObject;
-        std::string m_path;
-        EObjectState m_state;
-
     // Functions
     public:
         /// @brief Z-Index will be fixed and determined by the caller
-        virtual uint8_t ZIndex() = 0;
-    
-        /// @brief Return current fixed coordinates.
-        SRectangleF FixedCoordinates() {
-            return this->m_fixedCoordinates; 
-        }
-
-        /// @brief Update coordinates
-        void SetFixedCoordinates(SRectangleF newCoordinates) {
-            this->m_fixedCoordinates = newCoordinates;
-        }    
-
-        /// @brief Return current proposed coordinates.
-        SRectangleF ProposedCoordinates() {
-            return this->m_proposedCoordinates;
-        }
-
-        /// @brief Update coordinates
-        void SetProposedCoordinates(SRectangleF newCoordinates) {
-            this->m_proposedCoordinates = newCoordinates;
-        }
-
-        /// @brief Returns back the 'Drag' data object.
-        const CDragState& DragObject() {
-            return this->m_dragObject;
-        }
-
-        /// @brief Returns back the 34618Tool-Tip object
-        const CTooltip& TooltipObject() {
-            return this->m_tooltipObject;
-        }
-
-        /// @brief When did the mouse enter this control (mainly used for ToolTip management)
-        uint64_t HoverStartTimestamp() {
-            return this->m_hoverStartTimestamp;
-        }
-
-        /// @brief Sets the Hover Start Timestamp
-        void SetHoverStartTimestamp(uint64_t hoverStartTimestamp){
-            this->m_hoverStartTimestamp = hoverStartTimestamp;
-        }
-
-        /// @brief Report is the object is selected
-        bool IsSelected() {
-            return this->m_isSelected;
-        }
-
-        /// @brief Report if the object is pressed.
-        bool IsPressed() {
-            return this->m_isPressed;
-        }
-
-        /// @brief Report if the object is enabled.
-        bool IsEnabled() {
-            return this->m_isEnabled;
-        }
-
-        /// @brief Reports back whether the object is referenced in a separate file
-        ///        via an 'INCLUDE' statement, or local to the loaded linker-script object
-        bool IsExternal() {
-            return this->m_isExternal;
-        }
-
-        /// @brief Reports back the path of the object
-        const std::string& Path() {
-            return this->m_path;
-        }
-
-        /// @brief Sets the object path. Path could be updated as object moves
-        void SetObjectPath(std::string newPath){
-            this->m_path = newPath;
-        }
-
-        /// @brief Reports back whether the object is draggable or fixed
-        bool IsDraggable(){
-            return this->m_isDraggable;
-        }
-
-        /// @brief Reports back current object state
-        EObjectState State() {
-            return this->m_state;
-        }
-
-        /// @brief Updates the state.
-        void SetState(EObjectState newState) {
-            this->m_state = newState;
-        }
+        virtual uint8_t ZIndex() = 0;    
     };
 };
 

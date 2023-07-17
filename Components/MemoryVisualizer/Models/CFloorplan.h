@@ -7,6 +7,8 @@
 
 namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 {
+    using namespace VisualLinkerScript;
+
     /// @brief Represents a Linker-Script object.
     class CFloorplan
     {

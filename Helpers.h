@@ -8,6 +8,48 @@
 #include <vector>
 #include <functional>
 
+/// @brief This does the "nameof" expression in c#
+#define NAMEOF(x) #x
+
+/// @brief Macro defines a standard get-set property
+#define DECLARE_STANDARD_PROPERTY( propType, propName ) \
+    private:\
+        propType m_##propName;\
+                        \
+    public:\
+        propType propName(){\
+            return m_##propName;\
+        }\
+         \
+        void Set##propName(propType value){\
+            this->m_##propName = value;\
+        }
+
+/// @brief Macro defines a readonly get property
+#define DECLARE_READONLY_PROPERTY( propType, propName ) \
+    private:\
+        propType m_##propName;\
+                        \
+    public:\
+        propType propName(){\
+            return m_##propName;\
+        }
+
+/// @brief Macro defines a virtual get/set property
+#define DECLARE_VIRTUAL_PROPERTY( propType, propName ) \
+    private:\
+        propType m_##propName;\
+                        \
+    public:\
+        virtual propType propName(){\
+            return m_##propName;\
+        }\
+         \
+        virtual void Set##propName(propType value){\
+            this->m_##propName = value;\
+        }
+
+
 namespace VisualLinkerScript
 {
     /// @brief Type widely used across the code-base
@@ -37,16 +79,16 @@ namespace VisualLinkerScript
     /// @brief Performs C++20 equivalent std::format.
     template<typename ... Args>
     std::string StringFormat( const std::string& format, Args ... args ) {
-        int size_s = std::snprintf( nullptr, 0, format.c_str(), args ... ) + 1; // Extra space for '\0'
+        int size_s = std::snprintf( nullptr, 0, format.c_str(), args ... ) + 1;
 
         if( size_s <= 0 ){
-            throw std::runtime_error( "Error during formatting." );
+            throw std::runtime_error( "Formatting error." );
         }
 
         auto size = static_cast<size_t>( size_s );
         std::unique_ptr<char[]> buf( new char[ size ] );
         std::snprintf( buf.get(), size, format.c_str(), args ... );
-        return std::string( buf.get(), buf.get() + size - 1 ); // We don't want the '\0' inside
+        return std::string( buf.get(), buf.get() + size - 1 );
     }
 }
 
