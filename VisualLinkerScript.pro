@@ -141,6 +141,8 @@ HEADERS += \
     Components/MemoryVisualizer/EInsertObjectType.h \
     Components/MemoryVisualizer/ModelTranslator.h \
     Components/MemoryVisualizer/Models/CArrowObject.h \
+    Components/MemoryVisualizer/Models/CButton.h \
+    Components/MemoryVisualizer/Models/CComboBox.h \
     Components/MemoryVisualizer/Models/CContentBase.h \
     Components/MemoryVisualizer/Models/CDragState.h \
     Components/MemoryVisualizer/Models/CFloorplan.h \
@@ -149,7 +151,8 @@ HEADERS += \
     Components/MemoryVisualizer/Models/CMemoryLocationIndicator.h \
     Components/MemoryVisualizer/Models/CMemoryObject.h \
     Components/MemoryVisualizer/Models/CMemoryStatement.h \
-    Components/MemoryVisualizer/Models/COverlapObject.h \
+    Components/MemoryVisualizer/Models/COverlayObject.h \
+    Components/MemoryVisualizer/Models/COverlaySectionObject.h \
     Components/MemoryVisualizer/Models/CSectionObject.h \
     Components/MemoryVisualizer/Models/CSizableObject.h \
     Components/MemoryVisualizer/Models/CSizeIndicator.h \

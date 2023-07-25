@@ -9,9 +9,15 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
     /// @brief Represents the "ENTRY()" directive.
     class CMemoryLocationIndicator : public CContentBase
     {
-        DECLARE_STANDARD_PROPERTY( SPointF, RightSidePosition )
-        DECLARE_STANDARD_PROPERTY( SPointF, LeftSidePoition )
+        DECLARE_STANDARD_PROPERTY( SPointF, LineRightPoint )
+        DECLARE_STANDARD_PROPERTY( SPointF, LineLeftPoint )
         DECLARE_STANDARD_PROPERTY( SRectangleF, ContentRectangle )
+
+    public:
+        /// @brief Default constructor
+        CMemoryLocationIndicator(bool isExternal)
+            : CContentBase(false, isExternal)
+        {}
     };
 };
 

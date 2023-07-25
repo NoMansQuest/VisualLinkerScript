@@ -2,7 +2,7 @@
 #define COVERLAPOBJECTRENDERER_H__
 
 #include <QPainter>
-#include "../Models/COverlapObject.h"
+#include "../Models/COverlayObject.h"
 
 using namespace VisualLinkerScript::Components::MemoryVisualizer::Models;
 
