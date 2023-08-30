@@ -10,12 +10,12 @@
 #include "../../Models/CLinkerScriptContentBase.h"
 #include "../../Models/Raw/CRawFile.h"
 
-using namespace VisualLinkerScript::Models::Raw;    
-using namespace VisualLinkerScript::Models;
-
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {
     #define UNREFERENCED_PARAMETER(P) (P)
+
+    using namespace VisualLinkerScript::Models::Raw;
+    using namespace VisualLinkerScript::Models;
 
     /// @brief Base class for all sub-parsers
     template<typename TOutputType>

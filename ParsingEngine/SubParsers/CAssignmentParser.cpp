@@ -14,7 +14,6 @@
 #include "../CParserViolation.h"
 #include "../EParserViolationCode.h"
 
-
 using namespace VisualLinkerScript::ParsingEngine;
 using namespace VisualLinkerScript::ParsingEngine::SubParsers;
 using namespace VisualLinkerScript::Models;

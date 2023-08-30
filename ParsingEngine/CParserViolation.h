@@ -24,21 +24,25 @@ namespace VisualLinkerScript::ParsingEngine
 
     public:
         /// @brief Default constructor, reporting the @see {involvedEntries} only
-        explicit CParserViolation(std::vector<CRawEntry>&& involvedEntries)
-            : m_involvedEntries(std::move(involvedEntries))
+        explicit CParserViolation(std::vector<CRawEntry>&& involvedEntries, EParserViolationCode violationCode)
+            : m_violationCode(violationCode),
+              m_involvedEntries(std::move(involvedEntries))
         {}
 
         /// @brief Simplified constructor accepting only CRawEntry. the @see {involvedEntries} only
-        explicit CParserViolation(CRawEntry involvedEntry)
-            : m_involvedEntries(std::vector<CRawEntry> { involvedEntry })
+        explicit CParserViolation(CRawEntry involvedEntry, EParserViolationCode violationCode)
+            : m_violationCode(violationCode),
+              m_involvedEntries(std::vector<CRawEntry> { involvedEntry })
         {}
 
         /// @brief Constructor with @see {involvedEntries}, @see {entryBeforeViolation} and @see {entryAfterViolation}
         explicit CParserViolation(
                    std::vector<CRawEntry>&& involvedEntries,
                    CRawEntry entryBeforeViolation,
-                   CRawEntry entryAfterViolation)
-            : m_entryBeforeViolation(entryBeforeViolation),
+                   CRawEntry entryAfterViolation,
+                   EParserViolationCode violationCode)
+            : m_violationCode(violationCode),
+              m_entryBeforeViolation(entryBeforeViolation),
               m_entryAfterViolation(entryAfterViolation),
               m_involvedEntries(std::move(involvedEntries))
         {}
@@ -46,8 +50,10 @@ namespace VisualLinkerScript::ParsingEngine
         /// @brief Constructor with only @see {entryBeforeViolation} and @see {entryAfterViolation}
         explicit CParserViolation(
                    CRawEntry entryBeforeViolation,
-                   CRawEntry entryAfterViolation)
-            : m_entryBeforeViolation(entryBeforeViolation),
+                   CRawEntry entryAfterViolation,
+                   EParserViolationCode violationCode)
+            : m_violationCode(violationCode),
+              m_entryBeforeViolation(entryBeforeViolation),
               m_entryAfterViolation(entryAfterViolation)
         {}
 

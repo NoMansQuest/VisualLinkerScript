@@ -9,10 +9,10 @@
 #include "../../Models/CVersionScope.h"
 #include "../../Models/Raw/CRawFile.h"
 
-using namespace VisualLinkerScript::ParsingEngine::Models::Raw;
-
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {
+    using namespace VisualLinkerScript::Models::Raw;
+
     /// @brief Object in charge of parsing the content of the "VERSION" region inside a linker-script
     class CVersionRegionContentParser : public CSubParserBase<CVersionScope>
     {

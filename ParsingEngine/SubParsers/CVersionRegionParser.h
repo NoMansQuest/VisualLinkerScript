@@ -9,7 +9,6 @@
 
 #include "../../Models/CVersionsRegion.h"
 
-
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {
     /// @brief Object in charge of parsing the "VERSIONS" region inside a linker-script
