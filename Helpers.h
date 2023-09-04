@@ -1,5 +1,5 @@
-#ifndef HELPERS_H
-#define HELPERS_H
+#ifndef HELPERS_H__
+#define HELPERS_H__
 
 #include <string>
 #include <memory>
@@ -10,6 +10,15 @@
 
 /// @brief This does the "nameof" expression in c#
 #define NAMEOF(x) #x
+
+/// @brief We set here whether we're compiling for Unix-based or Windows
+#if defined(Q_OS_LINUX) || defined(__APPLE__) || defined (__linux__) || defined(__unix__ )
+    #define COMPILING_FOR_UNIX_BASED
+#elif defined(Q_OS_WIN32) || defined(_WIN32) || defined(_WIN64) || defined(__WIN32__) || defined(__NT__)
+    #define COMPILING_FOR_WINDOWS
+#else
+    #error Neither Q_OS_LINUX nor Q_OS_WIN32 were defined.
+#endif
 
 /// @brief Macro defines a standard get-set property
 #define DECLARE_STANDARD_PROPERTY( propType, propName ) \
@@ -57,9 +66,6 @@ namespace VisualLinkerScript
     using SharedPtrVector = std::vector<std::shared_ptr<T>>;
 
     /// @brief Compares strings
-    bool StringEquals(const std::string& a, const std::string& b, bool ignoreCase = false);    
-
-    /// @brief Compares strings
     template <typename T>
     SharedPtrVector<T> LinqWhere(
             SharedPtrVector<T> source,
@@ -76,9 +82,26 @@ namespace VisualLinkerScript
     SharedPtrVector<TReturn> LinqDynamicPointerCast(
             SharedPtrVector<TElement> source);
 
+
+    /// @brief Compares strings
+    bool StringEquals(const std::string& a,
+                      const std::string& b,
+                      bool ignoreCase = false);
+
+    /// @brief Searches for a given string in a vector to see if it is present.
+    bool StringIn(const std::string& sourceString,
+                  const std::vector<std::string>& listToCheck,
+                  bool caseSensitive = true);
+
+    /// @brief Splits a string based on a given character.
+    std::vector<std::string> StringSplit(
+            const std::string& sourceString,
+            char seperator);
+
     /// @brief Performs C++20 equivalent std::format.
     template<typename ... Args>
-    std::string StringFormat( const std::string& format, Args ... args ) {
+    std::string StringFormat( const std::string& format, Args ... args )
+    {
         int size_s = std::snprintf( nullptr, 0, format.c_str(), args ... ) + 1;
 
         if( size_s <= 0 ){
@@ -90,6 +113,6 @@ namespace VisualLinkerScript
         std::snprintf( buf.get(), size, format.c_str(), args ... );
         return std::string( buf.get(), buf.get() + size - 1 );
     }
-}
+};
 
-#endif // HELPERS_H
+#endif // HELPERS_H__

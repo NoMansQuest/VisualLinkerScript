@@ -25,7 +25,7 @@ namespace VisualLinkerScript::Models
                                       CRawEntry semicolonEntry,
                                       std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& parsedContent,
                                       std::vector<CRawEntry>&& rawElements, 
-                                      std::vector<CViolationBase>&& violations)
+                                      SharedPtrVector<CViolationBase>&& violations)
             : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
               m_assignmentOperator(std::move(assignmentOperator)),
               m_lValueEntry(std::move(lValueEntry)),
@@ -52,7 +52,7 @@ namespace VisualLinkerScript::Models
         }
         
         /// @brief Gets the "RValueComposition"
-        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& ParsedContent()
+        const SharedPtrVector<CLinkerScriptContentBase>& ParsedContent()
         {
             return this->m_parsedContent;
         }

@@ -36,7 +36,7 @@ std::shared_ptr<TProducingOutputType> CScopedRegionParser<TParserType, TContentP
     std::vector<CRawEntry>::const_iterator localIterator = iterator;
     std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = iterator;
     std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
-    std::vector<CParserViolation> violations;
+    SharedPtrVector<CViolationBase> violations;
 
     auto parserState = ParserState::AwaitingHeader;
 
@@ -62,9 +62,8 @@ std::shared_ptr<TProducingOutputType> CScopedRegionParser<TParserType, TContentP
                 {
                     auto parsedStatement = regionContentParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
                     if (parsedStatement == nullptr)
-                    {
-                        CParserViolation detectedViolation({*localIterator},EParserViolationCode::EntryInvalidOrMisplaced);
-                        violations.emplace_back(detectedViolation);
+                    {                        
+                        violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation({*localIterator},EParserViolationCode::EntryInvalidOrMisplaced)));
                     }
                     else
                     {
@@ -85,8 +84,7 @@ std::shared_ptr<TProducingOutputType> CScopedRegionParser<TParserType, TContentP
                 }
                 else if (parserState == ParserState::AwaitingOpeningBracket)
                 {
-                    CParserViolation detectedViolation({ *localIterator }, EParserViolationCode::NoSymbolOrKeywordAllowedAfterMemoryHeader);
-                    violations.emplace_back(std::move(detectedViolation));
+                    violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation({ *localIterator }, EParserViolationCode::NoSymbolOrKeywordAllowedAfterMemoryHeader)));
                 }
                 break;
             }
@@ -100,12 +98,11 @@ std::shared_ptr<TProducingOutputType> CScopedRegionParser<TParserType, TContentP
             {
                 if (parserState == ParserState::AwaitingClosingBracket)
                 {
-                    CParserViolation detectedViolation({ *localIterator }, EParserViolationCode::EntryInvalidOrMisplaced);
+                    violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation({ *localIterator }, EParserViolationCode::EntryInvalidOrMisplaced)));
                 }
                 else if (parserState == ParserState::AwaitingOpeningBracket)
                 {
-                    CParserViolation detectedViolation({ *localIterator }, EParserViolationCode::NoSymbolOrKeywordAllowedAfterMemoryHeader);
-                    violations.emplace_back(std::move(detectedViolation));
+                    violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation({ *localIterator }, EParserViolationCode::NoSymbolOrKeywordAllowedAfterMemoryHeader)));
                 }
                 else if (parserState == ParserState::AwaitingOpeningBracket)
                 {

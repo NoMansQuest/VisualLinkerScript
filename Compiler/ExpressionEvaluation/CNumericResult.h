@@ -3,7 +3,7 @@
 
 #include "CResultBase.h"
 
-namespace VisualLinkerScript::ParsingEngine::Models::Evaluation
+namespace VisualLinkerScript::Models::Evaluation
 {
     /// @brief Produced by having @see {CEvaluatableBase} objects evaluataed.
     class CNumericResult : CResultBase

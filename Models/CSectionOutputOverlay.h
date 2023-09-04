@@ -44,7 +44,7 @@ namespace VisualLinkerScript::Models
                                        std::shared_ptr<CSectionOutputFillExpression> fillExpression,
                                        std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& innerContent,
                                        std::vector<CRawEntry>&& rawElements,
-                                       std::vector<CViolationBase>&& violations)
+                                       SharedPtrVector<CViolationBase>&& violations)
             : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
               m_sectionOutputNameEntry(sectionOutputNameEntry),
               m_preColonContent(std::move(preColonContent)),

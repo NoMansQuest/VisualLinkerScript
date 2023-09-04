@@ -11,7 +11,7 @@
 #include "ParsingEngine/CMasterParser.h"
 
 using namespace VisualLinkerScript::ParsingEngine;
-using namespace VisualLinkerScript::ParsingEngine::Models;
+using namespace VisualLinkerScript::Models;
 
 void ConstructUi(MainWindow& mainWindow);
 
@@ -104,47 +104,47 @@ void MainWindow::BuildUserInterface()
 
         switch (entry.EntryType())
         {
-            case VisualLinkerScript::ParsingEngine::Models::Raw::RawEntryType::Word:
+            case VisualLinkerScript::Models::Raw::RawEntryType::Word:
                 translatedType = "Word";
                 break;
 
-            case VisualLinkerScript::ParsingEngine::Models::Raw::RawEntryType::Operator:
+            case VisualLinkerScript::Models::Raw::RawEntryType::Operator:
                 translatedType = "Operator";
                 break;
 
-            case VisualLinkerScript::ParsingEngine::Models::Raw::RawEntryType::Assignment:
+            case VisualLinkerScript::Models::Raw::RawEntryType::Assignment:
                 translatedType = "Assignment";
                 break;
 
-            case VisualLinkerScript::ParsingEngine::Models::Raw::RawEntryType::Number:
+            case VisualLinkerScript::Models::Raw::RawEntryType::Number:
                 translatedType = "Number";
                 break;
 
-            case VisualLinkerScript::ParsingEngine::Models::Raw::RawEntryType::String:
+            case VisualLinkerScript::Models::Raw::RawEntryType::String:
                 translatedType = "String";
                 break;
 
-            case VisualLinkerScript::ParsingEngine::Models::Raw::RawEntryType::Comment:
+            case VisualLinkerScript::Models::Raw::RawEntryType::Comment:
                 translatedType = "Comment";
                 break;
 
-            case VisualLinkerScript::ParsingEngine::Models::Raw::RawEntryType::ParenthesisOpen:
+            case VisualLinkerScript::Models::Raw::RawEntryType::ParenthesisOpen:
                 translatedType = "ParenthesisOpen";
                 break;
 
-            case VisualLinkerScript::ParsingEngine::Models::Raw::RawEntryType::ParenthesisClose:
+            case VisualLinkerScript::Models::Raw::RawEntryType::ParenthesisClose:
                 translatedType = "ParenthesisClose";
                 break;
 
-            case VisualLinkerScript::ParsingEngine::Models::Raw::RawEntryType::BracketOpen:
+            case VisualLinkerScript::Models::Raw::RawEntryType::BracketOpen:
                 translatedType = "BracketOpen";
                 break;
 
-            case VisualLinkerScript::ParsingEngine::Models::Raw::RawEntryType::BracketClose:
+            case VisualLinkerScript::Models::Raw::RawEntryType::BracketClose:
                 translatedType = "BracketClose";
                 break;
 
-            case VisualLinkerScript::ParsingEngine::Models::Raw::RawEntryType::Unknown:
+            case VisualLinkerScript::Models::Raw::RawEntryType::Unknown:
                 translatedType = "Unknown";
                 break;
 

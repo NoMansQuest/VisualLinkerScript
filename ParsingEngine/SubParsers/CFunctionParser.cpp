@@ -39,8 +39,8 @@ std::shared_ptr<CFunctionCall> CFunctionParser::TryParse(
     std::vector<CRawEntry>::const_iterator localIterator = iterator;
     std::vector<CRawEntry>::const_iterator previousPositionIterator = iterator;
     std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = iterator;
-    std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
-    std::vector<CParserViolation> violations;
+    SharedPtrVector<CLinkerScriptContentBase> parsedContent;
+    SharedPtrVector<CViolationBase> violations;
 
     CExpressionParser nestedExpressionParser(ExpressionParserType::NormalParser, false);
 
@@ -72,7 +72,8 @@ std::shared_ptr<CFunctionCall> CFunctionParser::TryParse(
 
         if (lineChangeDetected)
         {
-            violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::FunctionsCannotExpandToMultipleLines));
+            violations.emplace_back(std::shared_ptr<CViolationBase>(
+                                        new CParserViolation(*localIterator, EParserViolationCode::FunctionsCannotExpandToMultipleLines)));
             break;
         }
 
@@ -80,7 +81,7 @@ std::shared_ptr<CFunctionCall> CFunctionParser::TryParse(
         {
             case RawEntryType::Comment:
             {
-                parsedContent.emplace_back(std::shared_ptr<CComment>(new CComment({*localIterator},{})));
+                parsedContent.emplace_back(std::shared_ptr<CLinkerScriptContentBase>(new CComment({*localIterator},{})));
                 break;
             }
 
@@ -92,14 +93,16 @@ std::shared_ptr<CFunctionCall> CFunctionParser::TryParse(
                     {
                         if (!CParserHelpers::IsFunctionName(resolvedContent))
                         {
-                            violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::FunctionNotRecognized));
+                            violations.emplace_back(std::shared_ptr<CViolationBase>(
+                                                        new CParserViolation(*localIterator, EParserViolationCode::FunctionNotRecognized)));
                         }
                         functionNameEntry = *localIterator;
                         break;
                     }
                     case ParserState::AwaitingParenthesisOverture:
                     {
-                        violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
+                        violations.emplace_back(std::shared_ptr<CViolationBase>(
+                                                    new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
                         break;
                     }
 
@@ -117,7 +120,7 @@ std::shared_ptr<CFunctionCall> CFunctionParser::TryParse(
                 {
                     case ParserState::AwaitingName:
                     {
-                        violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::WasExpectingFunctioNameHere));
+                        violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::WasExpectingFunctioNameHere)));
                         break;
                     }
 
@@ -130,7 +133,8 @@ std::shared_ptr<CFunctionCall> CFunctionParser::TryParse(
 
                     case ParserState::AwaitingParenthesisClosure:
                     {
-                        violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::WasExpectingAnotherParameterOrParenthesisClosure));
+                        violations.emplace_back(std::shared_ptr<CViolationBase>
+                                                (new CParserViolation(*localIterator, EParserViolationCode::WasExpectingAnotherParameterOrParenthesisClosure)));
                         break;
                     }
 
@@ -147,13 +151,15 @@ std::shared_ptr<CFunctionCall> CFunctionParser::TryParse(
                 {
                     case ParserState::AwaitingName:
                     {
-                        violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::WasExpectingFunctioNameHere));
+                        violations.emplace_back(std::shared_ptr<CViolationBase>(
+                                                    new CParserViolation(*localIterator, EParserViolationCode::WasExpectingFunctioNameHere)));
                         break;
                     }
 
                     case ParserState::AwaitingParenthesisOverture:
                     {
-                        violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::WasExpectingParenthesisOverture));
+                        violations.emplace_back(std::shared_ptr<CViolationBase>(
+                                                    new CParserViolation(*localIterator, EParserViolationCode::WasExpectingParenthesisOverture)));
                         break;
                     }
 
@@ -178,13 +184,15 @@ std::shared_ptr<CFunctionCall> CFunctionParser::TryParse(
                 {
                     case ParserState::AwaitingName:
                     {
-                        violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::WasExpectingFunctioNameHere));
+                        violations.emplace_back(std::shared_ptr<CViolationBase>(
+                                                    new CParserViolation(*localIterator, EParserViolationCode::WasExpectingFunctioNameHere)));
                         break;
                     }
 
                     case ParserState::AwaitingParenthesisOverture:
                     {
-                        violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::WasExpectingParenthesisOverture));
+                        violations.emplace_back(std::shared_ptr<CViolationBase>(
+                                                    new CParserViolation(*localIterator, EParserViolationCode::WasExpectingParenthesisOverture)));
                         break;
                     }
 
@@ -200,12 +208,12 @@ std::shared_ptr<CFunctionCall> CFunctionParser::TryParse(
                         }
                         else if (resolvedContent == ";")
                         {
-                            violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::UnexpectedTerminationOfFunction));
+                            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::UnexpectedTerminationOfFunction)));
                             parserState = ParserState::ParsingComplete;
                         }
                         else
                         {
-                            violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
+                            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
                         }
                         break;
                     }
@@ -222,7 +230,8 @@ std::shared_ptr<CFunctionCall> CFunctionParser::TryParse(
             case RawEntryType::Number:
             case RawEntryType::String:
             {
-                violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
+                violations.emplace_back(std::shared_ptr<CViolationBase>(
+                                            new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
                 break;
             }
 
@@ -230,7 +239,8 @@ std::shared_ptr<CFunctionCall> CFunctionParser::TryParse(
             case RawEntryType::BracketOpen:
             case RawEntryType::BracketClose:
             {
-                violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::UnexpectedTerminationOfExpression));
+                violations.emplace_back(std::shared_ptr<CViolationBase>(
+                                            new CParserViolation(*localIterator, EParserViolationCode::UnexpectedTerminationOfExpression)));
                 localIterator = previousPositionIterator;
                 parserState = ParserState::ParsingComplete;
                 break;
@@ -238,7 +248,8 @@ std::shared_ptr<CFunctionCall> CFunctionParser::TryParse(
 
             case RawEntryType::Unknown:
             {
-                violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
+                violations.emplace_back(std::shared_ptr<CViolationBase>(
+                                            new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
                 break;
             }
 

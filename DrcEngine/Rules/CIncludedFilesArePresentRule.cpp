@@ -13,8 +13,8 @@ REGISTER_DRC_RULE(CInputFilesAreFoundRule)
 
 using namespace VisualLinkerScript::DrcEngine::Rules;
 
-SharedPtrVector<CDrcViolation> CInputFilesAreFoundRule::PerformCheck(const SharedPtrVector<CLinkerScriptFile>& linkerScriptFiles) {
-    SharedPtrVector<CDrcViolation> violations;
+SharedPtrVector<CViolationBase> CInputFilesAreFoundRule::PerformCheck(const SharedPtrVector<CLinkerScriptFile>& linkerScriptFiles) {
+    SharedPtrVector<CViolationBase> violations;
 
     auto foundIncludeCommands = QueryObject<CIncludeCommand>(linkerScriptFiles);
 
@@ -41,13 +41,12 @@ SharedPtrVector<CDrcViolation> CInputFilesAreFoundRule::PerformCheck(const Share
         }
 
         auto errorMessage = StringFormat("Included files are expected to be present, but '{}' was not found", targetFile);
-        violations.emplace_back(std::make_shared<CDrcViolation>(
+        violations.emplace_back(std::shared_ptr<CViolationBase>(new CDrcViolation(
                                 std::vector<std::shared_ptr<CLinkerScriptContentBase>> { std::dynamic_pointer_cast<CLinkerScriptContentBase>(includeCommand) },
                                 this->DrcRuleTitle(),
                                 errorMessage,
-                                nullptr,
                                 EDrcViolationCode::IncludedFilesArePresentRule,
-                                EDrcViolationSeverity::Error));
+                                EDrcViolationSeverity::Error)));
     }
 
     return violations;

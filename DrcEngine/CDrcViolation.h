@@ -50,6 +50,57 @@ namespace VisualLinkerScript::DrcEngine
               m_correctiveAction(correctiveAction)
         {}
 
+        /// @brief Specialized constructor - ContentSensitivePath not taken
+        explicit CDrcViolation(SharedPtrVector<CLinkerScriptContentBase> involvedElements,
+                               std::string title,
+                               std::string violationMessage,
+                               SharedPtrVector<CDrcViolation>&& subitems,
+                               std::shared_ptr<CIntervention> correctiveAction,
+                               EDrcViolationCode violationCode,
+                               EDrcViolationSeverity drcViolationSeverity)
+            : m_violationCode(violationCode),
+              m_violationSeverity(drcViolationSeverity),
+              m_involvedElements(std::move(involvedElements)),
+              m_subitems(subitems),
+              m_violationMessage(violationMessage),
+              m_title(title),
+              m_contentSensitivePath(""),
+              m_correctiveAction(correctiveAction)
+        {}
+
+        /// @brief Specialized constructor - ContentSensitivePath and SubItems not taken
+        explicit CDrcViolation(SharedPtrVector<CLinkerScriptContentBase> involvedElements,
+                               std::string title,
+                               std::string violationMessage,
+                               std::shared_ptr<CIntervention> correctiveAction,
+                               EDrcViolationCode violationCode,
+                               EDrcViolationSeverity drcViolationSeverity)
+            : m_violationCode(violationCode),
+              m_violationSeverity(drcViolationSeverity),
+              m_involvedElements(std::move(involvedElements)),
+              m_subitems(),
+              m_violationMessage(violationMessage),
+              m_title(title),
+              m_contentSensitivePath(""),
+              m_correctiveAction(correctiveAction)
+        {}
+
+        /// @brief Specialized constructor - ContentSensitivePath, SubItems and CorrectiveAction not taken
+        explicit CDrcViolation(SharedPtrVector<CLinkerScriptContentBase> involvedElements,
+                               std::string title,
+                               std::string violationMessage,
+                               EDrcViolationCode violationCode,
+                               EDrcViolationSeverity drcViolationSeverity)
+            : m_violationCode(violationCode),
+              m_violationSeverity(drcViolationSeverity),
+              m_involvedElements(std::move(involvedElements)),
+              m_subitems(),
+              m_violationMessage(violationMessage),
+              m_title(title),
+              m_contentSensitivePath(""),
+              m_correctiveAction()
+        {}
+
     public:
         /// @brief Reports back a list of involved elements
         const SharedPtrVector<CLinkerScriptContentBase> InvolvedElements(){
@@ -90,6 +141,11 @@ namespace VisualLinkerScript::DrcEngine
         /// @brief Reports back sub items (if any) belonging to this violation
         const SharedPtrVector<CDrcViolation> Subitems(){
             return this->m_subitems;
+        }
+
+        /// @brief Type of violation.
+        virtual EViolationType Type() override {
+            return EViolationType::DrcViolation;
         }
     };
 }

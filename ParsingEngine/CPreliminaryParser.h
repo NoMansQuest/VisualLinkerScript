@@ -25,11 +25,11 @@ namespace VisualLinkerScript::ParsingEngine
 
     public:
         /// @brief Process the input file. This function can throw an exception 
-        /// @param fileName Name of the file we're processing.
+        /// @param absoluteFilePath Absolute path of the file we're processing.
         /// @param rawContent Contains the linker-script content.
         /// @exception 
         /// @return Unique pointer to the processing result in form of a CRawFile.
-        std::shared_ptr<CRawFile> ProcessLinkerScript(const std::string& fileName, const std::string& rawContent);
+        std::shared_ptr<CRawFile> ProcessLinkerScript(std::string absoluteFilePath, std::string rawContent);
     };
 }
 

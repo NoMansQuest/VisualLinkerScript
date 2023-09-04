@@ -8,6 +8,7 @@
 #include "../Models/Raw/CRawEntry.h"
 #include "../Models/Raw/CRawFile.h"
 #include "../Models/Raw/RawEntryType.h"
+#include "../Helpers.h"
 
 using namespace VisualLinkerScript::Models;
 using namespace VisualLinkerScript::Models::Raw;
@@ -43,14 +44,14 @@ namespace
     };
 
     /// @brief Checks if the character at the given position matches @see testAgainst.
-    bool SafeTestCharacterInString(const string& input, uint32_t position, char testAgainst)
+    bool SafeTestCharacterInString(const std::string& input, uint32_t position, char testAgainst)
     {   
         return (position <= (input.length() - 1)) && (input[position] == testAgainst);
     }
 
     /// @brief Checks for the pattern of two characters at given positions. This is to optimize performance.
     bool SafeTestPatternInString(
-        const string& input, 
+        const std::string& input,
         uint32_t position, 
         const char firstCharacter,
         const char secondCharacter)
@@ -61,7 +62,7 @@ namespace
 
     /// @brief Checks for the pattern of two characters at given positions. This is to optimize performance.
     bool SafeTestPatternInString(
-        const string& input, 
+        const std::string& input,
         uint32_t position, 
         const char firstCharacter, 
         const char secondCharacter, 
@@ -194,7 +195,7 @@ namespace
 
     /// @brief Checks to see if assignment symbol is present, 
     ///        such as '/=', '*=', '+=', '-=', '='
-    AssignmentSymbolTypes TestForAssignmentSymbol(const string& input, const uint32_t position)
+    AssignmentSymbolTypes TestForAssignmentSymbol(const std::string& input, const uint32_t position)
     {
         auto charAtPosition = input[position];
         auto detectedOperatorLength = (uint32_t)0;
@@ -288,7 +289,7 @@ CPreliminaryParser::~CPreliminaryParser()
     // No action needed at this point in time.
 }
 
-std::shared_ptr<CRawFile> CPreliminaryParser::ProcessLinkerScript(const std::string& fileName, const std::string& rawContent)
+std::shared_ptr<CRawFile> CPreliminaryParser::ProcessLinkerScript(std::string absoluteFilePath, std::string rawContent)
 {    
     // TODO: Revise code in event of available capacity to reduce cyclomatic complexity
     std::vector<CRawEntry> parsedContent;
@@ -499,5 +500,22 @@ std::shared_ptr<CRawFile> CPreliminaryParser::ProcessLinkerScript(const std::str
         previousCharacter = currentCharacter;
     }
 
-    return std::make_shared<CRawFile>(std::move(rawContent), fileName, std::move(parsedContent));
+    std::string extractedFileName;
+    std::vector<std::string> splittedString;
+
+#ifdef COMPILING_FOR_WINDOWS
+    splittedString = VisualLinkerScript::StringSplit(absoluteFilePath, '\\');
+#elif COMPILING_FOR_UNIX_BASED
+    auto splittedString = VisualLinkerScript::StringSplit(absoluteFilePath, '/');
+#else
+#error Either 'COMPILING_FOR_WINDOWS' need to be set or 'COMPILING_FOR_UNIX_BASED'
+#endif
+
+    extractedFileName = splittedString.back();
+
+    return std::shared_ptr<CRawFile>(
+                new CRawFile(std::move(rawContent),
+                             extractedFileName,
+                             absoluteFilePath,
+                             std::move(parsedContent)));
 }

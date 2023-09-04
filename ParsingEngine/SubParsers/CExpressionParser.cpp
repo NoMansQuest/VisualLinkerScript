@@ -47,7 +47,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
     std::vector<CRawEntry>::const_iterator previousPositionIterator = iterator;
     std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = iterator;
     std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
-    std::vector<CParserViolation> violations;
+    SharedPtrVector<CViolationBase> violations;
 
     CExpressionParser nestedExpressionParser(ExpressionParserType::NormalParser, this->m_supportsMultiLine);
     CExpressionParser ternaryThenExpressionParser(ExpressionParserType::TernaryThenSectionParser, this->m_supportsMultiLine);
@@ -100,7 +100,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
         {
             if (precedingOperatorSet)
             {
-                violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::UnexpectedTerminationOfExpression));
+                violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::UnexpectedTerminationOfExpression)));
             }
             // Any line-change would be rended parsing attempt null and void (however, it may be possible to report
             // back a type of statement)
@@ -128,7 +128,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                     }
 
                     // Each entry must be preceded by an operator (except the first entry)
-                    violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::MissingOperatorInRValueExpression));
+                    violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::MissingOperatorInRValueExpression)));
                 }
 
                 switch (parserState)
@@ -140,14 +140,14 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                         {
                             if (oneEntryAhead.EntryType() != RawEntryType::ParenthesisOpen)
                             {
-                                violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::FunctionMissingDefinitionOrInvalidSymbolName));
+                                violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::FunctionMissingDefinitionOrInvalidSymbolName)));
                                 break;
                             }
 
                             auto parsedFunction = nestedExpressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
                             if (parsedFunction == nullptr)
                             {
-                                violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
+                                violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
                                 break;
                             }
 
@@ -156,7 +156,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                         else if (CParserHelpers::IsReservedWord(resolvedContent))
                         {
                             // We have an invalid statement here
-                            violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
+                            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
                             break;
                         }
                         else
@@ -184,7 +184,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                 {
                     if (precedingOperatorSet)
                     {
-                        violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::WasExpectingASymbolOrNumberBeforeExpressionEnds));
+                        violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::WasExpectingASymbolOrNumberBeforeExpressionEnds)));
                     }
 
                     // Forced completion of parsing
@@ -214,7 +214,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                                 auto parserPostQuestionMarkExpression = ternaryThenExpressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
                                 if (parserPostQuestionMarkExpression == nullptr)
                                 {
-                                    violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
+                                    violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
                                 }
                                 else
                                 {
@@ -229,7 +229,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                         {
                             if (resolvedContent == "?")
                             {
-                                violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
+                                violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
                                 ternaryParserState = TernaryParserState::AwaitingThenExpression;
                             }
                             else
@@ -238,7 +238,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                                 auto parserPostColonExpression = ternaryElseExpressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
                                 if (parserPostColonExpression == nullptr)
                                 {
-                                    violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
+                                    violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
                                 }
                                 else
                                 {
@@ -269,7 +269,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                     }
                     else
                     {
-                        violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::OperatorIsNotAcceptedHere));
+                        violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::OperatorIsNotAcceptedHere)));
                     }
                 }
                 break;
@@ -277,7 +277,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
 
             case RawEntryType::Assignment:
             {
-                violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::AssignmentOperatorNotValidInAnRValueExpression));
+                violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::AssignmentOperatorNotValidInAnRValueExpression)));
                 break;
             }
 
@@ -294,7 +294,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                     }
 
                     // Each entry must be preceded by an operator (except the first entry)
-                    violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::MissingOperatorInRValueExpression));
+                    violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::MissingOperatorInRValueExpression)));
                 }
 
                 auto numericValue = std::shared_ptr<CLinkerScriptContentBase>(new CExpressionNumber(*localIterator, {*localIterator}, {}));
@@ -313,7 +313,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                 }
                 else
                 {
-                    violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::MissingOperatorInRValueExpression));
+                    violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::MissingOperatorInRValueExpression)));
                 }
 
                 precedingOperatorSet = false; // Previous operator is already considered to be assigned to this entry;
@@ -330,7 +330,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                         if (!precedingOperatorSet && !isFirstEntry)
                         {
                             // Each entry must be preceded by an operator (except the first entry)
-                            violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::MissingOperatorInRValueExpression));
+                            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::MissingOperatorInRValueExpression)));
                         }
 
                         // This could be an expression
@@ -341,7 +341,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                         }
                         else
                         {
-                            violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
+                            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
                         }
                         break;
                     }
@@ -364,7 +364,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                         break;
 
                     case ParserState::AwaitingContent:
-                        violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::NoCorrespondingParenthesisOvertureFound));
+                        violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::NoCorrespondingParenthesisOvertureFound)));
                         break;
 
                     default:
@@ -380,7 +380,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
             case RawEntryType::BracketOpen:
             case RawEntryType::BracketClose:
             {
-                violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::UnexpectedTerminationOfExpression));
+                violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::UnexpectedTerminationOfExpression)));
                 localIterator = previousPositionIterator;
                 parserState = ParserState::ParsingComplete;
                 break;
@@ -388,7 +388,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
 
             case RawEntryType::Unknown:
             {
-                violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
+                violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
                 break;
             }
 

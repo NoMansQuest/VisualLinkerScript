@@ -9,16 +9,13 @@
 
 REGISTER_DRC_RULE(CSymbolsDefinedInAdvanceRule)
 
+using namespace VisualLinkerScript;
 using namespace VisualLinkerScript::DrcEngine::Rules;
 using namespace VisualLinkerScript::Models;
 using namespace VisualLinkerScript::QueryEngine;
-using namespace VisualLinkerScript;
 
-using namespace VisualLinkerScript::DrcEngine::Rules;
-
-
-SharedPtrVector<CDrcViolation> CSymbolsDefinedInAdvanceRule::PerformCheck(const SharedPtrVector<CLinkerScriptFile>& linkerScriptFiles) {
-    SharedPtrVector<CDrcViolation> violations;
+SharedPtrVector<CViolationBase> CSymbolsDefinedInAdvanceRule::PerformCheck(const SharedPtrVector<CLinkerScriptFile>& linkerScriptFiles) {
+    SharedPtrVector<CViolationBase> violations;
 
     /* TO BE IMPLEMENTED IN THE FUTURE */
     return violations;

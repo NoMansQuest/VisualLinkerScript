@@ -18,10 +18,12 @@ using namespace VisualLinkerScript::DrcEngine::Rules;
 using namespace VisualLinkerScript::QueryEngine;
 using namespace VisualLinkerScript::Models;
 
-#ifdef Q_OS_WINDOWS
+#if defined(COMPILING_FOR_WINDOWS)
 #define IGNORE_CASE_WHEN_COMPARING_PATHS true
-#else
+#elif defined(COMPILING_FOR_UNIX_BASED)
 #define IGNORE_CASE_WHEN_COMPARING_PATHS false
+#else
+#error Neither 'COMPILING_FOR_WINDOWS' nor 'COMPILING_FOR_UNIX_BASED' were set.
 #endif
 
 typedef std::unordered_map<std::shared_ptr<CLinkerScriptFile>, std::shared_ptr<CIncludeCommand>> RecursionMap;
@@ -32,8 +34,8 @@ bool RecursiveCheck(const SharedPtrVector<CLinkerScriptFile>& scope,
                     std::shared_ptr<CLinkerScriptFile> subjectOfInterest,
                     RecursionMap& recursionMap);
 
-SharedPtrVector<CDrcViolation> CIncludeRecursionGuard::PerformCheck(const SharedPtrVector<CLinkerScriptFile>& linkerScriptFiles) {
-    SharedPtrVector<CDrcViolation> violations;
+SharedPtrVector<CViolationBase> CIncludeRecursionGuard::PerformCheck(const SharedPtrVector<CLinkerScriptFile>& linkerScriptFiles) {
+    SharedPtrVector<CViolationBase> violations;
     auto foundIncludeCommands = QueryObject<CIncludeCommand>(linkerScriptFiles);
 
     for (auto file: linkerScriptFiles) {
@@ -84,7 +86,6 @@ SharedPtrVector<CDrcViolation> CIncludeRecursionGuard::PerformCheck(const Shared
                                             std::vector<std::shared_ptr<CLinkerScriptContentBase>> { std::dynamic_pointer_cast<CLinkerScriptContentBase>(includeCommand) },
                                             this->DrcRuleTitle(),
                                             errorMessage,
-                                            nullptr,
                                             EDrcViolationCode::RecursiveIncludeChainDetected,
                                             EDrcViolationSeverity::Error));
                 }
@@ -94,13 +95,12 @@ SharedPtrVector<CDrcViolation> CIncludeRecursionGuard::PerformCheck(const Shared
 
             // Include file was not found
             auto errorMessage = StringFormat("Included files are expected to be present, but '{}' was not found", targetFile);
-            violations.emplace_back(std::make_shared<CDrcViolation>(
-                                    std::vector<std::shared_ptr<CLinkerScriptContentBase>> { std::dynamic_pointer_cast<CLinkerScriptContentBase>(includeCommand) },
+            violations.emplace_back(std::shared_ptr<CViolationBase>(new CDrcViolation(
+                                    SharedPtrVector<CLinkerScriptContentBase> { std::dynamic_pointer_cast<CLinkerScriptContentBase>(includeCommand) },
                                     this->DrcRuleTitle(),
                                     errorMessage,
-                                    nullptr,
                                     EDrcViolationCode::IncludedFilesArePresentRule,
-                                    EDrcViolationSeverity::Error));
+                                    EDrcViolationSeverity::Error)));
         }
 
     }

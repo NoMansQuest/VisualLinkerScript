@@ -6,11 +6,13 @@
 #include <memory>
 #include <algorithm>
 #include <iterator>
-#include "CDrcViolation.h"
+#include "../Helpers.h"
 #include "IDrcRuleBase.h"
 
 namespace VisualLinkerScript::DrcEngine
 {
+    using namespace VisualLinkerScript;
+
     /// @brief In charge of Design-Rule-Check operations
     class CDrcManager
     {
@@ -18,7 +20,7 @@ namespace VisualLinkerScript::DrcEngine
 
     private:
         DrcRulesType m_drcRules;
-        std::vector<std::shared_ptr<CDrcViolation>> m_violations;
+        SharedPtrVector<CViolationBase> m_violations;
 
     public:
         /// @brief Implementation of the singleton
@@ -31,7 +33,7 @@ namespace VisualLinkerScript::DrcEngine
         bool RegisterRule(std::shared_ptr<IDrcRuleBase> drcRule);
 
         /// @brief Reports back a list of currently identified violations
-        std::vector<std::shared_ptr<CDrcViolation>> Violations();
+        SharedPtrVector<CViolationBase> Violations();
     };
 }
 

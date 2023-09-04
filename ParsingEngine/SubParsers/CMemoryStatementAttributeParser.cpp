@@ -8,7 +8,9 @@
 #include "../../Models/CMemoryStatementAttribute.h"
 #include "../CParserViolation.h"
 #include "../EParserViolationCode.h"
+#include "../../Helpers.h"
 
+using namespace VisualLinkerScript;
 using namespace VisualLinkerScript::ParsingEngine;
 using namespace VisualLinkerScript::ParsingEngine::SubParsers;
 using namespace VisualLinkerScript::Models;
@@ -28,13 +30,12 @@ namespace
     void ProcessAttribute(CRawEntry rawEntry,
                           bool negatingSymbolDetected,
                           AttributeDefinitionState& sectionToAssign,
-                          std::vector<CParserViolation>& violations,
+                          SharedPtrVector<CViolationBase>& violations,
                           EParserViolationCode violationCode)
     {
         if (sectionToAssign != AttributeDefinitionState::Undefined)
         {
-            CParserViolation detectedViolation({ rawEntry }, violationCode);
-            violations.emplace_back(detectedViolation);
+            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation({ rawEntry }, violationCode)));
             return;
         }
 
@@ -49,7 +50,7 @@ namespace
                               AttributeDefinitionState& allocatableSection,
                               AttributeDefinitionState& executableSection,
                               AttributeDefinitionState& initializedSection,
-                              std::vector<CParserViolation>&  detectedViolations) noexcept
+                              SharedPtrVector<CViolationBase>&  detectedViolations) noexcept
     {
         auto inversion = false;
 
@@ -103,8 +104,7 @@ namespace
                 {
                     if (inversion)
                     {
-                        CParserViolation detectedViolation({ rawEntry }, EParserViolationCode::NegatingSymbolIsAlreadySet);
-                        detectedViolations.emplace_back(detectedViolation);
+                        detectedViolations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation({ rawEntry }, EParserViolationCode::NegatingSymbolIsAlreadySet)));
                         break;
                     }
 
@@ -114,8 +114,7 @@ namespace
 
                 default:
                 {
-                    CParserViolation detectedViolation({ rawEntry }, EParserViolationCode::UnrecognizedAttributeSymbolWasFound);
-                    detectedViolations.emplace_back(detectedViolation);
+                    detectedViolations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation({ rawEntry }, EParserViolationCode::UnrecognizedAttributeSymbolWasFound)));
                 }
             }
         }
@@ -132,7 +131,7 @@ std::shared_ptr<CMemoryStatementAttribute> CMemoryStatementAttributeParser::TryP
     std::vector<CRawEntry>::const_iterator previousPositionIterator = iterator;
     std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = iterator;
     std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
-    std::vector<CParserViolation> violations;
+    SharedPtrVector<CViolationBase> violations;
 
     if (iterator->EntryType() != RawEntryType::ParenthesisOpen)
     {
@@ -259,7 +258,7 @@ std::shared_ptr<CMemoryStatementAttribute> CMemoryStatementAttributeParser::TryP
             case RawEntryType::String:            
             case RawEntryType::Unknown:
             {
-                violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
+                violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
                 break;
             }
 

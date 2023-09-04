@@ -5,7 +5,7 @@
 #include "EvaluationResultType.h"
 #include "ArithmeticOperationType.h"
 
-namespace VisualLinkerScript::ParsingEngine::Models::Evaluation
+namespace VisualLinkerScript::Models::Evaluation
 {    
     /// @brief Abstract base object for results produced by having @see {CEvaluatableBase} 
     ///        objects evaluataed.

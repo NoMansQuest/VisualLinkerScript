@@ -42,7 +42,7 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
     std::vector<CRawEntry>::const_iterator previousPositionIterator = iterator;
     std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = iterator;
     std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
-    std::vector<CParserViolation> violations;
+    SharedPtrVector<CViolationBase> violations;
 
     CAssignmentParser assignmentParser;
     CMemoryStatementAttributeParser attributeParser;
@@ -85,7 +85,7 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
                         if (CParserHelpers::IsReservedWord(resolvedContent))
                         {
                             // We need to abort. Continue to semicolon to recover...
-                            violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::MemorySectionNameShouldNotBeAReservedKeyword));
+                            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::MemorySectionNameShouldNotBeAReservedKeyword)));
                         }
 
                         nameEntry = *iterator;
@@ -96,7 +96,7 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
                     case ParserState::AwaitingColon:
                     case ParserState::AwaitingAttributes:
                     {
-                        violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
+                        violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
                         break;
                     }
 
@@ -105,7 +105,7 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
                         originAssignment = assignmentParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
                         if (originAssignment == nullptr)
                         {
-                            violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
+                            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
                         }
                         else
                         {
@@ -120,7 +120,7 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
                         lengthAssignment = assignmentParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
                         if (lengthAssignment == nullptr)
                         {
-                            violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
+                            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
                         }
                         else
                         {
@@ -151,7 +151,7 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
                             if (attributes == nullptr)
                             {
                                 // Parsing failed, mark this entry as invalid
-                                violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
+                                violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
                                 parserState = ParserState::AwaitingAttributes;
                             }
                             else
@@ -167,7 +167,7 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
                         }
                         else
                         {
-                            violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
+                            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
                         }
 
                         break;
@@ -182,7 +182,7 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
                         }
                         else
                         {
-                            violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
+                            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
                         }
 
                         break;
@@ -192,7 +192,7 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
                     case ParserState::AwaitingOriginAssignment:
                     case ParserState::AwaitingLengthAssignment:
                     {
-                        violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
+                        violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
                         break;
                     }
 
@@ -211,7 +211,7 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
             case RawEntryType::ParenthesisOpen:
             case RawEntryType::ParenthesisClose:
             {
-                violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
+                violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
                 break;
             }
 
@@ -226,7 +226,7 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
 
             case RawEntryType::Unknown:
             {
-                violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
+                violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
                 break;
             }
 

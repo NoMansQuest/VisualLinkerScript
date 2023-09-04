@@ -20,7 +20,7 @@ namespace VisualLinkerScript::Models
                                     CRawEntry openingParenthesis,
                                     CRawEntry closingParenthesis,
                                     std::vector<CRawEntry>&& rawElements,
-                                    std::vector<CViolationBase>&& violations)
+                                    SharedPtrVector<CViolationBase>&& violations)
             : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
               m_typeEntry(typeEntry),
               m_openingParenthesis(openingParenthesis),

@@ -17,7 +17,7 @@ namespace VisualLinkerScript::Models
         /// @brief Default constructor, accessible to inheritors only
         explicit CExpressionNumber(CRawEntry expressionNumber,
                                    std::vector<CRawEntry>&& rawElements,
-                                   std::vector<CViolationBase>&& violations)
+                                   SharedPtrVector<CViolationBase>&& violations)
             : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
               m_expressionNumber(expressionNumber)
         {}

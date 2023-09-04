@@ -15,8 +15,8 @@ using namespace VisualLinkerScript::Models;
 using namespace VisualLinkerScript::QueryEngine;
 using namespace VisualLinkerScript;
 
-SharedPtrVector<CDrcViolation> CNoDuplicateMemoryRegionNameRule::PerformCheck(const SharedPtrVector<CLinkerScriptFile>& linkerScriptFiles) {
-    SharedPtrVector<CDrcViolation> violations;
+SharedPtrVector<CViolationBase> CNoDuplicateMemoryRegionNameRule::PerformCheck(const SharedPtrVector<CLinkerScriptFile>& linkerScriptFiles) {
+    SharedPtrVector<CViolationBase> violations;
 
     auto foundMemoryStatements = QueryObject<CMemoryStatement>(linkerScriptFiles, nullptr, true);
 
@@ -48,25 +48,33 @@ SharedPtrVector<CDrcViolation> CNoDuplicateMemoryRegionNameRule::PerformCheck(co
         for (auto index = 1; index < foundDuplicates.size(); index++)
         {
             auto subItemStatement = foundDuplicates[index];
-            auto subItemErrorMessage = "Memory statement with identical name defined here";
-            subitems.emplace_back(std::shared_ptr<CDrcViolation>(new CDrcViolation(
-                                        SharedPtrVector<CLinkerScriptContentBase> { std::dynamic_pointer_cast<CLinkerScriptContentBase>(subItemStatement) },
+            std::string subItemErrorMessage = "Memory statement with identical name defined here";
+            SharedPtrVector<CLinkerScriptContentBase> subItemStatements {
+                std::dynamic_pointer_cast<CLinkerScriptContentBase>(subItemStatement)
+            };
+
+            subitems.emplace_back(std::shared_ptr<CViolationBase>(new CDrcViolation(
+                                        subItemStatements,
                                         this->DrcRuleTitle(),
                                         subItemErrorMessage,
                                         subItemStatement->ObjectPath(),
-                                        {},
-                                        nullptr,
+                                        SharedPtrVector<CDrcViolation>(),
+                                        std::shared_ptr<CIntervention>(nullptr),
                                         EDrcViolationCode::DuplicateNameForMemoryStatement,
                                         EDrcViolationSeverity::Error)));
         }
 
-        violations.emplace_back(std::shared_ptr<CDrcViolation>(new CDrcViolation(
-                                    SharedPtrVector<CLinkerScriptContentBase> { std::dynamic_pointer_cast<CLinkerScriptContentBase>(memoryStatementToInspect) },
+        SharedPtrVector<CLinkerScriptContentBase> memoryStatementsToInspect {
+            std::dynamic_pointer_cast<CLinkerScriptContentBase>(memoryStatementToInspect)
+        };
+
+        violations.emplace_back(std::shared_ptr<CViolationBase>(new CDrcViolation(
+                                    memoryStatementsToInspect,
                                     this->DrcRuleTitle(),
                                     errorMessage,
                                     memoryStatementToInspect->ObjectPath(),
                                     std::move(subitems),
-                                    nullptr,
+                                    std::shared_ptr<CIntervention>(nullptr),
                                     EDrcViolationCode::DuplicateNameForMemoryStatement,
                                     EDrcViolationSeverity::Error)));
     }

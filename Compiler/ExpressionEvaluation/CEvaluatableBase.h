@@ -3,9 +3,9 @@
 
 #include "../Raw/CRawEntry.h"
 
-using namespace VisualLinkerScript::ParsingEngine::Models::Raw;
+using namespace VisualLinkerScript::Models::Raw;
 
-namespace VisualLinkerScript::ParsingEngine::Models
+namespace VisualLinkerScript::Models
 {
     /// @brief Abstract representation of an evaulatable entity.
     class CEvaluatableBase

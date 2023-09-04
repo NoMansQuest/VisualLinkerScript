@@ -20,7 +20,7 @@ namespace VisualLinkerScript::DrcEngine
 
     public:
         /// @brief Perform the check and report back found violations
-        virtual SharedPtrVector<CDrcViolation> PerformCheck(const SharedPtrVector<CLinkerScriptFile>& linkerScriptFiles) = 0;
+        virtual SharedPtrVector<CViolationBase> PerformCheck(const SharedPtrVector<CLinkerScriptFile>& linkerScriptFiles) = 0;
 
         /// @brief Updated 'Enabled' state of the rule.
         virtual void SetEnabled(bool enabled){

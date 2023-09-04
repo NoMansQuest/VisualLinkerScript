@@ -20,7 +20,7 @@ namespace VisualLinkerScript::Models
                               CRawEntry semicolonEntry,
                               CRawEntry parentTagEntry,
                               std::vector<CRawEntry>&& rawElements,
-                              std::vector<CViolationBase>&& violations)
+                              SharedPtrVector<CViolationBase>&& violations)
             : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
               m_nodeEntry(nodeEntry),
               m_semicolonEntry(semicolonEntry),

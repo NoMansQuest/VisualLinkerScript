@@ -20,7 +20,7 @@ namespace VisualLinkerScript::DrcEngine::Rules
         }
 
         /// @copydoc
-        virtual SharedPtrVector<CDrcViolation> PerformCheck(const SharedPtrVector<CLinkerScriptFile>& linkerScriptFiles) override;
+        virtual SharedPtrVector<CViolationBase> PerformCheck(const SharedPtrVector<CLinkerScriptFile>& linkerScriptFiles) override;
 
         /// @brief Default destructor
         ~CEntryIsDefinedRule()

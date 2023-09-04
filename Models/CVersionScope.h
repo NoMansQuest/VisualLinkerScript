@@ -33,7 +33,7 @@ namespace VisualLinkerScript::Models
                                CRawEntry semicolonDelimiterEntry,
                                std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent,
                                std::vector<CRawEntry>&& rawElements,
-                               std::vector<CViolationBase>&& violations)
+                               SharedPtrVector<CViolationBase>&& violations)
             : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
               m_scopeNameEntry(scopeNameEntry),
               m_inheritingScopeEntry(inheritingScopeEntry),

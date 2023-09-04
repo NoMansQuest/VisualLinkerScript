@@ -15,8 +15,8 @@ using namespace VisualLinkerScript::DrcEngine::Rules;
 using namespace VisualLinkerScript::QueryEngine;
 using namespace VisualLinkerScript::Models;
 
-SharedPtrVector<CDrcViolation> CEntryIsDefinedRule::PerformCheck(const SharedPtrVector<CLinkerScriptFile>& linkerScriptFiles) {
-    SharedPtrVector<CDrcViolation> violations;
+SharedPtrVector<CViolationBase> CEntryIsDefinedRule::PerformCheck(const SharedPtrVector<CLinkerScriptFile>& linkerScriptFiles) {
+    SharedPtrVector<CViolationBase> violations;
 
     auto foundDirectives = QueryObject<CFunctionCall>(
                 linkerScriptFiles,
@@ -25,13 +25,12 @@ SharedPtrVector<CDrcViolation> CEntryIsDefinedRule::PerformCheck(const SharedPtr
                 });
 
     if (foundDirectives.size() == 0) {
-         violations.emplace_back(std::make_shared<CDrcViolation>(
+         violations.emplace_back(std::shared_ptr<CViolationBase>(new CDrcViolation(
                                  std::vector<std::shared_ptr<CLinkerScriptContentBase>>(),
                                  this->DrcRuleTitle(),
                                  "Directive is defined more than once.",
-                                 nullptr,
                                  EDrcViolationCode::EntryDirectiveDefinedMoreThanOnce,
-                                 EDrcViolationSeverity::Error));
+                                 EDrcViolationSeverity::Error)));
     }
 
     return violations;

@@ -42,7 +42,7 @@ std::shared_ptr<CPhdrsStatement> CPhdrsRegionContentParser::TryParse(
     std::vector<CRawEntry>::const_iterator localIterator = iterator;      
     std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = iterator;    
     std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
-    std::vector<CParserViolation> violations;
+    SharedPtrVector<CViolationBase> violations;
 
     auto parserState = ParserState::AwaitingName;
     auto doNotAdvance = false;
@@ -80,7 +80,7 @@ std::shared_ptr<CPhdrsStatement> CPhdrsRegionContentParser::TryParse(
                         if (CParserHelpers::IsIllegalProgramHeaderName(resolvedContent))
                         {
                             // We need to abort. Continue to semicolon to recover...
-                            violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::ProgramHeaderNameShouldNotBeAReservedKeyword));
+                            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::ProgramHeaderNameShouldNotBeAReservedKeyword)));
                             parserState = ParserState::AwaitingSemicolon;
                             break;
                         }         
@@ -95,7 +95,7 @@ std::shared_ptr<CPhdrsStatement> CPhdrsRegionContentParser::TryParse(
                         if (!CParserHelpers::IsLegalProgramHeaderType(resolvedContent))
                         {
                             // We need to abort. Continue to semicolon to recover...
-                            violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::WasExpectingProgramHeaderTypeHere));
+                            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::WasExpectingProgramHeaderTypeHere)));
                             parserState = ParserState::AwaitingSemicolon;
                         }
                         else
@@ -113,8 +113,7 @@ std::shared_ptr<CPhdrsStatement> CPhdrsRegionContentParser::TryParse(
                         {
                             if (fileHdrEntry.IsPresent())
                             {
-                                CParserViolation detectedViolation({*localIterator, fileHdrEntry }, EParserViolationCode::ProgramHeaderFileHdrAlreadySet);
-                                violations.emplace_back(detectedViolation);
+                                violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation({*localIterator, fileHdrEntry }, EParserViolationCode::ProgramHeaderFileHdrAlreadySet)));
                             }
                             else
                             {
@@ -125,8 +124,7 @@ std::shared_ptr<CPhdrsStatement> CPhdrsRegionContentParser::TryParse(
                         {
                             if (phdrsEntry.IsPresent())
                             {
-                                CParserViolation detectedViolation({ *localIterator, phdrsEntry }, EParserViolationCode::ProgramHeaderPhdrsAlreadySet);
-                                violations.emplace_back(detectedViolation);
+                                violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation({*localIterator, phdrsEntry }, EParserViolationCode::ProgramHeaderPhdrsAlreadySet)));
                             }
                             else
                             {
@@ -137,16 +135,14 @@ std::shared_ptr<CPhdrsStatement> CPhdrsRegionContentParser::TryParse(
                         {
                             if (atAddressFunction != nullptr)
                             {
-                                CParserViolation detectedViolation({ *localIterator, phdrsEntry }, EParserViolationCode::ProgramHeaderAtAddressAlreadySet);
-                                violations.emplace_back(detectedViolation);
+                                violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation({*localIterator, phdrsEntry }, EParserViolationCode::ProgramHeaderAtAddressAlreadySet)));
                             }
                             else
                             {
                                 auto parsedFunction = expressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
                                 if (parsedFunction == nullptr)
                                 {
-                                    CParserViolation detectedViolation({ *localIterator, phdrsEntry }, EParserViolationCode::EntryInvalidOrMisplaced);
-                                    violations.emplace_back(detectedViolation);
+                                    violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation({*localIterator, phdrsEntry }, EParserViolationCode::EntryInvalidOrMisplaced)));
                                 }
                                 else
                                 {
@@ -158,16 +154,14 @@ std::shared_ptr<CPhdrsStatement> CPhdrsRegionContentParser::TryParse(
                         {
                             if (atAddressFunction != nullptr)
                             {
-                                CParserViolation detectedViolation({*localIterator, phdrsEntry}, EParserViolationCode::ProgramHeaderFlagsAlreadySet);
-                                violations.emplace_back(detectedViolation);
+                                violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation({*localIterator, phdrsEntry }, EParserViolationCode::ProgramHeaderFlagsAlreadySet)));
                             }
                             else
                             {
                                 auto parsedFunction = expressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
                                 if (parsedFunction == nullptr)
                                 {
-                                    CParserViolation detectedViolation({*localIterator, phdrsEntry}, EParserViolationCode::EntryInvalidOrMisplaced);
-                                    violations.emplace_back(detectedViolation);
+                                    violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation({*localIterator, phdrsEntry }, EParserViolationCode::EntryInvalidOrMisplaced)));
                                 }
                                 else
                                 {
@@ -178,7 +172,7 @@ std::shared_ptr<CPhdrsStatement> CPhdrsRegionContentParser::TryParse(
                         else
                         {
                             // We need to abort. Continue to semicolon to recover...
-                            violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::ProgramHeaderTypeNotRecognized));
+                            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::ProgramHeaderTypeNotRecognized)));
                             parserState = ParserState::AwaitingSemicolon;
                         }
 
@@ -187,8 +181,9 @@ std::shared_ptr<CPhdrsStatement> CPhdrsRegionContentParser::TryParse(
  
                     case ParserState::AwaitingSemicolon:
                     {                                                
-                        violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
+                        violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
                         parserState = ParserState::AwaitingSemicolon;
+                        break;
                     }
  
                     default:
@@ -221,7 +216,7 @@ std::shared_ptr<CPhdrsStatement> CPhdrsRegionContentParser::TryParse(
                 }
                 else
                 {
-                    violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
+                    violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
                     parserState = ParserState::AwaitingSemicolon;
                 }
                 break;
@@ -229,7 +224,7 @@ std::shared_ptr<CPhdrsStatement> CPhdrsRegionContentParser::TryParse(
 
             case RawEntryType::Unknown:
             {
-                violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
+                violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
                 break;
             }
 

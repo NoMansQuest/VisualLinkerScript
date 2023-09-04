@@ -6,7 +6,7 @@ using namespace VisualLinkerScript::Models;
 /// @brief Returns the full text the input component is composed of.
 /// @param entryToResolve Component to process
 /// @return The full text that constitutes the component.
-const std::string CLinkerScriptFile::ResolveEntryText(CLinkerScriptContentBase& contentToResolve) const {
+std::string CLinkerScriptFile::ResolveEntryText(CLinkerScriptContentBase& contentToResolve) {
     auto startPosition = contentToResolve.RawEntries().front().StartPosition();
     auto endPosition = contentToResolve.RawEntries().back().StartPosition() +
                        contentToResolve.RawEntries().back().Length() - 1;
@@ -17,7 +17,7 @@ const std::string CLinkerScriptFile::ResolveEntryText(CLinkerScriptContentBase& 
 /// @brief Returns the full text the input component is composed of.
 /// @param entryToResolve Component to process
 /// @return The full text that constitutes the component.
-const std::string CLinkerScriptFile::ResolveEntryText(const CRawEntry& rawEntryToResolve) const {
+std::string CLinkerScriptFile::ResolveEntryText(const CRawEntry& rawEntryToResolve) {
     return this->m_rawFile->FileContent().substr(
                 rawEntryToResolve.StartPosition(),
                 rawEntryToResolve.Length());

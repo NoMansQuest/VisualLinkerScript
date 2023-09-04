@@ -6,6 +6,8 @@
 
 namespace VisualLinkerScript::Models
 {
+    using namespace VisualLinkerScript;
+
     /// @brief Represents a function call
     /// @brief: Example: ALIGN(4)
     class CFunctionCall : public CLinkerScriptContentBase
@@ -14,16 +16,16 @@ namespace VisualLinkerScript::Models
         CRawEntry m_procedureName;
         CRawEntry m_openingParenthesis;
         CRawEntry m_closingParenthesis;
-        std::vector<std::shared_ptr<CLinkerScriptContentBase>> m_parsedContent;
+        SharedPtrVector<CLinkerScriptContentBase> m_parsedContent;
 
     public:
         /// @brief Default constructor, accessible to inheritors only
         explicit CFunctionCall(CRawEntry functionName,
                                CRawEntry openingParenthesis,
                                CRawEntry closingParenthesis,
-                               std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& parsedContent,
+                               SharedPtrVector<CLinkerScriptContentBase>&& parsedContent,
                                std::vector<CRawEntry>&& rawElements,
-                               std::vector<CViolationBase>&& violations)
+                               SharedPtrVector<CViolationBase>&& violations)
             : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
               m_procedureName(functionName),
               m_openingParenthesis(openingParenthesis),

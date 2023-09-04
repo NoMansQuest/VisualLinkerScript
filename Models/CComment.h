@@ -13,7 +13,7 @@ namespace VisualLinkerScript::Models
         /// @brief Default constructor, accessible to inheritors only
         /// @param composingRawElements A list of object this element is comprised of.
         explicit CComment(std::vector<CRawEntry>&& composingRawElements,                              
-                          std::vector<CViolationBase>&& violations)
+                          SharedPtrVector<CViolationBase>&& violations)
             : CLinkerScriptContentBase(std::move(composingRawElements), std::move(violations))
         {}        
 

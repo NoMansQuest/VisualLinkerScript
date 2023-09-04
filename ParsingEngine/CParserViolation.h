@@ -82,6 +82,11 @@ namespace VisualLinkerScript::ParsingEngine
         {
             return m_violationCode;
         }
+
+        /// @brief Type of violation.
+        virtual EViolationType Type() override {
+            return EViolationType::ParserViolation;
+        }
     };
 }
 

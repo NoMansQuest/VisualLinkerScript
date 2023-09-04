@@ -18,7 +18,7 @@ namespace VisualLinkerScript::Models
         explicit CIncludeCommand(CRawEntry includeCommandHeaderEntry,
                                  CRawEntry includeFileEntry,
                                  std::vector<CRawEntry>&& rawElements,
-                                 std::vector<CViolationBase>&& violations)
+                                 SharedPtrVector<CViolationBase>&& violations)
             : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
               m_includeCommandHeaderEntry(includeCommandHeaderEntry),
               m_includeFileEntry(includeFileEntry)

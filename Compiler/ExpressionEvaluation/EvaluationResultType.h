@@ -1,7 +1,7 @@
 #ifndef EVALUATION_RESULT_TYPE_H__
 #define EVALUATION_RESULT_TYPE_H__
 
-namespace VisualLinkerScript::ParsingEngine::Models::Evaluation
+namespace VisualLinkerScript::Models::Evaluation
 {
     /// @brief Evluation
     enum class EvaluationResultType

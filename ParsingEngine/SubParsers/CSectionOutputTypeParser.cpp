@@ -38,7 +38,7 @@ std::shared_ptr<CSectionOutputType> CSectionOutputTypeParser::TryParse(
     std::vector<CRawEntry>::const_iterator previousPositionIterator = iterator;
     std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = iterator;
     std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
-    std::vector<CParserViolation> violations;
+    SharedPtrVector<CViolationBase> violations;
 
     if (iterator->EntryType() != RawEntryType::ParenthesisOpen)
     {
@@ -94,7 +94,7 @@ std::shared_ptr<CSectionOutputType> CSectionOutputTypeParser::TryParse(
                         }
                         else
                         {
-                            violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::OnlyOneSectionOutputTypeIsAllowed));
+                            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::OnlyOneSectionOutputTypeIsAllowed)));
                         }
                         break;
                     }
@@ -161,7 +161,7 @@ std::shared_ptr<CSectionOutputType> CSectionOutputTypeParser::TryParse(
             case RawEntryType::String:
             case RawEntryType::Unknown:
             {
-                violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
+                violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
                 break;
             }
 

@@ -22,7 +22,7 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
             std::is_constructible< TProducingOutputType, CRawEntry, CRawEntry, CRawEntry,
                                    std::vector<std::shared_ptr<CLinkerScriptContentBase>>&&,
                                    std::vector<CRawEntry>&&,
-                                   std::vector<CViolationBase>&& >::value,
+                                   SharedPtrVector<CViolationBase>&& >::value,
             "TProducingOutputType is not compatible. Please check the constructor." );
 
     protected:

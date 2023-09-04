@@ -19,6 +19,9 @@
 #include "../Models/CLinkerScriptContentBase.h"
 #include "../Models/Raw/RawEntryType.h"
 
+#include "../../../../Helpers.h"
+
+using namespace VisualLinkerScript;
 using namespace VisualLinkerScript::ParsingEngine;
 using namespace VisualLinkerScript::ParsingEngine::SubParsers;
 using namespace VisualLinkerScript::Models::Raw;
@@ -38,7 +41,7 @@ std::shared_ptr<CLinkerScriptFile> CMasterParser::ProcessLinkerScriptFile(std::s
     std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition =  rawFile->Content().cbegin();
     std::vector<CRawEntry>::const_iterator endOfVectorIterator = rawFile->Content().cend();
     std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
-    std::vector<CParserViolation> violations;
+    SharedPtrVector<CViolationBase> violations;
 
     while (localIterator != endOfVectorIterator)
     {
@@ -63,12 +66,12 @@ std::shared_ptr<CLinkerScriptFile> CMasterParser::ProcessLinkerScriptFile(std::s
 
             case RawEntryType::Word:
             {
-                if (CParserHelpers::StringCompare(resolvedContent, "MEMORY", false))
+                if (StringEquals(resolvedContent, "MEMORY", false))
                 {
                     auto parsedMemoryRegion = memoryParserRegion.TryParse(*rawFile, localIterator, endOfVectorIterator);
                     if (parsedMemoryRegion == nullptr)
                     {
-                        violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::MemoryRegionParsingFailed));
+                        violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::MemoryRegionParsingFailed)));
                     }
                     else
                     {
@@ -76,12 +79,12 @@ std::shared_ptr<CLinkerScriptFile> CMasterParser::ProcessLinkerScriptFile(std::s
                     }
                     break;
                 }
-                else if (CParserHelpers::StringCompare(resolvedContent, "SECTIONS", false))
+                else if (StringEquals(resolvedContent, "SECTIONS", false))
                 {
                     auto parsedSectionsRegion = sectionsRegionParser.TryParse(*rawFile, localIterator, endOfVectorIterator);
                     if (parsedSectionsRegion == nullptr)
                     {
-                        violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::SectionsRegionParsingFailed));
+                        violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::SectionsRegionParsingFailed)));
                     }
                     else
                     {
@@ -89,12 +92,12 @@ std::shared_ptr<CLinkerScriptFile> CMasterParser::ProcessLinkerScriptFile(std::s
                     }
                     break;
                 }
-                else if (CParserHelpers::StringCompare(resolvedContent, "PHDRS", false))
+                else if (StringEquals(resolvedContent, "PHDRS", false))
                 {
                     auto parsedPhdrsRegion = phdrsRegionParser.TryParse(*rawFile, localIterator, endOfVectorIterator);
                     if (parsedPhdrsRegion == nullptr)
                     {
-                        violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::PhdrsRegionParsingFailed));
+                        violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::PhdrsRegionParsingFailed)));
                     }
                     else
                     {
@@ -102,12 +105,12 @@ std::shared_ptr<CLinkerScriptFile> CMasterParser::ProcessLinkerScriptFile(std::s
                     }
                     break;
                 }
-                else if (CParserHelpers::StringCompare(resolvedContent, "VERSION", false))
+                else if (StringEquals(resolvedContent, "VERSION", false))
                 {
                     auto parsedVersionRegion = versionRegionParser.TryParse(*rawFile, localIterator, endOfVectorIterator);
                     if (parsedVersionRegion == nullptr)
                     {
-                        violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::VersionRegionParsingFailed));
+                        violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::VersionRegionParsingFailed)));
                     }
                     else
                     {
@@ -118,7 +121,7 @@ std::shared_ptr<CLinkerScriptFile> CMasterParser::ProcessLinkerScriptFile(std::s
                 else
                 {
                     // These would be special function calls
-                    if (CParserHelpers::StringCompare(resolvedContent, "INCLUDE", false) &&
+                    if (StringEquals(resolvedContent, "INCLUDE", false) &&
                         rawEntryPlusOne.IsPresent() &&
                         ((rawEntryPlusOne.EntryType() == RawEntryType::String) || (rawEntryPlusOne.EntryType() == RawEntryType::Word)))
                     {
@@ -126,24 +129,24 @@ std::shared_ptr<CLinkerScriptFile> CMasterParser::ProcessLinkerScriptFile(std::s
                                     new CIncludeCommand(*localIterator, rawEntryPlusOne, {*localIterator, rawEntryPlusOne},{}));
                         parsedContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(parsedIncludeCommand));
                     }
-                    else if (CParserHelpers::StringIn(resolvedContent, {"INPUT", "GROUP", "AS_NEEDED"}, false))
+                    else if (StringIn(resolvedContent, {"INPUT", "GROUP", "AS_NEEDED"}, false))
                     {
                         auto parsedMultiParamFunctionCall = multiParameterFunctionParser.TryParse(*rawFile, localIterator, endOfVectorIterator);
                         if (parsedMultiParamFunctionCall == nullptr)
                         {
-                            violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
+                            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
                         }
                         else
                         {
                             parsedContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(parsedMultiParamFunctionCall));
                         }
                     }
-                    else if (CParserHelpers::StringIn(resolvedContent, {"OUTPUT","SEARCH_DIR", "STARTUP"}, false))
+                    else if (StringIn(resolvedContent, {"OUTPUT","SEARCH_DIR", "STARTUP"}, false))
                     {
                         auto parsedSingleParamFunctionCall = singleParameterFunctionParser.TryParse(*rawFile, localIterator, endOfVectorIterator);
                         if (parsedSingleParamFunctionCall == nullptr)
                         {
-                            violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
+                            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
                         }
                         else
                         {
@@ -152,7 +155,7 @@ std::shared_ptr<CLinkerScriptFile> CMasterParser::ProcessLinkerScriptFile(std::s
                     }
                     else
                     {
-                        violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
+                        violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
                     }
                 }
 
@@ -169,7 +172,7 @@ std::shared_ptr<CLinkerScriptFile> CMasterParser::ProcessLinkerScriptFile(std::s
             case RawEntryType::String:
             case RawEntryType::Unknown:
             {
-                violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
+                violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
                 break;
             }
 

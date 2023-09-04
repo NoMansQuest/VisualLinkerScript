@@ -5,7 +5,7 @@
 #include "CEvaluatableBase.h"
 #include "ArithmeticOperationType.h"
 
-namespace VisualLinkerScript::ParsingEngine::Models::Evaluation
+namespace VisualLinkerScript::Models::Evaluation
 {
     /// @brief Represents an arithmetic operation inbetween results. If not present, the then
     ///        default operation is addition

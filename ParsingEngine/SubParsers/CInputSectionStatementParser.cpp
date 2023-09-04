@@ -36,7 +36,7 @@ std::shared_ptr<CInputSectionStatement> CInputSectionStatementParser::TryParse(
     std::vector<CRawEntry>::const_iterator localIterator = iterator;
     std::vector<CRawEntry>::const_iterator previousPositionIterator = iterator;
     std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = iterator;
-    std::vector<CParserViolation> violations;
+    SharedPtrVector<CViolationBase> violations;
 
     CInputSectionFunctionParser inputSectionFunctionParser;
 
@@ -101,7 +101,7 @@ std::shared_ptr<CInputSectionStatement> CInputSectionStatementParser::TryParse(
                                 auto parsedInputSectionFunction = inputSectionFunctionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
                                 if (parsedInputSectionFunction == nullptr)
                                 {
-                                    violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::InvalidSyntaxInSectionInputFunctionDeclaration));
+                                    violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::InvalidSyntaxInSectionInputFunctionDeclaration)));
                                 }
                                 else
                                 {
@@ -110,7 +110,7 @@ std::shared_ptr<CInputSectionStatement> CInputSectionStatementParser::TryParse(
                             }
                             else
                             {
-                                violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryNotAllowedInInputSectionDefinition));
+                                violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryNotAllowedInInputSectionDefinition)));
                             }
                         }
                         break;
@@ -176,7 +176,7 @@ std::shared_ptr<CInputSectionStatement> CInputSectionStatementParser::TryParse(
                 // We ignore commas
                 if ((parserState != ParserState::AwaitingParenthesisClosure) || (resolvedContent != ","))
                 {
-                    violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
+                    violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
                 }
                 break;
             }
@@ -186,7 +186,7 @@ std::shared_ptr<CInputSectionStatement> CInputSectionStatementParser::TryParse(
             case RawEntryType::String:
             case RawEntryType::Unknown:
             {
-                violations.emplace_back(CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced));
+                violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
                 break;
             }
 

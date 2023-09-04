@@ -5,6 +5,7 @@
 #include <memory>
 #include <string>
 #include "Raw/CRawEntry.h"
+#include "../Helpers.h"
 
 namespace VisualLinkerScript::Models
 {
@@ -54,7 +55,7 @@ namespace VisualLinkerScript::Models
     {
     private:
         std::vector<CRawEntry> m_rawEntries;
-        std::vector<CViolationBase> m_violations;
+        SharedPtrVector<CViolationBase> m_violations;
         std::shared_ptr<CLinkerScriptFile> m_parentLinkerScriptFile;
         std::string m_objectPath;
 
@@ -63,7 +64,7 @@ namespace VisualLinkerScript::Models
         /// @param rawEntries A list of object this element is comprised of
         /// @param violations Violations related to this content (if any)
         explicit CLinkerScriptContentBase(std::vector<CRawEntry>&& rawEntries,
-                                          std::vector<CViolationBase>&& violations)
+                                          SharedPtrVector<CViolationBase>&& violations)
             : m_rawEntries(std::move(rawEntries)),
               m_violations(std::move(violations))
         {}
@@ -85,7 +86,7 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Returns list detected violations
-        const std::vector<CViolationBase>& Violations()
+        const SharedPtrVector<CViolationBase>& Violations()
         {
             return m_violations;
         }

@@ -101,7 +101,6 @@ SOURCES += \
     LinkerScriptManager/CUndoRedoManager.cpp \
     Models/CLinkerScriptFile.cpp \
     ParsingEngine/CMasterParser.cpp \
-    ParsingEngine/CModelTranslator.cpp \
     ParsingEngine/CPreliminaryParser.cpp \
     ParsingEngine/SubParsers/CAssignmentParser.cpp \
     ParsingEngine/SubParsers/CAssignmentProcedureParser.cpp \
@@ -307,7 +306,6 @@ HEADERS += \
     Models/CVersionScope.h \
     Models/CVersionTag.h \
     Models/CVersionsRegion.h \
-    Models/CParserViolation.h \
     Models/CViolationBase.h \
     Models/Intervention/CActionBase.h \
     Models/Intervention/CAddTextAction.h \
@@ -318,8 +316,7 @@ HEADERS += \
     Models/Raw/RawEntryType.h \
     Models/CSectionOverlayCommand.h \
     ParsingEngine/CMasterParser.h \
-    ParsingEngine/CMasterParserException.h \
-    ParsingEngine/CModelTranslator.h \
+    ParsingEngine/CMasterParserException.h \    
     ParsingEngine/CParserViolation.h \
     ParsingEngine/CPreliminaryParser.h \
     ParsingEngine/CPreliminaryParsingException.h \
