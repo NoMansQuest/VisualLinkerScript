@@ -53,7 +53,7 @@ SharedPtrVector<CViolationBase> CNoDuplicateMemoryRegionNameRule::PerformCheck(c
                 std::dynamic_pointer_cast<CLinkerScriptContentBase>(subItemStatement)
             };
 
-            subitems.emplace_back(std::shared_ptr<CViolationBase>(new CDrcViolation(
+            subitems.emplace_back(std::shared_ptr<CDrcViolation>(new CDrcViolation(
                                         subItemStatements,
                                         this->DrcRuleTitle(),
                                         subItemErrorMessage,
