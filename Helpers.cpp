@@ -56,7 +56,7 @@ bool VisualLinkerScript::StringIn(const std::string& sourceString,
             return true;
         }
     }
-    return true;
+    return false;
 }
 
 /// @brief Splits a string based on a given character.

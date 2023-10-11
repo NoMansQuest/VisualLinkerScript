@@ -65,6 +65,9 @@ namespace VisualLinkerScript::Models
         /// @param entryToResolve Component to process
         /// @return The full text that constitutes the component.
         std::string ResolveEntryText(const CRawEntry& rawEntryToResolve);
+
+        /// @brief Produces debug information on what this object represents.
+        const virtual std::string ToDebugInfo(uint32_t depth);
     };
 }
 

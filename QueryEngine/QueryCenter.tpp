@@ -7,7 +7,7 @@ using namespace VisualLinkerScript::Models;
 /// @brief Queries the given object of type T from provided linker-script files
 template <typename T>
 SharedPtrVector<T> VisualLinkerScript::QueryEngine::QueryObject(
-    const std::vector<std::shared_ptr<CLinkerScriptFile>>& scope,
+    const SharedPtrVector<CLinkerScriptFile>& scope,
     std::function<bool(std::shared_ptr<CLinkerScriptFile> linkerScriptFile, std::shared_ptr<T> filterInput)> filterFunction,
     bool deepSearch){
 

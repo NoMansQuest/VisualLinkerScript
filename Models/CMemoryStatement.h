@@ -47,7 +47,7 @@ namespace VisualLinkerScript::Models
             return m_nameEntry;
         }
 
-        /// @brief Rpeorts back the Attributes of the statement (as CMemoryStatementAttribut
+        /// @brief Rpeorts back the Attributes of the statement (as CMemoryStatementAttribute)
         const std::shared_ptr<CLinkerScriptContentBase> Attributes()
         {
             return m_attributes;
@@ -70,6 +70,9 @@ namespace VisualLinkerScript::Models
         {
             return m_lengthAssignment;
         }
+
+        /// @brief Produces debug information on what this object represents.
+        const virtual std::string ToDebugInfo(uint32_t depth) override;
     };    
 }
 

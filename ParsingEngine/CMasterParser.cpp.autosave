@@ -106,7 +106,11 @@ std::shared_ptr<CLinkerScriptFile> CMasterParser::ProcessLinkerScriptFile(std::s
 
             case RawEntryType::Word:
             {
-
+                if (TryParseLinkerScriptMasterBlocks(resolvedContent, 
+                                                     violations, parsedContent, localIterator, endOfVectorIterator, rawFile))
+                {
+                    
+                }
                 else
                 {
                     // These would be special function calls

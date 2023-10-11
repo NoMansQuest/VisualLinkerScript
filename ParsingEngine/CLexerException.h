@@ -14,7 +14,7 @@ namespace VisualLinkerScript::ParsingEngine
     };
 
     /// @brief This class respresents an exception raised during preliminary parsing phase of the Linker-Script.
-    class CPreliminaryParsingException : public std::exception 
+    class CLexerException : public std::exception 
     {
 
     private:
@@ -31,7 +31,7 @@ namespace VisualLinkerScript::ParsingEngine
     public:
         /// @brief Default constructor
         /// @param exceptionDescription Text describing the issue (potentially displayed to the user) 
-        explicit CPreliminaryParsingException(
+        explicit CLexerException(
             PreliminaryParsingExceptionType type,
             const std::string description)
         {
@@ -39,7 +39,7 @@ namespace VisualLinkerScript::ParsingEngine
             this->m_type = type;
         }
 
-        ~CPreliminaryParsingException() {}
+        ~CLexerException() {}
 
 
         /// @brief Type of exception

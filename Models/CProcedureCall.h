@@ -42,7 +42,7 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Reports back the assignment-statement
-        const CAssignmentStatement& AssignmentStatmeent()
+        CAssignmentStatement& AssignmentStatmeent()
         {
             return this->m_assignmentStatement;
         }
@@ -69,7 +69,10 @@ namespace VisualLinkerScript::Models
         const CRawEntry& TerminatingSemicolon()
         {
             return this->m_terminatingSemicolon;
-        }       
+        }
+
+        /// @brief Produces debug information on what this object represents.
+        const virtual std::string ToDebugInfo(uint32_t depth) override;
     };
 }
 

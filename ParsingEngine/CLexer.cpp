@@ -2,8 +2,8 @@
 #include <string>
 #include <vector>
 
-#include "CPreliminaryParser.h"
-#include "CPreliminaryParsingException.h"
+#include "CLexer.h"
+#include "CLexerException.h"
 
 #include "../Models/Raw/CRawEntry.h"
 #include "../Models/Raw/CRawFile.h"
@@ -272,24 +272,24 @@ namespace
             case ParserLoopActionType::StartFromOneCharacterAfter:  scanPosition += 0; break;
             case ParserLoopActionType::StartFromOneCharacterBefore: scanPosition -= 2; break;
             case ParserLoopActionType::StartFromTwoCharactersAfter: scanPosition += 1; break;
-            default: throw CPreliminaryParsingException(PreliminaryParsingExceptionType::InternalParserError, "Unrecognized 'ParserLoopActionType' value.");
+            default: throw CLexerException(PreliminaryParsingExceptionType::InternalParserError, "Unrecognized 'ParserLoopActionType' value.");
         }
 
         stateMachine = ParserStates::Default;
     };
 }
 
-CPreliminaryParser::CPreliminaryParser()
+CLexer::CLexer()
 {    
     // No action needed at this point in time.
 }
 
-CPreliminaryParser::~CPreliminaryParser()
+CLexer::~CLexer()
 {
     // No action needed at this point in time.
 }
 
-std::shared_ptr<CRawFile> CPreliminaryParser::ProcessLinkerScript(std::string absoluteFilePath, std::string rawContent)
+std::shared_ptr<CRawFile> CLexer::ProcessLinkerScript(std::string absoluteFilePath, std::string rawContent)
 {    
     // TODO: Revise code in event of available capacity to reduce cyclomatic complexity
     std::vector<CRawEntry> parsedContent;
@@ -480,7 +480,7 @@ std::shared_ptr<CRawFile> CPreliminaryParser::ProcessLinkerScript(std::string ab
 
             default:
             {
-                throw CPreliminaryParsingException(PreliminaryParsingExceptionType::InternalParserError, "ParserState was not recognized.");
+                throw CLexerException(PreliminaryParsingExceptionType::InternalParserError, "ParserState was not recognized.");
             }
         }
 

@@ -99,9 +99,26 @@ SOURCES += \
     Helpers.cpp \
     LinkerScriptManager/CLinkerScriptManager.cpp \
     LinkerScriptManager/CUndoRedoManager.cpp \
+    Models/CAssignmentProcedureStatement.cpp \
+    Models/CAssignmentStatement.cpp \
+    Models/CExpression.cpp \
+    Models/CFunctionCall.cpp \
+    Models/CInputSectionFunction.cpp \
+    Models/CInputSectionStatement.cpp \
+    Models/CLinkerScriptContentBase.cpp \
     Models/CLinkerScriptFile.cpp \
+    Models/CMemoryRegion.cpp \
+    Models/CMemoryStatement.cpp \
+    Models/CPhdrsRegion.cpp \
+    Models/CPhdrsStatement.cpp \
+    Models/CProcedureCall.cpp \
+    Models/CSectionOutputCommand.cpp \
+    Models/CSectionOutputOverlay.cpp \
+    Models/CSectionOverlayCommand.cpp \
+    Models/CSectionsRegion.cpp \
+    Models/CVersionScope.cpp \
     ParsingEngine/CMasterParser.cpp \
-    ParsingEngine/CPreliminaryParser.cpp \
+    ParsingEngine/CLexer.cpp \
     ParsingEngine/SubParsers/CAssignmentParser.cpp \
     ParsingEngine/SubParsers/CAssignmentProcedureParser.cpp \
     ParsingEngine/SubParsers/CExpressionParser.cpp \
@@ -271,7 +288,6 @@ HEADERS += \
     LinkerScriptManager/CUndoRedoManager.h \
     Models/CAssignmentProcedureStatement.h \
     Models/CAssignmentStatement.h \
-    Models/CComment.h \
     Models/CExpression.h \
     Models/CExpressionNumber.h \
     Models/CExpressionOperator.h \
@@ -318,8 +334,8 @@ HEADERS += \
     ParsingEngine/CMasterParser.h \
     ParsingEngine/CMasterParserException.h \    
     ParsingEngine/CParserViolation.h \
-    ParsingEngine/CPreliminaryParser.h \
-    ParsingEngine/CPreliminaryParsingException.h \
+    ParsingEngine/CLexer.h \
+    ParsingEngine/CLexerException.h \
     ParsingEngine/EParserViolationCode.h \
     ParsingEngine/SubParsers/CAssignmentParser.h \
     ParsingEngine/SubParsers/CAssignmentProcedureParser.h \

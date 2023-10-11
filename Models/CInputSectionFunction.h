@@ -39,7 +39,7 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Reports back the list of parameters
-        const  std::vector<std::shared_ptr<CLinkerScriptContentBase>>& ParsedContent()
+        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& ParsedContent()
         {
             return this->m_parsedContent;
         }
@@ -61,6 +61,9 @@ namespace VisualLinkerScript::Models
         {
             return this->m_closingParenthesis;
         }
+
+        /// @brief Produces debug information on what this object represents.
+        const virtual std::string ToDebugInfo(uint32_t depth) override;
     };
 }
 

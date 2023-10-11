@@ -25,5 +25,4 @@ namespace VisualLinkerScript::Models
     };
 }
 
-
 #endif

@@ -22,3 +22,19 @@ std::string CLinkerScriptFile::ResolveEntryText(const CRawEntry& rawEntryToResol
                 rawEntryToResolve.StartPosition(),
                 rawEntryToResolve.Length());
 }
+
+
+/// @brief Produces debug information on what this object represents.
+const std::string CLinkerScriptFile::ToDebugInfo(uint32_t depth)
+{
+    std::string content = " LinkerScriptFile: " + this->FileName() + "\n";
+    content += std::string(depth, ' ') + " -- content : \n";
+
+    for (auto subContent : this->Content())
+    {
+        content += subContent->ToDebugInfo(depth + 4) + "\n";
+    }
+
+    return std::string(depth, ' ') + " - " + content;
+}
+

@@ -6,7 +6,7 @@
 
 namespace VisualLinkerScript::Models::Raw 
 {
-    /// @brief Represents an entry found in the LinkerScript file by the @see {CPreliminaryParser}
+    /// @brief Represents an entry found in the LinkerScript file by the @see {CLexer}
     class CRawEntry
     {
     public:

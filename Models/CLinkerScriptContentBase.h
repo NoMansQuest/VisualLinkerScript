@@ -119,6 +119,9 @@ namespace VisualLinkerScript::Models
         std::shared_ptr<CLinkerScriptFile> ParentLinkerScriptFile(){
             return this->m_parentLinkerScriptFile;
         }
+
+        /// @brief Produces debug information on what this object represents.
+        const virtual std::string ToDebugInfo(uint32_t depth);
     };
 }
 

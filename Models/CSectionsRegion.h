@@ -58,9 +58,12 @@ namespace VisualLinkerScript::Models
 
         /// @brief Reports back the entry containing the "}" symbol
         const CRawEntry ClosingBracketEntry()
-        {
+        {         
             return this->m_closingBracketEntry;
         }
+
+        /// @brief Produces debug information on what this object represents.
+        const virtual std::string ToDebugInfo(uint32_t depth) override;
     };
 }
 

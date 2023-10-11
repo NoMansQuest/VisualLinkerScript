@@ -105,8 +105,7 @@ namespace VisualLinkerScript::Models
         /// @brief Reports back the 'ToVma' expression, if present.
         std::shared_ptr<CSectionOutputToVmaRegion> ToVmaRegion()
         {
-            return thi   
-s->m_toVmaRegion;
+            return this->m_toVmaRegion;
         }
 
         /// @brief Reports back the 'AtLma' region, if present.
@@ -132,6 +131,9 @@ s->m_toVmaRegion;
         {
             return this->m_innerContent;
         }
+
+        /// @brief Produces debug information on what this object represents.
+        const virtual std::string ToDebugInfo(uint32_t depth) override;
     };
 }
 

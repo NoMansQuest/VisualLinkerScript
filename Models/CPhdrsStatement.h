@@ -73,6 +73,9 @@ namespace VisualLinkerScript::Models
         {
             return this->m_semicolonEntry;
         }
+
+        /// @brief Produces debug information on what this object represents.
+        const virtual std::string ToDebugInfo(uint32_t depth) override;
     };
 }
 

@@ -102,13 +102,16 @@ std::shared_ptr<CSectionsRegion> CSectionsRegionParser::TryParse(
                     case ParserState::AwaitingHeader:
                     {
                         // OK, The name should not be reserved keyword
-                        headerEntry = *localIterator;
-                        if (CParserHelpers::IsReservedWord(resolvedContent))
+                        if (StringEquals(resolvedContent, "SECTIONS", true))
+                        {
+                            headerEntry = *localIterator;
+                            parserState = ParserState::AwaitingBracketOpen;
+                        }
+                        else
                         {
                             violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::SectionOutputNameCannotBeAReservedKeyword)));
                         }
 
-                        parserState = ParserState::AwaitingBracketOpen;
                         break;
                     }
 
@@ -230,8 +233,10 @@ std::shared_ptr<CSectionsRegion> CSectionsRegionParser::TryParse(
                                     MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
                                     "ParserState invalid in CSectionsRegionParser");
                 }
+
+                break;
             }
-;
+
             case RawEntryType::BracketClose:
             {
                 switch (parserState)
@@ -255,6 +260,7 @@ std::shared_ptr<CSectionsRegion> CSectionsRegionParser::TryParse(
                                     MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
                                     "ParserState invalid in CSectionsRegionParser");
                 }
+                break;
             }
 
             case RawEntryType::Unknown:

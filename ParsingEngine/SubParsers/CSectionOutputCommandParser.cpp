@@ -327,6 +327,7 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
                                     MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
                                     "ParserState invalid in CSectionOutpuStatementParser");
                 }
+                break;
             }
 
             case RawEntryType::Assignment:
@@ -369,6 +370,7 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
                                     MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
                                     "ParserState invalid in CSectionsRegionContentParser");
                 }
+                break;
             }
 
             case RawEntryType::BracketClose:
@@ -400,6 +402,7 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
                                     MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
                                     "ParserState invalid in CSectionOutpuStatementParser");
                 }
+                break;
             }
 
             case RawEntryType::Unknown:

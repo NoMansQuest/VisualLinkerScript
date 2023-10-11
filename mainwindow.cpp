@@ -3,7 +3,7 @@
 #include "qscrollbar.h"
 #include "Components/QScintilla/ComponentHelpers.h"
 #include "Components/QScintilla/src/Qsci/qscilexerlinkerscript.h"
-#include "ParsingEngine/CPreliminaryParser.h"
+#include "ParsingEngine/CLexer.h"
 #include <QFile>
 #include <memory.h>
 #include <QString>
@@ -87,13 +87,13 @@ void MainWindow::BuildUserInterface()
     this->ui->centralwidget->setLayout(this->m_centralWidgetLayout);
 
     // OK, We need to generate the content here
-    CPreliminaryParser preliminaryParser;
+    CLexer linkerScriptLexer;
     QString fileName("C:\\Temp\\TestLinkerScriptFile.lds");
     QFile fileToRead(fileName);
     fileToRead.open(QFile::ReadOnly | QFile::Text);
     QTextStream in(&fileToRead);
     auto fileContent = in.readAll();
-    auto preliminaryParseResult = preliminaryParser.ProcessLinkerScript(fileName.toStdString(), fileContent.toStdString());
+    auto preliminaryParseResult = linkerScriptLexer.ProcessLinkerScript(fileName.toStdString(), fileContent.toStdString());
     auto contentToAnalyze = preliminaryParseResult->Content();
 
     // Generate result
@@ -170,14 +170,17 @@ void MainWindow::BuildUserInterface()
     }
 
     // Parse content
-    //CMasterParser masterParser;
-    //auto parsedContent = std::move(masterParser.ProcessLinkerScriptFile(preliminaryParseResult));
+    CMasterParser masterParser;
+    auto parsedContentDebugInfo = masterParser.ProcessLinkerScriptFile(preliminaryParseResult)->ToDebugInfo(0);
+    auto targetString = QString::fromStdString(parsedContentDebugInfo);
+    this->m_scintilla->setText(targetString);
 
     // Add more information to the output text
 
 
     // Produce output.    
-    this->m_scintilla->setText(fileContent);
+    // this->m_scintilla->setText(fileContent);
+
 }
 
 

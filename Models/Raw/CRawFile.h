@@ -8,7 +8,7 @@
 
 namespace VisualLinkerScript::Models::Raw 
 {
-    /// @brief This object represents a file processed by @see CPreliminaryParser
+    /// @brief This object represents a file processed by @see CLexer
     class CRawFile
     {
     private:         
