@@ -1,6 +1,7 @@
 #include <vector>
 #include <memory>
 #include <string>
+#include <iterator>
 
 #include "CSectionOverlayParser.h"
 #include "CExpressionParser.h"
@@ -52,7 +53,7 @@ std::shared_ptr<CSectionOverlayCommand> CSectionOverlayParser::TryParse(
     std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = iterator;
     SharedPtrVector<CViolationBase> violations;
 
-    CExpressionParser expressionParser(ExpressionParserType::NormalParser, false);
+    CExpressionParser expressionParser(ExpressionParserType::NormalParser, false, RawEntryType::Colon);
     CFunctionParser functionParser;                             // Example: FILL(0x00000)
     CAssignmentParser assignmentParser;                         // Example: '. = ALIGN(4);'
     CAssignmentProcedureParser assignmentProcedureParser;       // Example: PROVIDE(a = b);'
@@ -282,7 +283,7 @@ std::shared_ptr<CSectionOverlayCommand> CSectionOverlayParser::TryParse(
                 break;
             }
 
-            case RawEntryType::Operator:
+            case RawEntryType::ArithmeticOperator:
             {
                 switch (parserState)
                 {
@@ -313,7 +314,7 @@ std::shared_ptr<CSectionOverlayCommand> CSectionOverlayParser::TryParse(
                                 violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation({*localIterator}, EParserViolationCode::NotAllowedInOverlayCommand)));
                             }
                         }
-                        else if (resolvedContent == ":")
+                        else if (CParserHelpers::IsColon(resolvedContent))
                         {
                             // This could be 'At VMA' definition
                             if (rawEntryPlusOne.EntryType() == RawEntryType::Word)
@@ -371,9 +372,10 @@ std::shared_ptr<CSectionOverlayCommand> CSectionOverlayParser::TryParse(
                                     MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
                                     "ParserState invalid in CSectionOutpuStatementParser");
                 }
+                break;
             }
 
-            case RawEntryType::Assignment:
+            case RawEntryType::AssignmentOperator:
             case RawEntryType::Number:
             {
                 switch (parserState)
@@ -426,6 +428,7 @@ std::shared_ptr<CSectionOverlayCommand> CSectionOverlayParser::TryParse(
                                     MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
                                     "ParserState invalid in CSectionOutpuStatementParser");
                 }
+                break;
             }
 
             case RawEntryType::String:
@@ -480,6 +483,7 @@ std::shared_ptr<CSectionOverlayCommand> CSectionOverlayParser::TryParse(
                                     MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
                                     "ParserState invalid in CSectionOutpuStatementParser");
                 }
+                break;
             }
 
             case RawEntryType::ParenthesisClose:
@@ -519,6 +523,7 @@ std::shared_ptr<CSectionOverlayCommand> CSectionOverlayParser::TryParse(
                                     MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
                                     "ParserState invalid in CSectionsRegionContentParser");
                 }
+                break;
             }
 
             case RawEntryType::BracketClose:
@@ -550,6 +555,7 @@ std::shared_ptr<CSectionOverlayCommand> CSectionOverlayParser::TryParse(
                                     MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
                                     "ParserState invalid in CSectionOutpuStatementParser");
                 }
+                break;
             }
 
             case RawEntryType::Unknown:
@@ -571,7 +577,7 @@ std::shared_ptr<CSectionOverlayCommand> CSectionOverlayParser::TryParse(
     }
 
     std::vector<CRawEntry> rawEntries;
-    std::copy(parsingStartIteratorPosition, localIterator, rawEntries.begin());
+    std::copy(parsingStartIteratorPosition, localIterator, std::back_inserter(rawEntries));
 
     iterator = localIterator;
 

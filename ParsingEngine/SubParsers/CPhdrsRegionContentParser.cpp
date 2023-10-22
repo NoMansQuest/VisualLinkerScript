@@ -1,6 +1,7 @@
 #include <vector>
 #include <memory>
 #include <string>
+#include <iterator>
 
 #include "CPhdrsRegionContentParser.h"
 #include "CExpressionParser.h"
@@ -52,7 +53,7 @@ std::shared_ptr<CPhdrsStatement> CPhdrsRegionContentParser::TryParse(
     CRawEntry fileHdrEntry;
     CRawEntry phdrsEntry;
 
-    CExpressionParser expressionParser(ExpressionParserType::NormalParser, false);
+    CExpressionParser expressionParser(ExpressionParserType::NormalParser, false, RawEntryType::ParenthesisClose);
 
     std::shared_ptr<CLinkerScriptContentBase> atAddressFunction;
     std::shared_ptr<CLinkerScriptContentBase> flagsFunction;
@@ -175,7 +176,6 @@ std::shared_ptr<CPhdrsStatement> CPhdrsRegionContentParser::TryParse(
                             violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::ProgramHeaderTypeNotRecognized)));
                             parserState = ParserState::AwaitingSemicolon;
                         }
-
                         break;
                     }
  
@@ -187,38 +187,34 @@ std::shared_ptr<CPhdrsStatement> CPhdrsRegionContentParser::TryParse(
                     }
  
                     default:
-                    {
-                        throw CMasterParsingException(
-                                    MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
-                                    "ParserState invalid in CPhdrsRegionContentParser");
-                    }
+                        throw CMasterParsingException(MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown, "ParserState invalid in CPhdrsRegionContentParser");
                 }
                 break;
             }
 
-            case RawEntryType::Operator:
-            case RawEntryType::Assignment:
-            case RawEntryType::Number:
+            case RawEntryType::Semicolon:
+            {
+                if (parserState == ParserState::AwaitingSemicolon)
+                {
+                    semicolonEntry = *iterator;
+                    break;
+                }
+                parserState = ParserState::ParsingComplete;
+                break;
+            }
+
+            case RawEntryType::ArithmeticOperator:
+            case RawEntryType::AssignmentOperator:
+            case RawEntryType::Number:            
+            case RawEntryType::Comma:
             case RawEntryType::String:
             case RawEntryType::ParenthesisOpen:
             case RawEntryType::ParenthesisClose:
             case RawEntryType::BracketOpen:
             case RawEntryType::BracketClose:
             {
-                if (resolvedContent == ";")
-                {
-                    if (parserState == ParserState::AwaitingSemicolon)
-                    {
-                        semicolonEntry = *iterator;
-                        break;
-                    }
-                    parserState = ParserState::ParsingComplete;
-                }
-                else
-                {
-                    violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
-                    parserState = ParserState::AwaitingSemicolon;
-                }
+                violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
+                parserState = ParserState::AwaitingSemicolon;
                 break;
             }
 
@@ -249,7 +245,7 @@ std::shared_ptr<CPhdrsStatement> CPhdrsRegionContentParser::TryParse(
     }
 
     std::vector<CRawEntry> rawEntries;    
-    std::copy(parsingStartIteratorPosition, localIterator, rawEntries.begin());
+    std::copy(parsingStartIteratorPosition, localIterator, std::back_inserter(rawEntries));
 
     iterator = localIterator;
 

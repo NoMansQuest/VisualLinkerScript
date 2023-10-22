@@ -32,7 +32,7 @@ SharedPtrVector<CViolationBase> CDirectivesDeclaredOnlyOnceRule::PerformCheck(co
         auto foundDirectives = QueryObject<CFunctionCall>(
                     linkerScriptFiles,
                     [&](std::shared_ptr<CLinkerScriptFile> linkerScriptFile, std::shared_ptr<CFunctionCall> ResolveEntryText) {
-                        return StringEquals(linkerScriptFile->ResolveEntryText(ResolveEntryText->ProcedureName()), directive, true);
+                        return StringEquals(linkerScriptFile->ResolveEntryText(ResolveEntryText->FunctionName()), directive, true);
                     });
 
         if (foundDirectives.size() > 1) {

@@ -26,12 +26,21 @@ namespace
         InNumber,
     };
 
-    /// @brief Types of assignment symbols we can have in a linker-script
+    /// @brief Types of assignment symbols we can have in a linker-script (i.e. =, +=, -=, &=, >>=, etc.)
     enum class AssignmentSymbolTypes
     {
         SingleCharacter,
         DoubleCharacter,
+        TripleCharacter,
         NotAnAssignmentSymbol
+    };
+
+    /// @brief Types of evaluative symbols we can have in a linker-script (i.e. >=, <=, ==, etc.)
+    enum class EvaluativeSymbolTypes
+    {
+        SingleCharacter,
+        DoubleCharacter,
+        NotAnEvaluativeSymbol
     };
 
     /// @brief The loop needs alignment after an entry is detected and registerd
@@ -60,77 +69,60 @@ namespace
                SafeTestCharacterInString(input, position + 1, secondCharacter);
     }
 
-    /// @brief Checks for the pattern of two characters at given positions. This is to optimize performance.
-    bool SafeTestPatternInString(
-        const std::string& input,
-        uint32_t position, 
-        const char firstCharacter, 
-        const char secondCharacter, 
-        const char thirdCharacter)
-    {
-        return SafeTestCharacterInString(input, position, firstCharacter) &&
-               SafeTestCharacterInString(input, position + 1, secondCharacter) &&
-               SafeTestCharacterInString(input, position + 2, thirdCharacter);
-    }
-
     /// @brief Determines if this character can be the first letter of a word
     bool CanCharBeStartOfWord(const char input)
     {
         return ((input >= 'A') && (input <= 'Z')) ||
                ((input >= 'a') && (input <= 'z')) ||
-               (input == '_')  ||
-               (input == ':')  ||  // For example ":phdrs" placed after an output-section
-               (input == '?')  ||  // Wildcard support
-               (input == '*')  ||  // Wildcard support, could also be an operator
-               (input == '[')  ||  // Wildcard support
-               (input == ']')  ||  // Wildcard support
-               (input == '/')  ||  // Wildcard support, could also be an operator (e.g. /DISCARD/)
-               (input == '\\') ||  // Wildcard support, quoting the following character
-               (input == '-')  ||  // Wildcard support, used in range
-               (input == '!')  ||  // Wildcard support, could also be an operator (e.g. Memory-Statement attribute '(!r)')
-               (input == '.');     // Wildcard support, could also be an operator
-    }
-
-    /// @brief Checks to see if a given character can be an operator
-    bool IsOperator(const char input)
-    {   
-        return ((input == '*') ||
-                (input == '>') ||
-                (input == '<') ||
-                (input == '/') ||
-                (input == '-') ||
-                (input == '+') ||
-                (input == '&') ||
-                (input == '%') ||
-                (input == '=') ||
-                (input == '?') ||
-                (input == ':') ||
-                (input == '^') ||
-                (input == ',') ||
-                (input == ';') ||
-                (input == '~') ||
-                (input == '(') ||
-                (input == ')') ||
-                (input == '{') ||
-                (input == '}') ||
-                (input == '!'));
+               (input == '_')  || (input == '.');     // Wildcard support, could also be an operator
     }
 
     /// @brief If true, then the character can be considered as part of a word
     bool CanCharBeWithinWord(char input)
     {
-        return ((input >= '0') && (input <= '9')) ||
-               CanCharBeStartOfWord(input);
+        return ((input >= '0') && (input <= '9')) || CanCharBeStartOfWord(input);
     }
 
+    /// @brief Checks to see if a given character can be an arithmetic operator.
+    ///        These include right-shift and left-shift operators ('<<' and '>>').
+    bool IsArithmeticOperator(const char input, const char inputPlusOne, uint32_t& arithmeticOperatorLength)
+    {
+        arithmeticOperatorLength = 1;
+
+        if ((input == '>' && inputPlusOne == '>') ||
+            (input == '<' && inputPlusOne == '<'))
+        {
+            arithmeticOperatorLength = 2;
+            return true;
+        }
+
+        return ((input == '*') || (input == '>') ||  (input == '<') || (input == '/') ||
+                (input == '-') || (input == '+') ||  (input == '&') || (input == '|') ||
+                (input == '%') || (input == '^') ||  (input == '~') || (input == '!'));
+    }
+
+    /// @brief Checks to see if the character is a semicolon.
+    bool IsSemicolon(const char input)
+    {
+        return input == ';';
+    }
+
+    /// @brief Checks to see if the character is a question mark.
+    bool IsQuestionMark(const char input)
+    {
+        return input == '?';
+    }
+
+    /// @brief Checks to see if character is a comma.
+    bool IsComma(const char input)
+    {
+        return input == ',';
+    }
 
     /// @brief Checks the character for being a potential prefix (such as 0x, 0b, etc.)
     bool IsNumberPrefix(char input)
     {
-        return ((input == 'x') ||
-                (input == 'X') ||
-                (input == 'b') ||
-                (input == 'B'));
+        return ((input == 'x') || (input == 'X') || (input == 'b') || (input == 'B'));
     }
 
     /// @brief Checks the character for being a potential postfixes ('K' and 'M')
@@ -173,64 +165,78 @@ namespace
         return (input == '\n');
     }
 
-    /// @brief Checks if a long operator (e.g. >>= or !=, etc.) is present at position
-    bool CheckForLongOperator(const std::string& rawContent, const uint32_t position, uint32_t& longOperatorLength)
-    {
-        std::vector<std::string> recognizedLongOperators
-        {            
-            ">>= ", "<<= ", "!=", "==", "+=", "-=", "*=", "/=", "%=", ">> ", "<<", "||", "&&"
-        };
-
-        for (auto operatorToCheckFor: recognizedLongOperators)
-        {
-            if (rawContent.rfind(operatorToCheckFor, position) != std::string::npos)
-            {
-               longOperatorLength = (uint32_t)operatorToCheckFor.length();
-               return true;
-            }
-        }
-
-        return false;
-    }
-
     /// @brief Checks to see if assignment symbol is present, 
-    ///        such as '/=', '*=', '+=', '-=', '='
+    ///        such as '/=', '*=', '+=', '-=', '=', '|=', '&=', '^=', '%='
     AssignmentSymbolTypes TestForAssignmentSymbol(const std::string& input, const uint32_t position)
     {
         auto charAtPosition = input[position];
-        auto detectedOperatorLength = (uint32_t)0;
-
         if (SafeTestCharacterInString(input, position, '='))
         {
-            if (position == input.length() - 1)
-            {
-                return AssignmentSymbolTypes::SingleCharacter;
-            }
-
-            detectedOperatorLength = IsWhitespace(input[position+1]) ? 1 : 0;            
+            return (!SafeTestCharacterInString(input, position + 1, '=')) ?
+                    AssignmentSymbolTypes::SingleCharacter :
+                    AssignmentSymbolTypes::NotAnAssignmentSymbol; // Note: '==' is not an assignment operator, but an evaluation operator.
         }
-        else if ((charAtPosition == '*') ||
-                 (charAtPosition == '/') ||
-                 (charAtPosition == '%') ||
-                 (charAtPosition == '-') ||
+        else if ((charAtPosition == '*') || (charAtPosition == '/') || (charAtPosition == '%') || (charAtPosition == '-') ||
+                 (charAtPosition == '~') || (charAtPosition == '|') || (charAtPosition == '&') || (charAtPosition == '^') ||
                  (charAtPosition == '+'))
         {
-            if (position == input.length() - 1)
-            {
-                return AssignmentSymbolTypes::NotAnAssignmentSymbol;
-            }
+            return (!SafeTestCharacterInString(input, position + 1, '=')) ?
+                   AssignmentSymbolTypes::NotAnAssignmentSymbol :
+                   AssignmentSymbolTypes::SingleCharacter;
+        }
+        else if ((charAtPosition == '>') || (charAtPosition == '<'))
+        {
+            bool isAssignment = (SafeTestCharacterInString(input, position + 1, charAtPosition) &&
+                                 SafeTestCharacterInString(input, position + 2, '='));
 
-            if (!SafeTestCharacterInString(input, position + 1, '=') || (position == input.length() - 2))
-            {
-                return AssignmentSymbolTypes::NotAnAssignmentSymbol;
-            }
-
-            detectedOperatorLength = IsWhitespace(input[position+2]) ? 2 : 0;
+            return isAssignment ? AssignmentSymbolTypes::TripleCharacter : AssignmentSymbolTypes::NotAnAssignmentSymbol;
         }
 
-        return (detectedOperatorLength == 1) ? AssignmentSymbolTypes::SingleCharacter :
-               (detectedOperatorLength == 2) ? AssignmentSymbolTypes::DoubleCharacter :
-               AssignmentSymbolTypes::NotAnAssignmentSymbol ;
+        return AssignmentSymbolTypes::NotAnAssignmentSymbol;
+    }
+
+        /// @brief Test against evaluative operators:
+    ///        such as '<=', '>=', '==', '!=', '<', '>', '||', '&&'
+    EvaluativeSymbolTypes TestForEvaluativeSymbol(const std::string& input, const uint32_t position)
+    {
+        auto charAtPosition = input[position];
+
+        if (charAtPosition == '>' || charAtPosition == '<')
+        {
+            if (SafeTestCharacterInString(input, position + 1, charAtPosition))
+            {
+                if (SafeTestCharacterInString(input, position + 2, '='))
+                {
+                    return EvaluativeSymbolTypes::NotAnEvaluativeSymbol; // This is an assignment operator
+                }
+            }
+            else if (SafeTestCharacterInString(input, position + 1, '='))
+            {
+                return EvaluativeSymbolTypes::DoubleCharacter;
+            }
+            else
+            {
+                 return EvaluativeSymbolTypes::SingleCharacter;
+            }
+        }
+        else if (charAtPosition == '=')
+        {
+            return (SafeTestCharacterInString(input, position + 1, '=')) ?
+                   EvaluativeSymbolTypes::DoubleCharacter :
+                   EvaluativeSymbolTypes::NotAnEvaluativeSymbol;
+        }
+        else if (charAtPosition == '!')
+        {
+            return SafeTestCharacterInString(input, position + 1, '=') ?
+                   EvaluativeSymbolTypes::SingleCharacter :
+                   EvaluativeSymbolTypes::NotAnEvaluativeSymbol ;
+        }
+        else if ((charAtPosition == '|' || charAtPosition == '&') && SafeTestCharacterInString(input, position + 1, charAtPosition))
+        {
+            return EvaluativeSymbolTypes::DoubleCharacter;
+        }
+
+        return EvaluativeSymbolTypes::NotAnEvaluativeSymbol;
     }
 
     /// @brief Procedure in charge of maintaining scope-depth, parenthesis-depth and line-number based on detected character
@@ -277,16 +283,6 @@ namespace
 
         stateMachine = ParserStates::Default;
     };
-}
-
-CLexer::CLexer()
-{    
-    // No action needed at this point in time.
-}
-
-CLexer::~CLexer()
-{
-    // No action needed at this point in time.
 }
 
 std::shared_ptr<CRawFile> CLexer::ProcessLinkerScript(std::string absoluteFilePath, std::string rawContent)
@@ -361,47 +357,65 @@ std::shared_ptr<CRawFile> CLexer::ProcessLinkerScript(std::string absoluteFilePa
                 auto assignmentSymbolType = TestForAssignmentSymbol(rawContent, scanPosition);
                 if (assignmentSymbolType != AssignmentSymbolTypes::NotAnAssignmentSymbol)
                 {
-                    auto assignmentOperatorLength = (assignmentSymbolType == AssignmentSymbolTypes::SingleCharacter) ? 1 : 2;
-                    parsedContent.emplace_back(CRawEntry(RawEntryType::Assignment, lineNumber, scanPosition, assignmentOperatorLength, parenthesisDepth, scopeDepth));
+                    auto assignmentOperatorLength = (assignmentSymbolType == AssignmentSymbolTypes::SingleCharacter) ? 1 :
+                                                    (assignmentSymbolType == AssignmentSymbolTypes::DoubleCharacter) ? 2 : 3;
+
+                    parsedContent.emplace_back(CRawEntry(RawEntryType::AssignmentOperator, lineNumber, scanPosition, assignmentOperatorLength, parenthesisDepth, scopeDepth));
                     scanPosition += (assignmentOperatorLength - 1);
                     break;
                 }
 
-                if (IsOperator(currentCharacter))
+                auto evaluatingSymbolType = TestForEvaluativeSymbol(rawContent, scanPosition);
+                if (evaluatingSymbolType != EvaluativeSymbolTypes::NotAnEvaluativeSymbol)
                 {
-                    uint32_t longOperatorLength;
-                    if (CheckForLongOperator(rawContent, scanPosition, longOperatorLength))
+                    auto evaluatingSymbolTypeLength = (evaluatingSymbolType == EvaluativeSymbolTypes::SingleCharacter) ? 1 : 2;
+                    parsedContent.emplace_back(CRawEntry(RawEntryType::EvaluativeOperators, lineNumber, scanPosition, evaluatingSymbolTypeLength, parenthesisDepth, scopeDepth));
+                    scanPosition += (evaluatingSymbolTypeLength - 1);
+                    break;
+                }
+
+                if (IsComma(currentCharacter))
+                {
+                    parsedContent.emplace_back(CRawEntry(RawEntryType::Comma, lineNumber, scanPosition, 1, parenthesisDepth, scopeDepth));
+                    break;
+                }
+
+                if (IsSemicolon(currentCharacter))
+                {
+                    parsedContent.emplace_back(CRawEntry(RawEntryType::Semicolon, lineNumber, scanPosition, 1, parenthesisDepth, scopeDepth));
+                    break;
+                }
+
+                if (IsQuestionMark(currentCharacter))
+                {
+                    parsedContent.emplace_back(CRawEntry(RawEntryType::QuestionMark, lineNumber, scanPosition, 1, parenthesisDepth, scopeDepth));
+                    break;
+                }
+
+                uint32_t arithmeticOperatorLength;
+                if (IsArithmeticOperator(currentCharacter, nextCharacter, arithmeticOperatorLength))
+                {
+                    parsedContent.emplace_back(CRawEntry(RawEntryType::ArithmeticOperator, lineNumber, scanPosition, arithmeticOperatorLength, parenthesisDepth, scopeDepth));
+                    scanPosition += arithmeticOperatorLength - 1;
+                    break;
+                }
+
+                // Test against bracket and parenthesis
+                {
+                    auto entryType = (currentCharacter == '{') ? RawEntryType::BracketOpen :
+                                     (currentCharacter == '}') ? RawEntryType::BracketClose :
+                                     (currentCharacter == '(') ? RawEntryType::ParenthesisOpen :
+                                     (currentCharacter == ')') ? RawEntryType::ParenthesisClose :
+                                     RawEntryType::Unknown;
+
+                    if (entryType != RawEntryType::Unknown)
                     {
-                        parsedContent.emplace_back(CRawEntry(RawEntryType::Operator, lineNumber, scanPosition, longOperatorLength, parenthesisDepth, scopeDepth));
-                        scanPosition += longOperatorLength - 1;
+                        parsedContent.emplace_back(CRawEntry(entryType, lineNumber, scanPosition, 1, parenthesisDepth, scopeDepth));
                         break;
                     }
-                    else
-                    {
-                        // Special cases should be ruled out....
-                        if (CanCharBeStartOfWord(currentCharacter))
-                        {
-                            // Could the next character be part of a word?
-                            if (nextCharacterExists && CanCharBeWithinWord(nextCharacter))
-                            {
-                                entryStartPosition = scanPosition;
-                                entryStartLine = lineNumber;
-                                currentState = ParserStates::InWord;
-                                scanPosition--;
-                                break;
-                            }
-                        }
-
-                        auto entyType = (currentCharacter == '{') ? RawEntryType::BracketOpen :
-                                        (currentCharacter == '}') ? RawEntryType::BracketClose :
-                                        (currentCharacter == '(') ? RawEntryType::ParenthesisOpen :
-                                        (currentCharacter == ')') ? RawEntryType::ParenthesisClose :
-                                        RawEntryType::Operator;
-
-                        parsedContent.emplace_back(CRawEntry(entyType, lineNumber, scanPosition, 1, parenthesisDepth, scopeDepth));
-                    }
                 }
-                else if (CanCharBeStartOfWord(currentCharacter))
+
+                if (CanCharBeStartOfWord(currentCharacter))
                 {
                     entryStartPosition = scanPosition;
                     entryStartLine = lineNumber;

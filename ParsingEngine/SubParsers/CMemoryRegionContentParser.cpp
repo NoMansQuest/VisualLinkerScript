@@ -1,10 +1,13 @@
-#include "CMemoryRegionContentParser.h"
-#include "CAssignmentParser.h"
-#include "CMemoryStatementAttributeParser.h"
 #include <vector>
 #include <memory>
 #include <string>
+#include <iterator>
+
+#include "CMemoryRegionContentParser.h"
+#include "CAssignmentParser.h"
+#include "CMemoryStatementAttributeParser.h"
 #include "Constants.h"
+
 #include "../../Models/Raw/CRawEntry.h"
 #include "../../Models/Raw/RawEntryType.h"
 #include "../CMasterParserException.h"
@@ -41,7 +44,7 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
     std::vector<CRawEntry>::const_iterator localIterator = iterator;
     std::vector<CRawEntry>::const_iterator previousPositionIterator = iterator;
     std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = iterator;
-    std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
+    SharedPtrVector<CLinkerScriptContentBase> parsedContent;
     SharedPtrVector<CViolationBase> violations;
 
     CAssignmentParser assignmentParser;
@@ -51,8 +54,8 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
     auto doNotAdvance = false;
 
     CRawEntry nameEntry;
-    std::shared_ptr<CLinkerScriptContentBase> attributes;
     CRawEntry colonEntry;
+    std::shared_ptr<CLinkerScriptContentBase> attributes;    
     std::shared_ptr<CLinkerScriptContentBase> originAssignment;
     std::shared_ptr<CLinkerScriptContentBase> lengthAssignment;
 
@@ -139,7 +142,7 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
                 }
                 break;
             }
-            case RawEntryType::Operator:
+            case RawEntryType::ArithmeticOperator:
             {
                 switch (parserState)
                 {
@@ -205,7 +208,7 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
                 }
                 break;
             }
-            case RawEntryType::Assignment:
+            case RawEntryType::AssignmentOperator:
             case RawEntryType::Number:
             case RawEntryType::String:
             case RawEntryType::ParenthesisOpen:
@@ -258,7 +261,7 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
     }
 
     std::vector<CRawEntry> rawEntries;
-    std::copy(parsingStartIteratorPosition, localIterator, rawEntries.begin());
+    std::copy(parsingStartIteratorPosition, localIterator, std::back_inserter(rawEntries));
 
     iterator = localIterator;
 

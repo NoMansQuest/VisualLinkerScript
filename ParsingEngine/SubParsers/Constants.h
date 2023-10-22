@@ -37,6 +37,18 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
         /// @brief Checks if the given operator is an arithmetic operator (e.g. "+", "-", etc.)
         static bool IsArithmeticOperator(const std::string& operatorToCheck);
 
+        /// @brief Checks if the character is a semicolon.
+        static bool IsSemicolon(const std::string& operatorToCheck);
+
+        /// @brief Checks if the character is a colon.
+        static bool IsColon(const std::string& operatorToCheck);
+
+        /// @brief Checks if the character is a comma.
+        static bool IsComma(const std::string& operatorToCheck);
+
+        /// @brief Checks if the character is a question mark..
+        static bool IsQuestionMark(const std::string& operatorToCheck);
+
         /// @brief Checks if the given operator is a potential ternary operator (i.e. ":" or "?")
         static bool IsTernaryOperator(const std::string& operatorToCheck);
 

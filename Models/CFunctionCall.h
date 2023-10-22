@@ -13,7 +13,7 @@ namespace VisualLinkerScript::Models
     class CFunctionCall : public CLinkerScriptContentBase
     {   
     private:
-        CRawEntry m_procedureName;
+        CRawEntry m_functionName;
         CRawEntry m_openingParenthesis;
         CRawEntry m_closingParenthesis;
         SharedPtrVector<CLinkerScriptContentBase> m_parsedContent;
@@ -27,7 +27,7 @@ namespace VisualLinkerScript::Models
                                std::vector<CRawEntry>&& rawElements,
                                SharedPtrVector<CViolationBase>&& violations)
             : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
-              m_procedureName(functionName),
+              m_functionName(functionName),
               m_openingParenthesis(openingParenthesis),
               m_closingParenthesis(closingParenthesis),
               m_parsedContent(std::move(parsedContent))
@@ -41,15 +41,15 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Reports back the list of parameters
-        const  std::vector<std::shared_ptr<CLinkerScriptContentBase>>& ParsedContent()
+        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& ParsedContent()
         {
             return this->m_parsedContent;
         }
 
         /// @brief Reports back the procedure-name
-        const CRawEntry& ProcedureName()
+        const CRawEntry& FunctionName()
         {
-            return this->m_procedureName;
+            return this->m_functionName;
         }
 
         /// @brief Reports back the opening parenthesis

@@ -89,8 +89,9 @@ std::shared_ptr<TProducingOutputType> CScopedRegionParser<TParserType, TContentP
                 break;
             }
 
-            case RawEntryType::Operator:
-            case RawEntryType::Assignment:
+            case RawEntryType::QuestionMark:
+            case RawEntryType::ArithmeticOperator:
+            case RawEntryType::AssignmentOperator:
             case RawEntryType::Number:
             case RawEntryType::String:
             case RawEntryType::ParenthesisOpen:

@@ -1,14 +1,17 @@
 
 #include <vector>
 #include <memory>
+#include <iterator>
 
 #include "CExpressionParser.h"
+#include "CFunctionParser.h"
 #include "Constants.h"
-#include "../CMasterParserException.h"
 
-#include "../../Models/Raw/CRawEntry.h"
+#include "../CMasterParserException.h"
 #include "../CParserViolation.h"
 #include "../EParserViolationCode.h"
+
+#include "../../Models/Raw/CRawEntry.h"
 #include "../../Models/CComment.h"
 #include "../../Models/CExpression.h"
 #include "../../Models/CSymbol.h"
@@ -48,31 +51,6 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
     std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = iterator;
     std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
     SharedPtrVector<CViolationBase> violations;
-
-    CExpressionParser nestedExpressionParser(ExpressionParserType::NormalParser, this->m_supportsMultiLine);
-    CExpressionParser ternaryThenExpressionParser(ExpressionParserType::TernaryThenSectionParser, this->m_supportsMultiLine);
-    CExpressionParser ternaryElseExpressionParser(ExpressionParserType::NormalParser, this->m_supportsMultiLine);
-
-    if (this->m_parserType == ExpressionParserType::TernaryThenSectionParser)
-    {
-        auto resolvedLocalIterator = linkerScriptFile.ResolveRawEntry(*localIterator);
-        if (resolvedLocalIterator != "?")
-        {
-            return nullptr; // Refuse to parse
-        }
-
-        localIterator++;
-    }
-    else if (this->m_parserType == ExpressionParserType::TernaryThenSectionParser)
-    {
-        auto resolvedLocalIterator = linkerScriptFile.ResolveRawEntry(*localIterator);
-        if (resolvedLocalIterator != ":")
-        {
-            return nullptr; // Refuse to parse
-        }
-
-        localIterator++;
-    }
 
     auto parserState = ParserState::AwaitingContent;
     auto ternaryParserState = TernaryParserState::AwaitingThenExpression;
@@ -144,7 +122,8 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                                 break;
                             }
 
-                            auto parsedFunction = nestedExpressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
+                            CFunctionParser functionParser(true, true);
+                            auto parsedFunction = functionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
                             if (parsedFunction == nullptr)
                             {
                                 violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
@@ -178,20 +157,25 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                 break;
             }
 
-            case RawEntryType::Operator:
+            case RawEntryType::Semicolon:
+            case RawEntryType::Comma:
             {
-                if ((resolvedContent == ";") || (resolvedContent == ","))
+                if (precedingOperatorSet)
                 {
-                    if (precedingOperatorSet)
-                    {
-                        violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::WasExpectingASymbolOrNumberBeforeExpressionEnds)));
-                    }
-
-                    // Forced completion of parsing
-                    localIterator = previousPositionIterator;
-                    parserState = ParserState::ParsingComplete;
+                    violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::WasExpectingASymbolOrNumberBeforeExpressionEnds)));
                 }
-                else if (CParserHelpers::IsComparisonOperator(resolvedContent))
+
+                // Forced completion of parsing
+                localIterator = previousPositionIterator;
+                parserState = ParserState::ParsingComplete;
+                break;
+            }
+
+            case RawEntryType::Colon:
+            case RawEntryType::QuestionMark:
+            case RawEntryType::ArithmeticOperator:
+            {
+                if (CParserHelpers::IsComparisonOperator(resolvedContent))
                 {
                     auto expressionOperator = std::shared_ptr<CLinkerScriptContentBase>(new CExpressionOperator(*localIterator, {*localIterator}, {}));
                     parsedContent.emplace_back(expressionOperator);
@@ -202,7 +186,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                     {
                         case TernaryParserState::AwaitingThenExpression:
                         {
-                            if (resolvedContent == ":")
+                            if (CParserHelpers::IsColon(resolvedContent))
                             {
                                 // We terminate here. This colon could be related to something else...
                                 parserState = ParserState::ParsingComplete;
@@ -211,6 +195,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                             else
                             {
                                 // Operator is question-mark, which is valid
+                                CExpressionParser ternaryThenExpressionParser(this->m_supportsMultiLine, RawEntryType::Colon);
                                 auto parserPostQuestionMarkExpression = ternaryThenExpressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
                                 if (parserPostQuestionMarkExpression == nullptr)
                                 {
@@ -227,14 +212,15 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
 
                         case TernaryParserState::AwaitingElseExpression:
                         {
-                            if (resolvedContent == "?")
+                            if (CParserHelpers::IsQuestionMark(resolvedContent))
                             {
                                 violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
                                 ternaryParserState = TernaryParserState::AwaitingThenExpression;
                             }
                             else
                             {
-                                // Operator is question-mark, which is valid
+                                // Operator is a colon, which is valid
+                                CExpressionParser ternaryElseExpressionParser(this->m_supportsMultiLine, this->m_delimitingEntry);
                                 auto parserPostColonExpression = ternaryElseExpressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
                                 if (parserPostColonExpression == nullptr)
                                 {
@@ -260,8 +246,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                 else
                 {
                     if (CParserHelpers::IsComparisonOperator(resolvedContent) ||
-                        CParserHelpers::IsArithmeticOperator(resolvedContent) ||
-                        CParserHelpers::IsTernaryOperator(resolvedContent))
+                        CParserHelpers::IsArithmeticOperator(resolvedContent) )
                     {
                         auto expressionOperator = std::shared_ptr<CLinkerScriptContentBase>(new CExpressionOperator (*localIterator, {*localIterator}, {}));
                         parsedContent.emplace_back(expressionOperator);
@@ -275,10 +260,10 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                 break;
             }
 
-            case RawEntryType::Assignment:
+            case RawEntryType::AssignmentOperator:
             {
-                violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::AssignmentOperatorNotValidInAnRValueExpression)));
-                break;
+                // This indicates that we've not been parsing an expression all along
+                return nullptr;
             }
 
             case RawEntryType::Number:
@@ -331,9 +316,11 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                         {
                             // Each entry must be preceded by an operator (except the first entry)
                             violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::MissingOperatorInRValueExpression)));
+                            break;
                         }
 
                         // This could be an expression
+                        CExpressionParser nestedExpressionParser(this->m_supportsMultiLine, this->m_delimitingEntry);
                         auto parsedNestedExpression = nestedExpressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
                         if (parsedNestedExpression != nullptr)
                         {
@@ -351,6 +338,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                                     MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
                                     "ParserState invalid in CPhdrsRegionContentParser");
                 }
+                break;
             }
 
             case RawEntryType::ParenthesisClose:
@@ -364,15 +352,14 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                         break;
 
                     case ParserState::AwaitingContent:
-                        violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::NoCorrespondingParenthesisOvertureFound)));
-                        break;
+                        // This indicates that we've not been parsing an expression all along
+                        return nullptr;
 
                     default:
                         throw CMasterParsingException(
                                     MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
                                     "ParserState invalid in CPhdrsRegionContentParser");
                 }
-
                 break;
             }
 
@@ -411,7 +398,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
     }
 
     std::vector<CRawEntry> rawEntries;
-    std::copy(parsingStartIteratorPosition, localIterator, rawEntries.begin());
+    std::copy(parsingStartIteratorPosition, localIterator, std::back_inserter(rawEntries));
 
     iterator = localIterator;
 

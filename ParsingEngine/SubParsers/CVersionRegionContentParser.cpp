@@ -1,6 +1,7 @@
 #include <vector>
 #include <memory>
 #include <string>
+#include <iterator>
 
 #include "CVersionRegionContentParser.h"
 #include "Constants.h"
@@ -118,7 +119,7 @@ std::shared_ptr<CVersionScope> CVersionRegionContentParser::TryParse(
                         }
                         else
                         {
-                            if (resolvedContentPlusOne == ";")
+                            if (CParserHelpers::IsSemicolon(resolvedContentPlusOne))
                             {
                                 std::shared_ptr<CVersionNode> versionScope(
                                             new CVersionNode(
@@ -168,7 +169,7 @@ std::shared_ptr<CVersionScope> CVersionRegionContentParser::TryParse(
                break;
             }
 
-            case RawEntryType::Operator:
+            case RawEntryType::ArithmeticOperator:
             {
                 switch (parserState)
                 {
@@ -200,7 +201,7 @@ std::shared_ptr<CVersionScope> CVersionRegionContentParser::TryParse(
                 break;
             }
 
-            case RawEntryType::Assignment:
+            case RawEntryType::AssignmentOperator:
             case RawEntryType::Number:
             case RawEntryType::String:
             case RawEntryType::ParenthesisOpen:
@@ -291,7 +292,7 @@ std::shared_ptr<CVersionScope> CVersionRegionContentParser::TryParse(
     }
 
     std::vector<CRawEntry> rawEntries;
-    std::copy(parsingStartIteratorPosition, localIterator, rawEntries.begin());
+    std::copy(parsingStartIteratorPosition, localIterator, std::back_inserter(rawEntries));
 
     iterator = localIterator;
 

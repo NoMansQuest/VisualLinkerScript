@@ -1,5 +1,7 @@
 #include <vector>
 #include <memory>
+#include <iterator>
+
 #include "CInputSectionFunctionParser.h"
 #include "Constants.h"
 #include "../CMasterParserException.h"
@@ -201,7 +203,7 @@ std::shared_ptr<CInputSectionFunction> CInputSectionFunctionParser::TryParse(
                 }
             }
 
-            case RawEntryType::Operator:
+            case RawEntryType::ArithmeticOperator:
             {
                 switch (parserState)
                 {
@@ -221,7 +223,7 @@ std::shared_ptr<CInputSectionFunction> CInputSectionFunctionParser::TryParse(
                 break;
             }
 
-            case RawEntryType::Assignment:
+            case RawEntryType::AssignmentOperator:
             case RawEntryType::Number:
             case RawEntryType::String:
             {
@@ -268,7 +270,7 @@ std::shared_ptr<CInputSectionFunction> CInputSectionFunctionParser::TryParse(
     }
 
     std::vector<CRawEntry> rawEntries;
-    std::copy(parsingStartIteratorPosition, localIterator, rawEntries.begin());
+    std::copy(parsingStartIteratorPosition, localIterator, std::back_inserter(rawEntries));
 
     iterator = localIterator;
 

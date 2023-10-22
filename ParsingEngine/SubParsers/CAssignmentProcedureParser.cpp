@@ -1,5 +1,6 @@
 #include <vector>
 #include <memory>
+#include <iterator>
 
 #include "CAssignmentProcedureParser.h"
 #include "CAssignmentParser.h"
@@ -160,6 +161,7 @@ std::shared_ptr<CAssignmentProcedureStatement> CAssignmentProcedureParser::TryPa
                                     MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
                                     "ParserState invalid in CAssignmentProcedureParser");
                 }
+                break;
             }
 
             case RawEntryType::ParenthesisClose:
@@ -190,10 +192,15 @@ std::shared_ptr<CAssignmentProcedureStatement> CAssignmentProcedureParser::TryPa
                                     MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
                                     "ParserState invalid in CAssignmentProcedureParser");
                 }
+                break;
             }
 
-            case RawEntryType::Operator:
-            case RawEntryType::Assignment:
+            case RawEntryType::Colon:
+            case RawEntryType::Semicolon:
+            case RawEntryType::Comma:
+            case RawEntryType::QuestionMark:
+            case RawEntryType::ArithmeticOperator:
+            case RawEntryType::AssignmentOperator:
             {
                 switch (parserState)
                 {
@@ -292,14 +299,14 @@ std::shared_ptr<CAssignmentProcedureStatement> CAssignmentProcedureParser::TryPa
             }
         }
 
-        if ((parserState != ParserState::ParsingComplete) && !doNotAdvance)
-        {
-            previousPositionIterator = localIterator++;
-        }
+        previousPositionIterator = localIterator;
+        localIterator = ((parserState != ParserState::ParsingComplete) && !doNotAdvance) ?
+                        localIterator + 1 :
+                        localIterator;
     }
 
     std::vector<CRawEntry> rawEntries;
-    std::copy(parsingStartIteratorPosition, localIterator, rawEntries.begin());
+    std::copy(parsingStartIteratorPosition, localIterator, std::back_inserter(rawEntries));
 
     iterator = localIterator;
 

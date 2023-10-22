@@ -108,11 +108,19 @@ void MainWindow::BuildUserInterface()
                 translatedType = "Word";
                 break;
 
-            case VisualLinkerScript::Models::Raw::RawEntryType::Operator:
-                translatedType = "Operator";
+            case VisualLinkerScript::Models::Raw::RawEntryType::ArithmeticOperator:
+                translatedType = "ArithmeticOperator";
                 break;
 
-            case VisualLinkerScript::Models::Raw::RawEntryType::Assignment:
+            case VisualLinkerScript::Models::Raw::RawEntryType::Semicolon:
+                translatedType = "Semicolon";
+                break;
+
+            case VisualLinkerScript::Models::Raw::RawEntryType::Comma:
+                translatedType = "Comma";
+                break;
+
+            case VisualLinkerScript::Models::Raw::RawEntryType::AssignmentOperator:
                 translatedType = "Assignment";
                 break;
 

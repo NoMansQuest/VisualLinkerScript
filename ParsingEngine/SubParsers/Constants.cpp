@@ -323,6 +323,21 @@ bool CParserHelpers::IsArithmeticOperator(const std::string& operatorToCheck)
                      operatorToCheck) != ListOfArithmeticOperators.cend();
 }
 
+bool CParserHelpers::IsSemicolon(const std::string& operatorToCheck)
+{
+    return operatorToCheck == ";";
+}
+
+bool CParserHelpers::IsColon(const std::string& operatorToCheck)
+{
+    return operatorToCheck == ":";
+}
+
+bool CParserHelpers::IsComma(const std::string& operatorToCheck)
+{
+    return operatorToCheck == ",";
+}
+
 bool CParserHelpers::IsTernaryOperator(const std::string& operatorToCheck)
 {
     return std::find(ListOfTernaryOperators.cbegin(),

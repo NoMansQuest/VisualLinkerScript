@@ -10,25 +10,35 @@
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {   
-    enum class ExpressionParserType
-    {
-        NormalParser,
-        TernaryThenSectionParser,
-        TernaryElseSectionParser
-    };
-
     /// @brief Object in charge parsing R-Value expression (e.g. a + b - c + ((f / g) - h) ...)
     class CExpressionParser : public CSubParserBase<CExpression>
     {
     private:
-        ExpressionParserType m_parserType;
+        RawEntryType m_delimitingEntry;
         bool m_supportsMultiLine;
+        bool m_parsingFunctionParameters;
 
     public:
+
         /// @brief Initializes an instance of 'CExpressionParser'
-        CExpressionParser(ExpressionParserType parserType, bool supportsMultiline)
-            : m_parserType(parserType),
-              m_supportsMultiLine(supportsMultiline)
+        CExpressionParser(bool supportsMultiline, bool parsingFunctionParameters, RawEntryType delimitingEntry)
+            : m_delimitingEntry(delimitingEntry),
+              m_supportsMultiLine(supportsMultiline),
+              m_parsingFunctionParameters(parsingFunctionParameters)
+        {}
+
+        /// @brief Initializes an instance of 'CExpressionParser'
+        CExpressionParser(bool supportsMultiline, RawEntryType delimitingEntry)
+            : m_delimitingEntry(delimitingEntry),
+              m_supportsMultiLine(supportsMultiline),
+              m_parsingFunctionParameters(false)
+        {}
+
+        /// @brief Initializes an instance of 'CExpressionParser'
+        CExpressionParser(RawEntryType delimitingEntry)
+            : m_delimitingEntry(delimitingEntry),
+              m_supportsMultiLine(false),
+              m_parsingFunctionParameters(false)
         {}
 
         /// @copydoc CSubParserBase::Type()

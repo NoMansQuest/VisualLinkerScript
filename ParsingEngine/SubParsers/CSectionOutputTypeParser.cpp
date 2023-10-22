@@ -1,5 +1,6 @@
 #include <vector>
 #include <memory>
+#include <iterator>
 
 #include "CSectionOutputTypeParser.h"
 #include "Constants.h"
@@ -155,8 +156,8 @@ std::shared_ptr<CSectionOutputType> CSectionOutputTypeParser::TryParse(
                 break;
             }
 
-            case RawEntryType::Operator:
-            case RawEntryType::Assignment:
+            case RawEntryType::ArithmeticOperator:
+            case RawEntryType::AssignmentOperator:
             case RawEntryType::Number:
             case RawEntryType::String:
             case RawEntryType::Unknown:
@@ -182,7 +183,7 @@ std::shared_ptr<CSectionOutputType> CSectionOutputTypeParser::TryParse(
     }
 
     std::vector<CRawEntry> rawEntries;
-    std::copy(parsingStartIteratorPosition, localIterator, rawEntries.begin());
+    std::copy(parsingStartIteratorPosition, localIterator, std::back_inserter(rawEntries));
 
     iterator = localIterator;
 

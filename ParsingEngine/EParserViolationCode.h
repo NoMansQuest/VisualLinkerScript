@@ -46,6 +46,8 @@ namespace VisualLinkerScript::ParsingEngine
         FunctionNotRecognized,
         WasExpectingFunctioNameHere,
         UnexpectedTerminationOfFunction,
+        ConsecutiveParameterSeparator,
+        SeparatorExpectedInbetweenParameters,
 
         // Assignment parsing violations:
         LValueCannotContainRValueExpression,

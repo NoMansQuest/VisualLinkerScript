@@ -1,6 +1,8 @@
 
 #include <vector>
 #include <memory>
+#include <iterator>
+
 #include "CMemoryStatementAttributeParser.h"
 #include "../CMasterParserException.h"
 #include "../../Models/Raw/CRawEntry.h"
@@ -252,8 +254,8 @@ std::shared_ptr<CMemoryStatementAttribute> CMemoryStatementAttributeParser::TryP
                 break;
             }
 
-            case RawEntryType::Operator:
-            case RawEntryType::Assignment:
+            case RawEntryType::ArithmeticOperator:
+            case RawEntryType::AssignmentOperator:
             case RawEntryType::Number:
             case RawEntryType::String:            
             case RawEntryType::Unknown:
@@ -283,7 +285,7 @@ std::shared_ptr<CMemoryStatementAttribute> CMemoryStatementAttributeParser::TryP
     }
 
     std::vector<CRawEntry> rawEntries;
-    std::copy(parsingStartIteratorPosition, localIterator, rawEntries.begin());
+    std::copy(parsingStartIteratorPosition, localIterator, std::back_inserter(rawEntries));
 
     iterator = localIterator;
 

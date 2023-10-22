@@ -1,6 +1,8 @@
 
 #include <vector>
 #include <memory>
+#include <iterator>
+
 #include "CInputSectionStatementParser.h"
 #include "CInputSectionFunctionParser.h"
 #include "Constants.h"
@@ -171,7 +173,7 @@ std::shared_ptr<CInputSectionStatement> CInputSectionStatementParser::TryParse(
                 break;
             }
 
-            case RawEntryType::Operator:
+            case RawEntryType::ArithmeticOperator:
             {
                 // We ignore commas
                 if ((parserState != ParserState::AwaitingParenthesisClosure) || (resolvedContent != ","))
@@ -181,7 +183,7 @@ std::shared_ptr<CInputSectionStatement> CInputSectionStatementParser::TryParse(
                 break;
             }
 
-            case RawEntryType::Assignment:
+            case RawEntryType::AssignmentOperator:
             case RawEntryType::Number:
             case RawEntryType::String:
             case RawEntryType::Unknown:
@@ -211,7 +213,7 @@ std::shared_ptr<CInputSectionStatement> CInputSectionStatementParser::TryParse(
     }
 
     std::vector<CRawEntry> rawEntries;
-    std::copy(parsingStartIteratorPosition, localIterator, rawEntries.begin());
+    std::copy(parsingStartIteratorPosition, localIterator, std::back_inserter(rawEntries));
 
     iterator = localIterator;
 

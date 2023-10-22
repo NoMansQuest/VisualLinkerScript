@@ -1,6 +1,7 @@
 #include <vector>
 #include <memory>
 #include <string>
+#include <iterator>
 
 #include "CSectionsRegionParser.h"
 #include "CSectionOutputCommandParser.h"
@@ -194,8 +195,8 @@ std::shared_ptr<CSectionsRegion> CSectionsRegionParser::TryParse(
                 break;
             }
 
-            case RawEntryType::Operator:
-            case RawEntryType::Assignment:
+            case RawEntryType::ArithmeticOperator:
+            case RawEntryType::AssignmentOperator:
             case RawEntryType::Number:
             case RawEntryType::String:
             case RawEntryType::ParenthesisOpen:
@@ -282,7 +283,7 @@ std::shared_ptr<CSectionsRegion> CSectionsRegionParser::TryParse(
     }
 
     std::vector<CRawEntry> rawEntries;
-    std::copy(parsingStartIteratorPosition, localIterator, rawEntries.begin());
+    std::copy(parsingStartIteratorPosition, localIterator, std::back_inserter(rawEntries));
 
     iterator = localIterator;
 

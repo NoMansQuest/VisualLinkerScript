@@ -14,11 +14,26 @@ namespace VisualLinkerScript::Models::Raw
         /// @brief A word, which may only be a single dot as well
         Word,   
 
-        /// @brief Operators include '*', '+', '-', '>', '<', ';', '/', '?', '%', ':', etc.
-        Operator,
+        /// @brief Included: >, <, >=, <=, ==, !=, ||, &&
+        EvaluativeOperators,
 
-        /// @brief Assignment operators: '=', '*=', '+=', '-=', '/=', '>>=' , '<<=', '|=', '&='
-        Assignment,
+        /// @brief Operators include '*', '+', '-', '/', '%', '&', '|', '^'
+        ArithmeticOperator,
+
+        /// @brief Assignment operators: '=', '*=', '+=', '-=', '/=', '>>=' , '<<=', '|=', '&=', "~=", '^='
+        AssignmentOperator,
+
+        /// @brief Comma: ','
+        Comma,
+
+        /// @brief Semicolon: ';'
+        Semicolon,
+
+        /// @brief Colon: ':'
+        Colon,
+
+        /// @brief Question Mark: "?"
+        QuestionMark,
 
         /// @brief A number. This number may or may not be valid
         Number,

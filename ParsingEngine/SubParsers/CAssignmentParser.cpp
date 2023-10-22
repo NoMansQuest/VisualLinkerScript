@@ -1,5 +1,6 @@
 #include <vector>
 #include <memory>
+#include <iterator>
 
 #include "CAssignmentParser.h"
 #include "CExpressionParser.h"
@@ -27,6 +28,7 @@ namespace
         AwaitingAssignmentSymbol,
         AwaitingRValueExpression,
         AwaitingSemicolon,
+        AwaitingParenthesisClosure,
         ParsingComplete
     };
 }
@@ -51,7 +53,10 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
     CRawEntry semicolonOperatorEntry;
 
     std::shared_ptr<CExpression> parsedRValue;
-    CExpressionParser rValueExpressionParser(ExpressionParserType::NormalParser, false);
+    CExpressionParser rValueExpressionParser(
+                ExpressionParserType::NormalParser,
+                false,
+                RawEntryType::Semicolon);
 
     if (localIterator->EntryType() != RawEntryType::Word)
     {
@@ -106,7 +111,7 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
                         else
                         {
                             parsedContent.emplace_back(parsedRValue);
-                            parserState = ParserState::AwaitingSemicolon;
+                            parserState = this->m_isInsideProcedure ? ParserState::AwaitingParenthesisClosure : ParserState::AwaitingSemicolon;
                         }
                         break;
                     }
@@ -122,6 +127,7 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
                                     MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
                                     "ParserState invalid in CAssignmentParser");
                 }
+                break;
             }
 
             case RawEntryType::ParenthesisClose:
@@ -142,15 +148,14 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
 
                     case ParserState::AwaitingSemicolon:
                     {
-                        if (this->m_isInsideProcedure)
-                        {
-                            localIterator = previousPositionIterator;
-                            parserState = ParserState::ParsingComplete;
-                        }
-                        else
-                        {
-                            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
-                        }
+                        violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
+                        break;
+                    }
+
+                    case ParserState::AwaitingParenthesisClosure:
+                    {
+                        localIterator = previousPositionIterator;
+                        parserState = ParserState::ParsingComplete;
                         break;
                     }
 
@@ -159,9 +164,10 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
                                     MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
                                     "ParserState invalid in CAssignmentParser");
                 }
+                break;
             }
 
-            case RawEntryType::Operator:
+            case RawEntryType::Semicolon:
             {
                 switch (parserState)
                 {
@@ -173,7 +179,61 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
 
                     case ParserState::AwaitingAssignmentSymbol:
                     {
-                        if (resolvedContent == ":")
+                        violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
+                        break;
+                    }
+
+                    case ParserState::AwaitingRValueExpression:
+                    {
+                        parsedRValue = rValueExpressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
+                        if (parsedRValue == nullptr)
+                        {
+                            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
+                        }
+                        else
+                        {
+                            parserState = ParserState::AwaitingSemicolon;
+                        }
+                        break;
+                    }
+
+                    case ParserState::AwaitingSemicolon:
+                    {
+                        semicolonOperatorEntry = *localIterator;
+                        parserState = ParserState::ParsingComplete;
+                        break;
+                    }
+
+                    case ParserState::AwaitingParenthesisClosure:
+                    {
+                        violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
+                        break;
+                    }
+
+                    default:
+                        throw CMasterParsingException(
+                                    MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
+                                    "ParserState invalid in CAssignmentParser");
+                }
+                break;
+            }
+
+            case RawEntryType::Colon:
+            case RawEntryType::Comma:
+            case RawEntryType::QuestionMark:
+            case RawEntryType::ArithmeticOperator:
+            {
+                switch (parserState)
+                {
+                    case ParserState::AwaitingLValue:
+                    {
+                        // We can't proceed, we should have been starting with a word
+                        return nullptr;
+                    }
+
+                    case ParserState::AwaitingAssignmentSymbol:
+                    {
+                        if (CParserHelpers::IsColon(resolvedContent))
                         {
                             // This could be a "Section" definition in the "Sections" region. We may need to abort.
                             if (joiningOperatorsObserved)
@@ -186,8 +246,9 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
                                 // Abort, we're going up the wrong ladder.
                                 return nullptr;
                             }
+                            break;
                         }
-                        else if (CParserHelpers::IsArithmeticOperator(resolvedContent))
+                        if (CParserHelpers::IsArithmeticOperator(resolvedContent))
                         {
                             joiningOperatorsObserved = true;
                             violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::LValueCannotContainRValueExpression)));
@@ -215,15 +276,13 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
 
                     case ParserState::AwaitingSemicolon:
                     {
-                        if (resolvedContent == ";" && !this->m_isInsideProcedure)
-                        {
-                            semicolonOperatorEntry = *localIterator;
-                            parserState = ParserState::ParsingComplete;
-                        }
-                        else
-                        {
-                            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
-                        }
+                        violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
+                        break;
+                    }
+
+                    case ParserState::AwaitingParenthesisClosure:
+                    {
+                        violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
                         break;
                     }
 
@@ -235,7 +294,7 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
                 break;
             }
 
-            case RawEntryType::Assignment:
+            case RawEntryType::AssignmentOperator:
             {
                 switch (parserState)
                 {
@@ -269,6 +328,7 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
                                     MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
                                     "ParserState invalid in CAssignmentParser");
                 }
+                break;
             }
 
             case RawEntryType::Number:
@@ -297,6 +357,7 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
                         break;
                     }
 
+                    case ParserState::AwaitingParenthesisClosure:
                     case ParserState::AwaitingSemicolon:
                     {
                         violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
@@ -325,6 +386,7 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
 
                     case ParserState::AwaitingRValueExpression:
                     case ParserState::AwaitingSemicolon:
+                    case ParserState::AwaitingParenthesisClosure:
                     {
                         // Need to mark this error
                         localIterator = previousPositionIterator;
@@ -338,7 +400,6 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
                                     MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
                                     "ParserState invalid in CAssignmentParser");
                 }
-
                 break;
             }
 
@@ -370,7 +431,7 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
     }
 
     std::vector<CRawEntry> rawEntries;
-    std::copy(parsingStartIteratorPosition, localIterator, rawEntries.begin());
+    std::copy(parsingStartIteratorPosition, localIterator, std::back_inserter(rawEntries));
 
     iterator = localIterator;
 
