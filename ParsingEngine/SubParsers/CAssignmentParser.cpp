@@ -53,10 +53,7 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
     CRawEntry semicolonOperatorEntry;
 
     std::shared_ptr<CExpression> parsedRValue;
-    CExpressionParser rValueExpressionParser(
-                ExpressionParserType::NormalParser,
-                false,
-                RawEntryType::Semicolon);
+    CExpressionParser rValueExpressionParser(false);
 
     if (localIterator->EntryType() != RawEntryType::Word)
     {

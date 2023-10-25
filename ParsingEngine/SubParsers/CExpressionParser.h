@@ -14,31 +14,17 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
     class CExpressionParser : public CSubParserBase<CExpression>
     {
     private:
-        RawEntryType m_delimitingEntry;
         bool m_supportsMultiLine;
-        bool m_parsingFunctionParameters;
 
     public:
-
         /// @brief Initializes an instance of 'CExpressionParser'
-        CExpressionParser(bool supportsMultiline, bool parsingFunctionParameters, RawEntryType delimitingEntry)
-            : m_delimitingEntry(delimitingEntry),
-              m_supportsMultiLine(supportsMultiline),
-              m_parsingFunctionParameters(parsingFunctionParameters)
+        CExpressionParser(bool supportsMultiline)
+            : m_supportsMultiLine(supportsMultiline)
         {}
 
         /// @brief Initializes an instance of 'CExpressionParser'
-        CExpressionParser(bool supportsMultiline, RawEntryType delimitingEntry)
-            : m_delimitingEntry(delimitingEntry),
-              m_supportsMultiLine(supportsMultiline),
-              m_parsingFunctionParameters(false)
-        {}
-
-        /// @brief Initializes an instance of 'CExpressionParser'
-        CExpressionParser(RawEntryType delimitingEntry)
-            : m_delimitingEntry(delimitingEntry),
-              m_supportsMultiLine(false),
-              m_parsingFunctionParameters(false)
+        CExpressionParser()
+            : m_supportsMultiLine(false)
         {}
 
         /// @copydoc CSubParserBase::Type()

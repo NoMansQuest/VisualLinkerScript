@@ -7,7 +7,7 @@
 
 namespace VisualLinkerScript::Models
 {
-    /// @brief Represents a evaluative and arithmetic operators which is used in expressions.
+    /// @brief Represents evaluative and arithmetic operators which is used in expressions.
     class CExpressionOperator : public CLinkerScriptContentBase
     {
     private:

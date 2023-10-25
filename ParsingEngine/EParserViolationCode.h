@@ -33,9 +33,13 @@ namespace VisualLinkerScript::ParsingEngine
         // Expression violations:
         OperatorIsNotAcceptedHere,
         NoCorrespondingParenthesisOvertureFound,
+        ExpectedOperatorAfterThisEntry,
+        WasExpectingAnOperatorHere,
         AssignmentOperatorNotValidInAnRValueExpression,
         MissingOperatorInRValueExpression,
+        StringsNotAllowedInExpressions,
         WasExpectingASymbolOrNumberBeforeExpressionEnds,
+        WasExpectingASymbolOrNumberHere,
         UnexpectedTerminationOfExpression,
         TernaryExpressionMissingFirstPart,
         WasExpectingParenthesisOverture,
