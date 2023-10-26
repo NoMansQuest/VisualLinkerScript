@@ -35,14 +35,20 @@ namespace
 
     /// @brief CExpressionParser ternary operation states
     enum class TernaryState
-    {
+    {        
         AwaitingThenExpression,
         AwaitingElseExpression,
     };
 
     bool CanOperatorsCoexist(CRawEntry leftOperator, CRawEntry rightOperator, CRawFile& linkerScriptFile)
     {
+        auto op2Resolved = linkerScriptFile.ResolveRawEntry(rightOperator);
+        if (rightOperator.EntryType() == RawEntryType::ArithmeticOperator)
+        {
+            return (StringEquals(op2Resolved, "-") || StringEquals(op2Resolved, "+"));
+        }
 
+        return false;
     }
 }
 
@@ -98,6 +104,8 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                 break;
             }
 
+
+
             case RawEntryType::Word:
             {
                 switch (parserState)
@@ -147,6 +155,8 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                 break;
             }
 
+
+
             case RawEntryType::Semicolon:
             case RawEntryType::Comma:
             {
@@ -155,21 +165,167 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                     violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::WasExpectingASymbolOrNumberBeforeExpressionEnds)));
                 }
 
+                if (parenthesisOpen.IsPresent())
+                {
+                    // We need to complain as the 'parenthesisClosure' was not found
+                    violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::WasExpectingParenthesisClosure)));
+                }
+
                 // Forced completion of parsing
                 localIterator = previousPositionIterator;
                 parserState = ParserState::ParsingComplete;
                 break;
             }
 
+
+
             case RawEntryType::Colon:
             {
+                switch (parserState)
+                {
+                    case ParserState::AwaitingContent:
+                    {
+                        // An exceptional authorized case is when signed operators are found right after evaluative operators.
+                        violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::WasExpectingASymbolOrNumberHere)));
 
+                        switch (ternaryState)
+                        {
+                            case TernaryState::AwaitingThenExpression:
+                            {
+                                // Ternary wise it is NOT OK.
+                                violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::TernaryExpressionMissingElseOutcome)));
+                                break;
+                            }
+
+                            case TernaryState::AwaitingElseExpression:
+                            {
+                                // Ternary wise it's OK
+                                auto ternaryIf = std::shared_ptr<CLinkerScriptContentBase>(new CExpressionOperator(*localIterator, {*localIterator}, {}));
+                                parsedContent.emplace_back(ternaryIf);
+                                ternaryState = TernaryState::AwaitingThenExpression;
+                                break;
+                            }
+
+                            default:
+                                throw CMasterParsingException(MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
+                                    "TernaryState invalid in CExpressionParser");
+                        }
+                        // Note: parserState remains at 'AwaitingContent'.
+                        break;
+                    }
+
+                    case ParserState::AwaitingOperator:
+                    {
+                        switch (ternaryState)
+                        {
+                            case TernaryState::AwaitingThenExpression:
+                            {
+                                // Ternary wise it is NOT OK.
+                                violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::TernaryExpressionMissingElseOutcome)));
+                                break;
+                            }
+
+                            case TernaryState::AwaitingElseExpression:
+                            {
+                                // Ternary wise it's OK
+                                auto ternaryIf = std::shared_ptr<CLinkerScriptContentBase>(new CExpressionOperator(*localIterator, {*localIterator}, {}));
+                                parsedContent.emplace_back(ternaryIf);
+                                ternaryState = TernaryState::AwaitingThenExpression;
+                                break;
+                            }
+
+                            default:
+                                throw CMasterParsingException(MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
+                                    "TernaryState invalid in CExpressionParser");
+                        }
+                        parserState = ParserState::AwaitingContent;
+                        break;
+                    }
+
+                    default:
+                        throw CMasterParsingException(MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
+                            "ParserState invalid in CExpressionParser");
+                }
+
+                previousOperator = CRawEntry();
+                break;
             }
+
+
 
             case RawEntryType::QuestionMark:
             {
+                switch (parserState)
+                {
+                    case ParserState::AwaitingContent:
+                    {
+                        // An exceptional authorized case is when signed operators are found right after evaluative operators.
+                        violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::WasExpectingASymbolOrNumberHere)));
 
+                        switch (ternaryState)
+                        {
+                            case TernaryState::AwaitingThenExpression:
+                            {
+                                // Ternary wise it's OK
+                                auto ternaryIf = std::shared_ptr<CLinkerScriptContentBase>(new CExpressionOperator(*localIterator, {*localIterator}, {}));
+                                parsedContent.emplace_back(ternaryIf);
+                                ternaryState = TernaryState::AwaitingElseExpression;
+                                break;
+                            }
+
+                            case TernaryState::AwaitingElseExpression:
+                            {
+                                // Ternary wise it is NOT OK.
+                                violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::TernaryExpressionMissingFirstCondition)));
+                                break;
+                            }
+
+                            default:
+                                throw CMasterParsingException(MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
+                                    "TernaryState invalid in CExpressionParser");
+                        }
+                        // Note: parserState remains at 'AwaitingContent'.
+                        break;
+                    }
+
+                    case ParserState::AwaitingOperator:
+                    {
+                        switch (ternaryState)
+                        {
+                            case TernaryState::AwaitingThenExpression:
+                            {
+                                // Ternary wise it's OK
+                                auto ternaryIf = std::shared_ptr<CLinkerScriptContentBase>(new CExpressionOperator(*localIterator, {*localIterator}, {}));
+                                parsedContent.emplace_back(ternaryIf);
+                                ternaryState = TernaryState::AwaitingElseExpression;
+                                break;
+                            }
+
+                            case TernaryState::AwaitingElseExpression:
+                            {
+                                // Ternary wise it is NOT OK.
+                                violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::TernaryExpressionMissingFirstCondition)));
+                                break;
+                            }
+
+                            default:
+                                throw CMasterParsingException(MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
+                                    "TernaryState invalid in CExpressionParser");
+                        }
+                        parserState = ParserState::AwaitingContent;
+                        break;
+                    }
+
+                    default:
+                        throw CMasterParsingException(MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
+                            "ParserState invalid in CExpressionParser");
+                }
+
+                previousOperator = CRawEntry();
+                break;
             }
+
+
 
             case RawEntryType::EvaluativeOperators:
             {
@@ -209,6 +365,8 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                 break;
             }
 
+
+
             case RawEntryType::ArithmeticOperator:
             {
                 switch (parserState)
@@ -247,11 +405,15 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                 break;
             }
 
+
+
             case RawEntryType::AssignmentOperator:
             {
                 // This indicates that we've not been parsing an expression all along
                 return nullptr;
             }
+
+
 
             case RawEntryType::Number:
             {
@@ -283,6 +445,8 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                 break;
             }
 
+
+
             case RawEntryType::String:
             {
                 switch (parserState)
@@ -313,6 +477,8 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                 break;
             }
 
+
+
             case RawEntryType::ParenthesisOpen:
             {
                 switch (parserState)
@@ -324,6 +490,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                         {
                             violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*previousPositionIterator, EParserViolationCode::ExpectedOperatorAfterThisEntry)));
                         }
+
                         // This could be an expression
                         CExpressionParser nestedExpressionParser(this->m_supportsMultiLine);
                         auto parsedNestedExpression = nestedExpressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
@@ -349,6 +516,8 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                 break;
             }
 
+
+
             case RawEntryType::ParenthesisClose:
             {
                 switch (parserState)
@@ -356,7 +525,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                     case ParserState::AwaitingContent:
                     case ParserState::AwaitingOperator:
                     {
-                        if (parenthesisOpen.EntryType() == RawEntryType::ParenthesisOpen)
+                        if (parenthesisOpen.IsPresent())
                         {
                             parenthesisClose = *localIterator;
                         }
@@ -384,6 +553,8 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                 break;
             }
 
+
+
             // Brackets are sensitive and the matter needs to be escalated to higher-up
             case RawEntryType::BracketOpen:
             case RawEntryType::BracketClose:
@@ -394,11 +565,15 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                 break;
             }
 
+
+
             case RawEntryType::Unknown:
             {
                 violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
                 break;
             }
+
+
 
             case RawEntryType::NotPresent:
                 throw CMasterParsingException(

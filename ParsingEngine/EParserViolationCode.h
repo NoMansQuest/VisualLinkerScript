@@ -40,9 +40,11 @@ namespace VisualLinkerScript::ParsingEngine
         StringsNotAllowedInExpressions,
         WasExpectingASymbolOrNumberBeforeExpressionEnds,
         WasExpectingASymbolOrNumberHere,
+        TernaryExpressionMissingFirstCondition,
+        TernaryExpressionMissingElseOutcome,
         UnexpectedTerminationOfExpression,
-        TernaryExpressionMissingFirstPart,
         WasExpectingParenthesisOverture,
+        WasExpectingParenthesisClosure,
         WasExpectingAnotherParameterOrParenthesisClosure,
 
         // Functiosn parsing violations:
