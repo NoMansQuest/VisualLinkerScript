@@ -43,14 +43,10 @@ std::shared_ptr<CFunctionCall> CFunctionParser::TryParse(
     SharedPtrVector<CLinkerScriptContentBase> parsedContent;
     SharedPtrVector<CViolationBase> violations;
 
-    CExpressionParser nestedExpressionParser(
-                ExpressionParserType::NormalParser,
-                false,
-                RawEntryType::ParenthesisClose);
+    CExpressionParser nestedExpressionParser;
 
     auto parserState = ParserState::AwaitingName;
     auto doNotAdvance = false;
-    auto isFirstEntry = false;
     auto parameterSeparatorArmed = true;
 
     CRawEntry functionNameEntry;
@@ -97,8 +93,7 @@ std::shared_ptr<CFunctionCall> CFunctionParser::TryParse(
                     {
                         if (!CParserHelpers::IsFunctionName(resolvedContent))
                         {
-                            violations.emplace_back(std::shared_ptr<CViolationBase>(
-                                                        new CParserViolation(*localIterator, EParserViolationCode::FunctionNotRecognized)));
+                            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::FunctionNotRecognized)));
                         }
                         functionNameEntry = *localIterator;
                         parserState = ParserState::AwaitingParenthesisOverture;
@@ -106,8 +101,7 @@ std::shared_ptr<CFunctionCall> CFunctionParser::TryParse(
                     }
                     case ParserState::AwaitingParenthesisOverture:
                     {
-                        violations.emplace_back(std::shared_ptr<CViolationBase>(
-                                                    new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
+                        violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
                         break;
                     }
                     case ParserState::AwaitingParenthesisClosure:
@@ -359,8 +353,6 @@ std::shared_ptr<CFunctionCall> CFunctionParser::TryParse(
         localIterator = ((parserState != ParserState::ParsingComplete) && !doNotAdvance) ?
                         localIterator + 1 :
                         localIterator;
-
-        isFirstEntry = false;
     }
 
     std::vector<CRawEntry> rawEntries;

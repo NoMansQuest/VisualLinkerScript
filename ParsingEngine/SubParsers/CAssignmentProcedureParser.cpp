@@ -199,6 +199,7 @@ std::shared_ptr<CAssignmentProcedureStatement> CAssignmentProcedureParser::TryPa
             case RawEntryType::Semicolon:
             case RawEntryType::Comma:
             case RawEntryType::QuestionMark:
+            case RawEntryType::EvaluativeOperators:
             case RawEntryType::ArithmeticOperator:
             case RawEntryType::AssignmentOperator:
             {

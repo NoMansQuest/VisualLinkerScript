@@ -25,7 +25,7 @@ namespace
     enum class ParserState
     {
         AwaitingLValue,
-        AwaitingAssignmentSymbol,
+        AwaitingAssignmentOperator,
         AwaitingRValueExpression,
         AwaitingSemicolon,
         AwaitingParenthesisClosure,
@@ -53,7 +53,8 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
     CRawEntry semicolonOperatorEntry;
 
     std::shared_ptr<CExpression> parsedRValue;
-    CExpressionParser rValueExpressionParser(false);
+    CExpressionParser rValueExpressionParser;
+    auto finalParserState = this->m_isInsideProcedure ? ParserState::AwaitingParenthesisClosure : ParserState::AwaitingSemicolon;
 
     if (localIterator->EntryType() != RawEntryType::Word)
     {
@@ -84,7 +85,7 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
                         if (localIterator->EntryType() == RawEntryType::Word)
                         {
                             lValueSymbol = *localIterator;
-                            parserState = ParserState::AwaitingAssignmentSymbol;
+                            parserState = ParserState::AwaitingAssignmentOperator;
                             break;
                         }
                         else
@@ -93,7 +94,7 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
                         }
                     }
 
-                    case ParserState::AwaitingAssignmentSymbol:
+                    case ParserState::AwaitingAssignmentOperator:
                     {
                         return nullptr;
                     }
@@ -108,7 +109,7 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
                         else
                         {
                             parsedContent.emplace_back(parsedRValue);
-                            parserState = this->m_isInsideProcedure ? ParserState::AwaitingParenthesisClosure : ParserState::AwaitingSemicolon;
+                            parserState = finalParserState;
                         }
                         break;
                     }
@@ -136,7 +137,7 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
                         return nullptr;
                     }
 
-                    case ParserState::AwaitingAssignmentSymbol:
+                    case ParserState::AwaitingAssignmentOperator:
                     case ParserState::AwaitingRValueExpression:
                     {
                         violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
@@ -174,7 +175,7 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
                         return nullptr;
                     }
 
-                    case ParserState::AwaitingAssignmentSymbol:
+                    case ParserState::AwaitingAssignmentOperator:
                     {
                         violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
                         break;
@@ -189,7 +190,7 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
                         }
                         else
                         {
-                            parserState = ParserState::AwaitingSemicolon;
+                            parserState = (this->m_isInsideProcedure) ? ParserState::AwaitingParenthesisClosure : ParserState::AwaitingSemicolon;
                         }
                         break;
                     }
@@ -218,6 +219,7 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
             case RawEntryType::Colon:
             case RawEntryType::Comma:
             case RawEntryType::QuestionMark:
+            case RawEntryType::EvaluativeOperators:
             case RawEntryType::ArithmeticOperator:
             {
                 switch (parserState)
@@ -228,7 +230,7 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
                         return nullptr;
                     }
 
-                    case ParserState::AwaitingAssignmentSymbol:
+                    case ParserState::AwaitingAssignmentOperator:
                     {
                         if (CParserHelpers::IsColon(resolvedContent))
                         {
@@ -245,7 +247,10 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
                             }
                             break;
                         }
-                        if (CParserHelpers::IsArithmeticOperator(resolvedContent))
+
+                        if (CParserHelpers::IsArithmeticOperator(resolvedContent) ||
+                            CParserHelpers::IsComparisonOperator(resolvedContent) ||
+                            CParserHelpers::IsLogicalOperator(resolvedContent))
                         {
                             joiningOperatorsObserved = true;
                             violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::LValueCannotContainRValueExpression)));
@@ -266,7 +271,7 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
                         }
                         else
                         {
-                            parserState = ParserState::AwaitingSemicolon;
+                            parserState = finalParserState;
                         }
                         break;
                     }
@@ -301,7 +306,7 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
                         break;
                     }
 
-                    case ParserState::AwaitingAssignmentSymbol:
+                    case ParserState::AwaitingAssignmentOperator:
                     {
                         assignmentSymbol = *localIterator;
                         parserState = ParserState::AwaitingRValueExpression;
@@ -333,7 +338,7 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
             {
                 switch (parserState)
                 {
-                    case ParserState::AwaitingAssignmentSymbol:
+                    case ParserState::AwaitingAssignmentOperator:
                     case ParserState::AwaitingLValue:
                     {
                         violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::LValueCannotContainRValueExpression)));
@@ -349,7 +354,7 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
                         }
                         else
                         {
-                            parserState = ParserState::AwaitingSemicolon;
+                            parserState = finalParserState;
                         }
                         break;
                     }
@@ -375,7 +380,7 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
             {
                 switch (parserState)
                 {
-                    case ParserState::AwaitingAssignmentSymbol:
+                    case ParserState::AwaitingAssignmentOperator:
                     case ParserState::AwaitingLValue:
                     {
                         return nullptr;

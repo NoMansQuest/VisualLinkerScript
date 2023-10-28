@@ -15,16 +15,24 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
     {
     private:
         bool m_supportsMultiLine;
+        bool m_isParenthesizedExpressionParser;
+        bool m_isSectionOutputAddressParser;
 
     public:
         /// @brief Initializes an instance of 'CExpressionParser'
-        CExpressionParser(bool supportsMultiline)
-            : m_supportsMultiLine(supportsMultiline)
+        CExpressionParser(bool supportsMultiline,
+                          bool isParenthesizedExpressionParser,
+                          bool isSectionOutputAddressParser)
+            : m_supportsMultiLine(supportsMultiline),
+              m_isParenthesizedExpressionParser(isParenthesizedExpressionParser),
+              m_isSectionOutputAddressParser(isSectionOutputAddressParser)
         {}
 
         /// @brief Initializes an instance of 'CExpressionParser'
         CExpressionParser()
-            : m_supportsMultiLine(false)
+            : m_supportsMultiLine(false),
+              m_isParenthesizedExpressionParser(false),
+              m_isSectionOutputAddressParser(false)
         {}
 
         /// @copydoc CSubParserBase::Type()

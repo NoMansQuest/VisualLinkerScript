@@ -68,13 +68,16 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
     auto doNotAdvance = false;    
 
     CRawEntry previousOperator;
+
     CRawEntry parenthesisOpen;
     CRawEntry parenthesisClose;
 
     // Capture parenthesis overture if present. This will then have to be matched with a parenthesis closure.
-    if ((localIterator != endOfVectorIterator) && (*localIterator).EntryType() == RawEntryType::ParenthesisOpen)
+    if (this->m_isParenthesizedExpressionParser &&
+        (localIterator != endOfVectorIterator) &&
+        (*localIterator).EntryType() == RawEntryType::ParenthesisOpen)
     {
-        parenthesisOpen = *localIterator++;
+        parenthesisOpen = *localIterator++; // We both save this parenthesis and increment the iterator.
     }
 
 
@@ -83,12 +86,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
         doNotAdvance = false;
         auto resolvedContent = linkerScriptFile.ResolveRawEntry(*localIterator);
         auto lineChangeDetected = parsingStartIteratorPosition->EndLineNumber() != localIterator->EndLineNumber();
-
-        CRawEntry oneEntryAhead;
-        if (localIterator + 1 != endOfVectorIterator)
-        {
-            oneEntryAhead = *(localIterator+1);
-        }
+        auto oneEntryAhead = (localIterator + 1 != endOfVectorIterator) ? *(localIterator+1) : CRawEntry();
 
         if (lineChangeDetected && !this->m_supportsMultiLine)
         {
@@ -103,8 +101,6 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                 parsedContent.emplace_back(std::shared_ptr<CComment>(new CComment({*localIterator},{})));
                 break;
             }
-
-
 
             case RawEntryType::Word:
             {
@@ -155,8 +151,6 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                 break;
             }
 
-
-
             case RawEntryType::Semicolon:
             case RawEntryType::Comma:
             {
@@ -177,8 +171,6 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                 break;
             }
 
-
-
             case RawEntryType::Colon:
             {
                 switch (parserState)
@@ -192,8 +184,18 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                         {
                             case TernaryState::AwaitingThenExpression:
                             {
-                                // Ternary wise it is NOT OK.
-                                violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::TernaryExpressionMissingElseOutcome)));
+                                // EXCPETION: When parsing 'address' of a section-output command, an unexpected
+                                // colon spells the end of parsing, pretty much like semicolon.
+                                if (this->m_isSectionOutputAddressParser)
+                                {
+                                    localIterator = previousPositionIterator;
+                                    parserState = ParserState::ParsingComplete;
+                                }
+                                else
+                                {
+                                    // Ternary wise it is NOT OK.
+                                    violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::TernaryExpressionMissingElseOutcome)));
+                                }
                                 break;
                             }
 
@@ -220,9 +222,18 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                         {
                             case TernaryState::AwaitingThenExpression:
                             {
-                                // Ternary wise it is NOT OK.
-                                violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::TernaryExpressionMissingElseOutcome)));
-                                break;
+                                // EXCPETION: When parsing 'address' of a section-output command, an unexpected
+                                // colon spells the end of parsing, pretty much like semicolon.
+                                if (this->m_isSectionOutputAddressParser)
+                                {
+                                    localIterator = previousPositionIterator;
+                                    parserState = ParserState::ParsingComplete;
+                                }
+                                else
+                                {
+                                    // Ternary wise it is NOT OK.
+                                    violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::TernaryExpressionMissingElseOutcome)));
+                                }
                             }
 
                             case TernaryState::AwaitingElseExpression:
@@ -250,8 +261,6 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                 previousOperator = CRawEntry();
                 break;
             }
-
-
 
             case RawEntryType::QuestionMark:
             {
@@ -325,8 +334,6 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                 break;
             }
 
-
-
             case RawEntryType::EvaluativeOperators:
             {
                 switch (parserState)
@@ -364,8 +371,6 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                 previousOperator = *localIterator;
                 break;
             }
-
-
 
             case RawEntryType::ArithmeticOperator:
             {
@@ -405,15 +410,11 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                 break;
             }
 
-
-
             case RawEntryType::AssignmentOperator:
             {
                 // This indicates that we've not been parsing an expression all along
                 return nullptr;
             }
-
-
 
             case RawEntryType::Number:
             {
@@ -445,8 +446,6 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                 break;
             }
 
-
-
             case RawEntryType::String:
             {
                 switch (parserState)
@@ -477,8 +476,6 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                 break;
             }
 
-
-
             case RawEntryType::ParenthesisOpen:
             {
                 switch (parserState)
@@ -492,7 +489,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                         }
 
                         // This could be an expression
-                        CExpressionParser nestedExpressionParser(this->m_supportsMultiLine);
+                        CExpressionParser nestedExpressionParser(this->m_supportsMultiLine, true, false);
                         auto parsedNestedExpression = nestedExpressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
                         if (parsedNestedExpression != nullptr)
                         {
@@ -515,8 +512,6 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                 previousOperator = CRawEntry();
                 break;
             }
-
-
 
             case RawEntryType::ParenthesisClose:
             {
@@ -553,8 +548,6 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                 break;
             }
 
-
-
             // Brackets are sensitive and the matter needs to be escalated to higher-up
             case RawEntryType::BracketOpen:
             case RawEntryType::BracketClose:
@@ -565,15 +558,11 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                 break;
             }
 
-
-
             case RawEntryType::Unknown:
             {
                 violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
                 break;
             }
-
-
 
             case RawEntryType::NotPresent:
                 throw CMasterParsingException(
