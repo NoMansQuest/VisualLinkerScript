@@ -17,6 +17,29 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
     using namespace VisualLinkerScript::Models::Raw;
     using namespace VisualLinkerScript::Models;
 
+    /// @brief Object used by all MatchSequenceXXXX functions.
+    /// @return 
+    struct SequenceMatchResult
+    {
+        public: 
+            /// @brief Instantiates a new instance of SequenceMatchResulted    
+            SequenceMatchResult(bool successful, std::vector<CRawEntry>&& matchedElements)
+                : m_successful(successful),
+                  m_matchedElements(matchedElements)
+            {}      
+
+        private:
+            std::vector<CRawEntry> m_matchedElements;
+            bool m_successful;        
+
+        public: 
+            /// @brief Reports back whether the match was successful       
+            bool Successful { return m_successful; } 
+
+            /// @brief Reports backs a list of matched elements, in the order of matching
+            std::vector<CRawEntry>& MatchedElements() const { return m_matchedElements; }                
+    };
+
     /// @brief Checks if the <start> [any entry in 'enclosingContent'] <stop> is present.
     bool MatchSequenceAnyContentWithinEnclosure(
             CRawFile& linkerScriptFile,
@@ -50,6 +73,12 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
             std::vector<CRawEntry>::const_iterator& iterator,
             std::vector<CRawEntry>::const_iterator endOfVectorIterator);
 
+    /// @brief Finds the next non-comment iterator. Returns endOfVector if not found.
+    std::vector<CRawEntry>::const_iterator FindNextNonCommentEntry(
+            CRawFile& linkerScriptFile,
+            std::vector<CRawEntry>::const_iterator startingPoint,
+            std::vector<CRawEntry>::const_iterator endOfVectorIterator);        
+
 
     /// @brief Base class for all sub-parsers
     template<typename TOutputType>
@@ -70,7 +99,7 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
         virtual std::shared_ptr<TOutputType> TryParse(
                 CRawFile& linkerScriptFile,
                 std::vector<CRawEntry>::const_iterator& iterator,
-                std::vector<CRawEntry>::const_iterator& endOfVectorIterator) = 0;
+                std::vector<CRawEntry>::const_iterator endOfVectorIterator) = 0;
     };
 }
 

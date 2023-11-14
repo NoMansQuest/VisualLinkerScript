@@ -31,7 +31,7 @@ template <SubParserType TParserType, typename TContentParserType, class TProduci
 std::shared_ptr<TProducingOutputType> CScopedRegionParser<TParserType, TContentParserType, TProducingOutputType>::TryParse(
         CRawFile& linkerScriptFile,
         std::vector<CRawEntry>::const_iterator& iterator,
-        std::vector<CRawEntry>::const_iterator& endOfVectorIterator)
+        std::vector<CRawEntry>::const_iterator endOfVectorIterator)
 {
     std::vector<CRawEntry>::const_iterator localIterator = iterator;
     std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = iterator;

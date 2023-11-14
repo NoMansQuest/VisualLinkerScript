@@ -13,7 +13,7 @@ using namespace VisualLinkerScript;
 using namespace VisualLinkerScript::ParsingEngine::SubParsers;
 
 
-bool MatchSequenceAnyContentWithinEnclosure(
+SequenceMatchResult MatchSequenceAnyContentWithinEnclosure(
     CRawFile& linkerScriptFile,
     std::vector<CRawEntry>::const_iterator iterator,
     std::vector<CRawEntry>::const_iterator endOfVectorIterator,
@@ -22,11 +22,14 @@ bool MatchSequenceAnyContentWithinEnclosure(
     std::string end,
     bool caseSensitive)
 {
+    std::vector<CRawEntry> matchingElements;
     if (!AdvanceToNextNonCommentEntry(linkerScriptFile, iterator, endOfVectorIterator) ||
         !StringEquals(linkerScriptFile.ResolveRawEntry(*iterator), start, !caseSensitive))
     {
         return false;
     }
+
+    matchingElements.emplace_back(*iterator);
 
     for (auto entry: enclosingContent)
     {
@@ -39,6 +42,8 @@ bool MatchSequenceAnyContentWithinEnclosure(
         {
             return false;
         }
+
+        matchingElements.emplace_back(*iterator);
     }
 
     if (!AdvanceToNextNonCommentEntry(linkerScriptFile, iterator, endOfVectorIterator))
@@ -46,21 +51,27 @@ bool MatchSequenceAnyContentWithinEnclosure(
         return false;
     }
 
-    return StringEquals(linkerScriptFile.ResolveRawEntry(*iterator), start, !caseSensitive);
+    matchingElements.emplace_back(*iterator);
+
+    auto matchSuccess = StringEquals(linkerScriptFile.ResolveRawEntry(*iterator), start, !caseSensitive);
+    return SequenceMatchResult(matchSuccess, std::move(matchingElements));
 }
 
 
-bool MatchSequenceOpenEnded(
+SequenceMatchResult MatchSequenceOpenEnded(
     CRawFile& linkerScriptFile,
     std::vector<CRawEntry>::const_iterator iterator,
     std::vector<CRawEntry>::const_iterator endOfVectorIterator,
     std::vector<std::string> expectedExactSequence,
     bool caseSensitive)
 {
+    std::vector<CRawEntry> matchingElements;
     if (!AdvanceToNextNonCommentEntry(linkerScriptFile, iterator, endOfVectorIterator))
     {
         return false;
     }
+
+    matchingElements.emplance_back(*iterator);
 
     for (auto entry: expectedExactSequence)
     {
@@ -74,27 +85,31 @@ bool MatchSequenceOpenEnded(
             return false;
         }
 
+        matchingElements.emplance_back(*iterator);
         iterator++;
     }
 
-    return true;
+    return SequenceMatchResult(true, std::move(matchingElements));
 }
 
 
-bool MatchSequenceAnyContent(
+SequenceMatchResult MatchSequenceAnyContent(
     CRawFile& linkerScriptFile,
     std::vector<CRawEntry>::const_iterator iterator,
     std::vector<CRawEntry>::const_iterator endOfVectorIterator,
     std::vector<std::string> allEligibleEntries,
     bool caseSensitive)
 {
+    std::vector<CRawEntry> matchingElements;
     if (!AdvanceToNextNonCommentEntry(linkerScriptFile, iterator, endOfVectorIterator))
     {
         return false;
     }
 
     auto resolvedContent = linkerScriptFile.ResolveRawEntry(*iterator);
-    return (StringIn(resolvedContent, allEligibleEntries, caseSensitive));
+    matchingElements.emplance_back(*iterator);    
+    auto matchSuccess = StringIn(resolvedContent, allEligibleEntries, caseSensitive);
+    return SequenceMatchResult(matchSuccess, std::move(matchingElements));
 }
 
 

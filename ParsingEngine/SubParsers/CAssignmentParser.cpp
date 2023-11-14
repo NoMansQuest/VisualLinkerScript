@@ -36,7 +36,7 @@ namespace
 std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
         CRawFile& linkerScriptFile,
         std::vector<CRawEntry>::const_iterator& iterator,
-        std::vector<CRawEntry>::const_iterator& endOfVectorIterator)
+        std::vector<CRawEntry>::const_iterator endOfVectorIterator)
 {
     std::vector<CRawEntry>::const_iterator localIterator = iterator;
     std::vector<CRawEntry>::const_iterator previousPositionIterator = iterator;
