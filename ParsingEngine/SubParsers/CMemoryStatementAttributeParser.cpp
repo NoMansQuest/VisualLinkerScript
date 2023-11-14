@@ -117,6 +117,7 @@ namespace
                 default:
                 {
                     detectedViolations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation({ rawEntry }, EParserViolationCode::UnrecognizedAttributeSymbolWasFound)));
+                    break;
                 }
             }
         }
@@ -144,6 +145,7 @@ std::shared_ptr<CMemoryStatementAttribute> CMemoryStatementAttributeParser::TryP
 
     auto parserState = ParserState::AwaitingParenthesisOverture;
     auto doNotAdvance = false;
+    auto negatorArmed = false;
 
     CRawEntry parenthesisOpen;
     CRawEntry parenthesisClose;
@@ -255,6 +257,27 @@ std::shared_ptr<CMemoryStatementAttribute> CMemoryStatementAttributeParser::TryP
             }
 
             case RawEntryType::ArithmeticOperator:
+            {
+                if (resolvedContent != "!")
+                {
+                    violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
+                    break;
+                }
+
+                if (negatorArmed)
+                {
+                    violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::NegatingSymbolIsAlreadySet)));
+                }
+
+                negatorArmed = true;
+                break;
+            }
+
+            case RawEntryType::Colon:
+            case RawEntryType::QuestionMark:
+            case RawEntryType::Semicolon:
+            case RawEntryType::EvaluativeOperators:
+            case RawEntryType::Comma:
             case RawEntryType::AssignmentOperator:
             case RawEntryType::Number:
             case RawEntryType::String:            

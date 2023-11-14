@@ -22,16 +22,21 @@ namespace VisualLinkerScript::Models
         explicit CMemoryStatement(CRawEntry nameEntry,
                                   std::shared_ptr<CLinkerScriptContentBase> attributes,
                                   CRawEntry colonEntry,
-                                  std::shared_ptr<CLinkerScriptContentBase> originAssignment,
-                                  std::shared_ptr<CLinkerScriptContentBase> lengthAssignment,
+                                  CRawEntry originHeaderEntry,
+                                  CRawEntry originAssignmentSymbolEntry,
+                                  CRawEntry commaSeparatingOriginFromLengthEntry,
+                                  CRawEntry lengthHeaderEntry,
+                                  CRawEntry lengthAssignmentSymbolEntry,
+                                  std::shared_ptr<CLinkerScriptContentBase> originRValue,
+                                  std::shared_ptr<CLinkerScriptContentBase> lengthRValue,
                                   std::vector<CRawEntry>&& rawEntries,
                                   SharedPtrVector<CViolationBase>&& violations)
             : CLinkerScriptContentBase(std::move(rawEntries), std::move(violations)),
               m_nameEntry(nameEntry),
               m_attributes(attributes),
               m_colonEntry(colonEntry),
-              m_originAssignment(originAssignment),
-              m_lengthAssignment(lengthAssignment)
+              m_originAssignment(originRValue),
+              m_lengthAssignment(lengthRValue)
         {}        
 
     public:

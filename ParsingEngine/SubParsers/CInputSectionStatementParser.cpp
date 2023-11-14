@@ -173,6 +173,11 @@ std::shared_ptr<CInputSectionStatement> CInputSectionStatementParser::TryParse(
                 break;
             }
 
+            case RawEntryType::Comma:
+            case RawEntryType::EvaluativeOperators:
+            case RawEntryType::Semicolon:
+            case RawEntryType::QuestionMark:
+            case RawEntryType::Colon:
             case RawEntryType::ArithmeticOperator:
             {
                 // We ignore commas

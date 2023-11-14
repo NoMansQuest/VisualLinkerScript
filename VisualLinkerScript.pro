@@ -131,6 +131,7 @@ SOURCES += \
     ParsingEngine/SubParsers/CSectionOutputTypeParser.cpp \
     ParsingEngine/SubParsers/CSectionOverlayParser.cpp \
     ParsingEngine/SubParsers/CSectionsRegionParser.cpp \
+    ParsingEngine/SubParsers/CSubParserBase.cpp \
     ParsingEngine/SubParsers/CVersionRegionContentParser.cpp \
     ParsingEngine/SubParsers/Constants.cpp \
     ParsingEngine/SubParsers/CInputSectionFunctionParser.cpp \

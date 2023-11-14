@@ -21,6 +21,7 @@ namespace VisualLinkerScript::ParsingEngine
         // Memory region violations:
         NoSymbolOrKeywordAllowedAfterMemoryHeader,
         ReadAttributeIsAlreadySet,
+        WasExpectingEqualOperatorHere,
         ReadWriteAttributeIsAlreadySet,
         AlloctableAttributeIsAlreadySet,
         ExecutableAttributeIsAlreadySet,
@@ -28,7 +29,9 @@ namespace VisualLinkerScript::ParsingEngine
         NegatingSymbolIsAlreadySet,
         UnrecognizedAttributeSymbolWasFound,
         MemorySectionNameShouldNotBeAReservedKeyword,
-        WasExpectingAttributeHereButEitherNotPresentOrInvalid,
+        WasExpectingOriginDeclaration,
+        WasExpectingLengthDeclaration,
+        WasExpectingAttributeHere,
 
         // Expression violations:
         OperatorIsNotAcceptedHere,
@@ -50,7 +53,10 @@ namespace VisualLinkerScript::ParsingEngine
         // Functiosn parsing violations:
         FunctionsCannotExpandToMultipleLines,
         FunctionNotRecognized,
+        WasExpectingFirstParameterHere,
+        NoParameterProvidedForTheFunction,
         WasExpectingFunctioNameHere,
+        WasExpectingNextParameter,
         UnexpectedTerminationOfFunction,
         ConsecutiveParameterSeparator,
         SeparatorExpectedInbetweenParameters,

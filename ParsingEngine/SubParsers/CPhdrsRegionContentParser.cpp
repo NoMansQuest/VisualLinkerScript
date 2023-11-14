@@ -4,7 +4,7 @@
 #include <iterator>
 
 #include "CPhdrsRegionContentParser.h"
-#include "CExpressionParser.h"
+#include "CFunctionParser.h"
 #include "Constants.h"
 
 #include "../CMasterParserException.h"
@@ -53,7 +53,8 @@ std::shared_ptr<CPhdrsStatement> CPhdrsRegionContentParser::TryParse(
     CRawEntry fileHdrEntry;
     CRawEntry phdrsEntry;
 
-    CExpressionParser expressionParser(ExpressionParserType::NormalParser, false, RawEntryType::ParenthesisClose);
+    // This is to parse the AT(<Expression>) part. The expression is parenthesized.
+    CFunctionParser functionParser;
 
     std::shared_ptr<CLinkerScriptContentBase> atAddressFunction;
     std::shared_ptr<CLinkerScriptContentBase> flagsFunction;
@@ -140,7 +141,7 @@ std::shared_ptr<CPhdrsStatement> CPhdrsRegionContentParser::TryParse(
                             }
                             else
                             {
-                                auto parsedFunction = expressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
+                                auto parsedFunction = functionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
                                 if (parsedFunction == nullptr)
                                 {
                                     violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation({*localIterator, phdrsEntry }, EParserViolationCode::EntryInvalidOrMisplaced)));
@@ -159,7 +160,7 @@ std::shared_ptr<CPhdrsStatement> CPhdrsRegionContentParser::TryParse(
                             }
                             else
                             {
-                                auto parsedFunction = expressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
+                                auto parsedFunction = functionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
                                 if (parsedFunction == nullptr)
                                 {
                                     violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation({*localIterator, phdrsEntry }, EParserViolationCode::EntryInvalidOrMisplaced)));

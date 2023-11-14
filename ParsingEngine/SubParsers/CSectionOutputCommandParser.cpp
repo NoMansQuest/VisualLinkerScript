@@ -55,7 +55,7 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
     std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = iterator;    
     SharedPtrVector<CViolationBase> violations;
 
-    CExpressionParser expressionParser(ExpressionParserType::NormalParser, false);
+    CExpressionParser expressionParser;
     CFunctionParser functionParser;                             // Example: FILL(0x00000)
     CAssignmentParser assignmentParser;                         // Example: '. = ALIGN(4);'
     CInputSectionStatementParser inputSectionStatementParser;   // Example: 'foo.o (.input2)'
@@ -82,22 +82,14 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
 
         auto resolvedContent = linkerScriptFile.ResolveRawEntry(*localIterator);
         auto localIteratorPlusOne = localIterator + 1;
-        auto localIteratorPlusTwo = localIterator + 2;
         CRawEntry rawEntryPlusOne;
-        CRawEntry rawEntryPlusTwo;
         std::string resolvedContentPlusOne;
-        std::string resolvedContentPlusTwo;
+
 
         if (localIteratorPlusOne != endOfVectorIterator)
         {
             rawEntryPlusOne = *localIteratorPlusOne;
             resolvedContentPlusOne = linkerScriptFile.ResolveRawEntry(rawEntryPlusOne);
-
-            if (localIteratorPlusTwo != endOfVectorIterator)
-            {
-                rawEntryPlusTwo = *localIteratorPlusTwo;
-                resolvedContentPlusTwo = linkerScriptFile.ResolveRawEntry(rawEntryPlusTwo);
-            }
         }
 
         switch (localIterator->EntryType())

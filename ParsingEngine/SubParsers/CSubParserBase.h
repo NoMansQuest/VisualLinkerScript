@@ -17,6 +17,40 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
     using namespace VisualLinkerScript::Models::Raw;
     using namespace VisualLinkerScript::Models;
 
+    /// @brief Checks if the <start> [any entry in 'enclosingContent'] <stop> is present.
+    bool MatchSequenceAnyContentWithinEnclosure(
+            CRawFile& linkerScriptFile,
+            std::vector<CRawEntry>::const_iterator iterator,
+            std::vector<CRawEntry>::const_iterator endOfVectorIterator,
+            std::string start,
+            std::vector<std::string> enclosingContent,
+            std::string end,
+            bool caseSensitive = true);
+
+    /// @brief Checks if the exact sequence defiend in 'expectedExactSequence' is present.
+    bool MatchSequenceOpenEnded(
+            CRawFile& linkerScriptFile,
+            std::vector<CRawEntry>::const_iterator iterator,
+            std::vector<CRawEntry>::const_iterator endOfVectorIterator,
+            std::vector<std::string> expectedExactSequence,
+            bool caseSensitive = true);
+
+    /// @brief Checks if any of the eligibile entries are present right at iterator start.
+    bool MatchSequenceAnyContent(
+            CRawFile& linkerScriptFile,
+            std::vector<CRawEntry>::const_iterator iterator,
+            std::vector<CRawEntry>::const_iterator endOfVectorIterator,
+            std::vector<std::string> allEligibleEntries,
+            bool caseSensitive = true);
+
+    /// @brief Advances current iterator until either end of iterator
+    ///        is reached or a non-comment entry is found.
+    bool AdvanceToNextNonCommentEntry(
+            CRawFile& linkerScriptFile,
+            std::vector<CRawEntry>::const_iterator& iterator,
+            std::vector<CRawEntry>::const_iterator endOfVectorIterator);
+
+
     /// @brief Base class for all sub-parsers
     template<typename TOutputType>
     class CSubParserBase

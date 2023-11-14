@@ -203,6 +203,10 @@ std::shared_ptr<CInputSectionFunction> CInputSectionFunctionParser::TryParse(
                 }
             }
 
+            case RawEntryType::Colon:
+            case RawEntryType::Comma:
+            case RawEntryType::QuestionMark:
+            case RawEntryType::EvaluativeOperators:
             case RawEntryType::ArithmeticOperator:
             {
                 switch (parserState)
