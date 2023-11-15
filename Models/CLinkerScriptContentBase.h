@@ -38,6 +38,7 @@ namespace VisualLinkerScript::Models
         SectionsOverlayStatement,
         SectionOutputFillExpression,
         SectionOutputPhdr,              // Example: :phdr
+        SectionOutputDataExpression,    // Mainly 'CREATE_OBJECT_SYMBOLS'
         InputSectionTargetSection,      // Example: *data.*(... <InputSectionTargetSection> ... )
         InputSection,                   // Example: *data.*(... target-Sections ... )
         VersionsRegion,        

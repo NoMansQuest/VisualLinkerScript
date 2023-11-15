@@ -24,9 +24,15 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
         public: 
             /// @brief Instantiates a new instance of SequenceMatchResulted    
             SequenceMatchResult(bool successful, std::vector<CRawEntry>&& matchedElements)
-                : m_successful(successful),
-                  m_matchedElements(matchedElements)
+                : m_matchedElements(matchedElements),
+                  m_successful(successful)
             {}      
+
+            /// @brief Instantiates a new instance of SequenceMatchResulted
+            SequenceMatchResult()
+                : m_matchedElements(),
+                  m_successful(false)
+            {}
 
         private:
             std::vector<CRawEntry> m_matchedElements;
@@ -34,14 +40,14 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
 
         public: 
             /// @brief Reports back whether the match was successful       
-            bool Successful { return m_successful; } 
+            bool Successful() { return m_successful; }
 
             /// @brief Reports backs a list of matched elements, in the order of matching
-            std::vector<CRawEntry>& MatchedElements() const { return m_matchedElements; }                
+            const std::vector<CRawEntry>& MatchedElements() { return m_matchedElements; }
     };
 
     /// @brief Checks if the <start> [any entry in 'enclosingContent'] <stop> is present.
-    bool MatchSequenceAnyContentWithinEnclosure(
+    SequenceMatchResult MatchSequenceAnyContentWithinEnclosure(
             CRawFile& linkerScriptFile,
             std::vector<CRawEntry>::const_iterator iterator,
             std::vector<CRawEntry>::const_iterator endOfVectorIterator,
@@ -51,7 +57,7 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
             bool caseSensitive = true);
 
     /// @brief Checks if the exact sequence defiend in 'expectedExactSequence' is present.
-    bool MatchSequenceOpenEnded(
+    SequenceMatchResult MatchSequenceOpenEnded(
             CRawFile& linkerScriptFile,
             std::vector<CRawEntry>::const_iterator iterator,
             std::vector<CRawEntry>::const_iterator endOfVectorIterator,
@@ -59,7 +65,7 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
             bool caseSensitive = true);
 
     /// @brief Checks if any of the eligibile entries are present right at iterator start.
-    bool MatchSequenceAnyContent(
+    SequenceMatchResult MatchSequenceAnyContent(
             CRawFile& linkerScriptFile,
             std::vector<CRawEntry>::const_iterator iterator,
             std::vector<CRawEntry>::const_iterator endOfVectorIterator,

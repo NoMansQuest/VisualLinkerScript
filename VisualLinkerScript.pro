@@ -283,6 +283,7 @@ HEADERS += \
     DrcEngine/Rules/CSectionsDefinedOnlyOnceRule.h \
     DrcEngine/Rules/CSymbolsDefinedInAdvanceRule.h \
     Helpers.h \
+    Models/CSectionOutputDataExpression.h \
     QueryEngine/CLinq.h \
     QueryEngine/QueryCenter.h \
     LinkerScriptManager/CLinkerScriptManager.h \
@@ -312,7 +313,6 @@ HEADERS += \
     Models/CSectionOutputFillExpression.h \
     Models/CSectionOutputOverlay.h \
     Models/CSectionOutputPhdr.h \
-    Models/CSectionOutputSpecialKeyword.h \
     Models/CSectionOutputToVmaRegion.h \
     Models/CSectionOutputType.h \
     Models/CSectionsRegion.h \

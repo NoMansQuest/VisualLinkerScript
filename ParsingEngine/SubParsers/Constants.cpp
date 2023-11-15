@@ -260,7 +260,7 @@ bool CParserHelpers::IsIllegalProgramHeaderName(const std::string& wordToCheck)
     auto wordToCheckInUpperCase = ToUpper(wordToCheck);
     return std::find(ListOfIllegalProgramHeaderNames.cbegin(),
                      ListOfIllegalProgramHeaderNames.cend(),
-                     wordToCheckInUpperCase) != ListOfOutputSectionTypes.cend();
+                     wordToCheckInUpperCase) != ListOfIllegalProgramHeaderNames.cend();
 }
 
 bool CParserHelpers::IsLegalProgramHeaderType(const std::string& wordToCheck)
@@ -268,7 +268,7 @@ bool CParserHelpers::IsLegalProgramHeaderType(const std::string& wordToCheck)
     auto wordToCheckInUpperCase = ToUpper(wordToCheck);
     return std::find(ListOfProgramHeaderTypes.cbegin(),
                      ListOfProgramHeaderTypes.cend(),
-                     wordToCheckInUpperCase) != ListOfOutputSectionTypes.cend();
+                     wordToCheckInUpperCase) != ListOfProgramHeaderTypes.cend();
 }
 
 bool CParserHelpers::IsSectionOutputType(const std::string& wordToCheck)
