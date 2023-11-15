@@ -63,7 +63,6 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
     CInputSectionStatementParser inputSectionStatementParser;   // Example: 'foo.o (.input2)'
 
     auto parserState = ParserState::AwaitingHeader;
-    auto doNotAdvance = false;
 
     CRawEntry sectionOutputNameEntry;
     CRawEntry colonEntry;
@@ -72,17 +71,11 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
     std::vector<std::shared_ptr<CLinkerScriptContentBase>> preColonContent;
     std::vector<std::shared_ptr<CLinkerScriptContentBase>> postColonContent;
     std::vector<std::shared_ptr<CLinkerScriptContentBase>> innerContent;
-    std::shared_ptr<CSectionOutputToVmaRegion> toVmaRegion;
-    std::shared_ptr<CSectionOutputAtLmaRegion> atLmaRegion;
-    std::shared_ptr<CSectionOutputType> sectionOutputType;
-    std::vector<std::shared_ptr<CSectionOutputPhdr>> programHeaders;
-    std::shared_ptr<CSectionOutputFillExpression> fillExpression;    
+    std::vector<std::shared_ptr<CLinkerScriptContentBase>> endingContent;
 
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
     {
-        doNotAdvance = false;
         auto resolvedContent = linkerScriptFile.ResolveRawEntry(*localIterator);
-
 
         switch (localIterator->EntryType())
         {
@@ -198,22 +191,22 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
                             auto potentialRegionName = FindNextNonCommentEntry(linkerScriptFile, iterator + 2, endOfVectorIterator);
                             if (potentialRegionName == endOfVectorIterator)
                             {
-                                std::shared_ptr<CViolationBase> missingRegionViolation(new CParserViolation({*localIterator, rawEntryPlusOne}, EParserViolationCode::MissingRegionForAtLmaDefinition));
-                                atLmaRegion.reset(new CSectionOutputAtLmaRegion(
+                                std::shared_ptr<CViolationBase> missingRegionViolation(new CParserViolation({*localIterator, matchResultForAtRegion.MatchedElements()[1]}, EParserViolationCode::MissingRegionForAtLmaDefinition));
+                                auto atLmaRegion = std::shared_ptr<CLinkerScriptContentBase>(new CSectionOutputAtLmaRegion(
                                                       matchResultForAtRegion.MatchedElements().at(0),
                                                       matchResultForAtRegion.MatchedElements().at(1),
                                                       CRawEntry(),
                                                       { missingRegionViolation }));
-
+                                endingContent.emplace_back(atLmaRegion);
                                 localIterator++; // We need to position the iterator at the last parsed element.
                             }
                             else
                             {
-                                atLmaRegion.reset(new CSectionOutputAtLmaRegion(
+                                auto atLmaRegion = std::shared_ptr<CLinkerScriptContentBase>(new CSectionOutputAtLmaRegion(
                                                       matchResultForAtRegion.MatchedElements().at(0),
                                                       matchResultForAtRegion.MatchedElements().at(1),
                                                       *potentialRegionName));
-
+                                endingContent.emplace_back(atLmaRegion);
                                 localIterator += 2; // We need to position the iterator at the last parsed element.
                             }
                         }
@@ -260,10 +253,11 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
                             if ((oneEntryAhead == endOfVectorIterator) || (oneEntryAhead->EntryType() != RawEntryType::Word)) {
                                 violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
                             } else {
-                                toVmaRegion.reset(new CSectionOutputToVmaRegion(*localIterator,
+                                auto toVmaRegion = std::shared_ptr<CLinkerScriptContentBase>(new CSectionOutputToVmaRegion(*localIterator,
                                                                                 *oneEntryAhead,
                                                                                 {*localIterator, *oneEntryAhead},
                                                                                 {}));
+                                endingContent.emplace_back(toVmaRegion);
                                 localIterator = oneEntryAhead;
                             }
 
@@ -275,10 +269,12 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
                                     toVmaRegionViolations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation({*localIterator, *oneEntryAhead}, EParserViolationCode::VmaRegionNameCannotBeAReservedWord)));
                                 }
 
-                                toVmaRegion.reset(new CSectionOutputToVmaRegion(*localIterator,
+                                auto toVmaRegion = std::shared_ptr<CLinkerScriptContentBase>(new CSectionOutputToVmaRegion(*localIterator,
                                                                                 *oneEntryAhead,
                                                                                 {*localIterator, *oneEntryAhead},
                                                                                 std::move(toVmaRegionViolations)));
+
+                                endingContent.emplace_back(toVmaRegion);
                                 localIterator = oneEntryAhead;
                             } else {
                                 violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
@@ -327,12 +323,12 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
                         } else {
                             SharedPtrVector<CViolationBase> programHeaderViolations;
                             auto resolvedOneEntryAhead = linkerScriptFile.ResolveRawEntry(*oneEntryAhead);
-                            fillExpression = std::shared_ptr<CSectionOutputFillExpression>(
+                            auto fillExpression = std::shared_ptr<CLinkerScriptContentBase>(
                                     new CSectionOutputFillExpression(*localIterator,
                                                            *oneEntryAhead,
                                                            {*localIterator, *oneEntryAhead},
                                                            std::move(programHeaderViolations)));
-
+                            endingContent.emplace_back(fillExpression);
                             localIterator = oneEntryAhead;
                         }
 
@@ -390,7 +386,7 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
                                                            {*localIterator, *oneEntryAhead},
                                                            std::move(programHeaderViolations)));
 
-                            programHeaders.emplace_back(phdrCall);
+                            endingContent.emplace_back(phdrCall);
                             localIterator = oneEntryAhead;
                         }
 
@@ -427,7 +423,8 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
                         auto matchResult = MatchSequenceAnyContentWithinEnclosure(linkerScriptFile, iterator, endOfVectorIterator, "(", validTypes, ")");
                         if (matchResult.Successful()) {
                             auto matchedElements = matchResult.MatchedElements();
-                            sectionOutputType.reset(new CSectionOutputType(matchedElements[1], matchedElements[0], matchedElements[2], std::move(matchedElements), {}));
+                            auto sectionOutputType = std::shared_ptr<CLinkerScriptContentBase>(new CSectionOutputType(matchedElements[1], matchedElements[0], matchedElements[2], std::move(matchedElements), {}));
+                            preColonContent.emplace_back(sectionOutputType);
                             parserState = ParserState::AwaitingColon;
 
                         } else {
@@ -451,28 +448,8 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
 
                     case ParserState::AwaitingEndOfParse:
                     {
-                        auto oneEntryAhead = iterator + 1;
-                        if ((oneEntryAhead == endOfVectorIterator) || (oneEntryAhead->EntryType() != RawEntryType::Word)) {
-                            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
-
-                        } else {
-                            SharedPtrVector<CViolationBase> programHeaderViolations;
-                            auto resolvedOneEntryAhead = linkerScriptFile.ResolveRawEntry(*oneEntryAhead);
-
-                            if (CParserHelpers::IsReservedWord(resolvedOneEntryAhead)) {
-                                programHeaderViolations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation({*localIterator, *oneEntryAhead}, EParserViolationCode::ProgramHeaderNameCannotBeAReservedWord)));
-                            }
-
-                            auto phdrCall = std::shared_ptr<CSectionOutputPhdr>(
-                                    new CSectionOutputPhdr(*localIterator,
-                                                           *oneEntryAhead,
-                                                           {*localIterator, *oneEntryAhead},
-                                                           std::move(programHeaderViolations)));
-
-                            programHeaders.emplace_back(phdrCall);
-                            localIterator = oneEntryAhead;
-                        }
-
+                        localIterator = previousPositionIterator;
+                        parserState = ParserState::ParsingComplete;
                         break;
                     }
 
@@ -617,12 +594,9 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
                                           std::move(postColonContent),
                                           colonEntry,
                                           bracketOpenEntry,
-                                          bracketCloseEntry,
-                                          toVmaRegion,
-                                          atLmaRegion,
-                                          std::move(programHeaders),
-                                          fillExpression,
                                           std::move(innerContent),
+                                          bracketCloseEntry,
+                                          std::move(endingContent),
                                           std::move(rawEntries),
                                           std::move(violations)));
 }
