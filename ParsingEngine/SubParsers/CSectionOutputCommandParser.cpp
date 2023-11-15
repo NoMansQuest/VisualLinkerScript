@@ -193,8 +193,8 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
                             {
                                 std::shared_ptr<CViolationBase> missingRegionViolation(new CParserViolation({*localIterator, matchResultForAtRegion.MatchedElements()[1]}, EParserViolationCode::MissingRegionForAtLmaDefinition));
                                 auto atLmaRegion = std::shared_ptr<CLinkerScriptContentBase>(new CSectionOutputAtLmaRegion(
-                                                      matchResultForAtRegion.MatchedElements().at(0),
-                                                      matchResultForAtRegion.MatchedElements().at(1),
+                                                      matchResultForAtRegion.MatchedElements()[0],
+                                                      matchResultForAtRegion.MatchedElements()[1],
                                                       CRawEntry(),
                                                       { missingRegionViolation }));
                                 endingContent.emplace_back(atLmaRegion);
@@ -203,8 +203,8 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
                             else
                             {
                                 auto atLmaRegion = std::shared_ptr<CLinkerScriptContentBase>(new CSectionOutputAtLmaRegion(
-                                                      matchResultForAtRegion.MatchedElements().at(0),
-                                                      matchResultForAtRegion.MatchedElements().at(1),
+                                                      matchResultForAtRegion.MatchedElements()[0],
+                                                      matchResultForAtRegion.MatchedElements()[1],
                                                       *potentialRegionName));
                                 endingContent.emplace_back(atLmaRegion);
                                 localIterator += 2; // We need to position the iterator at the last parsed element.
