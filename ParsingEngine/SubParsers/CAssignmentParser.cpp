@@ -38,9 +38,8 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
         std::vector<CRawEntry>::const_iterator& iterator,
         std::vector<CRawEntry>::const_iterator endOfVectorIterator)
 {
-    std::vector<CRawEntry>::const_iterator localIterator = iterator;
-    std::vector<CRawEntry>::const_iterator previousPositionIterator = iterator;
-    std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = iterator;
+    auto localIterator = iterator;
+    auto parsingStartIteratorPosition = iterator;
     SharedPtrVector<CLinkerScriptContentBase> parsedContent;
     SharedPtrVector<CViolationBase> violations;
 
@@ -64,7 +63,6 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
 
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
     {
-        doNotAdvance = false;
         auto resolvedContent = linkerScriptFile.ResolveRawEntry(*localIterator);
 
         switch (localIterator->EntryType())
@@ -152,7 +150,7 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
 
                     case ParserState::AwaitingParenthesisClosure:
                     {
-                        localIterator = previousPositionIterator;
+                        localIterator--;
                         parserState = ParserState::ParsingComplete;
                         break;
                     }
@@ -391,7 +389,7 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
                     case ParserState::AwaitingParenthesisClosure:
                     {
                         // Need to mark this error
-                        localIterator = previousPositionIterator;
+                        localIterator--;
                         violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::RValueExpressionParsingFailed)));
                         parserState = ParserState::ParsingComplete;
                         break;
@@ -426,8 +424,7 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
             }
         }
 
-        previousPositionIterator = localIterator;
-        localIterator = ((parserState != ParserState::ParsingComplete) && !doNotAdvance) ?
+        localIterator = (parserState != ParserState::ParsingComplete) ?
                         localIterator + 1 :
                         localIterator;
     }

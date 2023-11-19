@@ -8,6 +8,7 @@
 #include "CInputSectionStatementParser.h"
 #include "CFunctionParser.h"
 #include "CAssignmentParser.h"
+#include "CAssignmentProcedureParser.h"
 #include "Constants.h"
 
 #include "../CMasterParserException.h"
@@ -52,14 +53,14 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
         std::vector<CRawEntry>::const_iterator& iterator,
         std::vector<CRawEntry>::const_iterator endOfVectorIterator)
 {
-    std::vector<CRawEntry>::const_iterator localIterator = iterator;
-    std::vector<CRawEntry>::const_iterator previousPositionIterator = iterator;
-    std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = iterator;    
+    auto localIterator = iterator;
+    auto parsingStartIteratorPosition = iterator;
     SharedPtrVector<CViolationBase> violations;
 
     CExpressionParser expressionParser;
     CFunctionParser functionParser;                             // Example: FILL(0x00000)
     CAssignmentParser assignmentParser;                         // Example: '. = ALIGN(4);'
+    CAssignmentProcedureParser assignmentProcedureParser;       // Example: PROVIDE(a = b);'
     CInputSectionStatementParser inputSectionStatementParser;   // Example: 'foo.o (.input2)'
 
     auto parserState = ParserState::AwaitingHeader;
@@ -68,6 +69,7 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
     CRawEntry colonEntry;
     CRawEntry bracketOpenEntry;
     CRawEntry bracketCloseEntry;
+    CRawEntry noCrossRefsEntry;
     std::vector<std::shared_ptr<CLinkerScriptContentBase>> preColonContent;
     std::vector<std::shared_ptr<CLinkerScriptContentBase>> postColonContent;
     std::vector<std::shared_ptr<CLinkerScriptContentBase>> innerContent;
@@ -132,18 +134,33 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
                     case ParserState::AwaitingBracketOpen:
                     case ParserState::AwaitingColon:
                     {
-                        // Here the job is a bit difficult. We need to extract
-                        // 1 - [Optional] The 'startAddress' in form of an expression
-                        // 2 - [Optional] The 'Block(align)' function call
-                        // 3 - [Optional] The section-output type (e.g. (NOLOAD))
-                        auto parsedContent =  std::dynamic_pointer_cast<CLinkerScriptContentBase>(expressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator));
-                        if (parsedContent == nullptr) {
-                            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
-                        } else {
-                            if (parserState == ParserState::AwaitingColon) {
-                                preColonContent.emplace_back(parsedContent);
+                        if ((StringEquals(resolvedContent, "NOCROSSREFS")) &&
+                            (parserState == ParserState::AwaitingBracketOpen))
+                        {
+                            if (!noCrossRefsEntry.IsPresent())
+                            {
+                                noCrossRefsEntry = *localIterator;
+                            }
+                            else
+                            {
+                                violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::NoCrossRefsAlreadyDeclared)));
+                            }
+                        }
+                        else
+                        {
+                            // Here the job is a bit difficult. We need to extract
+                            // 1 - [Optional] The 'startAddress' in form of an expression
+                            // 2 - [Optional] The 'Block(align)' function call
+                            // 3 - [Optional] The section-output type (e.g. (NOLOAD))
+                            auto parsedContent =  std::dynamic_pointer_cast<CLinkerScriptContentBase>(expressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator));
+                            if (parsedContent == nullptr) {
+                                violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
                             } else {
-                                postColonContent.emplace_back(parsedContent);
+                                if (parserState == ParserState::AwaitingColon) {
+                                    preColonContent.emplace_back(parsedContent);
+                                } else {
+                                    postColonContent.emplace_back(parsedContent);
+                                }
                             }
                         }
                         break;
@@ -154,6 +171,15 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
                         if (CParserHelpers::IsInputSectionSpecialFunctionName(resolvedContent)) {
                             // Such as 'CREATE_OBJECT_SYMBOLS'
                             innerContent.emplace_back(std::shared_ptr<CLinkerScriptContentBase>(new CSectionOutputDataExpression(*localIterator)));
+
+                        } else if (CParserHelpers::IsAssignmentProcedure(resolvedContent)) {
+                            // Such as "PROVIDE(....)"
+                            auto parsedAssignmentProcedure = assignmentProcedureParser.TryParse(linkerScriptFile, iterator, endOfVectorIterator);
+                            if (parsedAssignmentProcedure == nullptr) {
+                                violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::FunctionMissingDefinitionOrInvalidSymbolName)));
+                            } else  {
+                                innerContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(parsedAssignmentProcedure));
+                            }
 
                         } else if (CParserHelpers::IsOutputSectionDataFunctionName(resolvedContent)) {
                             // Such as "BYTE(1)", "ALIGN(4)", etc.
@@ -178,7 +204,6 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
                             } else {
                                 innerContent.emplace_back( std::dynamic_pointer_cast<CLinkerScriptContentBase>(parsedAssignment));
                             }
-
                         }
                         break;
                     }
@@ -229,6 +254,8 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
                 break;
             }
 
+            case RawEntryType::Semicolon:
+            case RawEntryType::EvaluativeOperators:
             case RawEntryType::ArithmeticOperator:
             {
                 switch (parserState)
@@ -282,7 +309,7 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
                         }                      
                         else
                         {
-                            localIterator = previousPositionIterator;
+                            localIterator--;
                             parserState = ParserState::ParsingComplete;
                         }
                         break;
@@ -448,7 +475,7 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
 
                     case ParserState::AwaitingEndOfParse:
                     {
-                        localIterator = previousPositionIterator;
+                        localIterator--;
                         parserState = ParserState::ParsingComplete;
                         break;
                     }
@@ -505,9 +532,7 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
                 {
                     case ParserState::AwaitingHeader:
                     {
-                        // Grounds to abort.
-                        localIterator = previousPositionIterator;
-                        parserState = ParserState::ParsingComplete;
+                        // Grounds to abort.                        
                         return nullptr;
                     }
 
@@ -521,6 +546,7 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
                     case ParserState::AwaitingBracketClosure:
                     case ParserState::AwaitingEndOfParse:
                     {
+                        localIterator--;
                         parserState = ParserState::ParsingComplete;
                         break;
                     }
@@ -553,6 +579,7 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
 
                     case ParserState::AwaitingEndOfParse:
                     {
+                        localIterator--;
                         parserState = ParserState::ParsingComplete;
                         break;
                     }
@@ -593,6 +620,7 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
                                           std::move(preColonContent),
                                           std::move(postColonContent),
                                           colonEntry,
+                                          noCrossRefsEntry,
                                           bracketOpenEntry,
                                           std::move(innerContent),
                                           bracketCloseEntry,

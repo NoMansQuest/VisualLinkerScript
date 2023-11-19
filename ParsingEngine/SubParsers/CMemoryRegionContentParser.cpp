@@ -46,17 +46,15 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
         std::vector<CRawEntry>::const_iterator& iterator,
         std::vector<CRawEntry>::const_iterator endOfVectorIterator)
 {
-    std::vector<CRawEntry>::const_iterator localIterator = iterator;
-    std::vector<CRawEntry>::const_iterator previousPositionIterator = iterator;
-    std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = iterator;
+    auto localIterator = iterator;
+    auto parsingStartIteratorPosition = iterator;
+
     SharedPtrVector<CLinkerScriptContentBase> parsedContent;
     SharedPtrVector<CViolationBase> violations;
-
     CExpressionParser expressionParser;
     CMemoryStatementAttributeParser attributeParser;
 
     auto parserState = ParserState::AwaitingName;
-    auto doNotAdvance = false;
 
     CRawEntry nameEntry;
     CRawEntry colonEntry;
@@ -71,7 +69,6 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
 
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
     {
-        doNotAdvance = false;
         auto resolvedContent = linkerScriptFile.ResolveRawEntry(*localIterator);
         auto lineChangeDetected = parsingStartIteratorPosition->EndLineNumber() != localIterator->EndLineNumber();
 
@@ -411,7 +408,7 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
             case RawEntryType::BracketOpen:
             case RawEntryType::BracketClose:
             {
-                localIterator = previousPositionIterator;
+                localIterator--;
                 parserState = ParserState::ParsingComplete;
                 break;
             }
@@ -437,7 +434,7 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
             }
         }
 
-        localIterator = ((parserState != ParserState::ParsingComplete) && !doNotAdvance) ?
+        localIterator = (parserState != ParserState::ParsingComplete) ?
                         localIterator + 1 :
                         localIterator;
     }    

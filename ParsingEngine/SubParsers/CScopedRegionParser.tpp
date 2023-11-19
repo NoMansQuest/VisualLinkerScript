@@ -33,8 +33,8 @@ std::shared_ptr<TProducingOutputType> CScopedRegionParser<TParserType, TContentP
         std::vector<CRawEntry>::const_iterator& iterator,
         std::vector<CRawEntry>::const_iterator endOfVectorIterator)
 {
-    std::vector<CRawEntry>::const_iterator localIterator = iterator;
-    std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = iterator;
+    auto localIterator = iterator;
+    auto parsingStartIteratorPosition = iterator;
     std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
     SharedPtrVector<CViolationBase> violations;
 
@@ -107,6 +107,7 @@ std::shared_ptr<TProducingOutputType> CScopedRegionParser<TParserType, TContentP
                 }
                 else if (parserState == ParserState::AwaitingOpeningBracket)
                 {
+                    localIterator--;
                     parserState = ParserState::ParsingComplete;
                 }
                 break;
@@ -122,6 +123,7 @@ std::shared_ptr<TProducingOutputType> CScopedRegionParser<TParserType, TContentP
                 else if ((parserState == ParserState::AwaitingClosingBracket) ||
                          (parserState == ParserState::AwaitingHeader))
                 {
+                    localIterator--; // This entry here has to be parsed by someone else.
                     parserState = ParserState::ParsingComplete;
                 }
                 break;

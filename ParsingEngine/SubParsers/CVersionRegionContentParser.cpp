@@ -7,6 +7,8 @@
 #include "Constants.h"
 
 #include "../CMasterParserException.h"
+#include "../CParserViolation.h"
+#include "../EParserViolationCode.h"
 
 #include "../../Models/CLinkerScriptContentBase.h"
 #include "../../Models/CVersionScope.h"
@@ -16,8 +18,6 @@
 #include "../../Models/Raw/RawEntryType.h"
 #include "../../Models/Raw/CRawFile.h"
 #include "../../Models/CComment.h"
-#include "../CParserViolation.h"
-#include "../EParserViolationCode.h"
 
 using namespace VisualLinkerScript::Models;
 using namespace VisualLinkerScript::Models::Raw;
@@ -42,13 +42,11 @@ std::shared_ptr<CVersionScope> CVersionRegionContentParser::TryParse(
         std::vector<CRawEntry>::const_iterator& iterator,
         std::vector<CRawEntry>::const_iterator endOfVectorIterator)
 {
-    std::vector<CRawEntry>::const_iterator localIterator = iterator;
-    std::vector<CRawEntry>::const_iterator previousPositionIterator = iterator;
-    std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = iterator;
+    auto localIterator = iterator;
+    auto parsingStartIteratorPosition = iterator;
     SharedPtrVector<CViolationBase> violations;
 
     auto parserState = ParserState::AwaitingHeader;
-    auto doNotAdvance = false;
 
     CRawEntry currentVersionTag; // Set to 'Not Present' by default
 
@@ -61,8 +59,6 @@ std::shared_ptr<CVersionScope> CVersionRegionContentParser::TryParse(
 
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
     {
-        doNotAdvance = false;
-
         auto resolvedContent = linkerScriptFile.ResolveRawEntry(*localIterator);
         auto localIteratorPlusOne = localIterator + 1;
         CRawEntry rawEntryPlusOne;
@@ -197,7 +193,6 @@ std::shared_ptr<CVersionScope> CVersionRegionContentParser::TryParse(
                                     MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
                                     "ParserState invalid in CVersionRegionContentParser");
                 }
-
                 break;
             }
 

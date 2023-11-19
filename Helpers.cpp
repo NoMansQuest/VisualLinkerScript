@@ -3,34 +3,6 @@
 
 using namespace VisualLinkerScript;
 
-
-/// @brief Compares strings
-template <typename T>
-SharedPtrVector<T> VisualLinkerScript::LinqWhere(
-        SharedPtrVector<T> source,
-        std::function<bool(std::shared_ptr<T> element)> filterInput)
-{
-    return SharedPtrVector<T>();
-}
-
-/// @brief Compares strings
-template <typename TElement, typename TReturn>
-SharedPtrVector<TReturn> VisualLinkerScript::LinqSelect(
-        SharedPtrVector<TElement> source,
-        std::function<TReturn(std::shared_ptr<TElement> element)> transformFunction)
-{
-    return SharedPtrVector<TReturn>();
-}
-
-/// @brief Compares strings
-template <typename TElement, typename TReturn>
-SharedPtrVector<TReturn> VisualLinkerScript::LinqDynamicPointerCast(
-        SharedPtrVector<TElement> source)
-{
-    return SharedPtrVector<TReturn>();
-}
-
-
 /// @brief Compares strings
 bool VisualLinkerScript::StringEquals(const std::string& a,
                   const std::string& b,

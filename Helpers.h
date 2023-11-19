@@ -65,38 +65,78 @@ namespace VisualLinkerScript
     template <typename T>
     using SharedPtrVector = std::vector<std::shared_ptr<T>>;
 
-    /// @brief Compares strings
+    /// @brief Performs a 'Linq.Where()'
     template <typename T>
     SharedPtrVector<T> LinqWhere(
-            SharedPtrVector<T> source,
-            std::function<bool(std::shared_ptr<T> element)> filterInput);
+            const SharedPtrVector<T> source,
+            std::function<bool(std::shared_ptr<T> element)> filterInput)
+    {
+        SharedPtrVector<T> returnList;
+        for (const auto entry: source)
+        {
+             if (filterInput(entry))
+             {
+                 returnList.emplace_back(entry);
+             }
+        }
+        return returnList;
+    }
+
+    /// @brief Performs a 'Linq.FirstOrDefault()'
+    template <typename T>
+    std::shared_ptr<T> LinqFirstOrDefault(
+            const SharedPtrVector<T> source,
+            std::function<bool(std::shared_ptr<T> element)> filterInput)
+    {
+        for (const auto entry: source)
+        {
+            if (filterInput(entry))
+            {
+                return entry;
+            }
+        }
+        return nullptr;
+    }
+
+    /// @brief Performs a 'Linq.OfType<>'
+    template <typename TBase, typename TReturn>
+    SharedPtrVector<TReturn> LinqOfType(
+            SharedPtrVector<TBase> source)
+    {
+        SharedPtrVector<TReturn> returnList;
+        for (const auto entry: source)
+        {
+            auto converted = std::dynamic_pointer_cast<TReturn>(entry);
+            if (converted != nullptr)
+            {
+                returnList.emplace_back(converted);
+            }
+        }
+        return returnList;
+    }
+
+    /// @brief Performs a Linq.Select.
+    template <typename TBase, typename TReturn>
+    std::vector<TReturn> LinqSelect(
+            const SharedPtrVector<TBase> source,
+            std::function<TReturn(std::shared_ptr<TBase> element)> transformFunction)
+    {
+        std::vector<TReturn> returnList;
+        for (const auto entry: source)
+        {
+            returnList.emplace_back(transformFunction(entry));
+        }
+        return returnList;
+    }
 
     /// @brief Compares strings
-    template <typename TElement, typename TReturn>
-    SharedPtrVector<TReturn> LinqSelect(
-            SharedPtrVector<TElement> source,
-            std::function<TReturn(std::shared_ptr<TElement> element)> transformFunction);
-
-    /// @brief Compares strings
-    template <typename TElement, typename TReturn>
-    SharedPtrVector<TReturn> LinqDynamicPointerCast(
-            SharedPtrVector<TElement> source);
-
-
-    /// @brief Compares strings
-    bool StringEquals(const std::string& a,
-                      const std::string& b,
-                      bool ignoreCase = false);
+    bool StringEquals(const std::string& a, const std::string& b, bool ignoreCase = false);
 
     /// @brief Searches for a given string in a vector to see if it is present.
-    bool StringIn(const std::string& sourceString,
-                  const std::vector<std::string>& listToCheck,
-                  bool caseSensitive = true);
+    bool StringIn(const std::string& sourceString, const std::vector<std::string>& listToCheck, bool caseSensitive = true);
 
     /// @brief Splits a string based on a given character.
-    std::vector<std::string> StringSplit(
-            const std::string& sourceString,
-            char seperator);
+    std::vector<std::string> StringSplit(const std::string& sourceString, char seperator);
 
     /// @brief Performs C++20 equivalent std::format.
     template<typename ... Args>

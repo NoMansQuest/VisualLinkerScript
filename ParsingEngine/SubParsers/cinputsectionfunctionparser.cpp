@@ -33,17 +33,14 @@ std::shared_ptr<CInputSectionFunction> CInputSectionFunctionParser::TryParse(
         std::vector<CRawEntry>::const_iterator& iterator,
         std::vector<CRawEntry>::const_iterator endOfVectorIterator)
 {
-    std::vector<CRawEntry>::const_iterator localIterator = iterator;
-    std::vector<CRawEntry>::const_iterator previousPositionIterator = iterator;
-    std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = iterator;
+    auto localIterator = iterator;
+    auto parsingStartIteratorPosition = iterator;
     std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
     SharedPtrVector<CViolationBase> violations;
 
     CInputSectionFunctionParser nestedFunctionParser;
 
     auto parserState = ParserState::AwaitingName;
-    auto doNotAdvance = false;
-    auto isFirstEntry = false;
 
     CRawEntry functionNameEntry;
     CRawEntry parenthesisOverture;
@@ -57,7 +54,6 @@ std::shared_ptr<CInputSectionFunction> CInputSectionFunctionParser::TryParse(
 
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
     {
-        doNotAdvance = false;
         auto resolvedContent = linkerScriptFile.ResolveRawEntry(*localIterator);
         auto lineChangeDetected = parsingStartIteratorPosition->EndLineNumber() != localIterator->EndLineNumber();
 
@@ -240,7 +236,7 @@ std::shared_ptr<CInputSectionFunction> CInputSectionFunctionParser::TryParse(
             case RawEntryType::BracketClose:
             {
                 violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::UnexpectedTerminationOfExpression)));
-                localIterator = previousPositionIterator;
+                localIterator--;
                 parserState = ParserState::ParsingComplete;
                 break;
             }
@@ -266,11 +262,9 @@ std::shared_ptr<CInputSectionFunction> CInputSectionFunctionParser::TryParse(
             }
         }
 
-        localIterator = ((parserState != ParserState::ParsingComplete) && !doNotAdvance) ?
+        localIterator = (parserState != ParserState::ParsingComplete) ?
                         localIterator + 1 :
                         localIterator;
-
-        isFirstEntry = false;
     }
 
     std::vector<CRawEntry> rawEntries;

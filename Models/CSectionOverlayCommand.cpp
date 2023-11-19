@@ -14,20 +14,33 @@ const std::string CSectionOverlayCommand::ToDebugInfo(uint32_t depth)
             std::string(typeid(*this).name()) +
             " @line " + std::to_string(this->StartPosition());
 
-    content += std::string(depth, ' ') + " -- Start-address: " + this->StartAddressExpression()->ToDebugInfo(depth + 4) + "\n";
-    content += std::string(depth, ' ') + " -- Inner content: \n";
+    content += std::string(depth, ' ') + " -- PreColon content: \n";
 
-    for (auto subContent : this->ParsedContent())
+    for (auto subContent : this->PreColonContent())
     {
         content += subContent->ToDebugInfo(depth + 4) + "\n";
     }
 
-    content +=  std::string(depth, ' ') + " -- Fill expression : " +  this->FillExpression()->ToDebugInfo(depth + 4) + "\n";
-    content += std::string(depth, ' ') + " -- Program headers : \n";
+    content += std::string(depth, ' ') + " -- PostColon content: \n";
 
-    for (auto subContent : this->ProgramHeaders())
+    for (auto subContent : this->PostColonContent())
     {
         content += subContent->ToDebugInfo(depth + 4) + "\n";
+    }
+
+    content += std::string(depth, ' ') + " -- Inner content: \n";
+
+    for (auto subContent : this->InnerContent())
+    {
+        content += subContent->ToDebugInfo(depth + 4) + "\n";
+    }
+
+    content += std::string(depth, ' ') + " -- Ending content: \n";
+
+    for (auto subContent : this->EndingContent())
+    {
+        content += subContent->ToDebugInfo(depth + 4) + "\n";
+
     }
 
     return std::string(depth, ' ') + " - " + content;

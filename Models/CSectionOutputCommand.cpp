@@ -28,9 +28,21 @@ const std::string CSectionOutputCommand::ToDebugInfo(uint32_t depth)
         content += subContent->ToDebugInfo(depth + 4) + "\n";
     }
 
-    content += std::string(depth, ' ') + "ToVmaRegion: " + this->ToVmaRegion()->ToDebugInfo(depth + 4) + "\n";
-    content += std::string(depth, ' ') + "AtLmaRegionFunction: " + this->AtLmaRegionFunction()->ToDebugInfo(depth + 4) + "\n";
-    content += std::string(depth, ' ') + "AtLmaRegionFunction: " + this->ToVmaRegion()->ToDebugInfo(depth + 4) + "\n";
+
+    content += std::string(depth, ' ') + " -- PreColon content : \n";
+
+    for (auto subContent : this->PreColonContent())
+    {
+        content += subContent->ToDebugInfo(depth + 4) + "\n";
+    }
+
+    content += std::string(depth, ' ') + " -- PostColon content : \n";
+
+    for (auto subContent : this->PostColonContent())
+    {
+        content += subContent->ToDebugInfo(depth + 4) + "\n";
+    }
+
     content += std::string(depth, ' ') + " -- Inner content : \n";
 
     for (auto subContent : this->InnerContent())
@@ -38,13 +50,12 @@ const std::string CSectionOutputCommand::ToDebugInfo(uint32_t depth)
         content += subContent->ToDebugInfo(depth + 4) + "\n";
     }
 
-    content += std::string(depth, ' ') + " -- Program-headers content : \n";
+    content += std::string(depth, ' ') + " -- Ending content : \n";
 
-    for (auto subContent : this->ProgramHeaders())
+    for (auto subContent : this->EndingContent())
     {
         content += subContent->ToDebugInfo(depth + 4) + "\n";
     }
 
-    content += std::string(depth, ' ') + "AtLmaRegionFunction: " + this->FillExpression()->ToDebugInfo(depth + 4) + "\n";
     return std::string(depth, ' ') + " - " + content;
 }

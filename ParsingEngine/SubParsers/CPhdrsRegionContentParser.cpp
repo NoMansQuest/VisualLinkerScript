@@ -40,13 +40,12 @@ std::shared_ptr<CPhdrsStatement> CPhdrsRegionContentParser::TryParse(
         std::vector<CRawEntry>::const_iterator& iterator,
         std::vector<CRawEntry>::const_iterator endOfVectorIterator)
 {   
-    std::vector<CRawEntry>::const_iterator localIterator = iterator;      
-    std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = iterator;    
+    auto localIterator = iterator;
+    auto parsingStartIteratorPosition = iterator;
     std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
     SharedPtrVector<CViolationBase> violations;
 
     auto parserState = ParserState::AwaitingName;
-    auto doNotAdvance = false;
 
     CRawEntry nameEntry;
     CRawEntry typeEntry;
@@ -62,7 +61,6 @@ std::shared_ptr<CPhdrsStatement> CPhdrsRegionContentParser::TryParse(
 
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
     {
-        doNotAdvance = false;
         auto resolvedContent = linkerScriptFile.ResolveRawEntry(*localIterator);
 
         switch (localIterator->EntryType())
@@ -200,6 +198,8 @@ std::shared_ptr<CPhdrsStatement> CPhdrsRegionContentParser::TryParse(
                     semicolonEntry = *iterator;
                     break;
                 }
+
+                localIterator--;
                 parserState = ParserState::ParsingComplete;
                 break;
             }
@@ -240,7 +240,7 @@ std::shared_ptr<CPhdrsStatement> CPhdrsRegionContentParser::TryParse(
             }
         }        
     
-        localIterator = ((parserState != ParserState::ParsingComplete) && !doNotAdvance) ?
+        localIterator = (parserState != ParserState::ParsingComplete) ?
                         localIterator + 1 : 
                         localIterator;
     }

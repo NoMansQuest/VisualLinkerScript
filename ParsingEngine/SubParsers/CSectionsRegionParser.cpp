@@ -44,9 +44,8 @@ std::shared_ptr<CSectionsRegion> CSectionsRegionParser::TryParse(
         std::vector<CRawEntry>::const_iterator& iterator,
         std::vector<CRawEntry>::const_iterator endOfVectorIterator)
 {
-    std::vector<CRawEntry>::const_iterator localIterator = iterator;
-    std::vector<CRawEntry>::const_iterator previousPositionIterator = iterator;
-    std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = iterator;
+    auto localIterator = iterator;
+    auto parsingStartIteratorPosition = iterator;
     SharedPtrVector<CViolationBase> violations;
 
     CFunctionParser functionParser;                             // Example: FILL(0x00000)
@@ -56,7 +55,6 @@ std::shared_ptr<CSectionsRegion> CSectionsRegionParser::TryParse(
     CSectionOverlayParser sectionOverlayParser;                 // Example: OVERLAY...
 
     auto parserState = ParserState::AwaitingHeader;
-    auto doNotAdvance = false;
 
     CRawEntry headerEntry;
     CRawEntry bracketOpenEntry;
@@ -65,27 +63,7 @@ std::shared_ptr<CSectionsRegion> CSectionsRegionParser::TryParse(
 
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
     {
-        doNotAdvance = false;
-
         auto resolvedContent = linkerScriptFile.ResolveRawEntry(*localIterator);
-        auto localIteratorPlusOne = localIterator + 1;
-        auto localIteratorPlusTwo = localIterator + 2;
-        CRawEntry rawEntryPlusOne;
-        CRawEntry rawEntryPlusTwo;
-        std::string resolvedContentPlusOne;
-        std::string resolvedContentPlusTwo;
-
-        if (localIteratorPlusOne != endOfVectorIterator)
-        {
-            rawEntryPlusOne = *localIteratorPlusOne;
-            resolvedContentPlusOne = linkerScriptFile.ResolveRawEntry(rawEntryPlusOne);
-
-            if (localIteratorPlusTwo != endOfVectorIterator)
-            {
-                rawEntryPlusTwo = *localIteratorPlusTwo;
-                resolvedContentPlusTwo = linkerScriptFile.ResolveRawEntry(rawEntryPlusTwo);
-            }
-        }
 
         switch (localIterator->EntryType())
         {
@@ -224,7 +202,7 @@ std::shared_ptr<CSectionsRegion> CSectionsRegionParser::TryParse(
 
                     case ParserState::AwaitingBracketClosure:
                     {
-                        localIterator = previousPositionIterator;
+                        localIterator--;
                         parserState = ParserState::ParsingComplete;
                         break;
                     }
@@ -277,7 +255,7 @@ std::shared_ptr<CSectionsRegion> CSectionsRegionParser::TryParse(
                         "Unrecognized raw-entry type detected.");
         }
 
-        localIterator = ((parserState != ParserState::ParsingComplete) && !doNotAdvance) ?
+        localIterator = (parserState != ParserState::ParsingComplete) ?
                         localIterator + 1 :
                         localIterator;
     }

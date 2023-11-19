@@ -20,6 +20,7 @@ namespace VisualLinkerScript::Models
         std::vector<std::shared_ptr<CLinkerScriptContentBase>> m_innerContent;
         std::vector<std::shared_ptr<CLinkerScriptContentBase>> m_endingContent;
         CRawEntry m_colonEntry;        
+        CRawEntry m_noCrossRefsEntry;
         CRawEntry m_openingBracketEntry;
         CRawEntry m_closingBracketEntry;
 
@@ -31,6 +32,7 @@ namespace VisualLinkerScript::Models
                                        std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& preColonContent,
                                        std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& postColonContent,
                                        CRawEntry colonEntry,
+                                       CRawEntry noCrossRefsEntry,
                                        CRawEntry openingBracketEntry,
                                        std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& innerContent,
                                        CRawEntry closingBracketEntry,
@@ -44,6 +46,7 @@ namespace VisualLinkerScript::Models
               m_innerContent(std::move(innerContent)),
               m_endingContent(std::move(endingContent)),
               m_colonEntry(colonEntry),
+              m_noCrossRefsEntry(noCrossRefsEntry),
               m_openingBracketEntry(openingBracketEntry),
               m_closingBracketEntry(closingBracketEntry)
         {}        

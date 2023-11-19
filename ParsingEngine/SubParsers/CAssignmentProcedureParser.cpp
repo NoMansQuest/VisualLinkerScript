@@ -37,14 +37,12 @@ std::shared_ptr<CAssignmentProcedureStatement> CAssignmentProcedureParser::TryPa
         std::vector<CRawEntry>::const_iterator& iterator,
         std::vector<CRawEntry>::const_iterator endOfVectorIterator)
 {
-    std::vector<CRawEntry>::const_iterator localIterator = iterator;
-    std::vector<CRawEntry>::const_iterator previousPositionIterator = iterator;
-    std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = iterator;
+    auto localIterator = iterator;
+    auto parsingStartIteratorPosition = iterator;
+    auto parserState = ParserState::AwaitingProcedureName;
+
     std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
     SharedPtrVector<CViolationBase> violations;
-
-    auto parserState = ParserState::AwaitingProcedureName;
-    auto doNotAdvance = false;
 
     CRawEntry proceduerNameEntry;
     CRawEntry parenthesisOpenEntry;
@@ -63,7 +61,6 @@ std::shared_ptr<CAssignmentProcedureStatement> CAssignmentProcedureParser::TryPa
 
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
     {
-        doNotAdvance = false;
         auto localIteratorPlusOne = localIterator + 1;
         auto nextEntryExists = (localIteratorPlusOne != endOfVectorIterator);
 
@@ -266,7 +263,7 @@ std::shared_ptr<CAssignmentProcedureStatement> CAssignmentProcedureParser::TryPa
                     case ParserState::AwaitingSemicolon:
                     case ParserState::AwaitingParenthesisClosure:
                     {
-                        localIterator = previousPositionIterator;
+                        localIterator--;
                         parserState = ParserState::ParsingComplete;
                         break;
                     }
@@ -300,8 +297,7 @@ std::shared_ptr<CAssignmentProcedureStatement> CAssignmentProcedureParser::TryPa
             }
         }
 
-        previousPositionIterator = localIterator;
-        localIterator = ((parserState != ParserState::ParsingComplete) && !doNotAdvance) ?
+        localIterator = (parserState != ParserState::ParsingComplete) ?
                         localIterator + 1 :
                         localIterator;
     }

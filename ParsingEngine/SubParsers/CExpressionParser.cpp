@@ -65,7 +65,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
 
     auto parserState = ParserState::AwaitingContent;
     auto ternaryState = TernaryState::AwaitingThenExpression;
-    auto doNotAdvance = false;    
+    auto doNotAdvance = false;
 
     CRawEntry previousOperator;
 
@@ -394,7 +394,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
 
                     case ParserState::AwaitingOperator:
                     {
-                        auto genericOperator = std::shared_ptr<CLinkerScriptContentBase>(new CExpressionNumber(*localIterator, {*localIterator}, {}));
+                        auto genericOperator = std::shared_ptr<CLinkerScriptContentBase>(new CExpressionOperator(*localIterator, {*localIterator}, {}));
                         parsedContent.emplace_back(genericOperator);
                         parserState = ParserState::AwaitingContent;
                         break;
@@ -575,6 +575,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                         "Unrecognized raw-entry type detected.");
         }
 
+        previousPositionIterator = (!doNotAdvance) ? localIterator : previousPositionIterator;
         localIterator = ((parserState != ParserState::ParsingComplete) && !doNotAdvance) ?
                         localIterator + 1 :
                         localIterator;

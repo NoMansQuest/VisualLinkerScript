@@ -35,15 +35,13 @@ std::shared_ptr<CInputSectionStatement> CInputSectionStatementParser::TryParse(
         std::vector<CRawEntry>::const_iterator& iterator,
         std::vector<CRawEntry>::const_iterator endOfVectorIterator)
 {
-    std::vector<CRawEntry>::const_iterator localIterator = iterator;
-    std::vector<CRawEntry>::const_iterator previousPositionIterator = iterator;
-    std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = iterator;
+    auto localIterator = iterator;
+    auto parsingStartIteratorPosition = iterator;
     SharedPtrVector<CViolationBase> violations;
 
     CInputSectionFunctionParser inputSectionFunctionParser;
 
     auto parserState = ParserState::AwaitingHeader;
-    auto doNotAdvance = false;
 
     CRawEntry inputSectionHeader;
     CRawEntry parenthesisOpen;
@@ -52,7 +50,6 @@ std::shared_ptr<CInputSectionStatement> CInputSectionStatementParser::TryParse(
 
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
     {
-        doNotAdvance = false;
         auto resolvedContent = linkerScriptFile.ResolveRawEntry(*localIterator);
 
         CRawEntry rawEntryPlusOne;
@@ -168,7 +165,7 @@ std::shared_ptr<CInputSectionStatement> CInputSectionStatementParser::TryParse(
             case RawEntryType::BracketClose:
             {
                 // This needs to be handled by the CMemoryRegionParser, and not here...
-                localIterator = previousPositionIterator;
+                localIterator--;
                 parserState = ParserState::ParsingComplete;
                 break;
             }
@@ -212,7 +209,7 @@ std::shared_ptr<CInputSectionStatement> CInputSectionStatementParser::TryParse(
             }
         }
 
-        localIterator = ((parserState != ParserState::ParsingComplete) && !doNotAdvance) ?
+        localIterator = (parserState != ParserState::ParsingComplete) ?
                         localIterator + 1 :
                         localIterator;
     }

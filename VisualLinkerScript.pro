@@ -134,7 +134,8 @@ SOURCES += \
     ParsingEngine/SubParsers/CVersionRegionContentParser.cpp \
     ParsingEngine/SubParsers/Constants.cpp \
     ParsingEngine/SubParsers/CInputSectionFunctionParser.cpp \
-    QueryEngine/QueryCenter.tpp \
+    ParsingEngine/SubParsers/SubParserHelpers.cpp \
+    QueryEngine/QueryCenter.tpp \    
     main.cpp \
     mainwindow.cpp
 
@@ -283,6 +284,7 @@ HEADERS += \
     DrcEngine/Rules/CSymbolsDefinedInAdvanceRule.h \
     Helpers.h \
     Models/CSectionOutputDataExpression.h \
+    ParsingEngine/SubParsers/SubParserHelpers.h \
     QueryEngine/CLinq.h \
     QueryEngine/QueryCenter.h \
     LinkerScriptManager/CLinkerScriptManager.h \

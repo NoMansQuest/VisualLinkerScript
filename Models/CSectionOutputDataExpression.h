@@ -26,15 +26,9 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Reports back the PHDR regions name.
-        const CRawEntry& PhdrRegion()
+        const CRawEntry& DataExpression()
         {
-            return this->m_phdrName;
-        }
-
-        /// @brief Reports back the colon initiating the statement.
-        const CRawEntry& ColonEntry()
-        {
-            return this->m_colonEntry;
+            return this->m_dataExpression;
         }
     };
 }

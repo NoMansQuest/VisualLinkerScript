@@ -130,9 +130,8 @@ std::shared_ptr<CMemoryStatementAttribute> CMemoryStatementAttributeParser::TryP
         std::vector<CRawEntry>::const_iterator& iterator,
         std::vector<CRawEntry>::const_iterator endOfVectorIterator)
 {
-    std::vector<CRawEntry>::const_iterator localIterator = iterator;
-    std::vector<CRawEntry>::const_iterator previousPositionIterator = iterator;
-    std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = iterator;
+    auto localIterator = iterator;
+    auto parsingStartIteratorPosition = iterator;
     std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
     SharedPtrVector<CViolationBase> violations;
 
@@ -144,7 +143,6 @@ std::shared_ptr<CMemoryStatementAttribute> CMemoryStatementAttributeParser::TryP
     }
 
     auto parserState = ParserState::AwaitingParenthesisOverture;
-    auto doNotAdvance = false;
     auto negatorArmed = false;
 
     CRawEntry parenthesisOpen;
@@ -157,7 +155,6 @@ std::shared_ptr<CMemoryStatementAttribute> CMemoryStatementAttributeParser::TryP
 
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
     {
-        doNotAdvance = false;
         auto resolvedContent = linkerScriptFile.ResolveRawEntry(*localIterator);
         auto lineChangeDetected = parsingStartIteratorPosition->EndLineNumber() != localIterator->EndLineNumber();
 
@@ -165,7 +162,7 @@ std::shared_ptr<CMemoryStatementAttribute> CMemoryStatementAttributeParser::TryP
         {
             // Any line-change would be rended parsing attempt null and void (however, it may be possible to report
             // back a type of statement)
-            localIterator = previousPositionIterator;
+            localIterator--;
             parserState = ParserState::ParsingComplete;
             break;
         }
@@ -251,7 +248,7 @@ std::shared_ptr<CMemoryStatementAttribute> CMemoryStatementAttributeParser::TryP
             case RawEntryType::BracketClose:
             {
                 // This needs to be handled by the CMemoryRegionParser, and not here...
-                localIterator = previousPositionIterator;
+                localIterator--;
                 parserState = ParserState::ParsingComplete;
                 break;
             }
@@ -302,7 +299,7 @@ std::shared_ptr<CMemoryStatementAttribute> CMemoryStatementAttributeParser::TryP
             }
         }
 
-        localIterator = ((parserState != ParserState::ParsingComplete) && !doNotAdvance) ?
+        localIterator = (parserState != ParserState::ParsingComplete) ?
                         localIterator + 1 :
                         localIterator;
     }
