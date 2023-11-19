@@ -57,18 +57,15 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
         std::vector<CRawEntry>::const_iterator& iterator,
         std::vector<CRawEntry>::const_iterator endOfVectorIterator)
 {
-    std::vector<CRawEntry>::const_iterator localIterator = iterator;
-    std::vector<CRawEntry>::const_iterator previousPositionIterator = iterator;
-    std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = iterator;
+    auto localIterator = iterator;
+    auto parsingStartIteratorPosition = iterator;
     std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
     SharedPtrVector<CViolationBase> violations;
 
     auto parserState = ParserState::AwaitingContent;
     auto ternaryState = TernaryState::AwaitingThenExpression;
-    auto doNotAdvance = false;
 
     CRawEntry previousOperator;
-
     CRawEntry parenthesisOpen;
     CRawEntry parenthesisClose;
 
@@ -80,10 +77,8 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
         parenthesisOpen = *localIterator++; // We both save this parenthesis and increment the iterator.
     }
 
-
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
     {
-        doNotAdvance = false;
         auto resolvedContent = linkerScriptFile.ResolveRawEntry(*localIterator);
         auto lineChangeDetected = parsingStartIteratorPosition->EndLineNumber() != localIterator->EndLineNumber();
         auto oneEntryAhead = (localIterator + 1 != endOfVectorIterator) ? *(localIterator+1) : CRawEntry();
@@ -166,7 +161,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                 }
 
                 // Forced completion of parsing
-                localIterator = previousPositionIterator;
+                localIterator--;
                 parserState = ParserState::ParsingComplete;
                 break;
             }
@@ -188,7 +183,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                                 // colon spells the end of parsing, pretty much like semicolon.
                                 if (this->m_isSectionOutputAddressParser)
                                 {
-                                    localIterator = previousPositionIterator;
+                                    localIterator--;
                                     parserState = ParserState::ParsingComplete;
                                 }
                                 else
@@ -226,7 +221,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                                 // colon spells the end of parsing, pretty much like semicolon.
                                 if (this->m_isSectionOutputAddressParser)
                                 {
-                                    localIterator = previousPositionIterator;
+                                    localIterator--;
                                     parserState = ParserState::ParsingComplete;
                                 }
                                 else
@@ -485,7 +480,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                     {
                         if (parserState == ParserState::AwaitingOperator)
                         {
-                            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*previousPositionIterator, EParserViolationCode::ExpectedOperatorAfterThisEntry)));
+                            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::WasExpectingAnOperatorHere)));
                         }
 
                         // This could be an expression
@@ -526,7 +521,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                         }
                         else
                         {
-                            localIterator = previousPositionIterator;
+                            localIterator--;
                         }
 
                         if (parserState == ParserState::AwaitingContent)
@@ -553,7 +548,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
             case RawEntryType::BracketClose:
             {
                 violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::UnexpectedTerminationOfExpression)));
-                localIterator = previousPositionIterator;
+                localIterator--;
                 parserState = ParserState::ParsingComplete;
                 break;
             }
@@ -575,10 +570,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                         "Unrecognized raw-entry type detected.");
         }
 
-        previousPositionIterator = (!doNotAdvance) ? localIterator : previousPositionIterator;
-        localIterator = ((parserState != ParserState::ParsingComplete) && !doNotAdvance) ?
-                        localIterator + 1 :
-                        localIterator;
+        localIterator += ((parserState != ParserState::ParsingComplete) ? 1 : 0);
     }
 
     std::vector<CRawEntry> rawEntries;

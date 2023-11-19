@@ -297,9 +297,7 @@ std::shared_ptr<CAssignmentProcedureStatement> CAssignmentProcedureParser::TryPa
             }
         }
 
-        localIterator = (parserState != ParserState::ParsingComplete) ?
-                        localIterator + 1 :
-                        localIterator;
+        localIterator += ((parserState != ParserState::ParsingComplete) ? 1 : 0);
     }
 
     std::vector<CRawEntry> rawEntries;

@@ -424,9 +424,7 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
             }
         }
 
-        localIterator = (parserState != ParserState::ParsingComplete) ?
-                        localIterator + 1 :
-                        localIterator;
+        localIterator += ((parserState != ParserState::ParsingComplete) ? 1 : 0);
     }
 
     std::vector<CRawEntry> rawEntries;

@@ -434,9 +434,7 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
             }
         }
 
-        localIterator = (parserState != ParserState::ParsingComplete) ?
-                        localIterator + 1 :
-                        localIterator;
+        localIterator += ((parserState != ParserState::ParsingComplete) ? 1 : 0);
     }    
 
     if (!nameEntry.IsPresent() || !colonEntry.IsPresent())

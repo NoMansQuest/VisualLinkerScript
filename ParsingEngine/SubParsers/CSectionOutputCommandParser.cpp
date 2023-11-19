@@ -488,9 +488,50 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
                 break;
             }
 
-            case RawEntryType::QuestionMark:
-            case RawEntryType::Comma:
             case RawEntryType::Number:
+            {
+                switch (parserState)
+                {
+                    case ParserState::AwaitingHeader:
+                    {
+                        return nullptr; // This is not a valid Section Output command.
+                    }
+
+                    case ParserState::AwaitingColon:
+                    {
+                        auto parsedContent =  std::dynamic_pointer_cast<CLinkerScriptContentBase>(expressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator));
+                        if (parsedContent == nullptr) {
+                            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
+                        } else {
+                            preColonContent.emplace_back(parsedContent);
+                        }
+                        break;
+                    }
+
+                    case ParserState::AwaitingBracketClosure:
+                    case ParserState::AwaitingBracketOpen:
+                    {
+                        violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
+                        break;
+                    }
+
+                    case ParserState::AwaitingEndOfParse:
+                    {
+                        localIterator--;
+                        parserState = ParserState::ParsingComplete;
+                        break;
+                    }
+
+                    default:
+                        throw CMasterParsingException(
+                                    MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
+                                    "ParserState invalid in CSectionOutpuStatementParser");
+                }
+                break;
+            }
+
+            case RawEntryType::QuestionMark:
+            case RawEntryType::Comma:            
             case RawEntryType::String:            
             case RawEntryType::ParenthesisClose:
             {
@@ -605,9 +646,7 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
                         "Unrecognized raw-entry type detected.");
         }
 
-        localIterator = (parserState != ParserState::ParsingComplete) ?
-                        localIterator + 1 :
-                        localIterator;
+        localIterator += ((parserState != ParserState::ParsingComplete) ? 1 : 0);
     }
 
     std::vector<CRawEntry> rawEntries;

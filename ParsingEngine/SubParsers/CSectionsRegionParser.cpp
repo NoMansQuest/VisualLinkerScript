@@ -12,6 +12,8 @@
 #include "CSectionOverlayParser.h"
 
 #include "../CMasterParserException.h"
+#include "../CParserViolation.h"
+#include "../EParserViolationCode.h"
 
 #include "../../Models/CFunctionCall.h"
 #include "../../Models/CSectionsRegion.h"
@@ -19,8 +21,6 @@
 #include "../../Models/Raw/RawEntryType.h"
 #include "../../Models/Raw/CRawFile.h"
 #include "../../Models/CComment.h"
-#include "../CParserViolation.h"
-#include "../EParserViolationCode.h"
 
 using namespace VisualLinkerScript::Models;
 using namespace VisualLinkerScript::Models::Raw;
@@ -255,9 +255,7 @@ std::shared_ptr<CSectionsRegion> CSectionsRegionParser::TryParse(
                         "Unrecognized raw-entry type detected.");
         }
 
-        localIterator = (parserState != ParserState::ParsingComplete) ?
-                        localIterator + 1 :
-                        localIterator;
+        localIterator += ((parserState != ParserState::ParsingComplete) ? 1 : 0);
     }
 
     std::vector<CRawEntry> rawEntries;
