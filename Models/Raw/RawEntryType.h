@@ -23,6 +23,9 @@ namespace VisualLinkerScript::Models::Raw
         /// @brief Assignment operators: '=', '*=', '+=', '-=', '/=', '>>=' , '<<=', '|=', '&=', "~=", '^='
         AssignmentOperator,
 
+        /// @brief Include '[', ']', '\\'. Other wildcard characters are (i.e. '*', '-', '?') are subject to interpretation.
+        Wildcard,
+
         /// @brief Comma: ','
         Comma,
 

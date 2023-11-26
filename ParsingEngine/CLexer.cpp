@@ -138,6 +138,18 @@ namespace
                 (input == 'M'));
     }
 
+    /// @brief The following characters are considered wild-card characters. The list here is
+    ///        not exchaustive (*, ? and - can also be wildcards), however the other character's 
+    ///        role as wild-card as subjective. 
+    /// @param input 
+    /// @return 
+    bool IsWildCardCharacter(char input)
+    {
+        return (input == '[') ||
+               (input == ']') ||
+               (input == '\\');               
+    }
+
     /// @brief Detects if the input character is a white-space
     bool IsWhitespace(char input)
     {
@@ -398,6 +410,12 @@ std::shared_ptr<CRawFile> CLexer::ProcessLinkerScript(std::string absoluteFilePa
                 if (IsQuestionMark(currentCharacter))
                 {
                     lexedContent.emplace_back(CRawEntry(RawEntryType::QuestionMark, lineNumber, scanPosition, 1, parenthesisDepth, scopeDepth));
+                    break;
+                }
+
+                if (IsWildCardCharacter(currentCharacter))
+                {
+                    parsedContent.emplace_back(CRawEntry(RawEntryType::WildCardCharacter, lineNumber, scanPosition, 1, parenthesisDepth, scopeDepth));
                     break;
                 }
 
