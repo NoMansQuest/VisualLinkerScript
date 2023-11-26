@@ -280,6 +280,11 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
                 {
                     case ParserState::AwaitingLengthAssignmentSymbol:
                     {
+                        if (resolvedContent != "=")
+                        {
+                            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::CompoundAssignmentOperatoreNotAllowedHere)));
+                        }
+
                         lengthAssignmentSymbol = *localIterator;
                         parserState = ParserState::AwaitingLengthRValue;
                         break;
@@ -287,6 +292,11 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
 
                     case ParserState::AwaitingOriginAssignmentSymbol:
                     {
+                        if (resolvedContent != "=")
+                        {
+                            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::CompoundAssignmentOperatoreNotAllowedHere)));
+                        }
+
                         originAssignmentSymbol = *localIterator;
                         parserState = ParserState::AwaitingOriginRValue;
                         break;
@@ -350,10 +360,74 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
                 break;
             }
 
+            case RawEntryType::ArithmeticOperator:
+            {
+                // Under certain circumstances, we might be able to parse an expression here.
+                if (!StringEquals(resolvedContent, "+") && !StringEquals(resolvedContent, "-"))
+                {
+                    violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
+                    break;
+                }
+
+                // Give it a try...
+                switch (parserState)
+                {
+                    case ParserState::AwaitingOriginRValue:
+                    {
+                        auto parsedRValue = expressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
+                        if (parsedRValue == nullptr)
+                        {
+                            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
+                        }
+                        else
+                        {
+                            originRValue = parsedRValue;
+                            parserState = ParserState::AwaitingCommaSeparatingOriginAndLength;
+                        }
+                        break;
+                    }
+
+                    case ParserState::AwaitingLengthRValue:
+                    {
+                        auto parsedRValue = expressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
+                        if (parsedRValue == nullptr)
+                        {
+                            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
+                        }
+                        else
+                        {
+                            lengthRValue = parsedRValue;
+                            parserState = ParserState::ParsingComplete;
+                        }
+                        break;
+                    }
+
+                    case ParserState::AwaitingCommaSeparatingOriginAndLength:
+                    case ParserState::AwaitingName:
+                    case ParserState::AwaitingColon:
+                    case ParserState::AwaitingLengthAssignmentSymbol:
+                    case ParserState::AwaitingOriginAssignmentSymbol:
+                    case ParserState::AwaitingAttributes:
+                    case ParserState::AwaitingOriginHeader:
+                    case ParserState::AwaitingLengthHeader:
+                    {
+                        violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
+                        break;
+                    }
+
+                    default:
+                    {
+                        throw CMasterParsingException(
+                                    MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
+                                    "ParserState invalid in CPhdrsRegionContentParser");
+                    }
+                }
+                break;
+            }
+
             case RawEntryType::Semicolon:
             case RawEntryType::QuestionMark:
             case RawEntryType::EvaluativeOperators:
-            case RawEntryType::ArithmeticOperator:
             case RawEntryType::String:            
             case RawEntryType::ParenthesisClose:
             {

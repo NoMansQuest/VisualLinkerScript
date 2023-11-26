@@ -192,8 +192,40 @@ std::shared_ptr<CAssignmentProcedureStatement> CAssignmentProcedureParser::TryPa
                 break;
             }
 
-            case RawEntryType::Colon:
             case RawEntryType::Semicolon:
+            {
+                switch (parserState)
+                {
+                    case ParserState::AwaitingProcedureName:
+                    {
+                        return nullptr;
+                    }
+
+                    case ParserState::AwaitingParenthesisOverture:
+                    case ParserState::AwaitingParenthesisClosure:
+                    {
+                        semicolonOperatorEntry = *localIterator;
+                        violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::UnexpectedEarlyTermination)));
+                        parserState = ParserState::ParsingComplete;
+                        break;
+                    }
+
+                    case ParserState::AwaitingSemicolon:
+                    {
+                        semicolonOperatorEntry = *localIterator;
+                        parserState = ParserState::ParsingComplete;
+                        break;
+                    }
+
+                    default:
+                        throw CMasterParsingException(
+                                    MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
+                                    "ParserState invalid in CAssignmentProcedureParser");
+                }
+                break;
+            }
+
+            case RawEntryType::Colon:            
             case RawEntryType::Comma:
             case RawEntryType::QuestionMark:
             case RawEntryType::EvaluativeOperators:
@@ -220,6 +252,7 @@ std::shared_ptr<CAssignmentProcedureStatement> CAssignmentProcedureParser::TryPa
                                     MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
                                     "ParserState invalid in CAssignmentProcedureParser");
                 }
+                break;
             }
 
             case RawEntryType::Number:
@@ -283,18 +316,14 @@ std::shared_ptr<CAssignmentProcedureStatement> CAssignmentProcedureParser::TryPa
             }
 
             case RawEntryType::NotPresent:
-            {
                 throw CMasterParsingException(
                         MasterParsingExceptionType::NotPresentEntryDetected,
                         "A 'non-present' entry was detected.");
-            }
 
             default:
-            {
                 throw CMasterParsingException(
                         MasterParsingExceptionType::UnrecognizableRawEntryTypeValueFound,
                         "Unrecognized raw-entry type detected.");
-            }
         }
 
         localIterator += ((parserState != ParserState::ParsingComplete) ? 1 : 0);

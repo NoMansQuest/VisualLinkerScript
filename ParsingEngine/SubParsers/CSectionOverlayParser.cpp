@@ -227,7 +227,6 @@ std::shared_ptr<CSectionOverlayCommand> CSectionOverlayParser::TryParse(
                             } else {
                                 innerContent.emplace_back( std::dynamic_pointer_cast<CLinkerScriptContentBase>(parsedAssignment));
                             }
-
                         }
                         break;
                     }
@@ -290,6 +289,28 @@ std::shared_ptr<CSectionOverlayCommand> CSectionOverlayParser::TryParse(
                     {
                         // Grounds to abort.
                         return nullptr;
+                    }
+
+                    case ParserState::AwaitingColon:
+                    {
+                        if (!StringEquals(resolvedContent, "-") && !StringEquals(resolvedContent, "+"))
+                        {
+                            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
+                            break;
+                        }
+
+                        // We are in an expression, most likely the address
+                        // Here the job is a bit difficult. We need to extract
+                        // 1 - [Optional] The 'startAddress' in form of an expression
+                        // 2 - [Optional] The 'Block(align)' function call
+                        // 3 - [Optional] The section-output type (e.g. (NOLOAD))
+                        auto parsedContent =  std::dynamic_pointer_cast<CLinkerScriptContentBase>(expressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator));
+                        if (parsedContent == nullptr) {
+                            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
+                        } else {
+                            preColonContent.emplace_back(parsedContent);
+                        }
+                        break;
                     }
 
                     case ParserState::AwaitingBracketOpen:
@@ -491,10 +512,9 @@ std::shared_ptr<CSectionOverlayCommand> CSectionOverlayParser::TryParse(
                 switch (parserState)
                 {
                     case ParserState::AwaitingHeader:
+                    case ParserState::AwaitingColon:
                     {
                         // Grounds to abort.
-                        localIterator--;
-                        parserState = ParserState::ParsingComplete;
                         return nullptr;
                     }
 
@@ -527,6 +547,7 @@ std::shared_ptr<CSectionOverlayCommand> CSectionOverlayParser::TryParse(
                 {
                     case ParserState::AwaitingHeader:
                     case ParserState::AwaitingBracketOpen:
+                    case ParserState::AwaitingColon:
                     {
                         // Grounds to abort.
                         return nullptr;

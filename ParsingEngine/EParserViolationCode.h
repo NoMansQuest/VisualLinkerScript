@@ -24,6 +24,7 @@ namespace VisualLinkerScript::ParsingEngine
         WasExpectingEqualOperatorHere,
         ReadWriteAttributeIsAlreadySet,
         AlloctableAttributeIsAlreadySet,
+        CompoundAssignmentOperatoreNotAllowedHere,
         ExecutableAttributeIsAlreadySet,
         InitializedAttributeIsAlreadySet,
         NegatingSymbolIsAlreadySet,
@@ -50,7 +51,7 @@ namespace VisualLinkerScript::ParsingEngine
         WasExpectingParenthesisClosure,
         WasExpectingAnotherParameterOrParenthesisClosure,
 
-        // Functiosn parsing violations:
+        // Functions parsing violations:
         FunctionsCannotExpandToMultipleLines,
         FunctionNotRecognized,
         WasExpectingFirstParameterHere,
@@ -65,6 +66,7 @@ namespace VisualLinkerScript::ParsingEngine
         LValueCannotContainRValueExpression,
         MultipleAssignmentOperatorsDetected,
         RValueExpressionParsingFailed,
+        UnexpectedEarlyTermination,
         MissingLValue,
 
         // Assignment procedure parsing violations:

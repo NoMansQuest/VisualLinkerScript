@@ -25,6 +25,16 @@ namespace
         InWord,
         InNumber,
     };
+    
+    enum class WildcardDetectionStates
+    {
+        AwaitingSections,
+        AwaitingSectionsCommandDotsOrOverlay,
+        AwaitingSectionCommandBracketOpen,
+        InSectionCommand,
+        AwaitingSemicolonT
+        
+    };
 
     /// @brief Types of assignment symbols we can have in a linker-script (i.e. =, +=, -=, &=, >>=, etc.)
     enum class AssignmentSymbolTypes
