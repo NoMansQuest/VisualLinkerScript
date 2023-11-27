@@ -175,6 +175,29 @@ std::shared_ptr<CMemoryStatementAttribute> CMemoryStatementAttributeParser::TryP
                 break;
             }
 
+            case RawEntryType::Wildcard:
+            {
+                switch (parserState)
+                {
+                    case ParserState::AwaitingParenthesisOverture:
+                    {
+                        return nullptr;
+                    }
+
+                    case ParserState::AwaitingParenthesisClosure:
+                    {
+                        violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::WildcardsNotAllowedHere)));
+                        break;
+                    }
+
+                    default:
+                        throw CMasterParsingException(
+                                    MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
+                                    "ParserState invalid in CMemoryStatementAttributeParser.");
+                }
+                break;
+            }
+
             case RawEntryType::Word:
             {                
                 switch (parserState)

@@ -56,6 +56,30 @@ std::shared_ptr<TProducingOutputType> CScopedRegionParser<TParserType, TContentP
                 break;
             }
 
+            case RawEntryType::Wildcard:
+            {
+                switch (parserState)
+                {
+                    case ParserState::AwaitingHeader:
+                    {
+                        return nullptr;
+                    }
+
+                    case ParserState::AwaitingOpeningBracket:
+                    case ParserState::AwaitingClosingBracket:
+                    {
+                        violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::WildcardsNotAllowedHere)));
+                        break;
+                    }
+
+                    default:
+                        throw CMasterParsingException(
+                                    MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
+                                    "ParserState invalid in CScopedRegionParser.");
+                }
+                break;
+            }
+
             case RawEntryType::Word:
             {
                 if (parserState == ParserState::AwaitingClosingBracket)
@@ -141,21 +165,35 @@ std::shared_ptr<TProducingOutputType> CScopedRegionParser<TParserType, TContentP
 
             case RawEntryType::Unknown:
             {
-                throw CMasterParsingException(MasterParsingExceptionType::NotPresentEntryDetected,
-                        "A 'Unknown' entry was detected.");
+                switch (parserState)
+                {
+                    case ParserState::AwaitingHeader:
+                    {
+                        return nullptr;
+                    }
+
+                    case ParserState::AwaitingOpeningBracket:
+                    case ParserState::AwaitingClosingBracket:
+                    {
+                        violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
+                        break;
+                    }
+
+                    default:
+                        throw CMasterParsingException(
+                                    MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
+                                    "ParserState invalid in CScopedRegionParser.");
+                }
+                break;
             }
 
             case RawEntryType::NotPresent:
-            {
                 throw CMasterParsingException(MasterParsingExceptionType::NotPresentEntryDetected,
                         "A 'non-present' entry was detected.");
-            }
 
             default:
-            {
                 throw CMasterParsingException(MasterParsingExceptionType::UnrecognizableRawEntryTypeValueFound,
                         "Unrecognized raw-entry type detected.");
-            }
         }
 
         localIterator = (parserState != ParserState::ParsingComplete) ?

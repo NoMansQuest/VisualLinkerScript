@@ -121,6 +121,11 @@ namespace
         "LENGTH",
     };
 
+    std::vector<std::string> ListOfSectionOutputConstraints = {
+        "ONLY_IF_RW",
+        "ONLY_IF_RO",
+    };
+
     std::vector<std::string> ListOfInpuSectionCommands = {
         "EXCLUDE_FILE",
         "SORT",
@@ -293,6 +298,14 @@ bool CParserHelpers::IsAssignmentProcedure(const std::string& wordToCheck)
     return std::find(ListOfAssignmentCommandNames.cbegin(),
                      ListOfAssignmentCommandNames.cend(),
                      wordToCheckInUpperCase) != ListOfAssignmentCommandNames.cend();
+}
+
+bool CParserHelpers::IsSectionOutputConstraint(const std::string& wordToCheck)
+{
+    auto wordToCheckInUpperCase = ToUpper(wordToCheck);
+    return std::find(ListOfSectionOutputConstraints.cbegin(),
+                     ListOfSectionOutputConstraints.cend(),
+                     wordToCheckInUpperCase) != ListOfSectionOutputConstraints.cend();
 }
 
 bool CParserHelpers::IsAssignmentOperator(const std::string& operatorToCheck)

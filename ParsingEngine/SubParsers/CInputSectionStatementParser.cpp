@@ -68,6 +68,30 @@ std::shared_ptr<CInputSectionStatement> CInputSectionStatementParser::TryParse(
                 break;
             }
 
+            case RawEntryType::Wildcard:
+            {
+                switch (parserState)
+                {
+                    case ParserState::AwaitingHeader:
+                    case ParserState::AwaitingParenthesisOverture:
+                    {
+                        return nullptr;
+                    }
+
+                    case ParserState::AwaitingParenthesisClosure:
+                    {
+                        violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::WildcardsNotAllowedHere)));
+                        break;
+                    }
+
+                    default:
+                        throw CMasterParsingException(
+                                    MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
+                                    "ParserState invalid in CInputSectionStatementParser.");
+                }
+                break;
+            }
+
             case RawEntryType::Word:
             {
                 switch (parserState)

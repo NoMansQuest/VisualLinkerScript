@@ -111,7 +111,7 @@ namespace VisualLinkerScript::ParsingEngine
         MissingOpeningParenthesis,
         MissingClosingParenthesis,
         EntryInvalidOrMisplaced,
-        
+        WildcardsNotAllowedHere,
         DesignRuleCheckError // All DRC-Errors have this violation code.
     };
 };

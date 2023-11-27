@@ -33,6 +33,7 @@ namespace VisualLinkerScript::Models
         SectionsRegion,
         SectionsOutputCommand,
         SectionOutputType,
+        SectionOutputConstraint,
         SectionOutputAtLmaRegion,
         SectionOutputToRegion,
         SectionsOverlayStatement,

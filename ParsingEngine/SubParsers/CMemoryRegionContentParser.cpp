@@ -87,6 +87,37 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
                 break;
             }
 
+            case RawEntryType::Wildcard:
+            {
+                switch (parserState)
+                {
+                    case ParserState::AwaitingName:
+                    {
+                        return nullptr;
+                    }
+
+                    case ParserState::AwaitingAttributes:
+                    case ParserState::AwaitingColon:
+                    case ParserState::AwaitingOriginHeader:
+                    case ParserState::AwaitingOriginAssignmentSymbol:
+                    case ParserState::AwaitingOriginRValue:
+                    case ParserState::AwaitingLengthHeader:
+                    case ParserState::AwaitingLengthAssignmentSymbol:
+                    case ParserState::AwaitingLengthRValue:
+                    case ParserState::AwaitingCommaSeparatingOriginAndLength:
+                    {
+                        violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::WildcardsNotAllowedHere)));
+                        break;
+                    }
+
+                    default:
+                        throw CMasterParsingException(
+                                    MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
+                                    "ParserState invalid in CMemoryRegionContentParser.");
+                }
+                break;
+            }
+
             case RawEntryType::Word:
             {
                 switch (parserState)

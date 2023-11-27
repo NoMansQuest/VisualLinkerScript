@@ -116,6 +116,38 @@ std::shared_ptr<CSectionOverlayCommand> CSectionOverlayParser::TryParse(
                 break;
             }
 
+            case RawEntryType::Wildcard:
+            {
+                switch (parserState)
+                {
+                    case ParserState::AwaitingHeader:
+                    case ParserState::AwaitingColon:
+                    {
+                        return nullptr;
+                    }
+
+                    case ParserState::AwaitingBracketOpen:
+                    case ParserState::AwaitingBracketClosure:
+                    {
+                        violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::WildcardsNotAllowedHere)));
+                        break;
+                    }
+
+                    case ParserState::AwaitingEndOfParse:
+                    {
+                        localIterator--;
+                        parserState = ParserState::ParsingComplete;
+                        break;
+                    }
+
+                    default:
+                        throw CMasterParsingException(
+                                    MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
+                                    "ParserState invalid in CSectionOverlayParser.");
+                }
+                break;
+            }
+
             case RawEntryType::Word:
             {
                 switch (parserState)
@@ -576,8 +608,10 @@ std::shared_ptr<CSectionOverlayCommand> CSectionOverlayParser::TryParse(
             }
 
             case RawEntryType::Unknown:
-                throw CMasterParsingException(MasterParsingExceptionType::NotPresentEntryDetected,
-                        "A 'Unknown' entry was detected.");
+            {
+                violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
+                break;
+            }
 
             case RawEntryType::NotPresent:
                 throw CMasterParsingException(MasterParsingExceptionType::NotPresentEntryDetected,

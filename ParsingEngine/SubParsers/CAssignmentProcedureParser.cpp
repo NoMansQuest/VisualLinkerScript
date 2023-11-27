@@ -75,6 +75,30 @@ std::shared_ptr<CAssignmentProcedureStatement> CAssignmentProcedureParser::TryPa
                 break;
             }
 
+            case RawEntryType::Wildcard:
+            {
+                switch (parserState)
+                {
+                    case ParserState::AwaitingProcedureName:
+                    case ParserState::AwaitingParenthesisOverture:
+                    {
+                        return nullptr;
+                    }
+
+                    case ParserState::AwaitingParenthesisClosure:
+                    {
+                        violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::WildcardsNotAllowedHere)));
+                        break;
+                    }
+
+                    default:
+                        throw CMasterParsingException(
+                                    MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
+                                    "ParserState invalid in CAssignmentProcedureParser");
+                }
+                break;
+            }
+
             case RawEntryType::Word:
             {
                 switch (parserState)

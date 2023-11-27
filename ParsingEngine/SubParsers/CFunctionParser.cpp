@@ -88,6 +88,30 @@ std::shared_ptr<CFunctionCall> CFunctionParser::TryParse(
                 break;
             }
 
+            case RawEntryType::Wildcard:
+            {
+                switch (parserState)
+                {
+                    case ParserState::AwaitingName:
+                    case ParserState::AwaitingParenthesisOverture:
+                    {
+                        return nullptr;
+                    }
+
+                    case ParserState::AwaitingParenthesisClosure:
+                    {
+                        violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::WildcardsNotAllowedHere)));
+                        break;
+                    }
+
+                    default:
+                        throw CMasterParsingException(
+                                    MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
+                                    "ParserState invalid in CFunctionParser");
+                }
+                break;
+            }
+
             case RawEntryType::Word:
             {
                 switch (parserState)
@@ -363,8 +387,7 @@ std::shared_ptr<CFunctionCall> CFunctionParser::TryParse(
 
             case RawEntryType::Unknown:
             {
-                violations.emplace_back(std::shared_ptr<CViolationBase>(
-                                            new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
+                violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
                 break;
             }
 

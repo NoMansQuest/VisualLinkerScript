@@ -283,6 +283,7 @@ HEADERS += \
     DrcEngine/Rules/CSectionsDefinedOnlyOnceRule.h \
     DrcEngine/Rules/CSymbolsDefinedInAdvanceRule.h \
     Helpers.h \
+    Models/CSectionOutputConstraint.h \
     Models/CSectionOutputDataExpression.h \
     ParsingEngine/SubParsers/SubParserHelpers.h \
     QueryEngine/CLinq.h \

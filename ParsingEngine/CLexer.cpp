@@ -27,20 +27,20 @@ namespace
     };
 
     /// @brief Types of assignment symbols we can have in a linker-script (i.e. =, +=, -=, &=, >>=, etc.)
-    enum class AssignmentSymbolTypes
+    enum class AssignmentSymbolTypes : uint32_t
     {
-        SingleCharacter,
-        DoubleCharacter,
-        TripleCharacter,
-        NotAnAssignmentSymbol
+        SingleCharacter = 1,
+        DoubleCharacter = 2,
+        TripleCharacter = 3,
+        NotAnAssignmentSymbol = 4
     };
 
     /// @brief Types of evaluative symbols we can have in a linker-script (i.e. >=, <=, ==, etc.)
-    enum class EvaluativeSymbolTypes
+    enum class EvaluativeSymbolTypes : uint32_t
     {
-        SingleCharacter,
-        DoubleCharacter,
-        NotAnEvaluativeSymbol
+        SingleCharacter = 1,
+        DoubleCharacter = 2,
+        NotAnEvaluativeSymbol = 3
     };
 
     /// @brief The loop needs alignment after an entry is detected and registerd
@@ -372,9 +372,7 @@ std::shared_ptr<CRawFile> CLexer::ProcessLinkerScript(std::string absoluteFilePa
                 auto assignmentSymbolType = TestForAssignmentSymbol(rawContent, scanPosition);
                 if (assignmentSymbolType != AssignmentSymbolTypes::NotAnAssignmentSymbol)
                 {
-                    auto assignmentOperatorLength = (assignmentSymbolType == AssignmentSymbolTypes::SingleCharacter) ? 1 :
-                                                    (assignmentSymbolType == AssignmentSymbolTypes::DoubleCharacter) ? 2 : 3;
-
+                    auto assignmentOperatorLength = static_cast<uint32_t>(assignmentSymbolType);
                     lexedContent.emplace_back(CRawEntry(RawEntryType::AssignmentOperator, lineNumber, scanPosition, assignmentOperatorLength, parenthesisDepth, scopeDepth));
                     scanPosition += (assignmentOperatorLength - 1);
                     break;
@@ -383,7 +381,7 @@ std::shared_ptr<CRawFile> CLexer::ProcessLinkerScript(std::string absoluteFilePa
                 auto evaluatingSymbolType = TestForEvaluativeSymbol(rawContent, scanPosition);
                 if (evaluatingSymbolType != EvaluativeSymbolTypes::NotAnEvaluativeSymbol)
                 {
-                    auto evaluatingSymbolTypeLength = (evaluatingSymbolType == EvaluativeSymbolTypes::SingleCharacter) ? 1 : 2;
+                    auto evaluatingSymbolTypeLength = static_cast<uint32_t>(evaluatingSymbolType);
                     lexedContent.emplace_back(CRawEntry(RawEntryType::EvaluativeOperators, lineNumber, scanPosition, evaluatingSymbolTypeLength, parenthesisDepth, scopeDepth));
                     scanPosition += (evaluatingSymbolTypeLength - 1);
                     break;
@@ -415,7 +413,7 @@ std::shared_ptr<CRawFile> CLexer::ProcessLinkerScript(std::string absoluteFilePa
 
                 if (IsWildCardCharacter(currentCharacter))
                 {
-                    parsedContent.emplace_back(CRawEntry(RawEntryType::WildCardCharacter, lineNumber, scanPosition, 1, parenthesisDepth, scopeDepth));
+                    lexedContent.emplace_back(CRawEntry(RawEntryType::Wildcard, lineNumber, scanPosition, 1, parenthesisDepth, scopeDepth));
                     break;
                 }
 
@@ -447,7 +445,11 @@ std::shared_ptr<CRawFile> CLexer::ProcessLinkerScript(std::string absoluteFilePa
                     entryStartPosition = scanPosition;
                     entryStartLine = lineNumber;
                     currentState = ParserStates::InWord;
-                    scanPosition--;
+                    scanPosition--;                    
+                }
+                else // If all else failed, this character is unknown to us.
+                {
+                    lexedContent.emplace_back(CRawEntry(RawEntryType::Unknown, lineNumber, scanPosition, 1, parenthesisDepth, scopeDepth));
                 }
 
                 break;

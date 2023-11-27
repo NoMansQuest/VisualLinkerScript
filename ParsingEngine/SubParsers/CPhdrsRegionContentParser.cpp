@@ -71,6 +71,31 @@ std::shared_ptr<CPhdrsStatement> CPhdrsRegionContentParser::TryParse(
                 break;
             }
 
+            case RawEntryType::Wildcard:
+            {
+                switch (parserState)
+                {
+                    case ParserState::AwaitingName:
+                    {
+                        return nullptr;
+                    }
+
+                    case ParserState::AwaitingType:
+                    case ParserState::AwaitingOptionalFields:
+                    case ParserState::AwaitingSemicolon:
+                    {
+                        violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::WildcardsNotAllowedHere)));
+                        break;
+                    }
+
+                    default:
+                        throw CMasterParsingException(
+                                    MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
+                                    "ParserState invalid in CPhdrsRegionContentParser.");
+                }
+                break;
+            }
+
             case RawEntryType::Word:
             {
                 switch (parserState)

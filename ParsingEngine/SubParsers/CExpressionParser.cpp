@@ -97,6 +97,25 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                 break;
             }
 
+            case RawEntryType::Wildcard:
+            {
+                switch (parserState)
+                {
+                    case ParserState::AwaitingContent:
+                    case ParserState::AwaitingOperator:
+                    {
+                        violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::WildcardsNotAllowedHere)));
+                        break;
+                    }
+
+                    default:
+                        throw CMasterParsingException(
+                                    MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
+                                    "ParserState invalid in CExpressionParser");
+                }
+                break;
+            }
+
             case RawEntryType::Word:
             {
                 switch (parserState)

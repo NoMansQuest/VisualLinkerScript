@@ -73,6 +73,31 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
                 break;
             }
 
+            case RawEntryType::Wildcard:
+            {
+                switch (parserState)
+                {
+                    case ParserState::AwaitingLValue:
+                    case ParserState::AwaitingAssignmentOperator:
+                    {
+                        return nullptr;
+                    }
+
+                    case ParserState::AwaitingRValueExpression:
+                    case ParserState::AwaitingSemicolon:
+                    case ParserState::AwaitingParenthesisClosure:
+                    {
+                        violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::WildcardsNotAllowedHere)));
+                        break;
+                    }
+                    default:
+                        throw CMasterParsingException(
+                                    MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
+                                    "ParserState invalid in CAssignmentParser");
+                }
+                break;
+            }
+
             case RawEntryType::Word:
             case RawEntryType::ParenthesisOpen:
             {

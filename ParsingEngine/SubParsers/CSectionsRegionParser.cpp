@@ -74,6 +74,30 @@ std::shared_ptr<CSectionsRegion> CSectionsRegionParser::TryParse(
                 break;
             }
 
+            case RawEntryType::Wildcard:
+            {
+                switch (parserState)
+                {
+                    case ParserState::AwaitingHeader:
+                    {
+                        return nullptr;
+                    }
+
+                    case ParserState::AwaitingBracketOpen:
+                    case ParserState::AwaitingBracketClosure:
+                    {
+                        violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::WildcardsNotAllowedHere)));
+                        break;
+                    }
+
+                    default:
+                        throw CMasterParsingException(
+                                    MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
+                                    "ParserState invalid in CSectionRegionParser.");
+                }
+                break;
+            }
+
             case RawEntryType::Word:
             {
                 switch (parserState)
@@ -243,8 +267,10 @@ std::shared_ptr<CSectionsRegion> CSectionsRegionParser::TryParse(
             }
 
             case RawEntryType::Unknown:
-                throw CMasterParsingException(MasterParsingExceptionType::NotPresentEntryDetected,
-                        "A 'Unknown' entry was detected.");
+            {
+                violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
+                break;
+            }
 
             case RawEntryType::NotPresent:
                 throw CMasterParsingException(MasterParsingExceptionType::NotPresentEntryDetected,
