@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "CLinkerScriptContentBase.h"
+#include "CInputSectionWildcardWord.h"
 
 namespace VisualLinkerScript::Models
 {
@@ -12,9 +13,9 @@ namespace VisualLinkerScript::Models
     {
     public:
         /// @brief Default constructor
-        explicit CInputSectionTargetSection(CRawEntry targetSection,
+        explicit CInputSectionTargetSection(CInputSectionWildcardWord targetSection,
                                             SharedPtrVector<CViolationBase>&& violations)
-            : CLinkerScriptContentBase({targetSection}, std::move(violations))
+            : CLinkerScriptContentBase(targetSection.RawEntries(), std::move(violations))
         {}
 
         /// @brief Reports back the type of this object.

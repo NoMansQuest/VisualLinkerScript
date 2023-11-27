@@ -26,6 +26,9 @@ namespace
         AwaitingParenthesisClosure,
         ParsingComplete
     };
+
+
+
 }
 
 std::shared_ptr<CInputSectionFunction> CInputSectionFunctionParser::TryParse(
@@ -91,7 +94,7 @@ std::shared_ptr<CInputSectionFunction> CInputSectionFunctionParser::TryParse(
 
                     case ParserState::AwaitingParenthesisClosure:
                     {
-                        violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::WildcardsNotAllowedHere)));
+                        // TODO: FUSE
                         break;
                     }
 

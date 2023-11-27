@@ -41,6 +41,7 @@ namespace VisualLinkerScript::Models
         SectionOutputPhdr,              // Example: :phdr
         SectionOutputDataExpression,    // Mainly 'CREATE_OBJECT_SYMBOLS'
         InputSectionTargetSection,      // Example: *data.*(... <InputSectionTargetSection> ... )
+        InputSectionWildcardWord,       // Example: *data?.ctor.[A-Za-z0-9]*
         InputSection,                   // Example: *data.*(... target-Sections ... )
         VersionsRegion,        
         VersionNode,
