@@ -77,6 +77,13 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
             std::vector<CRawEntry>::const_iterator& iterator,
             std::vector<CRawEntry>::const_iterator endOfVectorIterator);
 
+    /// @brief Fuses words, operators and wildcars which may be forming
+    ///        a 'word' under InputSection scope. This operation may
+    CRawEntry FuseEntriesToFormAWilcardWord(
+            CRawFile& linkerScriptFile,
+            std::vector<CRawEntry>::const_iterator& iterator,
+            std::vector<CRawEntry>::const_iterator endOfVectorIterator);
+
     /// @brief Finds the next non-comment iterator. Returns endOfVector if not found.
     std::vector<CRawEntry>::const_iterator FindNextNonCommentEntry(
             CRawFile& linkerScriptFile,

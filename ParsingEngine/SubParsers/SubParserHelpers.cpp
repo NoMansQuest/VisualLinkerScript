@@ -12,6 +12,45 @@
 using namespace VisualLinkerScript;
 using namespace VisualLinkerScript::ParsingEngine::SubParsers;
 
+namespace
+{
+    bool CanBePartOfWildcard(CRawFile& linkerScriptFile, CRawEntry rawEntry)
+    {
+
+        switch (rawEntry.EntryType())
+        {
+            case RawEntryType::Word:
+            case RawEntryType::Wildcard:
+            case RawEntryType::QuestionMark:
+            case RawEntryType::Number:
+            {
+                return true;
+            }
+
+            case RawEntryType::ArithmeticOperator:
+            {
+                auto resolvedContent = linkerScriptFile.ResolveRawEntry(rawEntry);
+                return (resolvedContent == "*") || (resolvedContent == "-");
+            }
+
+            case RawEntryType::EvaluativeOperators:
+            case RawEntryType::AssignmentOperator:
+            case RawEntryType::Comma:
+            case RawEntryType::Semicolon:
+            case RawEntryType::Colon:
+            case RawEntryType::String:
+            case RawEntryType::Comment:
+            case RawEntryType::ParenthesisOpen:
+            case RawEntryType::ParenthesisClose:
+            case RawEntryType::BracketOpen:
+            case RawEntryType::BracketClose:
+            case RawEntryType::NotPresent:
+            default:
+                return false;
+        }
+    }
+}
+
 SequenceMatchResult VisualLinkerScript::ParsingEngine::SubParsers::MatchSequenceAnyContentWithinEnclosure(
     CRawFile& linkerScriptFile,
     std::vector<CRawEntry>::const_iterator iterator,
@@ -123,6 +162,15 @@ std::vector<CRawEntry>::const_iterator VisualLinkerScript::ParsingEngine::SubPar
     }
 
     return startingPoint;
+}
+
+
+CRawEntry VisualLinkerScript::ParsingEngine::SubParsers::FuseEntriesToFormAWilcardWord(
+        CRawFile& linkerScriptFile,
+        std::vector<CRawEntry>::const_iterator& iterator,
+        std::vector<CRawEntry>::const_iterator endOfVectorIterator)
+{
+
 }
 
 

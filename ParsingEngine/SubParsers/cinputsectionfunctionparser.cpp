@@ -26,9 +26,6 @@ namespace
         AwaitingParenthesisClosure,
         ParsingComplete
     };
-
-
-
 }
 
 std::shared_ptr<CInputSectionFunction> CInputSectionFunctionParser::TryParse(

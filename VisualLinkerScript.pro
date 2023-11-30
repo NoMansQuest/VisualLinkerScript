@@ -123,6 +123,9 @@ SOURCES += \
     ParsingEngine/SubParsers/CAssignmentProcedureParser.cpp \
     ParsingEngine/SubParsers/CExpressionParser.cpp \
     ParsingEngine/SubParsers/CFunctionParser.cpp \
+    ParsingEngine/SubParsers/CInputSectionFunctionExcludeFileParser.cpp \
+    ParsingEngine/SubParsers/CInputSectionFunctionKeepParser.cpp \
+    ParsingEngine/SubParsers/CInputSectionFunctionSortParser.cpp \
     ParsingEngine/SubParsers/CInputSectionStatementParser.cpp \
     ParsingEngine/SubParsers/CMemoryRegionContentParser.cpp \
     ParsingEngine/SubParsers/CMemoryStatementAttributeParser.cpp \
@@ -286,6 +289,9 @@ HEADERS += \
     Models/CInputSectionWildcardWord.h \
     Models/CSectionOutputConstraint.h \
     Models/CSectionOutputDataExpression.h \
+    ParsingEngine/SubParsers/CInputSectionFunctionExcludeFileParser.h \
+    ParsingEngine/SubParsers/CInputSectionFunctionKeepParser.h \
+    ParsingEngine/SubParsers/CInputSectionFunctionSortParser.h \
     ParsingEngine/SubParsers/SubParserHelpers.h \
     QueryEngine/CLinq.h \
     QueryEngine/QueryCenter.h \
