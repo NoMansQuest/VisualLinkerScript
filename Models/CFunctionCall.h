@@ -37,7 +37,7 @@ namespace VisualLinkerScript::Models
         /// @brief Reports back the type of this object.        
         ContentType Type() override
         {
-            return ContentType::ProcedureCall;
+            return ContentType::FunctionCall;
         }
 
         /// @brief Reports back the list of parameters

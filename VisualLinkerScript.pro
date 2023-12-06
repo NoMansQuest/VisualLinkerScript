@@ -289,9 +289,11 @@ HEADERS += \
     Models/CInputSectionWildcardWord.h \
     Models/CSectionOutputConstraint.h \
     Models/CSectionOutputDataExpression.h \
+    Models/CWildcardEntry.h \
     ParsingEngine/SubParsers/CInputSectionFunctionExcludeFileParser.h \
     ParsingEngine/SubParsers/CInputSectionFunctionKeepParser.h \
     ParsingEngine/SubParsers/CInputSectionFunctionSortParser.h \
+    ParsingEngine/SubParsers/CSectionOutputCommandParser.h \
     ParsingEngine/SubParsers/SubParserHelpers.h \
     QueryEngine/CLinq.h \
     QueryEngine/QueryCenter.h \
@@ -360,7 +362,6 @@ HEADERS += \
     ParsingEngine/SubParsers/CPhdrsRegionParser.h \
     ParsingEngine/SubParsers/CScopedRegionParser.h \
     ParsingEngine/SubParsers/CScopedRegionParser.tpp \
-    ParsingEngine/SubParsers/CSectionOutputCommandParser.h \
     ParsingEngine/SubParsers/CSectionOutputOverlayParser.h \
     ParsingEngine/SubParsers/CSectionOverlayParser.h \
     ParsingEngine/SubParsers/CSubParserBase.h \

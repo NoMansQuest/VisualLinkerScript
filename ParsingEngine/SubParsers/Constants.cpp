@@ -126,8 +126,11 @@ namespace
         "ONLY_IF_RO",
     };
 
-    std::vector<std::string> ListOfInpuSectionCommands = {
-        "EXCLUDE_FILE",
+    std::vector<std::string> ListOfExcludeListCall = {
+        "EXCLUDE_FILE"
+    };
+
+    std::vector<std::string> ListOfSortFunctionCalls = {
         "SORT",
         "SORT_BY_NAME",
         "SORT_BY_ALIGNMENT",
@@ -209,7 +212,8 @@ bool CParserHelpers::IsReservedWord(const std::string& wordToCheck)
     {        
         ListOfScopeNames,
         ListOfInputSectionSpecialFunctionNames,
-        ListOfInpuSectionCommands,
+        ListOfExcludeListCall,
+        ListOfSortFunctionCalls,
         ListOfMemorySectionsReserveWords,
         ListOfOutputSectionTypes,
         ListOfOutputSectionCommandNames,
@@ -252,12 +256,20 @@ bool CParserHelpers::IsInputSectionSpecialFunctionName(const std::string& wordTo
                      wordToCheckInUpperCase) != ListOfInputSectionSpecialFunctionNames.cend();
 }
 
-bool CParserHelpers::IsInputSectionFunction(const std::string& wordToCheck)
+bool CParserHelpers::IsSortFunction(const std::string& wordToCheck)
 {
     auto wordToCheckInUpperCase = ToUpper(wordToCheck);
-    return std::find(ListOfInpuSectionCommands.cbegin(),
-                     ListOfInpuSectionCommands.cend(),
-                     wordToCheckInUpperCase) != ListOfInpuSectionCommands.cend();
+    return std::find(ListOfSortFunctionCalls.cbegin(),
+                     ListOfSortFunctionCalls.cend(),
+                     wordToCheckInUpperCase) != ListOfSortFunctionCalls.cend();
+}
+
+bool CParserHelpers::IsExcludeFileCall(const std::string& wordToCheck)
+{
+    auto wordToCheckInUpperCase = ToUpper(wordToCheck);
+    return std::find(ListOfExcludeListCall.cbegin(),
+                     ListOfExcludeListCall.cend(),
+                     wordToCheckInUpperCase) != ListOfExcludeListCall.cend();
 }
 
 bool CParserHelpers::IsIllegalProgramHeaderName(const std::string& wordToCheck)

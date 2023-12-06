@@ -19,6 +19,7 @@ namespace VisualLinkerScript::Models
         UnrecognizableContent,
         Comment,
         ProcedureCall,
+        FunctionCall,
         AssignmentStatement,
         Expression,
         ArithmeticOrLogicalOperator,
@@ -42,12 +43,14 @@ namespace VisualLinkerScript::Models
         SectionOutputDataExpression,    // Mainly 'CREATE_OBJECT_SYMBOLS'
         InputSectionTargetSection,      // Example: *data.*(... <InputSectionTargetSection> ... )
         InputSectionWildcardWord,       // Example: *data?.ctor.[A-Za-z0-9]*
+        InputSectionFunction,           // Example: SORT(*), EXCLUDE_FILE(....)
         InputSection,                   // Example: *data.*(... target-Sections ... )
         VersionsRegion,        
         VersionNode,
         VersionTag,
         VersionScope,
         VersionScopeEntry,
+        WildcardEntry,                  // For instance: *.text.???.o
         PrimarySymbol,
         Number,
         SecondarySymbol

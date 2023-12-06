@@ -22,8 +22,11 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
         /// @brief Is the word a section-output constraint?
         static bool IsSectionOutputConstraint(const std::string& wordToCheck);
 
-        /// @brief Is the word in question a potential function in "Input Section"
-        static bool IsInputSectionFunction(const std::string& wordToCheck);
+        /// @brief Is the word in question a potential function in "ListOfSortFunctionCalls"
+        static bool IsSortFunction(const std::string& wordToCheck);
+
+        /// @brief Is the word in question a potential function in "ListOfExcludeFileListCall"
+        static bool IsExcludeFileCall(const std::string& wordToCheck);
 
         /// @brief Is the word in question a potential Assignment Procedure?
         static bool IsAssignmentProcedure(const std::string& wordToCheck);

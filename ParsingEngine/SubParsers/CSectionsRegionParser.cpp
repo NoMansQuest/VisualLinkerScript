@@ -51,7 +51,7 @@ std::shared_ptr<CSectionsRegion> CSectionsRegionParser::TryParse(
     CFunctionParser functionParser;                             // Example: FILL(0x00000)
     CAssignmentParser assignmentParser;                         // Example: '. = ALIGN(4);'
     CAssignmentProcedureParser assignmentCommandParser;         // Example: PROVIDE(a = b + c);
-    CSectionOutputCommandParser sectionOutputCommandParser;     // Example: 'foo.o (.input2)'
+    CSectionsCommandParser sectionOutputCommandParser;     // Example: 'foo.o (.input2)'
     CSectionOverlayParser sectionOverlayParser;                 // Example: OVERLAY...
 
     auto parserState = ParserState::AwaitingHeader;

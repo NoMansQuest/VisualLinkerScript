@@ -61,6 +61,8 @@ namespace VisualLinkerScript::ParsingEngine
         UnexpectedTerminationOfFunction,
         ConsecutiveParameterSeparator,
         SeparatorExpectedInbetweenParameters,
+        InputSectionFunctionSortParser,
+        FunctionDoesNotSupportMultipleParameters,
 
         // Assignment parsing violations:
         LValueCannotContainRValueExpression,
@@ -85,6 +87,8 @@ namespace VisualLinkerScript::ParsingEngine
         OperatorsNotAllowedWithinInputSectionFunctions,
         MissingParenthesisOvertureForFunction,
         InputSectionFunctionParsingFailed,
+        ReservedWordsNotAllowedHere,
+        MissingFunctionBody,
 
         // OVERLAYS:
         NotAllowedInOverlayCommand,

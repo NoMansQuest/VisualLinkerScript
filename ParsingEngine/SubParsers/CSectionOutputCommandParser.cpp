@@ -645,7 +645,7 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
                     default:
                         throw CMasterParsingException(
                                     MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
-                                    "ParserState invalid in CSectionsRegionContentParser");
+                                    "ParserState invalid in CSectionsCommandParser");
                 }
                 break;
             }

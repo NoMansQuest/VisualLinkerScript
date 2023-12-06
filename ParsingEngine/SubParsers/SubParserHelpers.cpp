@@ -30,7 +30,7 @@ namespace
             case RawEntryType::ArithmeticOperator:
             {
                 auto resolvedContent = linkerScriptFile.ResolveRawEntry(rawEntry);
-                return (resolvedContent == "*") || (resolvedContent == "-");
+                return (resolvedContent == "*") || (resolvedContent == "-") || (resolvedContent == "/");
             }
 
             case RawEntryType::EvaluativeOperators:
@@ -170,7 +170,42 @@ CRawEntry VisualLinkerScript::ParsingEngine::SubParsers::FuseEntriesToFormAWilca
         std::vector<CRawEntry>::const_iterator& iterator,
         std::vector<CRawEntry>::const_iterator endOfVectorIterator)
 {
+    std::vector<CRawEntry>::const_iterator copyOfIterator = iterator;
+    auto startLine = iterator->StartLineNumber();
+    auto startPosition =iterator->StartPosition();
+    while (copyOfIterator != endOfVectorIterator && CanBePartOfWildcard(linkerScriptFile, *copyOfIterator))
+    {
+        if (copyOfIterator->StartLineNumber() != startLine)
+        {
+            copyOfIterator--; // This means we've reached the end.
+            break;
+        }
+    }
 
+    if (copyOfIterator == iterator)
+    {
+        if (copyOfIterator == endOfVectorIterator)
+        {
+            return CRawEntry(); // This by default creates a 'NotPresent' entry
+        }
+
+        return *copyOfIterator;
+    }
+    else
+    {
+        if (copyOfIterator == endOfVectorIterator)
+        {
+            copyOfIterator--;
+        }
+
+        iterator = copyOfIterator;
+        return CRawEntry(RawEntryType::Wildcard,
+                         startLine,
+                         startPosition,
+                         copyOfIterator->Length() + copyOfIterator->StartPosition() - startPosition,
+                         copyOfIterator->ParenthesisDepth(),
+                         copyOfIterator->ScopeDepth());
+    }
 }
 
 

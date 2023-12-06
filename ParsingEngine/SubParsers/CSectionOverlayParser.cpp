@@ -58,7 +58,7 @@ std::shared_ptr<CSectionOverlayCommand> CSectionOverlayParser::TryParse(
     CFunctionParser functionParser;                             // Example: FILL(0x00000)
     CAssignmentParser assignmentParser;                         // Example: '. = ALIGN(4);'
     CAssignmentProcedureParser assignmentProcedureParser;       // Example: PROVIDE(a = b);'
-    CSectionOutputCommandParser inputSectionStatementParser;    // Example: A section-output command
+    CSectionsCommandParser inputSectionStatementParser;    // Example: A section-output command
 
     auto parserState = ParserState::AwaitingHeader;
 
@@ -568,7 +568,7 @@ std::shared_ptr<CSectionOverlayCommand> CSectionOverlayParser::TryParse(
                     default:
                         throw CMasterParsingException(
                                     MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
-                                    "ParserState invalid in CSectionsRegionContentParser");
+                                    "ParserState invalid in CSectionsCommandParser");
                 }
                 break;
             }
