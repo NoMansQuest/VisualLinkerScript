@@ -134,7 +134,7 @@ std::shared_ptr<CInputSectionStatement> CInputSectionStatementParser::TryParse(
                     case ParserState::AwaitingOptionalParenthesisClosure:
                     {
                         auto fusedWord = FuseEntriesToFormAWilcardWord(linkerScriptFile, localIterator, endOfVectorIterator);
-                        parsedContent.emplace_back(CWildcardEntry(fusedWord, { fusedWord }, {}));
+                        parsedContent.emplace_back(std::shared_ptr<CLinkerScriptContentBase>(new CWildcardEntry(fusedWord, { fusedWord }, {})));
                         parserState = ParserState::AwaitingOptionalParenthesisClosure;
                         break;
                     }

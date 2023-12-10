@@ -223,7 +223,7 @@ std::shared_ptr<CFunctionCall> CInputSectionFunctionSortParser::TryParse(
                     case ParserState::AwaitingParenthesisClosure:
                     {
                         auto fusedWord = FuseEntriesToFormAWilcardWord(linkerScriptFile, localIterator, endOfVectorIterator);
-                        parsedContent.emplace_back(CWildcardEntry(fusedWord, { fusedWord }, {}));
+                        parsedContent.emplace_back(std::shared_ptr<CLinkerScriptContentBase>(new CWildcardEntry(fusedWord, { fusedWord }, {})));
                         break;
                     }
 

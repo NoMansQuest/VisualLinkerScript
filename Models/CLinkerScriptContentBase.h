@@ -75,15 +75,6 @@ namespace VisualLinkerScript::Models
               m_violations(std::move(violations))
         {}
 
-        /// @brief Constructor, accessible to inheritors only
-        /// @param rawEntries A list of object this element is comprised of
-        /// @param violations Violations related to this content (if any)
-        explicit CLinkerScriptContentBase(std::vector<CRawEntry> rawEntries,
-                                          SharedPtrVector<CViolationBase>&& violations)
-            : m_rawEntries(rawEntries),
-              m_violations(std::move(violations))
-        {}
-
     public:
         /// @brief Reports back the type of this object       
         virtual ContentType Type() = 0;
