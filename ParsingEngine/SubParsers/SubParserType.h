@@ -24,6 +24,7 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
         InputSectionParser,
         InputSectionFunctionParser,
         InputSectionFunctionSortParser,
+        InputSectionFunctionKeepParser,
         VersionRegionParser,
         VersionRegionContentParser,
         ExpressionParser,

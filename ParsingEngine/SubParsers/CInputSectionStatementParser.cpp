@@ -5,6 +5,8 @@
 
 #include "CInputSectionStatementParser.h"
 #include "CInputSectionFunctionSortParser.h"
+#include "CInputSectionFunctionExcludeFileParser.h"
+
 #include "Constants.h"
 #include "../CMasterParserException.h"
 #include "../../Models/Raw/CRawEntry.h"
@@ -51,6 +53,7 @@ std::shared_ptr<CInputSectionStatement> CInputSectionStatementParser::TryParse(
     SharedPtrVector<CViolationBase> violations;
 
     CInputSectionFunctionSortParser sortParser;
+    CInputSectionFunctionExcludeFileParser excludeFileParser;
 
     auto parserState = ParserState::AwaitingHeader;
 
@@ -172,10 +175,8 @@ std::shared_ptr<CInputSectionStatement> CInputSectionStatementParser::TryParse(
                             }
                             else
                             {
-                                std::vector<CRawEntry>::const_iterator copyOfIterator = localIterator;
                                 auto headerFusedEntry = FuseEntriesToFormAWilcardWord(linkerScriptFile, localIterator, endOfVectorIterator);
                                 fileSelector = std::shared_ptr<CLinkerScriptContentBase>(new CWildcardEntry(headerFusedEntry, {headerFusedEntry}, {}));
-
                                 if ((localIterator + 1 != endOfVectorIterator) && ((localIterator+1)->EntryType() == RawEntryType::ParenthesisOpen))
                                 {
                                     parserState = ParserState::AwaitingOptionalParenthesisOverture;
@@ -191,41 +192,66 @@ std::shared_ptr<CInputSectionStatement> CInputSectionStatementParser::TryParse(
 
                     case ParserState::AwaitingOptionalParenthesisOverture:
                     {
-                        // NOTE: This is a deal breaker, as in this particular parser we only transition to this state when we know for a fact
+                        // NOTE: This is a deal breaker, as in this particular parser we << only transition to this state >> when we know for a fact
                         // that this parenthesis-overture is where it's expected to be.
                         return nullptr;
                     }
 
                     case ParserState::AwaitingOptionalParenthesisClosure:
                     {
-                        if (CParserHelpers::IsReservedWord(resolvedContent))
+                        auto nextEntryIterator = FindNextNonCommentEntry(linkerScriptFile, localIterator, endOfVectorIterator);
+                        auto nextNonCommentRawEntry = (nextEntryIterator != endOfVectorIterator) ? *nextEntryIterator : CRawEntry();
+
+                        if (nextNonCommentRawEntry.IsPresent() && nextNonCommentRawEntry.EntryType() == RawEntryType::ParenthesisOpen)
                         {
-                            if (CParserHelpers::IsInputSectionFunction(resolvedContent))
+                            if (CParserHelpers::IsSortFunction(resolvedContent))
                             {
-                                auto parsedInputSectionFunction = inputSectionFunctionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
-                                if (parsedInputSectionFunction == nullptr)
+                                auto parsedSortFunctionCall = sortParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
+                                if (parsedSortFunctionCall == nullptr)
                                 {
-                                    violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::InvalidSyntaxInSectionInputFunctionDeclaration)));
+                                    // Although theoretically this should never happen, as we already know we're dealing with a SORT function call.
+                                    violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::InvalidSortFunctionCall)));
                                 }
                                 else
                                 {
-                                    parsedContent.emplace_back(parsedInputSectionFunction);
+                                    parsedContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(parsedSortFunctionCall));
+                                }
+                            }
+                            else if (CParserHelpers::IsExcludeFileCall(resolvedContent))
+                            {
+                                auto parsedExcludeFileCall = excludeFileParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
+                                if (parsedExcludeFileCall == nullptr)
+                                {
+                                    // Although theoretically this should never happen, as we already know we're dealing with a SORT function call.
+                                    violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::InvalidExcludeFileCall)));
+                                }
+                                else
+                                {
+                                    parsedContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(parsedExcludeFileCall));
                                 }
                             }
                             else
                             {
-                                violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryNotAllowedInInputSectionDefinition)));
+                                violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::IllegalFunctionCallInSectionOutputStatement)));
                             }
+                        }
+                        else if (CParserHelpers::IsReservedWord(resolvedContent))
+                        {
+                            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
+                        }
+                        else
+                        {
+                            // This is a normal section definition. We accept it.
+                            auto fusedEntry = FuseEntriesToFormAWilcardWord(linkerScriptFile, localIterator, endOfVectorIterator);
+                            parsedContent.emplace_back(std::shared_ptr<CLinkerScriptContentBase>(new CWildcardEntry(fusedEntry, {fusedEntry}, {})));
                         }
                         break;
                     }
 
                     default:
-                    {
                         throw CMasterParsingException(
                                     MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
                                     "ParserState invalid in CMemoryStatementAttributeParser");
-                    }
                 }
                 break;
             }
@@ -326,7 +352,7 @@ std::shared_ptr<CInputSectionStatement> CInputSectionStatementParser::TryParse(
     iterator = localIterator;
 
     return std::shared_ptr<CInputSectionStatement>(
-                new CInputSectionStatement(inputSectionHeader,
+                new CInputSectionStatement(fileSelector,
                                            parenthesisOpen,
                                            parenthesisClose,
                                            std::move(parsedContent),

@@ -52,7 +52,7 @@ namespace VisualLinkerScript::ParsingEngine
         WasExpectingAnotherParameterOrParenthesisClosure,
 
         // Functions parsing violations:
-        FunctionsCannotExpandToMultipleLines,
+        FunctionsCannotSpanMultipleLines,
         FunctionNotRecognized,
         WasExpectingFirstParameterHere,
         NoParameterProvidedForTheFunction,
@@ -89,6 +89,9 @@ namespace VisualLinkerScript::ParsingEngine
         InputSectionFunctionParsingFailed,
         ReservedWordsNotAllowedHere,
         MissingFunctionBody,
+        IllegalFunctionCallInSectionOutputStatement,
+        InvalidExcludeFileCall,
+        InvalidSortFunctionCall,
 
         // OVERLAYS:
         NotAllowedInOverlayCommand,

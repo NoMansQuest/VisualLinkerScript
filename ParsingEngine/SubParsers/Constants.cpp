@@ -126,6 +126,10 @@ namespace
         "ONLY_IF_RO",
     };
 
+    std::vector<std::string> ListOfKeepFunctions = {
+        "KEEP"
+    };
+
     std::vector<std::string> ListOfExcludeListCall = {
         "EXCLUDE_FILE"
     };
@@ -303,6 +307,15 @@ bool CParserHelpers::IsFunctionName(const std::string& wordToCheck)
                      ListOfFunctionNames.cend(),
                      wordToCheckInUpperCase) != ListOfFunctionNames.cend();
 }
+
+bool CParserHelpers::IsKeepFunction(const std::string& wordToCheck)
+{
+    auto wordToCheckInUpperCase = ToUpper(wordToCheck);
+    return std::find(ListOfKeepFunctions.cbegin(),
+                     ListOfKeepFunctions.cend(),
+                     wordToCheckInUpperCase) != ListOfKeepFunctions.cend();
+}
+
 
 bool CParserHelpers::IsAssignmentProcedure(const std::string& wordToCheck)
 {

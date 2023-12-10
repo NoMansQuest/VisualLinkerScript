@@ -7,6 +7,7 @@
 #include "CExpressionParser.h"
 #include "CSectionOutputCommandParser.h"
 #include "CAssignmentProcedureParser.h"
+#include "CInputSectionFunctionKeepParser.h"
 #include "CFunctionParser.h"
 #include "CAssignmentParser.h"
 #include "Constants.h"
@@ -55,10 +56,11 @@ std::shared_ptr<CSectionOverlayCommand> CSectionOverlayParser::TryParse(
     SharedPtrVector<CViolationBase> violations;
 
     CExpressionParser expressionParser;
-    CFunctionParser functionParser;                             // Example: FILL(0x00000)
-    CAssignmentParser assignmentParser;                         // Example: '. = ALIGN(4);'
-    CAssignmentProcedureParser assignmentProcedureParser;       // Example: PROVIDE(a = b);'
-    CSectionsCommandParser inputSectionStatementParser;    // Example: A section-output command
+    CFunctionParser functionParser;                                 // Example: FILL(0x00000)
+    CAssignmentParser assignmentParser;                             // Example: '. = ALIGN(4);'
+    CAssignmentProcedureParser assignmentProcedureParser;           // Example: PROVIDE(a = b);'
+    CSectionOutputCommandParser inputSectionStatementParser;        // Example: A section-output command
+    CInputSectionFunctionKeepParser inputSectionFunctionKeepParser; // Example: KEEP(*(SORT(*.txt.o)))
 
     auto parserState = ParserState::AwaitingHeader;
 
@@ -127,9 +129,18 @@ std::shared_ptr<CSectionOverlayCommand> CSectionOverlayParser::TryParse(
                     }
 
                     case ParserState::AwaitingBracketOpen:
-                    case ParserState::AwaitingBracketClosure:
                     {
                         violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::WildcardsNotAllowedHere)));
+                    }
+
+                    case ParserState::AwaitingBracketClosure:
+                    {
+                        auto parsedStatement = inputSectionStatementParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
+                        if (parsedStatement == nullptr) {
+                            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
+                        } else {
+                            innerContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(parsedStatement));
+                        }
                         break;
                     }
 
@@ -223,10 +234,13 @@ std::shared_ptr<CSectionOverlayCommand> CSectionOverlayParser::TryParse(
 
                     case ParserState::AwaitingBracketClosure:
                     {
+                        std::vector<CRawEntry>::const_iterator copyOfIterator = localIterator;
+                        auto fusedEntry = FuseEntriesToFormAWilcardWord(linkerScriptFile, copyOfIterator, endOfVectorIterator);
+                        auto resolvedFusedEntry = linkerScriptFile.ResolveRawEntry(fusedEntry);
+
                         if (CParserHelpers::IsInputSectionSpecialFunctionName(resolvedContent)) {
                             // Such as 'CREATE_OBJECT_SYMBOLS'
                             innerContent.emplace_back(std::shared_ptr<CLinkerScriptContentBase>(new CSectionOutputDataExpression(*localIterator)));
-
                         } else if (CParserHelpers::IsAssignmentProcedure(resolvedContent)) {
                             // Such as "PROVIDE(....)"
                             auto parsedAssignmentProcedure = assignmentProcedureParser.TryParse(linkerScriptFile, iterator, endOfVectorIterator);
@@ -235,7 +249,6 @@ std::shared_ptr<CSectionOverlayCommand> CSectionOverlayParser::TryParse(
                             } else  {
                                 innerContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(parsedAssignmentProcedure));
                             }
-
                         } else if (CParserHelpers::IsOutputSectionDataFunctionName(resolvedContent)) {
                             // Such as "BYTE(1)", "ALIGN(4)", etc.
                             auto parsedFunctionCall = functionParser.TryParse(linkerScriptFile, iterator, endOfVectorIterator);
@@ -244,7 +257,22 @@ std::shared_ptr<CSectionOverlayCommand> CSectionOverlayParser::TryParse(
                             } else  {
                                 innerContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(parsedFunctionCall));
                             }
-
+                        } else if (CParserHelpers::IsKeepFunction(resolvedFusedEntry)) {
+                            // KEEP function call.
+                            auto parsedKeepFunctionCall = inputSectionFunctionKeepParser.TryParse(linkerScriptFile, iterator, endOfVectorIterator);
+                            if (parsedKeepFunctionCall == nullptr) {
+                                violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::FunctionMissingDefinitionOrInvalidSymbolName)));
+                            } else  {
+                                innerContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(parsedKeepFunctionCall));
+                            }
+                        } else if (CParserHelpers::IsSortFunction(resolvedFusedEntry)) {
+                            // This is most likely an input section definition.
+                            auto inputSectionStatement = inputSectionStatementParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
+                            if (inputSectionStatement == nullptr) {
+                                violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
+                            } else {
+                                innerContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(inputSectionStatement));
+                            }
                         } else {
                             // Is this an "Assignment"?
                             auto parsedAssignment = assignmentParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
@@ -255,7 +283,7 @@ std::shared_ptr<CSectionOverlayCommand> CSectionOverlayParser::TryParse(
                                     violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
                                 } else {
                                     innerContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(inputSectionStatement));
-                                }
+                                }                                
                             } else {
                                 innerContent.emplace_back( std::dynamic_pointer_cast<CLinkerScriptContentBase>(parsedAssignment));
                             }
@@ -269,8 +297,7 @@ std::shared_ptr<CSectionOverlayCommand> CSectionOverlayParser::TryParse(
                         if (matchResultForAtRegion.Successful())
                         {
                             auto potentialRegionName = FindNextNonCommentEntry(linkerScriptFile, iterator + 2, endOfVectorIterator);
-                            if (potentialRegionName == endOfVectorIterator)
-                            {
+                            if (potentialRegionName == endOfVectorIterator) {
                                 std::shared_ptr<CViolationBase> missingRegionViolation(new CParserViolation({*localIterator, matchResultForAtRegion.MatchedElements()[1]}, EParserViolationCode::MissingRegionForAtLmaDefinition));
                                 auto atLmaRegion = std::shared_ptr<CLinkerScriptContentBase>(new CSectionOutputAtLmaRegion(
                                                       matchResultForAtRegion.MatchedElements()[0],
@@ -279,9 +306,8 @@ std::shared_ptr<CSectionOverlayCommand> CSectionOverlayParser::TryParse(
                                                       { missingRegionViolation }));
                                 endingContent.emplace_back(atLmaRegion);
                                 localIterator++; // We need to position the iterator at the last parsed element.
-                            }
-                            else
-                            {
+
+                            } else {
                                 auto atLmaRegion = std::shared_ptr<CLinkerScriptContentBase>(new CSectionOutputAtLmaRegion(
                                                       matchResultForAtRegion.MatchedElements()[0],
                                                       matchResultForAtRegion.MatchedElements()[1],

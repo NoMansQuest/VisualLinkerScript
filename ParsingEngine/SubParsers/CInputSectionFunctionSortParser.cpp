@@ -63,7 +63,7 @@ std::shared_ptr<CFunctionCall> CInputSectionFunctionSortParser::TryParse(
 
         if (lineChangeDetected)
         {
-            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::FunctionsCannotExpandToMultipleLines)));
+            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::FunctionsCannotSpanMultipleLines)));
             break;
         }
 
@@ -107,7 +107,7 @@ std::shared_ptr<CFunctionCall> CInputSectionFunctionSortParser::TryParse(
                         else
                         {
                             auto fusedWord = FuseEntriesToFormAWilcardWord(linkerScriptFile, localIterator, endOfVectorIterator);
-                            parsedContent.emplace_back(CWildcardEntry(fusedWord, { fusedWord }, {}));
+                            parsedContent.emplace_back(std::shared_ptr<CLinkerScriptContentBase>(new CWildcardEntry(fusedWord, { fusedWord }, {})));
                         }
                         break;
                     }

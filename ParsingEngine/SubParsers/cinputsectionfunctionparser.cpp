@@ -67,7 +67,7 @@ std::shared_ptr<CInputSectionFunction> CInputSectionFunctionParser::TryParse(
 
         if (lineChangeDetected)
         {
-            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::FunctionsCannotExpandToMultipleLines)));
+            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::FunctionsCannotSpanMultipleLines)));
             break;
         }
 

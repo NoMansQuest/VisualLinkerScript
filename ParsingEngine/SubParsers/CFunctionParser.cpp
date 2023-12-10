@@ -76,7 +76,7 @@ std::shared_ptr<CFunctionCall> CFunctionParser::TryParse(
 
         if (lineChangeDetected)
         {
-            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::FunctionsCannotExpandToMultipleLines)));
+            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::FunctionsCannotSpanMultipleLines)));
             break;
         }
 
@@ -184,12 +184,9 @@ std::shared_ptr<CFunctionCall> CFunctionParser::TryParse(
 
                         // This would be a parameter
                         auto parsedParameter = nestedExpressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
-                        if (parsedParameter == nullptr)
-                        {
+                        if (parsedParameter == nullptr) {
                             violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
-                        }
-                        else
-                        {
+                        } else {
                             parsedContent.emplace_back(parsedParameter);
                             parameterSeparatorState = ParameterSeparatorState::NowExpectingComma;
                         }
@@ -216,12 +213,9 @@ std::shared_ptr<CFunctionCall> CFunctionParser::TryParse(
 
                     case ParserState::AwaitingParenthesisClosure:
                     {
-                        if (parameterSeparatorState == ParameterSeparatorState::AwaitingFirstParameter)
-                        {
+                        if (parameterSeparatorState == ParameterSeparatorState::AwaitingFirstParameter) {
                             violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::NoParameterProvidedForTheFunction)));
-                        }
-                        else if (parameterSeparatorState == ParameterSeparatorState::NowExpectingNextParameter)
-                        {
+                        } else if (parameterSeparatorState == ParameterSeparatorState::NowExpectingNextParameter) {
                             violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::WasExpectingNextParameter)));
                         }
 
@@ -268,12 +262,9 @@ std::shared_ptr<CFunctionCall> CFunctionParser::TryParse(
 
                         // This would be a parameter
                         auto parsedParameter = nestedExpressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
-                        if (parsedParameter == nullptr)
-                        {
+                        if (parsedParameter == nullptr) {
                             violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
-                        }
-                        else
-                        {
+                        } else {
                             parsedContent.emplace_back(parsedParameter);
                             parameterSeparatorState = ParameterSeparatorState::NowExpectingComma;
                         }
@@ -327,8 +318,7 @@ std::shared_ptr<CFunctionCall> CFunctionParser::TryParse(
                     case ParserState::AwaitingParenthesisClosure:
                     {
                         // We're going for the second parameter, save this and move on
-                        if (parameterSeparatorState == ParameterSeparatorState::NowExpectingComma)
-                        {
+                        if (parameterSeparatorState == ParameterSeparatorState::NowExpectingComma) {
                             parsedContent.emplace_back(std::shared_ptr<CLinkerScriptContentBase>(new CParameterSeparator(*localIterator, {*localIterator},{})));
                             parameterSeparatorState = ParameterSeparatorState::NowExpectingNextParameter;
                         }

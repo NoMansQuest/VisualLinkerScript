@@ -25,6 +25,9 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
         /// @brief Is the word in question a potential function in "ListOfSortFunctionCalls"
         static bool IsSortFunction(const std::string& wordToCheck);
 
+        /// @brief Is the word the header of 'KEEP' function all?
+        static bool IsKeepFunction(const std::string& wordToCheck);
+
         /// @brief Is the word in question a potential function in "ListOfExcludeFileListCall"
         static bool IsExcludeFileCall(const std::string& wordToCheck);
 

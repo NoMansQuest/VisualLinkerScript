@@ -11,32 +11,24 @@ namespace VisualLinkerScript::Models
     class CInputSectionStatement : public CLinkerScriptContentBase
     {
     private:
-        CRawEntry m_filterHeader;        
+        std::shared_ptr<CLinkerScriptContentBase> m_fileSelector;
         CRawEntry m_openingParenthesis;
         CRawEntry m_closingParenthesis;
         std::vector<std::shared_ptr<CLinkerScriptContentBase>> m_parsedContent;        
 
     public:
         /// @brief Default constructor, including desired sections
-        explicit CInputSectionStatement(CRawEntry filterHeader,
+        explicit CInputSectionStatement(std::shared_ptr<CLinkerScriptContentBase> fileSelector,
                                         CRawEntry openingParenthesis,
                                         CRawEntry closingParenthesis,
                                         std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& parsedContent,
                                         std::vector<CRawEntry>&& rawElements,
                                         SharedPtrVector<CViolationBase>&& violations)
             : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
-              m_filterHeader(filterHeader),
+              m_fileSelector(fileSelector),
               m_openingParenthesis(openingParenthesis),
               m_closingParenthesis(closingParenthesis),
               m_parsedContent(std::move(parsedContent))
-        {}
-
-        /// @brief Default constructor, including desired sections
-        explicit CInputSectionStatement(CRawEntry filterHeader,
-                                        std::vector<CRawEntry>&& rawElements,
-                                        SharedPtrVector<CViolationBase>&& violations)
-            : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
-              m_filterHeader(filterHeader)
         {}
 
     public:
@@ -53,9 +45,9 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Reports back the filter header
-        const CRawEntry& FilterHeader()
+        std::shared_ptr<CLinkerScriptContentBase> FileSelector()
         {
-            return this->m_filterHeader;
+            return this->m_fileSelector;
         }
 
         /// @brief Reports back the opening parenthesis

@@ -58,15 +58,9 @@ std::shared_ptr<CFunctionCall> CInputSectionFunctionExcludeFileParser::TryParse(
         auto resolvedContent = linkerScriptFile.ResolveRawEntry(*localIterator);
         auto lineChangeDetected = parsingStartIteratorPosition->EndLineNumber() != localIterator->EndLineNumber();
 
-        CRawEntry oneEntryAhead;
-        if (localIterator + 1 != endOfVectorIterator)
-        {
-            oneEntryAhead = *(localIterator+1);
-        }
-
         if (lineChangeDetected)
         {
-            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::FunctionsCannotExpandToMultipleLines)));
+            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::FunctionsCannotSpanMultipleLines)));
             break;
         }
 
@@ -103,6 +97,9 @@ std::shared_ptr<CFunctionCall> CInputSectionFunctionExcludeFileParser::TryParse(
 
                     case ParserState::AwaitingParenthesisClosure:
                     {
+                        auto oneEntryAheadIterator = FindNextNonCommentEntry(linkerScriptFile, localIterator, endOfVectorIterator);
+                        auto oneEntryAhead = (oneEntryAheadIterator != endOfVectorIterator) ? *oneEntryAheadIterator : CRawEntry();
+
                         if (CParserHelpers::IsReservedWord(resolvedContent) &&
                             oneEntryAhead.IsPresent() &&
                             oneEntryAhead.EntryType() == RawEntryType::ParenthesisOpen)
