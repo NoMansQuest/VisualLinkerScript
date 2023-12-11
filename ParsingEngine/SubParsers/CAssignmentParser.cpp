@@ -63,7 +63,8 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
 
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
     {
-        auto resolvedContent = linkerScriptFile.ResolveRawEntry(*localIterator);
+        auto rawEntry = *localIterator;
+        auto resolvedContent = linkerScriptFile.ResolveRawEntry(rawEntry);
 
         switch (localIterator->EntryType())
         {

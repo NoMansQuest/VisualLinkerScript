@@ -54,13 +54,6 @@ std::shared_ptr<CFunctionCall> CInputSectionFunctionSortParser::TryParse(
     {
         auto resolvedContent = linkerScriptFile.ResolveRawEntry(*localIterator);
         auto lineChangeDetected = parsingStartIteratorPosition->EndLineNumber() != localIterator->EndLineNumber();
-
-        CRawEntry oneEntryAhead;
-        if (localIterator + 1 != endOfVectorIterator)
-        {
-            oneEntryAhead = *(localIterator+1);
-        }
-
         if (lineChangeDetected)
         {
             violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::FunctionsCannotSpanMultipleLines)));

@@ -80,15 +80,6 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
     {
         auto resolvedContent = linkerScriptFile.ResolveRawEntry(*localIterator);
-        auto lineChangeDetected = parsingStartIteratorPosition->EndLineNumber() != localIterator->EndLineNumber();
-        auto oneEntryAhead = (localIterator + 1 != endOfVectorIterator) ? *(localIterator+1) : CRawEntry();
-
-        if (lineChangeDetected && !this->m_supportsMultiLine)
-        {
-            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::UnexpectedTerminationOfExpression)));
-            break;
-        }
-
         switch (localIterator->EntryType())
         {
             case RawEntryType::Comment:

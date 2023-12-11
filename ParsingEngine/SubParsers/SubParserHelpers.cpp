@@ -49,6 +49,41 @@ namespace
                 return false;
         }
     }
+
+    bool CanBeStartOfWildcard(CRawFile& linkerScriptFile, CRawEntry rawEntry)
+    {
+        switch (rawEntry.EntryType())
+        {
+            case RawEntryType::Word:
+            case RawEntryType::Wildcard:
+            case RawEntryType::QuestionMark:
+            case RawEntryType::Number:
+            {
+                return true;
+            }
+
+            case RawEntryType::ArithmeticOperator:
+            {
+                auto resolvedContent = linkerScriptFile.ResolveRawEntry(rawEntry);
+                return (resolvedContent == "*") || (resolvedContent == "/");
+            }
+
+            case RawEntryType::EvaluativeOperators:
+            case RawEntryType::AssignmentOperator:
+            case RawEntryType::Comma:
+            case RawEntryType::Semicolon:
+            case RawEntryType::Colon:
+            case RawEntryType::String:
+            case RawEntryType::Comment:
+            case RawEntryType::ParenthesisOpen:
+            case RawEntryType::ParenthesisClose:
+            case RawEntryType::BracketOpen:
+            case RawEntryType::BracketClose:
+            case RawEntryType::NotPresent:
+            default:
+                return false;
+        }
+    }
 }
 
 SequenceMatchResult VisualLinkerScript::ParsingEngine::SubParsers::MatchSequenceAnyContentWithinEnclosure(
@@ -156,7 +191,7 @@ std::vector<CRawEntry>::const_iterator VisualLinkerScript::ParsingEngine::SubPar
         std::vector<CRawEntry>::const_iterator startingPoint,
         std::vector<CRawEntry>::const_iterator endOfVectorIterator)
 {
-    while ((startingPoint != endOfVectorIterator) && (startingPoint->EntryType() != RawEntryType::Comment))
+    while ((startingPoint != endOfVectorIterator) && (startingPoint->EntryType() == RawEntryType::Comment))
     {
         startingPoint++;
     }
@@ -169,32 +204,34 @@ CRawEntry VisualLinkerScript::ParsingEngine::SubParsers::FuseEntriesToFormAWilca
         CRawFile& linkerScriptFile,
         std::vector<CRawEntry>::const_iterator& iterator,
         std::vector<CRawEntry>::const_iterator endOfVectorIterator)
-{
+{    
+    if (!CanBeStartOfWildcard(linkerScriptFile, *iterator))
+    {
+        throw std::invalid_argument("Starting entry not a valid wildcard/word.");
+    }
+
     std::vector<CRawEntry>::const_iterator copyOfIterator = iterator;
     auto startLine = iterator->StartLineNumber();
     auto startPosition =iterator->StartPosition();
     while (copyOfIterator != endOfVectorIterator && CanBePartOfWildcard(linkerScriptFile, *copyOfIterator))
     {
-        if (copyOfIterator->StartLineNumber() != startLine)
+        if ((copyOfIterator->StartLineNumber() != startLine) || !CanBePartOfWildcard(linkerScriptFile, *copyOfIterator))
         {
-            copyOfIterator--; // This means we've reached the end.
+            copyOfIterator--; // This means we've reached the end or out of wildcard scope.
             break;
         }
+        copyOfIterator++;
     }
 
-    if (copyOfIterator == iterator)
-    {
-        if (copyOfIterator == endOfVectorIterator)
-        {
+    if (copyOfIterator == iterator) {
+        if (copyOfIterator == endOfVectorIterator) {
             return CRawEntry(); // This by default creates a 'NotPresent' entry
         }
-
         return *copyOfIterator;
     }
     else
     {
-        if (copyOfIterator == endOfVectorIterator)
-        {
+        if (copyOfIterator == endOfVectorIterator) {
             copyOfIterator--;
         }
 

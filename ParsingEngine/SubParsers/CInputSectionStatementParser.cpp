@@ -65,15 +65,6 @@ std::shared_ptr<CInputSectionStatement> CInputSectionStatementParser::TryParse(
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
     {
         auto resolvedContent = linkerScriptFile.ResolveRawEntry(*localIterator);
-
-        CRawEntry rawEntryPlusOne;
-        std::string resolvedContentPlusOne;
-        if (localIterator + 1 != endOfVectorIterator)
-        {
-            rawEntryPlusOne = *(localIterator + 1);
-            resolvedContentPlusOne = linkerScriptFile.ResolveRawEntry(rawEntryPlusOne);
-        }
-
         switch (localIterator->EntryType())
         {
             case RawEntryType::Comment:
@@ -155,7 +146,11 @@ std::shared_ptr<CInputSectionStatement> CInputSectionStatementParser::TryParse(
                     {
                         if (CParserHelpers::IsSortFunction(resolvedContent))
                         {
-                            if (rawEntryPlusOne.EntryType() == RawEntryType::ParenthesisOpen)
+                            std::vector<CRawEntry>::const_iterator copyOfIterator = localIterator;
+                            auto nextNonCommentEntryIterator = FindNextNonCommentEntry(linkerScriptFile, copyOfIterator, endOfVectorIterator);
+                            auto nextNonCommentEntry = (nextNonCommentEntryIterator != endOfVectorIterator) ? *nextNonCommentEntryIterator : CRawEntry();
+
+                            if (nextNonCommentEntry.EntryType() == RawEntryType::ParenthesisOpen)
                             {
                                 // This is a SORT function.
                                 auto parsedSortFunctionCall = sortParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
@@ -251,7 +246,7 @@ std::shared_ptr<CInputSectionStatement> CInputSectionStatementParser::TryParse(
                     default:
                         throw CMasterParsingException(
                                     MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
-                                    "ParserState invalid in CMemoryStatementAttributeParser");
+                                    "ParserState invalid in CInputSectionStatementParser");
                 }
                 break;
             }
@@ -311,10 +306,38 @@ std::shared_ptr<CInputSectionStatement> CInputSectionStatementParser::TryParse(
             case RawEntryType::Colon:
             case RawEntryType::ArithmeticOperator:
             {
-                // We ignore commas
-                if ((parserState != ParserState::AwaitingOptionalParenthesisClosure) || (resolvedContent != ","))
+                switch (parserState)
                 {
-                    violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
+                    case ParserState::AwaitingHeader:
+                    {
+                        if (CParserHelpers::IsStartOfWildcard(resolvedContent)) {
+                            auto fusedEntry = FuseEntriesToFormAWilcardWord(linkerScriptFile, localIterator, endOfVectorIterator);
+                            fileSelector = std::shared_ptr<CLinkerScriptContentBase>(new CWildcardEntry(fusedEntry, {fusedEntry}, {}));
+                            parserState = ParserState::AwaitingOptionalParenthesisOverture;
+                        } else{
+                            return nullptr; // We abort here.
+                        }
+                        break;
+                    }
+
+                    case ParserState::AwaitingOptionalParenthesisOverture: // Abort. This can't be a valid statement.
+                        return nullptr;
+
+                    case ParserState::AwaitingOptionalParenthesisClosure:
+                    {
+                        if (CParserHelpers::IsStartOfWildcard(resolvedContent)) {
+                            auto fusedEntry = FuseEntriesToFormAWilcardWord(linkerScriptFile, localIterator, endOfVectorIterator);
+                            parsedContent.emplace_back(std::shared_ptr<CLinkerScriptContentBase>(new CWildcardEntry(fusedEntry, {fusedEntry}, {})));
+                        } else {
+                            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
+                        }
+                        break;
+                    }
+
+                    default:
+                        throw CMasterParsingException(
+                                    MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
+                                    "ParserState invalid in CInputSectionStatementParser");
                 }
                 break;
             }

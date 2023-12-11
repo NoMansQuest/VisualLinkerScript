@@ -96,9 +96,9 @@ namespace
             return true;
         }
 
-        return ((input == '*') || (input == '>') ||  (input == '<') || (input == '/') ||
-                (input == '-') || (input == '+') ||  (input == '&') || (input == '|') ||
-                (input == '%') || (input == '^') ||  (input == '~') || (input == '!'));
+        return ((input == '*') || (input == '/') || (input == '&') || (input == '|') ||
+                (input == '-') || (input == '+') || (input == '~') || (input == '!') ||
+                (input == '%') || (input == '^'));
     }
 
     /// @brief Checks to see if the character is a semicolon.
@@ -213,7 +213,7 @@ namespace
         return AssignmentSymbolTypes::NotAnAssignmentSymbol;
     }
 
-        /// @brief Test against evaluative operators:
+    /// @brief Test against evaluative operators:
     ///        such as '<=', '>=', '==', '!=', '<', '>', '||', '&&'
     EvaluativeSymbolTypes TestForEvaluativeSymbol(const std::string& input, const uint32_t position)
     {

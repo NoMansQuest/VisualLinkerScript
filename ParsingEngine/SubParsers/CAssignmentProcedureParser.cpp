@@ -63,9 +63,7 @@ std::shared_ptr<CAssignmentProcedureStatement> CAssignmentProcedureParser::TryPa
     {
         auto localIteratorPlusOne = localIterator + 1;
         auto nextEntryExists = (localIteratorPlusOne != endOfVectorIterator);
-
-        auto resolvedContent = linkerScriptFile.ResolveRawEntry(*localIterator);
-        auto resolvedContentPlusOne = nextEntryExists ? linkerScriptFile.ResolveRawEntry(*localIteratorPlusOne) : "";
+        auto resolvedContent = linkerScriptFile.ResolveRawEntry(*localIterator);        
 
         switch (localIterator->EntryType())
         {

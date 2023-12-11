@@ -160,6 +160,15 @@ namespace
         ":"
     };
 
+    std::vector<std::string> ListOfWildcardStartEntries =
+    {
+        "?",
+        "/",
+        "*",
+        "]",
+        "[",
+    };
+
     std::vector<std::string> ListOfArithmeticOperators =
     {
         "+",
@@ -359,6 +368,13 @@ bool CParserHelpers::IsArithmeticOperator(const std::string& operatorToCheck)
     return std::find(ListOfArithmeticOperators.cbegin(),
                      ListOfArithmeticOperators.cend(),
                      operatorToCheck) != ListOfArithmeticOperators.cend();
+}
+
+bool CParserHelpers::IsStartOfWildcard(const std::string& wordToCheck)
+{
+    return std::find(ListOfWildcardStartEntries.cbegin(),
+                     ListOfWildcardStartEntries.cend(),
+                     wordToCheck) != ListOfWildcardStartEntries.cend();
 }
 
 bool CParserHelpers::IsSemicolon(const std::string& operatorToCheck)
