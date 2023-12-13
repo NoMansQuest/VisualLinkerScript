@@ -60,7 +60,6 @@ bool TryParseAssignments(
         std::vector<CRawEntry>::const_iterator endOfVectorIterator,
         std::shared_ptr<CRawFile> rawFile);
 
-
 std::shared_ptr<CLinkerScriptFile> CMasterParser::ProcessLinkerScriptFile(std::shared_ptr<CRawFile> rawFile)
 {
     std::vector<CRawEntry>::const_iterator localIterator =  rawFile->Content().cbegin();
@@ -136,13 +135,15 @@ std::shared_ptr<CLinkerScriptFile> CMasterParser::ProcessLinkerScriptFile(std::s
                         "Unrecognized raw-entry type detected.");
         }
 
-        localIterator++;
+        // Can't advance an interator beyond 'endOfVector'.
+        if (localIterator != endOfVectorIterator) {
+            localIterator++;
+        }
     }
 
-    return std::make_shared<CLinkerScriptFile>(rawFile, std::move(parsedContent), std::move(violations));
+    auto returnedLinkerScriptFile = std::make_shared<CLinkerScriptFile>(rawFile, std::move(parsedContent), std::move(violations));
+    return returnedLinkerScriptFile;
 }
-
-
 
 bool TryParseLinkerScriptMasterBlocks(
         const std::string& resolvedContent,

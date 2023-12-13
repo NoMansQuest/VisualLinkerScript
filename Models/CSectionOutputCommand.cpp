@@ -16,7 +16,7 @@ const std::string CSectionOutputCommand::ToDebugInfo(uint32_t depth)
 
     content += std::string(depth, ' ') + " -- Pre-colon content : \n";
 
-    for (auto subContent : this->PostColonContent())
+    for (auto subContent : this->PreColonContent())
     {
         content += subContent->ToDebugInfo(depth + 4) + "\n";
     }
@@ -27,7 +27,6 @@ const std::string CSectionOutputCommand::ToDebugInfo(uint32_t depth)
     {
         content += subContent->ToDebugInfo(depth + 4) + "\n";
     }
-
 
     content += std::string(depth, ' ') + " -- PreColon content : \n";
 

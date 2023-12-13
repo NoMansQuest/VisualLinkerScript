@@ -254,7 +254,7 @@ std::shared_ptr<CSectionsRegion> CSectionsRegionParser::TryParse(
                     case ParserState::AwaitingBracketClosure:
                     {
                         bracketOpenEntry = *localIterator;
-                        parserState = ParserState::AwaitingBracketClosure;
+                        parserState = ParserState::ParsingComplete;
                         break;
                     }
 
