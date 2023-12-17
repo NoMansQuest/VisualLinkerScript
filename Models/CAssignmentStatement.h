@@ -40,31 +40,31 @@ namespace VisualLinkerScript::Models
         }    
 
         /// @brief Gets the "AssignmentOperator"
-        const CRawEntry AssignmentOperator()
+        const CRawEntry AssignmentOperator() const
         {
             return this->m_assignmentOperator;
         }        
 
         /// @brief Gets the "LValue" entry
-        const CRawEntry LValueEntry()
+        const CRawEntry LValueEntry() const
         {
             return this->m_lValueEntry;
         }
         
         /// @brief Gets the "RValueComposition"
-        const SharedPtrVector<CLinkerScriptContentBase>& ParsedContent()
+        const SharedPtrVector<CLinkerScriptContentBase>& ParsedContent() const
         {
             return this->m_parsedContent;
         }
 
         /// @brief Gets the "SemicolonEntry"
-        const CRawEntry& SemicolonEntry()
+        const CRawEntry& SemicolonEntry() const
         {
             return this->m_semicolonEntry;
         }
 
         /// @brief Produces debug information on what this object represents.
-        const virtual std::string ToDebugInfo(uint32_t depth) override;
+        const virtual std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;
     };
 }
 

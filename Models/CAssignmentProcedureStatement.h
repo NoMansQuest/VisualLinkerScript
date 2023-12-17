@@ -47,43 +47,43 @@ namespace VisualLinkerScript::Models
         }    
 
         /// @brief Gets the "ProcedureName"
-        const CRawEntry ProcedureNameEntry()
+        const CRawEntry ProcedureNameEntry() const
         {
             return this->m_procedureNameEntry;
         }       
 
         /// @brief Gets the "ParenthesisCloseEntry"
-        const CRawEntry ParenthesisCloseEntry()
+        const CRawEntry ParenthesisCloseEntry() const
         {
             return this->m_parenthesisCloseEntry;
         }   
 
         /// @brief Gets the "ParenthesisOpenEntry"
-        const CRawEntry ParenthesisOpenEntry()
+        const CRawEntry ParenthesisOpenEntry() const
         {
             return this->m_parenthesisOpenEntry;
         } 
 
         /// @brief Gets the "AssignmentStatement"
-        std::shared_ptr<CAssignmentStatement> AssignmentStatement()
+        const std::shared_ptr<CAssignmentStatement> AssignmentStatement() const
         {
             return this->m_assignmentStatement;
         }        
 
         /// @brief Gets the "SemicolonOperator"
-        const CRawEntry& DelimiterOperator()
+        const CRawEntry& DelimiterOperator() const
         {
             return this->m_deliminterOperator;
         }
 
         /// @brief Gets the "Parsed Content". This this scenario it is most likely to contain comments only...
-        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& ParsedContent()
+        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& ParsedContent() const
         {
             return this->m_parsedContent;
         }
 
         /// @brief Produces debug information on what this object represents.
-        const virtual std::string ToDebugInfo(uint32_t depth) override;
+        const virtual std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;
     };
 }
 

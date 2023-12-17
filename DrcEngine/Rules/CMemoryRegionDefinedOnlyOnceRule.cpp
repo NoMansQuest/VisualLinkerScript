@@ -27,13 +27,13 @@ SharedPtrVector<CViolationBase> CMemoryRegionDefinedOnlyOnceRule::PerformCheck(c
            continue;
        }
 
-       for (auto sectionsRegion: foundSectionsRegion) {
+       for (auto sectionsRegionResult: foundSectionsRegion) {
            auto errorMessage = "'SECTIONS' region could only be defined once in linker-script file.";
            violations.emplace_back(std::shared_ptr<CViolationBase>(new CDrcViolation(
-                                       SharedPtrVector<CLinkerScriptContentBase> { std::dynamic_pointer_cast<CLinkerScriptContentBase>(sectionsRegion) },
+                                       SharedPtrVector<CLinkerScriptContentBase> { std::dynamic_pointer_cast<CLinkerScriptContentBase>(sectionsRegionResult->Result()) },
                                        this->DrcRuleTitle(),
                                        errorMessage,
-                                       sectionsRegion->ObjectPath(),
+                                       sectionsRegionResult->Result()->ObjectPath(),
                                        {},
                                        nullptr,
                                        EDrcViolationCode::MemoryRegionDefinedMultipleTimes,

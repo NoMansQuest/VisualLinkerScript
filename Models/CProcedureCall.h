@@ -42,37 +42,37 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Reports back the assignment-statement
-        CAssignmentStatement& AssignmentStatmeent()
+        const CAssignmentStatement& AssignmentStatmeent() const
         {
             return this->m_assignmentStatement;
         }
 
         /// @brief Reports back the procedure-name
-        const CRawEntry& ProcedureName()
+        const CRawEntry& ProcedureName() const
         {
             return this->m_procedureName;
         }
 
         /// @brief Reports back the openning parenthesis
-        const CRawEntry& OpenningParenthesis()
+        const CRawEntry& OpenningParenthesis() const
         {
             return this->m_openningParenthesis;
         }
 
         /// @brief Reports back the closing parenthesis
-        const CRawEntry& ClosingParenthesis()
+        const CRawEntry& ClosingParenthesis() const
         {
             return this->m_closingParenthesis;
         }
 
         /// @brief Reports back the terminating semicolon at the end of the procedure call.
-        const CRawEntry& TerminatingSemicolon()
+        const CRawEntry& TerminatingSemicolon() const
         {
             return this->m_terminatingSemicolon;
         }
 
         /// @brief Produces debug information on what this object represents.
-        const virtual std::string ToDebugInfo(uint32_t depth) override;
+        const virtual std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;
     };
 }
 

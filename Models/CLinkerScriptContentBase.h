@@ -80,19 +80,19 @@ namespace VisualLinkerScript::Models
         virtual ContentType Type() = 0;
 
         /// @brief Does content pass integrity check?
-        bool IsValid()
+        bool IsValid() const
         {
             return m_violations.size() == 0;
         }
 
         /// @brief Returns the first element present        
-        const std::vector<CRawEntry>& RawEntries()
+        const std::vector<CRawEntry>& RawEntries() const
         {            
             return m_rawEntries;
         }
 
         /// @brief Returns list detected violations
-        const SharedPtrVector<CViolationBase>& Violations()
+        const SharedPtrVector<CViolationBase>& Violations() const
         {
             return m_violations;
         }
@@ -104,30 +104,18 @@ namespace VisualLinkerScript::Models
 
         /// @brief Returns object's path. Example:
         /// @remarks '<linker-script-file-name>/<region>/[sub-region]/<object-type>#index
-        std::string ObjectPath(){
+        const std::string ObjectPath() const {
             return this->m_objectPath;
         }
 
         /// @brief Returns list detected violations
-        const uint32_t StartPosition()
+        uint32_t StartPosition() const
         {
             return this->m_rawEntries[0].StartPosition();
         }
 
-        /// @brief Updates the parent linker script file.
-        /// @remarks This cannot be set via constructor, as the parent linker-script file is not
-        ///          created until parsing is complete, which is long after this objects creation.
-        void SetParentLinkerScriptfile(std::shared_ptr<CLinkerScriptFile> newParent) {
-            this->m_parentLinkerScriptFile = newParent;
-        }
-
-        /// @brief Returns the ParentLinkerScriptFile for this object.
-        std::shared_ptr<CLinkerScriptFile> ParentLinkerScriptFile(){
-            return this->m_parentLinkerScriptFile;
-        }
-
         /// @brief Produces debug information on what this object represents.
-        const virtual std::string ToDebugInfo(uint32_t depth);
+        const virtual std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const;
     };
 }
 

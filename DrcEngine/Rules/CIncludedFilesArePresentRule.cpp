@@ -18,14 +18,14 @@ SharedPtrVector<CViolationBase> CInputFilesAreFoundRule::PerformCheck(const Shar
 
     auto foundIncludeCommands = QueryObject<CIncludeCommand>(linkerScriptFiles);
 
-    for (auto includeCommand: foundIncludeCommands) {
+    for (auto includeCommandResult: foundIncludeCommands) {
         // Check if file exists        
-        auto targetFile = includeCommand->ParentLinkerScriptFile()->ResolveEntryText(includeCommand->IncludeFileEntry());
+        auto targetFile = includeCommandResult->LinkerScriptFile()->ResolveEntryText(includeCommandResult->Result()->IncludeFileEntry());
 
         // Check if any other file has the name described
         auto targetFileFound = false;
         for (auto hoveringFile: linkerScriptFiles) {
-            if (hoveringFile->AbsoluteFilePath().compare(includeCommand->ParentLinkerScriptFile()->AbsoluteFilePath()) == 0) {
+            if (hoveringFile->AbsoluteFilePath().compare(includeCommandResult->LinkerScriptFile()->AbsoluteFilePath()) == 0) {
                 continue;
             }
 
@@ -42,7 +42,7 @@ SharedPtrVector<CViolationBase> CInputFilesAreFoundRule::PerformCheck(const Shar
 
         auto errorMessage = StringFormat("Included files are expected to be present, but '{}' was not found", targetFile);
         violations.emplace_back(std::shared_ptr<CViolationBase>(new CDrcViolation(
-                                std::vector<std::shared_ptr<CLinkerScriptContentBase>> { std::dynamic_pointer_cast<CLinkerScriptContentBase>(includeCommand) },
+                                std::vector<std::shared_ptr<CLinkerScriptContentBase>> { std::dynamic_pointer_cast<CLinkerScriptContentBase>(includeCommandResult->Result()) },
                                 this->DrcRuleTitle(),
                                 errorMessage,
                                 EDrcViolationCode::IncludedFilesArePresentRule,

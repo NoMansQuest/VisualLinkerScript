@@ -49,49 +49,49 @@ namespace VisualLinkerScript::Models
     public:
 
         /// @brief [Non-Optional] Header entry (i.e. 'OVERLAY').
-        const CRawEntry HeaderEntry()
+        CRawEntry HeaderEntry() const
         {
             return this->m_headerEntry;
         }
 
         /// @brief [Non-Optional] Reports back the 'Colon' entry.
-        const CRawEntry ColonEntry()
+        CRawEntry ColonEntry() const
         {
             return this->m_colonEntry;
         }
 
         /// @brief [Non-Optional] Reports the curly-bracket open entry.
-        CRawEntry BracketOpenEntry()
+        CRawEntry BracketOpenEntry() const
         {
             return this->m_bracketOpenEntry;
         }
 
         /// @brief [Non-Optional] Reports the curly-bracket close entry.
-        CRawEntry BracketCloseEntry()
+        CRawEntry BracketCloseEntry() const
         {
             return this->m_bracketCloseEntry;
         }
 
         /// @brief [Non-Optional] Reports the content defined inside the 'OVERLAY'
-        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& InnerContent()
+        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& InnerContent() const
         {
             return this->m_innerContent;
         }
 
         /// @brief [Non-Optional] Reports the content defined inside between the header and colon
-        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& PreColonContent()
+        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& PreColonContent() const
         {
             return this->m_preColonContent;
         }
 
         /// @brief [Non-Optional] Reports the content defined inside after the colon and before the bracket-open
-        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& PostColonContent()
+        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& PostColonContent() const
         {
             return this->m_postColonContent;
         }
 
         /// @brief [Non-Optional] Reports the content defined inside after bracket-closure
-        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& EndingContent()
+        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& EndingContent() const
         {
             return this->m_endingContent;
         }
@@ -103,7 +103,7 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Produces debug information on what this object represents.
-        const virtual std::string ToDebugInfo(uint32_t depth) override;
+        const virtual std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;
     };
 }
 

@@ -41,31 +41,31 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Reports back the statements
-        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& Statements()
+        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& Statements() const
         {
             return m_memoryStatements;
         }
 
         /// @brief Gets the header tag in raw-element
-        const CRawEntry& HeaderTag()
+        const CRawEntry& HeaderTag() const
         {
             return this->m_headerTag;
         }
 
         /// @brief Gets the opening-bracket's raw-element
-        const CRawEntry& OpeningBracket()
+        const CRawEntry& OpeningBracket() const
         {
             return this->m_openingBracket;
         }
 
         /// @brief Gets the closing-bracket's raw-element
-        const CRawEntry& ClosingBracket()
+        const CRawEntry& ClosingBracket() const
         {
             return this->m_closingBracket;
         }
 
         /// @brief Produces debug information on what this object represents.
-        const virtual std::string ToDebugInfo(uint32_t depth) override;
+        const virtual std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;
     };
 }
 

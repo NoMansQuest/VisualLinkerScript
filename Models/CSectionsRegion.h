@@ -39,31 +39,31 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Reports back the statements
-        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& Entries()
+        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& Entries() const
         {
             return m_entries;
         }
 
         /// @brief Reports back the entry containing the 'SECTIONS' header
-        const CRawEntry SectionsHeaderEntry()
+        const CRawEntry SectionsHeaderEntry() const
         {
             return this->m_sectionsHeaderEntry;
         }
 
         /// @brief Reports back the entry containing the "{" symbol
-        const CRawEntry OpeningBracketEntry()
+        const CRawEntry OpeningBracketEntry() const
         {
             return this->m_openingBracketEntry;
         }
 
         /// @brief Reports back the entry containing the "}" symbol
-        const CRawEntry ClosingBracketEntry()
+        const CRawEntry ClosingBracketEntry() const
         {         
             return this->m_closingBracketEntry;
         }
 
         /// @brief Produces debug information on what this object represents.
-        const virtual std::string ToDebugInfo(uint32_t depth) override;
+        const virtual std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;
     };
 }
 

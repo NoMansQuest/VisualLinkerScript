@@ -10,14 +10,14 @@
 using namespace VisualLinkerScript::Models;
 
 /// @brief Produces debug information on what this object represents.
-const std::string CLinkerScriptContentBase::ToDebugInfo(uint32_t depth)
+const std::string CLinkerScriptContentBase::ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const
 {
-    auto parentLinkerScriptFile = this->ParentLinkerScriptFile();
+    const CLinkerScriptContentBase& thisReference = *this;
     std::string content =
             (this->Violations().size() > 0 ? "[ ** ] " : "[ OK ] ") +
             std::string(typeid(*this).name()) +
             " @line " + std::to_string(this->StartPosition()) +
-            " -- content : " + parentLinkerScriptFile->ResolveEntryText(*this);
+            " -- content : " + linkerScriptFile.ResolveEntryText(thisReference);
 
     return std::string(depth, ' ') + " - " + content;
 }

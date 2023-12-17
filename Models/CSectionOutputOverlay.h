@@ -67,73 +67,73 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Reports back the name of the SectionOutput
-        CRawEntry SectionOutputNameEntry()
+        CRawEntry SectionOutputNameEntry() const
         {
             return this->m_sectionOutputNameEntry;
         }
 
         /// @brief Reports back the content found after the header and before the colon
-        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& PreColonContent()
+        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& PreColonContent() const
         {
             return this->m_preColonContent;
         }
 
         /// @brief Reports back the content found after the colon and before the opening bracket
-        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& PostColonContent()
+        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& PostColonContent() const
         {
             return this->m_postColonContent;
         }
 
         /// @brief Reports back the 'Colon' found after 'Name' and before 'Bracket-Open'.
-        CRawEntry ColonEntry()
+        CRawEntry ColonEntry() const
         {
             return this->m_colonEntry;
         }
 
         /// @brief Reports back the 'Opening Bracket' entry, should be present.
-        CRawEntry OpeningBracketEntry()
+        CRawEntry OpeningBracketEntry() const
         {
             return this->m_openingBracketEntry;
         }
 
         /// @brief Reports back the 'Closing Bracket' entr, should be present.
-        CRawEntry ClosingBracketEntry()
+        CRawEntry ClosingBracketEntry() const
         {
             return this->m_closingBracketEntry;
         }
 
         /// @brief Reports back the 'ToVma' expression, if present.
-        std::shared_ptr<CSectionOutputToVmaRegion> ToVmaRegion()
+        std::shared_ptr<CSectionOutputToVmaRegion> ToVmaRegion() const
         {
             return this->m_toVmaRegion;
         }
 
         /// @brief Reports back the 'AtLma' region, if present.
-        std::shared_ptr<CSectionOutputAtLmaRegion> AtLmaRegionFunction()
+        std::shared_ptr<CSectionOutputAtLmaRegion> AtLmaRegionFunction() const
         {
             return this->m_atLmaRegionFunction;
         }
 
         /// @brief Reports back the program headers defined, if present.
-        const std::vector<std::shared_ptr<CSectionOutputPhdr>>& ProgramHeaders()
+        const std::vector<std::shared_ptr<CSectionOutputPhdr>>& ProgramHeaders() const
         {
             return this->m_programHeaders;
         }
 
         /// @brief Reports back the 'Fill' expression, if preent.
-        std::shared_ptr<CSectionOutputFillExpression> FillExpression()
+        std::shared_ptr<CSectionOutputFillExpression> FillExpression() const
         {
             return this->m_fillExpression;
         }
 
         /// @brief Reports back the outer content, which includes all parsed content.
-        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& InnerContent()
+        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& InnerContent() const
         {
             return this->m_innerContent;
         }
 
         /// @brief Produces debug information on what this object represents.
-        const virtual std::string ToDebugInfo(uint32_t depth) override;
+        const virtual std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;
     };
 }
 

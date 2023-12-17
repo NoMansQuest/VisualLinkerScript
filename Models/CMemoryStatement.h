@@ -47,37 +47,37 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Reports back 'Name' entry
-        const CRawEntry NameEntry()
+        const CRawEntry NameEntry() const
         {
             return m_nameEntry;
         }
 
         /// @brief Rpeorts back the Attributes of the statement (as CMemoryStatementAttribute)
-        const std::shared_ptr<CLinkerScriptContentBase> Attributes()
+        const std::shared_ptr<CLinkerScriptContentBase> Attributes() const
         {
             return m_attributes;
         }
 
         /// @brief Reports back 'Colon' entry
-        const CRawEntry ColonEntry()
+        const CRawEntry ColonEntry() const
         {
             return m_colonEntry;
         }
 
         /// @brief Rpeorts back 'ORIGIN' or 'org' assignment
-        const std::shared_ptr<CLinkerScriptContentBase> OriginAssignment()
+        const std::shared_ptr<CLinkerScriptContentBase> OriginAssignment() const
         {
             return m_originAssignment;
         }
 
         /// @brief Reports back 'LENGTH' or 'l' or 'len' assignment
-        std::shared_ptr<CLinkerScriptContentBase> LengthAssignment()
+        std::shared_ptr<CLinkerScriptContentBase> LengthAssignment() const
         {
             return m_lengthAssignment;
         }
 
         /// @brief Produces debug information on what this object represents.
-        const virtual std::string ToDebugInfo(uint32_t depth) override;
+        const virtual std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;
     };    
 }
 

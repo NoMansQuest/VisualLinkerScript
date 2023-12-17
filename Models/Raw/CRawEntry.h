@@ -100,7 +100,7 @@ namespace VisualLinkerScript::Models::Raw
         }
 
         /// @brief Reports back whether this entry is present or serving as a placeholder
-        bool IsPresent() 
+        bool IsPresent()  const
         {
             return (this->m_entryType != RawEntryType::NotPresent);
         }

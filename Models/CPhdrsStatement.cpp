@@ -8,7 +8,7 @@
 using namespace VisualLinkerScript::Models;
 
 /// @brief Produces debug information on what this object represents.
-const std::string CPhdrsStatement::ToDebugInfo(uint32_t depth)
+const std::string CPhdrsStatement::ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const
 {
     std::string content =
             (this->Violations().size() > 0 ? "[ ** ] " : "[ OK ] ") +
@@ -16,8 +16,8 @@ const std::string CPhdrsStatement::ToDebugInfo(uint32_t depth)
             " @line " + std::to_string(this->StartPosition()) +
             " -- content : \n";
 
-    content += this->AtAddressFunction()->ToDebugInfo(depth + 4) + "\n";
-    content += this->FlagsFunction()->ToDebugInfo(depth + 4) + "\n";
+    content += this->AtAddressFunction()->ToDebugInfo(depth + 4, linkerScriptFile) + "\n";
+    content += this->FlagsFunction()->ToDebugInfo(depth + 4, linkerScriptFile) + "\n";
 
     return std::string(depth, ' ') + " - " + content;
 }

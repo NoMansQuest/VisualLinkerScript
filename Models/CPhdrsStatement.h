@@ -45,37 +45,37 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Reports back the Header-Name Entry
-        const CRawEntry& HeaderNameEntry()
+        const CRawEntry& HeaderNameEntry() const
         {
             return this->m_headerNameEntry;
         }
 
         /// @brief Reports back the Header-Type Entry
-        const CRawEntry& HeaderTypeEntry()
+        const CRawEntry& HeaderTypeEntry() const
         {
             return this->m_headerTypeEntry;
         }
 
         /// @brief Reports back the 'AT(ADDRESS)'
-        const std::shared_ptr<CLinkerScriptContentBase> AtAddressFunction()
+        const std::shared_ptr<CLinkerScriptContentBase> AtAddressFunction() const
         {
             return this->m_atAddressFunction;
         }
 
         /// @brief Reports back the Flags function
-        const std::shared_ptr<CLinkerScriptContentBase> FlagsFunction()
+        const std::shared_ptr<CLinkerScriptContentBase> FlagsFunction() const
         {
             return this->m_flagsFunction;
         }
 
         /// @brief Reports back the Semicolon Entry
-        const CRawEntry& SemicolonEntry()
+        const CRawEntry& SemicolonEntry() const
         {
             return this->m_semicolonEntry;
         }
 
         /// @brief Produces debug information on what this object represents.
-        const virtual std::string ToDebugInfo(uint32_t depth) override;
+        const virtual std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;
     };
 }
 

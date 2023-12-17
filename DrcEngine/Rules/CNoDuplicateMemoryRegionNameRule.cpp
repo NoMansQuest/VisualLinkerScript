@@ -22,18 +22,18 @@ SharedPtrVector<CViolationBase> CNoDuplicateMemoryRegionNameRule::PerformCheck(c
 
     for (auto memoryStatementToInspect: foundMemoryStatements) {
         // Check if any other file has the name described
-       SharedPtrVector<CMemoryStatement> foundDuplicates { memoryStatementToInspect };
-       auto inpsectStatementName = memoryStatementToInspect->ParentLinkerScriptFile()->ResolveEntryText(memoryStatementToInspect->NameEntry());
+       SharedPtrVector<CMemoryStatement> foundDuplicates { memoryStatementToInspect->Result() };
+       auto inpsectStatementName = memoryStatementToInspect->LinkerScriptFile()->ResolveEntryText(memoryStatementToInspect->Result()->NameEntry());
 
        for (auto memoryStatementSecondLoop: foundMemoryStatements) {
-            if (memoryStatementSecondLoop->StartPosition() == memoryStatementToInspect->StartPosition()) {
+            if (memoryStatementSecondLoop->Result()->StartPosition() == memoryStatementToInspect->Result()->StartPosition()) {
                 continue;
             }
 
-            auto secondLoopStatementName = memoryStatementSecondLoop->ParentLinkerScriptFile()->ResolveEntryText(memoryStatementSecondLoop->NameEntry());
+            auto secondLoopStatementName = memoryStatementSecondLoop->LinkerScriptFile()->ResolveEntryText(memoryStatementSecondLoop->Result()->NameEntry());
 
             if (StringEquals(inpsectStatementName,secondLoopStatementName)){
-                foundDuplicates.emplace_back(memoryStatementSecondLoop);
+                foundDuplicates.emplace_back(memoryStatementSecondLoop->Result());
             }
         }
 
@@ -65,14 +65,14 @@ SharedPtrVector<CViolationBase> CNoDuplicateMemoryRegionNameRule::PerformCheck(c
         }
 
         SharedPtrVector<CLinkerScriptContentBase> memoryStatementsToInspect {
-            std::dynamic_pointer_cast<CLinkerScriptContentBase>(memoryStatementToInspect)
+            std::dynamic_pointer_cast<CLinkerScriptContentBase>(memoryStatementToInspect->Result())
         };
 
         violations.emplace_back(std::shared_ptr<CViolationBase>(new CDrcViolation(
                                     memoryStatementsToInspect,
                                     this->DrcRuleTitle(),
                                     errorMessage,
-                                    memoryStatementToInspect->ObjectPath(),
+                                    memoryStatementToInspect->Result()->ObjectPath(),
                                     std::move(subitems),
                                     std::shared_ptr<CIntervention>(nullptr),
                                     EDrcViolationCode::DuplicateNameForMemoryStatement,

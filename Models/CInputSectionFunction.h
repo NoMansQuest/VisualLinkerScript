@@ -39,31 +39,31 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Reports back the list of parameters
-        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& ParsedContent()
+        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& ParsedContent() const
         {
             return this->m_parsedContent;
         }
 
         /// @brief Reports back the function name
-        const CRawEntry& FunctionName()
+        const CRawEntry& FunctionName() const
         {
             return this->m_functionName;
         }
 
         /// @brief Reports back the opening parenthesis
-        const CRawEntry& OpeningParenthesis()
+        const CRawEntry& OpeningParenthesis() const
         {
             return this->m_openingParenthesis;
         }
 
         /// @brief Reports back the closing parenthesis
-        const CRawEntry& ClosingParenthesis()
+        const CRawEntry& ClosingParenthesis() const
         {
             return this->m_closingParenthesis;
         }
 
         /// @brief Produces debug information on what this object represents.
-        const virtual std::string ToDebugInfo(uint32_t depth) override;
+        const virtual std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;
     };
 }
 

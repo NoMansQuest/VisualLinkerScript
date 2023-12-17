@@ -8,7 +8,7 @@
 using namespace VisualLinkerScript::Models;
 
 /// @brief Produces debug information on what this object represents.
-const std::string CVersionScope::ToDebugInfo(uint32_t depth)
+const std::string CVersionScope::ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const
 {
     std::string content =
             (this->Violations().size() > 0 ? "[ ** ] " : "[ OK ] ") +
@@ -18,7 +18,7 @@ const std::string CVersionScope::ToDebugInfo(uint32_t depth)
     content += std::string(depth, ' ') + " -- Parsed content: \n";
     for (auto subContent : this->ParsedContent())
     {
-        content += subContent->ToDebugInfo(depth + 4) + "\n";
+        content += subContent->ToDebugInfo(depth + 4, linkerScriptFile) + "\n";
     }
 
     return std::string(depth, ' ') + " - " + content;

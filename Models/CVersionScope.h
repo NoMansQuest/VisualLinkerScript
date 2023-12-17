@@ -50,37 +50,37 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Reports back the name of the scope
-        CRawEntry ScopeNameEntry()
+        CRawEntry ScopeNameEntry() const
         {
             return this->m_scopeNameEntry;
         }
 
         /// @brief Reports back inheriting scope entry
-        CRawEntry InheritingScopeEntry()
+        CRawEntry InheritingScopeEntry() const
         {
             return this->m_inheritingScopeEntry;
         }
 
         /// @brief Reports back opening bracket entry
-        CRawEntry OpeningBracketEntry()
+        CRawEntry OpeningBracketEntry() const
         {
             return this->m_openingBracketEntry;
         }
 
         /// @brief Reports back closing bracket entry
-        CRawEntry ClosingBracketEntry()
+        CRawEntry ClosingBracketEntry() const
         {
             return this->m_closingBracketEntry;
         }
 
         /// @brief Reports back parsed content
-        const std::vector<std::shared_ptr<CLinkerScriptContentBase>> ParsedContent()
+        const std::vector<std::shared_ptr<CLinkerScriptContentBase>> ParsedContent() const
         {
             return this->m_parsedContent;
         }
 
         /// @brief Produces debug information on what this object represents.
-        const virtual std::string ToDebugInfo(uint32_t depth) override;
+        const virtual std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;
     };
 }
 

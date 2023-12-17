@@ -59,56 +59,56 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Reports back the name of the SectionOutput
-        CRawEntry SectionOutputNameEntry()
+        CRawEntry SectionOutputNameEntry() const
         {
             return this->m_sectionOutputNameEntry;
         }
 
         /// @brief Reports back the content found after the header and before the colon
-        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& PreColonContent()
+        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& PreColonContent() const
         {
             return this->m_preColonContent;
         }
 
         /// @brief Reports back the content found after the colon and before the opening bracket
-        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& PostColonContent()
+        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& PostColonContent() const
         {
             return this->m_postColonContent;
         }
 
         /// @brief Reports back the 'Colon' found after 'Name' and before 'Bracket-Open'.
-        CRawEntry ColonEntry()
+        CRawEntry ColonEntry() const
         {
             return this->m_colonEntry;
         }
 
         /// @brief Reports back the 'Opening Bracket' entry, should be present.
-        CRawEntry OpeningBracketEntry()
+        CRawEntry OpeningBracketEntry() const
         {
             return this->m_openingBracketEntry;
         }
 
         /// @brief Reports back the 'Closing Bracket' entr, should be present.
-        CRawEntry ClosingBracketEntry()
+        CRawEntry ClosingBracketEntry() const
         {
             return this->m_closingBracketEntry;
         }
 
         /// @brief Reports back the outer content, which includes all parsed content.
-        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& InnerContent()
+        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& InnerContent() const
         {
             return this->m_innerContent;
         }
 
 
         /// @brief Reports back the ending content, which can contain AtLma, ToVma, Phdrs and fill-expression
-        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& EndingContent()
+        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& EndingContent() const
         {
             return this->m_endingContent;
         }
 
         /// @brief Produces debug information on what this object represents.
-        const virtual std::string ToDebugInfo(uint32_t depth) override;
+        const virtual std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;
     };
 }
 

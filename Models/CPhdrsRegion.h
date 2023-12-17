@@ -39,31 +39,31 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Reports back PHDR statements
-        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& Statements()
+        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& Statements() const
         {
             return m_statements;
         }
 
         /// @brief Reports back the entry containing the 'PHDRS' header  
-        const CRawEntry PhdrsHeaderEntry()
+        const CRawEntry PhdrsHeaderEntry() const
         {
             return this->m_phdrsHeaderEntry;
         }
 
         /// @brief Reports back the entry containing the "{" symbol
-        const CRawEntry OpeningBracketEntry()
+        const CRawEntry OpeningBracketEntry() const
         {
             return this->m_openingBracketEntry;
         }
 
         /// @brief Reports back the entry containing the "}" symbol
-        const CRawEntry ClosingBracketEntry()
+        const CRawEntry ClosingBracketEntry() const
         {
             return this->m_closingBracketEntry;
         }
 
         /// @brief Produces debug information on what this object represents.
-        const virtual std::string ToDebugInfo(uint32_t depth) override;
+        const virtual std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;
     };
 }
 

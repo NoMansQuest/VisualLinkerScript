@@ -7,7 +7,7 @@
 using namespace VisualLinkerScript::Models;
 
 /// @brief Produces debug information on what this object represents.
-const std::string CSectionOverlayCommand::ToDebugInfo(uint32_t depth)
+const std::string CSectionOverlayCommand::ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const
 {
     std::string content =
             (this->Violations().size() > 0 ? "[ ** ] " : "[ OK ] ") +
@@ -18,28 +18,28 @@ const std::string CSectionOverlayCommand::ToDebugInfo(uint32_t depth)
 
     for (auto subContent : this->PreColonContent())
     {
-        content += subContent->ToDebugInfo(depth + 4) + "\n";
+        content += subContent->ToDebugInfo(depth + 4, linkerScriptFile) + "\n";
     }
 
     content += std::string(depth, ' ') + " -- PostColon content: \n";
 
     for (auto subContent : this->PostColonContent())
     {
-        content += subContent->ToDebugInfo(depth + 4) + "\n";
+        content += subContent->ToDebugInfo(depth + 4, linkerScriptFile) + "\n";
     }
 
     content += std::string(depth, ' ') + " -- Inner content: \n";
 
     for (auto subContent : this->InnerContent())
     {
-        content += subContent->ToDebugInfo(depth + 4) + "\n";
+        content += subContent->ToDebugInfo(depth + 4, linkerScriptFile) + "\n";
     }
 
     content += std::string(depth, ' ') + " -- Ending content: \n";
 
     for (auto subContent : this->EndingContent())
     {
-        content += subContent->ToDebugInfo(depth + 4) + "\n";
+        content += subContent->ToDebugInfo(depth + 4, linkerScriptFile) + "\n";
 
     }
 

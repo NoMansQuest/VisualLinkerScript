@@ -46,25 +46,25 @@ namespace VisualLinkerScript::Models
         }    
 
         /// @brief Reports back openning-parenthesis
-        const CRawEntry& OpeningParenthesis()
+        const CRawEntry& OpeningParenthesis() const
         {
             return this->m_openingParenthesis;
         }
 
         /// @brief Reports back closing parenthesis
-        const CRawEntry& ClosingParenthesis()
+        const CRawEntry& ClosingParenthesis() const
         {
             return this->m_closingParenthesis;
         }
 
         /// @brief Gets the "Composition" 
-        const SharedPtrVector<CLinkerScriptContentBase>& Composition()
+        const SharedPtrVector<CLinkerScriptContentBase>& Composition() const
         {
             return this->m_composition;
         }
 
         /// @brief Produces debug information on what this object represents.
-        const virtual std::string ToDebugInfo(uint32_t depth) override;
+        const virtual std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;
     };
 }
 

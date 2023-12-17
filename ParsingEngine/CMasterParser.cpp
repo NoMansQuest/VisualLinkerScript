@@ -209,8 +209,6 @@ bool TryParseLinkerScriptMasterBlocks(
     return true;
 }
 
-
-
 bool TryParseFunctionAndAssignmentProcedureCalls(
         const std::string& resolvedContent,
         SharedPtrVector<CViolationBase>& violations,
@@ -232,7 +230,7 @@ bool TryParseFunctionAndAssignmentProcedureCalls(
     {
         auto parsedIncludeCommand = std::shared_ptr<CIncludeCommand>(new CIncludeCommand(*entryIterator, rawEntryPlusOne, {*entryIterator, rawEntryPlusOne},{}));
         parsedContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(parsedIncludeCommand));
-        *entryIterator++; // Manually advance the iterator by 1. The master loop will also advance it again, ensuring normal operation of the parser.
+        entryIterator++; // Manually advance the iterator by 1. The master loop will also advance it again, ensuring normal operation of the parser.
     }
     else if (StringIn(resolvedContent, {"INPUT", "GROUP", "AS_NEEDED"}, false))
     {

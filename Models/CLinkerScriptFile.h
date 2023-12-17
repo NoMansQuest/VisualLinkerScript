@@ -32,42 +32,42 @@ namespace VisualLinkerScript::Models
 
     public:
         /// @brief Returns the content of the file
-        const SharedPtrVector<CLinkerScriptContentBase>& Content() {
+        const SharedPtrVector<CLinkerScriptContentBase>& Content() const {
             return this->m_content;
         }
 
         /// @brief Reports back violations detected at root level of the linker-script file
-        const SharedPtrVector<CViolationBase>& Violations() {
+        const SharedPtrVector<CViolationBase>& Violations() const {
             return this->m_violations;
         }
 
         /// @brief Returns the raw linker-script file
-        std::shared_ptr<CRawFile> RawFile() {
+        std::shared_ptr<CRawFile> RawFile() const {
             return this->m_rawFile;
         }
 
         /// @brief Returns the name of he file without the path
-        std::string FileName() {
+        std::string FileName() const {
             return this->m_rawFile->FileName();
         }
 
         /// @brief Returns the absolute file path
-        std::string AbsoluteFilePath() {
+        std::string AbsoluteFilePath() const {
             return this->m_rawFile->AbsoluteFilePath();
         }
 
         /// @brief Returns the full text the input component is composed of.
         /// @param entryToResolve Component to process
         /// @return The full text that constitutes the component.
-        std::string ResolveEntryText(CLinkerScriptContentBase& contentToResolve);
+        std::string ResolveEntryText(const CLinkerScriptContentBase& contentToResolve) const;
 
         /// @brief Returns the full text the input component is composed of.
         /// @param entryToResolve Component to process
         /// @return The full text that constitutes the component.
-        std::string ResolveEntryText(const CRawEntry& rawEntryToResolve);
+        std::string ResolveEntryText(const CRawEntry& rawEntryToResolve) const;
 
         /// @brief Produces debug information on what this object represents.
-        const virtual std::string ToDebugInfo(uint32_t depth);
+        const virtual std::string ToDebugInfo(uint32_t depth) const;
     };
 }
 

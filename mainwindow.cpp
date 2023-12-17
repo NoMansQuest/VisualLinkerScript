@@ -179,8 +179,8 @@ void MainWindow::BuildUserInterface()
 
     // Parse content
     CMasterParser masterParser;
-    auto parsedContent = masterParser.ProcessLinkerScriptFile(preliminaryParseResult);
-    auto parsedContentDebugInfo = parsedContent->ToDebugInfo(0);
+    auto parsedLinkerScriptFile = masterParser.ProcessLinkerScriptFile(preliminaryParseResult);
+    auto parsedContentDebugInfo = parsedLinkerScriptFile->ToDebugInfo(0);
     auto targetString = QString::fromStdString(parsedContentDebugInfo);
     this->m_scintilla->setText(targetString);
 

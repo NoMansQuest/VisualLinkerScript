@@ -42,16 +42,16 @@ SharedPtrVector<CViolationBase> CIncludeRecursionGuard::PerformCheck(const Share
         // Recursion list
         std::vector<std::string> visitedFile { file->AbsoluteFilePath() };
 
-        for (auto includeCommand: QueryObject<CIncludeCommand>(file)) {
+        for (auto includeCommandResult: QueryObject<CIncludeCommand>(file)) {
 
             // Check if file exists            
-            auto targetFile = includeCommand->ParentLinkerScriptFile()->ResolveEntryText(includeCommand->IncludeFileEntry());
+            auto targetFile = includeCommandResult->LinkerScriptFile()->ResolveEntryText(includeCommandResult->Result()->IncludeFileEntry());
             std::shared_ptr<CLinkerScriptFile> fileToCheckRecursively = nullptr;
             RecursionMap recursionMap;
 
             // Check if any other file has the name described
             for (auto hoveringFile: linkerScriptFiles) {
-                if (hoveringFile->AbsoluteFilePath().compare(includeCommand->ParentLinkerScriptFile()->AbsoluteFilePath()) == 0) {
+                if (hoveringFile->AbsoluteFilePath().compare(includeCommandResult->LinkerScriptFile()->AbsoluteFilePath()) == 0) {
                     continue; // The file isn not cross-checked against itself
                 }
 
@@ -68,7 +68,7 @@ SharedPtrVector<CViolationBase> CIncludeRecursionGuard::PerformCheck(const Share
                     auto errorMessage = StringFormat("Recursion detected in file '{}' when included '{}' on line '{}':\n",
                                                      file->FileName(),
                                                      targetFile,
-                                                     includeCommand->IncludeFileEntry().StartLineNumber());
+                                                     includeCommandResult->Result()->IncludeFileEntry().StartLineNumber());
 
                     recursionMap.reserve(recursionMap.size());
 
@@ -83,7 +83,7 @@ SharedPtrVector<CViolationBase> CIncludeRecursionGuard::PerformCheck(const Share
                     }
 
                     violations.emplace_back(std::make_shared<CDrcViolation>(
-                                            std::vector<std::shared_ptr<CLinkerScriptContentBase>> { std::dynamic_pointer_cast<CLinkerScriptContentBase>(includeCommand) },
+                                            std::vector<std::shared_ptr<CLinkerScriptContentBase>> { std::dynamic_pointer_cast<CLinkerScriptContentBase>(includeCommandResult->Result()) },
                                             this->DrcRuleTitle(),
                                             errorMessage,
                                             EDrcViolationCode::RecursiveIncludeChainDetected,
@@ -96,13 +96,12 @@ SharedPtrVector<CViolationBase> CIncludeRecursionGuard::PerformCheck(const Share
             // Include file was not found
             auto errorMessage = StringFormat("Included files are expected to be present, but '{}' was not found", targetFile);
             violations.emplace_back(std::shared_ptr<CViolationBase>(new CDrcViolation(
-                                    SharedPtrVector<CLinkerScriptContentBase> { std::dynamic_pointer_cast<CLinkerScriptContentBase>(includeCommand) },
+                                    SharedPtrVector<CLinkerScriptContentBase> { std::dynamic_pointer_cast<CLinkerScriptContentBase>(includeCommandResult->Result()) },
                                     this->DrcRuleTitle(),
                                     errorMessage,
                                     EDrcViolationCode::IncludedFilesArePresentRule,
                                     EDrcViolationSeverity::Error)));
         }
-
     }
 
     return violations;
@@ -116,11 +115,11 @@ bool RecursiveCheck(const SharedPtrVector<CLinkerScriptFile>& scope,
 {
     auto includeCommands  = QueryObject<CIncludeCommand>(fileToCheck);
 
-    for (auto includeCommand: includeCommands) {
-        auto fileToInclude = fileToCheck->ResolveEntryText(includeCommand->IncludeFileEntry());
+    for (auto includeCommandResult: includeCommands) {
+        auto fileToInclude = fileToCheck->ResolveEntryText(includeCommandResult->Result()->IncludeFileEntry());
 
         if (StringEquals(fileToInclude, subjectOfInterest->FileName(), IGNORE_CASE_WHEN_COMPARING_PATHS)) {
-            recursionMap.insert_or_assign(fileToCheck, includeCommand);
+            recursionMap.insert_or_assign(fileToCheck, includeCommandResult->Result());
             return true;
         }
 
@@ -138,7 +137,7 @@ bool RecursiveCheck(const SharedPtrVector<CLinkerScriptFile>& scope,
             continue;
         }
 
-        recursionMap.insert_or_assign(fileToCheck, includeCommand);
+        recursionMap.insert_or_assign(fileToCheck, includeCommandResult->Result());
         return true;
     }
 

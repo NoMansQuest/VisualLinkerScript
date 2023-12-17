@@ -11,16 +11,36 @@ namespace VisualLinkerScript::QueryEngine
     using namespace VisualLinkerScript;
     using namespace VisualLinkerScript::Models;
 
+    /// @brief Query returns these objects to report findings and belonging linker-script file.
+    template<typename TObjectType>
+    struct QueryResult
+    {
+        private:
+            std::shared_ptr<CLinkerScriptFile> m_linkerScriptFile;
+            std::shared_ptr<TObjectType> m_result;
+
+        public:
+            QueryResult(std::shared_ptr<CLinkerScriptFile> linkerScriptFile, std::shared_ptr<TObjectType> result)
+            {
+                this->m_result = result;
+                this->m_linkerScriptFile = linkerScriptFile;
+            }
+
+        public:
+            std::shared_ptr<CLinkerScriptFile> LinkerScriptFile() { return this->m_linkerScriptFile; }
+            std::shared_ptr<TObjectType> Result() { return this->m_result; }
+    };
+
     /// @brief Queries the given object of type T from provided linker-script files
     template <typename T>
-    SharedPtrVector<T> QueryObject(
+    SharedPtrVector<QueryResult<T>> QueryObject(
         const SharedPtrVector<CLinkerScriptFile>& scope,
         std::function<bool(std::shared_ptr<CLinkerScriptFile> linkerScriptFile, std::shared_ptr<T> filterInput)> filterFunction = nullptr,
         bool deepSearch = false);
 
     /// @brief Queries the given object of type T from provided linker-script file (single-file scope)
     template <typename T>
-    SharedPtrVector<T> QueryObject(
+    SharedPtrVector<QueryResult<T>> QueryObject(
         std::shared_ptr<CLinkerScriptFile> scope,
         std::function<bool(std::shared_ptr<CLinkerScriptFile> linkerScriptFile, std::shared_ptr<T> filterInput)> filterFunction = nullptr,
         bool deepSearch = false);
