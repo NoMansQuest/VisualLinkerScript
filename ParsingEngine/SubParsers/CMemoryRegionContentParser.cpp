@@ -550,7 +550,7 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
     }
 
     std::vector<CRawEntry> rawEntries;
-    std::copy(parsingStartIteratorPosition, localIterator, std::back_inserter(rawEntries));
+    std::copy(parsingStartIteratorPosition, localIterator + 1, std::back_inserter(rawEntries));
 
     iterator = localIterator;
 

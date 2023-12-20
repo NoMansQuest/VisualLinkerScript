@@ -285,7 +285,7 @@ std::shared_ptr<CSectionsRegion> CSectionsRegionParser::TryParse(
     }
 
     std::vector<CRawEntry> rawEntries;
-    std::copy(parsingStartIteratorPosition, localIterator, std::back_inserter(rawEntries));
+    std::copy(parsingStartIteratorPosition, localIterator + 1, std::back_inserter(rawEntries));
 
     iterator = localIterator;
 
