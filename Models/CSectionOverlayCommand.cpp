@@ -10,9 +10,10 @@ using namespace VisualLinkerScript::Models;
 const std::string CSectionOverlayCommand::ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const
 {
     std::string content =
+            std::string(depth, ' ') + " - " +
             (this->Violations().size() > 0 ? "[ ** ] " : "[ OK ] ") +
             std::string(typeid(*this).name()) +
-            " @line " + std::to_string(this->StartPosition());
+            " @pos " + std::to_string(this->StartPosition()) + "\n";
 
     content += std::string(depth, ' ') + " -- PreColon content: \n";
 
@@ -43,5 +44,5 @@ const std::string CSectionOverlayCommand::ToDebugInfo(uint32_t depth, const CLin
 
     }
 
-    return std::string(depth, ' ') + " - " + content;
+    return content;
 }

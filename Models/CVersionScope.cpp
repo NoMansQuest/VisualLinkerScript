@@ -11,9 +11,10 @@ using namespace VisualLinkerScript::Models;
 const std::string CVersionScope::ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const
 {
     std::string content =
+            std::string(depth, ' ') + " - " +
             (this->Violations().size() > 0 ? "[ ** ] " : "[ OK ] ") +
             std::string(typeid(*this).name()) +
-            " @line " + std::to_string(this->StartPosition());
+            " @pos " + std::to_string(this->StartPosition()) + "\n";
 
     content += std::string(depth, ' ') + " -- Parsed content: \n";
     for (auto subContent : this->ParsedContent())
@@ -21,5 +22,5 @@ const std::string CVersionScope::ToDebugInfo(uint32_t depth, const CLinkerScript
         content += subContent->ToDebugInfo(depth + 4, linkerScriptFile) + "\n";
     }
 
-    return std::string(depth, ' ') + " - " + content;
+    return content;
 }

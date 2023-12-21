@@ -13,7 +13,7 @@ const std::string CExpression::ToDebugInfo(uint32_t depth, const CLinkerScriptFi
     std::string content =
             (this->Violations().size() > 0 ? "[ ** ] " : "[ OK ] ") +
             std::string(typeid(*this).name()) +
-            " @line " + std::to_string(this->StartPosition()) +
+            " @pos " + std::to_string(this->StartPosition()) +
             " -- content : \n";
 
     for (auto subContent : this->Composition())

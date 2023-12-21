@@ -10,9 +10,10 @@ using namespace VisualLinkerScript::Models;
 const std::string CSectionOutputOverlay::ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const
 {
     std::string content =
+            std::string(depth, ' ') + " - " +
             (this->Violations().size() > 0 ? "[ ** ] " : "[ OK ] ") +
             std::string(typeid(*this).name()) +
-            " @line " + std::to_string(this->StartPosition());
+            " @pos " + std::to_string(this->StartPosition());
 
     content += std::string(depth, ' ') + " -- Pre-colon content : \n";
 
@@ -46,5 +47,5 @@ const std::string CSectionOutputOverlay::ToDebugInfo(uint32_t depth, const CLink
     }
 
     content += std::string(depth, ' ') + "AtLmaRegionFunction: " + this->FillExpression()->ToDebugInfo(depth + 4, linkerScriptFile) + "\n";
-    return std::string(depth, ' ') + " - " + content;
+    return content;
 }

@@ -11,13 +11,14 @@ using namespace VisualLinkerScript::Models;
 const std::string CPhdrsStatement::ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const
 {
     std::string content =
+            std::string(depth, ' ') + " - " +
             (this->Violations().size() > 0 ? "[ ** ] " : "[ OK ] ") +
             std::string(typeid(*this).name()) +
-            " @line " + std::to_string(this->StartPosition()) +
+            " @pos " + std::to_string(this->StartPosition()) +
             " -- content : \n";
 
     content += this->AtAddressFunction()->ToDebugInfo(depth + 4, linkerScriptFile) + "\n";
     content += this->FlagsFunction()->ToDebugInfo(depth + 4, linkerScriptFile) + "\n";
 
-    return std::string(depth, ' ') + " - " + content;
+    return content;
 }

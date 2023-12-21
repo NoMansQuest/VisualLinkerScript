@@ -13,7 +13,7 @@ const std::string CAssignmentStatement::ToDebugInfo(uint32_t depth, const CLinke
     std::string content =
             (this->Violations().size() > 0 ? "[ ** ] " : "[ OK ] ") +
             std::string(typeid(*this).name()) +
-            " @line " + std::to_string(this->StartPosition()) +
+            " @pos " + std::to_string(this->StartPosition()) +
             " -- content : \n";
 
     for (auto subContent : this->ParsedContent())
