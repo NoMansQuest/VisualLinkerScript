@@ -12,7 +12,7 @@ const std::string CMemoryRegion::ToDebugInfo(uint32_t depth, const CLinkerScript
 {
     std::string content =
             (this->Violations().size() > 0 ? "[ ** ] " : "[ OK ] ") +
-            std::string(typeid(*this).name()) +
+            std::string("CMemoryRegion") +
             " @pos " + std::to_string(this->StartPosition()) +
             " -- content : \n";
 

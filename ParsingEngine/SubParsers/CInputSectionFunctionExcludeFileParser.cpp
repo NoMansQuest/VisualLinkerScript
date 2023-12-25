@@ -97,7 +97,7 @@ std::shared_ptr<CFunctionCall> CInputSectionFunctionExcludeFileParser::TryParse(
 
                     case ParserState::AwaitingParenthesisClosure:
                     {
-                        auto oneEntryAheadIterator = FindNextNonCommentEntry(linkerScriptFile, localIterator, endOfVectorIterator);
+                        auto oneEntryAheadIterator = FindNextNonCommentEntry(linkerScriptFile, localIterator + 1, endOfVectorIterator);
                         auto oneEntryAhead = (oneEntryAheadIterator != endOfVectorIterator) ? *oneEntryAheadIterator : CRawEntry();
 
                         if (CParserHelpers::IsReservedWord(resolvedContent) &&

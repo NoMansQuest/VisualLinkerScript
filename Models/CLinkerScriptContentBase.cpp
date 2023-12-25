@@ -15,7 +15,7 @@ const std::string CLinkerScriptContentBase::ToDebugInfo(uint32_t depth, const CL
     const CLinkerScriptContentBase& thisReference = *this;
     std::string content =
             (this->Violations().size() > 0 ? "[ ** ] " : "[ OK ] ") +
-            std::string(typeid(*this).name()) +
+            std::string("CLinkerScriptContentBase") +
             " @pos " + std::to_string(this->StartPosition()) +
             " -- content : " + linkerScriptFile.ResolveEntryText(thisReference);
 

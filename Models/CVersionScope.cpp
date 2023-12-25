@@ -13,7 +13,7 @@ const std::string CVersionScope::ToDebugInfo(uint32_t depth, const CLinkerScript
     std::string content =
             std::string(depth, ' ') + " - " +
             (this->Violations().size() > 0 ? "[ ** ] " : "[ OK ] ") +
-            std::string(typeid(*this).name()) +
+            std::string("CVersionScope") +
             " @pos " + std::to_string(this->StartPosition()) + "\n";
 
     content += std::string(depth, ' ') + " -- Parsed content: \n";

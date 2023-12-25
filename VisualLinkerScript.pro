@@ -119,6 +119,7 @@ SOURCES += \
     Models/CVersionScope.cpp \
     ParsingEngine/CMasterParser.cpp \
     ParsingEngine/CLexer.cpp \
+    ParsingEngine/EParserViolationCode.cpp \
     ParsingEngine/SubParsers/CAssignmentParser.cpp \
     ParsingEngine/SubParsers/CAssignmentProcedureParser.cpp \
     ParsingEngine/SubParsers/CExpressionParser.cpp \

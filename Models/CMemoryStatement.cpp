@@ -13,7 +13,7 @@ const std::string CMemoryStatement::ToDebugInfo(uint32_t depth, const CLinkerScr
     std::string content =
             std::string(depth, ' ') + " - " +
             (this->Violations().size() > 0 ? "[ ** ] " : "[ OK ] ") +
-            std::string(typeid(*this).name()) +
+            std::string("CMemoryStatement") +
             " @pos " + std::to_string(this->StartPosition()) + "\n";
 
     content += std::string(depth, ' ') +  " -- Attributes :" + this->Attributes()->ToDebugInfo(depth + 4, linkerScriptFile) + "\n";;

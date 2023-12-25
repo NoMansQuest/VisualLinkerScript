@@ -204,7 +204,7 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
 
                     case ParserState::AwaitingBracketClosure:
                     {
-                        auto nextNonCommentEntryIterator = FindNextNonCommentEntry(linkerScriptFile, localIterator, endOfVectorIterator);
+                        auto nextNonCommentEntryIterator = FindNextNonCommentEntry(linkerScriptFile, localIterator + 1, endOfVectorIterator);
                         auto entryPlusOne = (nextNonCommentEntryIterator != endOfVectorIterator) ? *nextNonCommentEntryIterator : CRawEntry();
 
                         if (CParserHelpers::IsInputSectionSpecialFunctionName(resolvedContent)) {
@@ -337,9 +337,19 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
                     }
 
                     case ParserState::AwaitingBracketOpen:
-                    case ParserState::AwaitingBracketClosure:
                     {
                         violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
+                        break;
+                    }
+                    case ParserState::AwaitingBracketClosure:
+                    {
+                        // This could be a InputSectionStatement. Try parsing it...
+                        auto inputSectionStatement = inputSectionStatementParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
+                        if (inputSectionStatement == nullptr) {
+                            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
+                        } else {
+                            innerContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(inputSectionStatement));
+                        }
                         break;
                     }
 

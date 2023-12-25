@@ -214,6 +214,7 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
                         }
                         else
                         {
+                            parsedContent.emplace_back(parsedRValue);
                             parserState = (this->m_isInsideProcedure) ? ParserState::AwaitingParenthesisClosure : ParserState::AwaitingSemicolon;
                         }
                         break;
@@ -295,6 +296,7 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
                         }
                         else
                         {
+                            parsedContent.emplace_back(parsedRValue);
                             parserState = finalParserState;
                         }
                         break;
@@ -378,6 +380,7 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
                         }
                         else
                         {
+                            parsedContent.emplace_back(parsedRValue);
                             parserState = finalParserState;
                         }
                         break;

@@ -13,10 +13,10 @@ const std::string CProcedureCall::ToDebugInfo(uint32_t depth, const CLinkerScrip
     std::string content =
             std::string(depth, ' ') + " - " +
             (this->Violations().size() > 0 ? "[ ** ] " : "[ OK ] ") +
-            std::string(typeid(*this).name()) +
+            std::string("CProcedureCall") +
             " @pos " + std::to_string(this->StartPosition()) +
-            " -- content : \n";
+            " -- content :";
 
-    content += this->AssignmentStatmeent().ToDebugInfo(depth + 4, linkerScriptFile) + "\n";
+    content += "\n" + this->AssignmentStatmeent().ToDebugInfo(depth + 4, linkerScriptFile);
     return content;
 }

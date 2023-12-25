@@ -231,10 +231,7 @@ CRawEntry VisualLinkerScript::ParsingEngine::SubParsers::FuseEntriesToFormAWilca
     }
     else
     {
-        if (copyOfIterator == endOfVectorIterator) {
-            copyOfIterator--;
-        }
-
+        copyOfIterator--;
         iterator = copyOfIterator;
         return CRawEntry(RawEntryType::Wildcard,
                          startLine,

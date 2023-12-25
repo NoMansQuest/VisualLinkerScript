@@ -13,7 +13,7 @@ const std::string CPhdrsRegion::ToDebugInfo(uint32_t depth, const CLinkerScriptF
     std::string content =
             std::string(depth, ' ') + " - " +
             (this->Violations().size() > 0 ? "[ ** ] " : "[ OK ] ") +
-            std::string(typeid(*this).name()) +
+            std::string("CPhdrsRegion") +
             " @pos " + std::to_string(this->StartPosition()) +
             " -- content : \n";
 

@@ -103,7 +103,7 @@ namespace VisualLinkerScript::DrcEngine
 
     public:
         /// @brief Reports back a list of involved elements
-        const SharedPtrVector<CLinkerScriptContentBase> InvolvedElements(){
+        const SharedPtrVector<CLinkerScriptContentBase> InvolvedElements() const {
             return this->m_involvedElements;
         }
 
@@ -113,12 +113,12 @@ namespace VisualLinkerScript::DrcEngine
         }
 
         /// @brief Reports back the title of the violation. This can be used for visualization purposes.
-        const std::string& Title() {
+        const std::string& Title() const{
             return this->m_title;
         }
 
         /// @brief Reports back the content-sensitive path of the violation. This can be used for tracking purposes.
-        const std::string& ContentSensitivePath() {
+        const std::string& ContentSensitivePath() const {
             return this->m_contentSensitivePath;
         }
 
@@ -129,17 +129,17 @@ namespace VisualLinkerScript::DrcEngine
         }
 
         /// @brief Reports back the tpe of violation        
-        const EDrcViolationCode Code() {
-            return m_violationCode;
+        const EDrcViolationCode Code() const {
+            return this->m_violationCode;
         }
 
         /// @brief Reports back the severity of the violation
-        const EDrcViolationSeverity Severity() {
+        EDrcViolationSeverity Severity() const {
             return m_violationSeverity;
         }
 
         /// @brief Reports back sub items (if any) belonging to this violation
-        const SharedPtrVector<CDrcViolation> Subitems(){
+        SharedPtrVector<CDrcViolation> Subitems() const{
             return this->m_subitems;
         }
 

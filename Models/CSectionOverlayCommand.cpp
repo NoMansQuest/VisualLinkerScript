@@ -12,7 +12,7 @@ const std::string CSectionOverlayCommand::ToDebugInfo(uint32_t depth, const CLin
     std::string content =
             std::string(depth, ' ') + " - " +
             (this->Violations().size() > 0 ? "[ ** ] " : "[ OK ] ") +
-            std::string(typeid(*this).name()) +
+            std::string("CSectionOverlayCommand") +
             " @pos " + std::to_string(this->StartPosition()) + "\n";
 
     content += std::string(depth, ' ') + " -- PreColon content: \n";

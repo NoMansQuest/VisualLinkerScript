@@ -1,5 +1,5 @@
-#ifndef EPARSERVIOLATIONCODE_H__
-#define EPARSERVIOLATIONCODE_H__
+#ifndef EDRCVIOLATIONCODE_H__
+#define EDRCVIOLATIONCODE_H__
 
 #include <cstdint>
 
@@ -18,4 +18,4 @@ namespace VisualLinkerScript::DrcEngine
     };
 }
 
-#endif // EPARSERVIOLATIONCODE_H__
+#endif // EDRCVIOLATIONCODE_H__

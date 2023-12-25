@@ -147,7 +147,7 @@ std::shared_ptr<CInputSectionStatement> CInputSectionStatementParser::TryParse(
                         if (CParserHelpers::IsSortFunction(resolvedContent))
                         {
                             std::vector<CRawEntry>::const_iterator copyOfIterator = localIterator;
-                            auto nextNonCommentEntryIterator = FindNextNonCommentEntry(linkerScriptFile, copyOfIterator, endOfVectorIterator);
+                            auto nextNonCommentEntryIterator = FindNextNonCommentEntry(linkerScriptFile, copyOfIterator + 1, endOfVectorIterator);
                             auto nextNonCommentEntry = (nextNonCommentEntryIterator != endOfVectorIterator) ? *nextNonCommentEntryIterator : CRawEntry();
 
                             if (nextNonCommentEntry.EntryType() == RawEntryType::ParenthesisOpen)
@@ -194,7 +194,7 @@ std::shared_ptr<CInputSectionStatement> CInputSectionStatementParser::TryParse(
 
                     case ParserState::AwaitingOptionalParenthesisClosure:
                     {
-                        auto nextEntryIterator = FindNextNonCommentEntry(linkerScriptFile, localIterator, endOfVectorIterator);
+                        auto nextEntryIterator = FindNextNonCommentEntry(linkerScriptFile, localIterator + 1, endOfVectorIterator);
                         auto nextNonCommentRawEntry = (nextEntryIterator != endOfVectorIterator) ? *nextEntryIterator : CRawEntry();
 
                         if (nextNonCommentRawEntry.IsPresent() && nextNonCommentRawEntry.EntryType() == RawEntryType::ParenthesisOpen)

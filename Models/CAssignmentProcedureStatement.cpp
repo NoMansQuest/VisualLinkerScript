@@ -12,13 +12,13 @@ const std::string CAssignmentProcedureStatement::ToDebugInfo(uint32_t depth, con
 {
     std::string content =
             (this->Violations().size() > 0 ? "[ ** ] " : "[ OK ] ") +
-            std::string(typeid(*this).name()) +
+            std::string("CAssignmentProcedureStatement") +
             " @pos " + std::to_string(this->StartPosition()) +
-            " -- content : \n";
+            " -- content:";
 
     for (auto subContent : this->ParsedContent())
     {
-        content += subContent->ToDebugInfo(depth + 4, linkerScriptFile) + "\n";
+        content += "\n" + subContent->ToDebugInfo(depth + 4, linkerScriptFile);
     }
 
     return std::string(depth, ' ') + " - " + content;

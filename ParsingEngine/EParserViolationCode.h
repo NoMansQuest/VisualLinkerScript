@@ -2,9 +2,13 @@
 #define EPARSERVIOLATIONCODE_H__
 
 #include <cstdint>
+#include <stdexcept>
+#include <string>
 
 namespace VisualLinkerScript::ParsingEngine
 {
+    #define NAMEOF(name) #name
+
     /// @brief An exhaustive list of all known violations.
     enum class EParserViolationCode : uint32_t
     {
@@ -121,6 +125,9 @@ namespace VisualLinkerScript::ParsingEngine
         WildcardsNotAllowedHere,
         DesignRuleCheckError // All DRC-Errors have this violation code.
     };
+
+    /// @brief Maps parser violation code to string (one of the reasons why I miss C#)
+    std::string MapParserViolationCodeToString(EParserViolationCode code);
 };
 
 #endif //
