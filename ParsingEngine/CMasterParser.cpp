@@ -116,6 +116,12 @@ std::shared_ptr<CLinkerScriptFile> CMasterParser::ProcessLinkerScriptFile(std::s
             case RawEntryType::BracketClose:
             case RawEntryType::ArithmeticOperator:
             case RawEntryType::AssignmentOperator:
+            case RawEntryType::EvaluativeOperators:
+            case RawEntryType::Colon:
+            case RawEntryType::Comma:
+            case RawEntryType::Semicolon:
+            case RawEntryType::QuestionMark:
+            case RawEntryType::Wildcard:
             case RawEntryType::Number:
             case RawEntryType::String:
             case RawEntryType::Unknown:

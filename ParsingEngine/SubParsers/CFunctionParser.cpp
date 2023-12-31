@@ -66,13 +66,6 @@ std::shared_ptr<CFunctionCall> CFunctionParser::TryParse(
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
     {
         auto resolvedContent = linkerScriptFile.ResolveRawEntry(*localIterator);
-        auto lineChangeDetected = parsingStartIteratorPosition->EndLineNumber() != localIterator->EndLineNumber();
-
-        if (lineChangeDetected)
-        {
-            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::FunctionsCannotSpanMultipleLines)));
-            break;
-        }
 
         switch (localIterator->EntryType())
         {

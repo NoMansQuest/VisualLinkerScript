@@ -47,6 +47,7 @@ namespace
 
     std::vector<std::string> ListOfObjectRelatedCommandNames = {
         "OUTPUT_FORMAT",
+        "OUTPUT_ARCHT",
         "TARGET",
     };
 
@@ -88,7 +89,7 @@ namespace
         "ORIGIN",
         "SEGMENT_START",
         "SIZEOF",
-        "SIZEOF_HEADERS",
+        "CONSTANT"
     };
 
     std::vector<std::string> ListOfOutputSectionCommandNames = {
@@ -136,6 +137,7 @@ namespace
 
     std::vector<std::string> ListOfSortFunctionCalls = {
         "SORT",
+        "SORT_NONE",
         "SORT_BY_NAME",
         "SORT_BY_ALIGNMENT",
         "SORT_BY_INIT_PRIORITY"
@@ -311,10 +313,26 @@ bool CParserHelpers::IsSectionOutputType(const std::string& wordToCheck)
 
 bool CParserHelpers::IsFunctionName(const std::string& wordToCheck)
 {
+    auto concernedLists =
+    {
+        ListOfFunctionNames,
+        ListOfFileRelatedCommandNames,
+        ListOfObjectRelatedCommandNames
+    };
+
     auto wordToCheckInUpperCase = ToUpper(wordToCheck);
-    return std::find(ListOfFunctionNames.cbegin(),
-                     ListOfFunctionNames.cend(),
-                     wordToCheckInUpperCase) != ListOfFunctionNames.cend();
+
+    for (auto listToCheckAgainst: concernedLists)
+    {
+       if (std::find(listToCheckAgainst.cbegin(),
+                     listToCheckAgainst.cend(),
+                     wordToCheckInUpperCase) != listToCheckAgainst.cend())
+       {
+           return true;
+       }
+    }
+
+    return false;
 }
 
 bool CParserHelpers::IsKeepFunction(const std::string& wordToCheck)

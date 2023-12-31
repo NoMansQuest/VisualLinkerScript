@@ -238,7 +238,9 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                                 {
                                     // Ternary wise it is NOT OK.
                                     violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::TernaryExpressionMissingElseOutcome)));
+                                    parserState = ParserState::AwaitingContent;
                                 }
+                                break;
                             }
 
                             case TernaryState::AwaitingElseExpression:
@@ -247,14 +249,14 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                                 auto ternaryIf = std::shared_ptr<CLinkerScriptContentBase>(new CExpressionOperator(*localIterator, {*localIterator}, {}));
                                 parsedContent.emplace_back(ternaryIf);
                                 ternaryState = TernaryState::AwaitingThenExpression;
+                                parserState = ParserState::AwaitingContent;
                                 break;
                             }
 
                             default:
                                 throw CMasterParsingException(MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
                                     "TernaryState invalid in CExpressionParser");
-                        }
-                        parserState = ParserState::AwaitingContent;
+                        }                        
                         break;
                     }
 
@@ -361,7 +363,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
 
                     case ParserState::AwaitingOperator:
                     {
-                        auto genericOperator = std::shared_ptr<CLinkerScriptContentBase>(new CExpressionNumber(*localIterator, {*localIterator}, {}));
+                        auto genericOperator = std::shared_ptr<CLinkerScriptContentBase>(new CExpressionOperator(*localIterator, {*localIterator}, {}));
                         parsedContent.emplace_back(genericOperator);
                         parserState = ParserState::AwaitingContent;
                         break;

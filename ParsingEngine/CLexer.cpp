@@ -1,3 +1,4 @@
+#include <cstdarg>
 #include <memory>
 #include <string>
 #include <vector>
@@ -61,12 +62,18 @@ namespace
     /// @brief Checks for the pattern of two characters at given positions. This is to optimize performance.
     bool SafeTestPatternInString(
         const std::string& input,
-        uint32_t position, 
-        const char firstCharacter,
-        const char secondCharacter)
+        uint32_t position,
+        std::vector<char> characterSequence)
     {
-        return SafeTestCharacterInString(input, position, firstCharacter) &&
-               SafeTestCharacterInString(input, position + 1, secondCharacter);
+        for (const auto element : characterSequence)
+        {
+           if ((position >= input.length()) || (input[position] != element))
+           {
+               return false;
+           }
+           position++;
+        }
+        return true;
     }
 
     /// @brief Determines if this character can be the first letter of a word
@@ -246,7 +253,7 @@ namespace
         else if (charAtPosition == '!')
         {
             return SafeTestCharacterInString(input, position + 1, '=') ?
-                   EvaluativeSymbolTypes::SingleCharacter :
+                   EvaluativeSymbolTypes::DoubleCharacter :
                    EvaluativeSymbolTypes::NotAnEvaluativeSymbol ;
         }
         else if ((charAtPosition == '|' || charAtPosition == '&') && SafeTestCharacterInString(input, position + 1, charAtPosition))
@@ -351,7 +358,7 @@ std::shared_ptr<CRawFile> CLexer::ProcessLinkerScript(std::string absoluteFilePa
                     break;
                 }
 
-                if (SafeTestPatternInString(rawContent, scanPosition, '/', '*'))
+                if (SafeTestPatternInString(rawContent, scanPosition, { '/', '*' }))
                 {
                     entryStartPosition = scanPosition;
                     entryStartLine = lineNumber;
@@ -360,12 +367,18 @@ std::shared_ptr<CRawFile> CLexer::ProcessLinkerScript(std::string absoluteFilePa
                     break;
                 }
 
+                if (SafeTestPatternInString(rawContent, scanPosition, { '/', 'D', 'I', 'S', 'C', 'A', 'R', 'D', '/' }))
+                {
+                    lexedContent.emplace_back(CRawEntry(RawEntryType::Word, lineNumber, scanPosition, 9, parenthesisDepth, scopeDepth));
+                    scanPosition += 9 - 1;
+                    break;
+                }
+
                 if (IsDoubleQuotation(currentCharacter))
                 {
                     entryStartPosition = scanPosition;
                     entryStartLine = lineNumber;
-                    currentState = ParserStates::InString;
-                    scanPosition--;
+                    currentState = ParserStates::InString;                    
                     break;
                 }
 
@@ -457,7 +470,7 @@ std::shared_ptr<CRawFile> CLexer::ProcessLinkerScript(std::string absoluteFilePa
 
             case ParserStates::InComment:
             {
-                if (!SafeTestPatternInString(rawContent, scanPosition, '*', '/') && !endOfStreamReached)
+                if (!SafeTestPatternInString(rawContent, scanPosition, { '*', '/' }) && !endOfStreamReached)
                 {
                     break;
                 }

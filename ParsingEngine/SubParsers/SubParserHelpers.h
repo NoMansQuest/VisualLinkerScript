@@ -12,7 +12,6 @@
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {
-
     using namespace VisualLinkerScript::Models::Raw;
 
     /// @brief Object used by all MatchSequenceXXXX functions.
@@ -21,24 +20,32 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
     {
         public:
             /// @brief Instantiates a new instance of SequenceMatchResulted
-            SequenceMatchResult(bool successful, std::vector<CRawEntry>&& matchedElements)
+            SequenceMatchResult(bool successful,
+                                std::vector<CRawEntry>&& matchedElements,
+                                std::vector<CRawEntry>::const_iterator iteratorToLastElement)
                 : m_matchedElements(matchedElements),
+                  m_iteratorToLastElement(iteratorToLastElement),
                   m_successful(successful)
             {}
 
             /// @brief Instantiates a new instance of SequenceMatchResulted
             SequenceMatchResult()
                 : m_matchedElements(),
+                  m_iteratorToLastElement(),
                   m_successful(false)
             {}
 
         private:
             std::vector<CRawEntry> m_matchedElements;
+            std::vector<CRawEntry>::const_iterator m_iteratorToLastElement;
             bool m_successful;
 
         public:
             /// @brief Reports back whether the match was successful
             bool Successful() { return m_successful; }
+
+            /// @brief Returns an iterator pointing to the last element matched.
+            std::vector<CRawEntry>::const_iterator IteratorToLastElement() { return m_iteratorToLastElement; }
 
             /// @brief Reports backs a list of matched elements, in the order of matching
             const std::vector<CRawEntry>& MatchedElements() { return m_matchedElements; }

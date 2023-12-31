@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "qscrollbar.h"
+#include "QElapsedTimer.h"
 #include "Components/QScintilla/ComponentHelpers.h"
 #include "Components/QScintilla/src/Qsci/qscilexerlinkerscript.h"
 #include "ParsingEngine/CLexer.h"
@@ -88,7 +89,7 @@ void MainWindow::BuildUserInterface()
 
     // OK, We need to generate the content here
     CLexer linkerScriptLexer;
-    QString fileName("C:\\Temp\\TestLinkerScriptFile.lds");
+    QString fileName("C:\\Temp\\GccDefaultLinkerScriptFile.lds");
     QFile fileToRead(fileName);
     fileToRead.open(QFile::ReadOnly | QFile::Text);
     QTextStream in(&fileToRead);
@@ -179,9 +180,19 @@ void MainWindow::BuildUserInterface()
 
     // Parse content
     CMasterParser masterParser;
+
+    QElapsedTimer timer;
+    timer.start();
     auto parsedLinkerScriptFile = masterParser.ProcessLinkerScriptFile(preliminaryParseResult);
+    auto parsingTime = timer.nsecsElapsed();
     auto parsedContentDebugInfo = parsedLinkerScriptFile->ToDebugInfo(0);
+    auto toDebugInfoTime = timer.nsecsElapsed() - parsingTime;
     auto targetString = QString::fromStdString(parsedContentDebugInfo);
+
+    targetString.append("\n ParsingTime (ns): ");
+    targetString.append(QString::fromStdString(std::to_string(parsingTime)));
+    targetString.append("\n ToDebugInfo time (ns): ");
+    targetString.append(QString::fromStdString(std::to_string(toDebugInfoTime)));
     this->m_scintilla->setText(targetString);
 
     // Add more information to the output text

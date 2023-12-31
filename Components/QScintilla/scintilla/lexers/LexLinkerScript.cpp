@@ -46,17 +46,17 @@ namespace LinkerScript
     static const char * linkerScriptReservedWords[] = {
         "MEMORY", "SECTIONS", "PHDRS", "VERSION", "OVERLAY", "NOCROSSREF", "AT", "PT_NULL"
         "PT_LOAD", "PT_DYNAMIC", "PT_INTERP", "PT_NOTE", "PT_SHLIB", "PT_PHDR", "FORCE_COMMON_ALLOCATION",
-        "ONLY_IF_RW", "ONLY_IF_RO",
+        "ONLY_IF_RW", "ONLY_IF_RO", "/DISCARD/", "MAXPAGESIZE", "SIZEOF_HEADERS",
         "INCLUDE", "INPUT", "GROUP", "OUTPUT", "OUTPUT_ARCH", "OUTPUT_FORMAT", "SEARCH_DIR", 0
     };
 
     /// @brief These are linker-script Functions, and are colored accordingly
     static const char * linkerScriptFunctions[] = {
-        "ENTRY", "ALIGN", "ORIGIN", "LENGTH", "PROVIDE", "KEEP",
-        "SORT", "SORT_BY_ALIGNMENT", "SORT_BY_NAME", "SORT_BY_INIT_PRIORITY",
+        "ENTRY", "ALIGN", "ORIGIN", "LENGTH", "PROVIDE", "SEGMENT_START", "KEEP", "CONSTANT",
+        "SORT", "SORT_BY_ALIGNMENT", "SORT_BY_NAME", "SORT_BY_INIT_PRIORITY", "SORT_NONE",
         "EXCLUDE_FILE", "BYTE", "SHORT", "LONG", "QUAD", "SQUAD", "FLOAT", "NOFLOAT",
-        "FORCE_COMMON_ALLOCATION", "STARTUP", "TARGET", "LOADADDR",
-        0
+        "FORCE_COMMON_ALLOCATION", "STARTUP", "TARGET", "LOADADDR", "DATA_SEGMENT_ALIGN",
+        "DATA_SEGMENT_RELRO_END", 0
     };
 
     /// @brief Is this word present in the given list?

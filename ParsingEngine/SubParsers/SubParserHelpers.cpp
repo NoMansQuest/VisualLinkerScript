@@ -96,27 +96,32 @@ SequenceMatchResult VisualLinkerScript::ParsingEngine::SubParsers::MatchSequence
     bool caseSensitive)
 {
     std::vector<CRawEntry> matchingElements;
-    if (!AdvanceToNextNonCommentEntry(linkerScriptFile, iterator, endOfVectorIterator) ||
-        !StringEquals(linkerScriptFile.ResolveRawEntry(*iterator), start, !caseSensitive))
+    if (!StringEquals(linkerScriptFile.ResolveRawEntry(*iterator), start, !caseSensitive))
     {
         return SequenceMatchResult();
     }
 
     matchingElements.emplace_back(*iterator);
+    auto contentMatchFound = false;
+    iterator++;
 
     for (auto entry: enclosingContent)
     {
-        if ((++iterator == endOfVectorIterator) || (iterator->EntryType() == RawEntryType::Comment))
+        if (iterator == endOfVectorIterator)
         {
-            return SequenceMatchResult();
+            break;
         }
 
-        if (!StringEquals(linkerScriptFile.ResolveRawEntry(*iterator), entry, !caseSensitive))
+        if (!StringEquals(linkerScriptFile.ResolveRawEntry(*iterator), entry, !caseSensitive) || iterator->EntryType() == RawEntryType::Comment)
         {
-            return SequenceMatchResult();
+            iterator++;
+            continue;
         }
 
         matchingElements.emplace_back(*iterator);
+        contentMatchFound = true;
+        iterator++;
+        break;
     }
 
     if (!AdvanceToNextNonCommentEntry(linkerScriptFile, iterator, endOfVectorIterator))
@@ -124,10 +129,13 @@ SequenceMatchResult VisualLinkerScript::ParsingEngine::SubParsers::MatchSequence
         return SequenceMatchResult();
     }
 
-    matchingElements.emplace_back(*iterator);
+    if (!StringEquals(linkerScriptFile.ResolveRawEntry(*iterator), end, !caseSensitive))
+    {
+        return SequenceMatchResult();
+    }
 
-    auto matchSuccess = StringEquals(linkerScriptFile.ResolveRawEntry(*iterator), start, !caseSensitive);
-    return SequenceMatchResult(matchSuccess, std::move(matchingElements));
+    matchingElements.emplace_back(*iterator);    
+    return SequenceMatchResult(contentMatchFound, std::move(matchingElements), iterator);
 }
 
 
@@ -162,7 +170,7 @@ SequenceMatchResult VisualLinkerScript::ParsingEngine::SubParsers::MatchSequence
         iterator++;
     }
 
-    return SequenceMatchResult(true, std::move(matchingElements));
+    return SequenceMatchResult(true, std::move(matchingElements), iterator -1);
 }
 
 
@@ -182,7 +190,7 @@ SequenceMatchResult VisualLinkerScript::ParsingEngine::SubParsers::MatchSequence
     auto resolvedContent = linkerScriptFile.ResolveRawEntry(*iterator);
     matchingElements.emplace_back(*iterator);
     auto matchSuccess = StringIn(resolvedContent, allEligibleEntries, caseSensitive);
-    return SequenceMatchResult(matchSuccess, std::move(matchingElements));
+    return SequenceMatchResult(matchSuccess, std::move(matchingElements), iterator);
 }
 
 
@@ -212,14 +220,24 @@ CRawEntry VisualLinkerScript::ParsingEngine::SubParsers::FuseEntriesToFormAWilca
 
     std::vector<CRawEntry>::const_iterator copyOfIterator = iterator;
     auto startLine = iterator->StartLineNumber();
-    auto startPosition =iterator->StartPosition();
+    auto startPosition = iterator->StartPosition();
+    uint32_t previousEntryEndPosition;
+    auto firstEntry = true;
     while (copyOfIterator != endOfVectorIterator && CanBePartOfWildcard(linkerScriptFile, *copyOfIterator))
     {
+        auto resolvedContent = linkerScriptFile.ResolveRawEntry(*copyOfIterator);
         if ((copyOfIterator->StartLineNumber() != startLine) || !CanBePartOfWildcard(linkerScriptFile, *copyOfIterator))
-        {
-            copyOfIterator--; // This means we've reached the end or out of wildcard scope.
+        {            
             break;
         }
+
+        if (!firstEntry && (copyOfIterator->StartPosition() != previousEntryEndPosition + 1)) // Spaces breaking the fusing.
+        {
+            break;
+        }
+
+        firstEntry = false;
+        previousEntryEndPosition = copyOfIterator->StartPosition() + copyOfIterator->Length() - 1;
         copyOfIterator++;
     }
 

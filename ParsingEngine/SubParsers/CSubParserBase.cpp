@@ -54,7 +54,7 @@ SequenceMatchResult MatchSequenceAnyContentWithinEnclosure(
     matchingElements.emplace_back(*iterator);
 
     auto matchSuccess = StringEquals(linkerScriptFile.ResolveRawEntry(*iterator), start, !caseSensitive);
-    return SequenceMatchResult(matchSuccess, std::move(matchingElements));
+    return SequenceMatchResult(matchSuccess, std::move(matchingElements), iterator);
 }
 
 
@@ -89,7 +89,7 @@ SequenceMatchResult MatchSequenceOpenEnded(
         iterator++;
     }
 
-    return SequenceMatchResult(true, std::move(matchingElements));
+    return SequenceMatchResult(true, std::move(matchingElements), iterator - 1);
 }
 
 
@@ -109,7 +109,7 @@ SequenceMatchResult MatchSequenceAnyContent(
     auto resolvedContent = linkerScriptFile.ResolveRawEntry(*iterator);
     matchingElements.emplace_back(*iterator);
     auto matchSuccess = StringIn(resolvedContent, allEligibleEntries, caseSensitive);
-    return SequenceMatchResult(matchSuccess, std::move(matchingElements));
+    return SequenceMatchResult(matchSuccess, std::move(matchingElements), iterator);
 }
 
 

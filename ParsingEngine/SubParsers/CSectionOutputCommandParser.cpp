@@ -520,8 +520,8 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
                             auto matchedElements = matchResult.MatchedElements();
                             auto sectionOutputType = std::shared_ptr<CLinkerScriptContentBase>(new CSectionOutputType(matchedElements[1], matchedElements[0], matchedElements[2], std::move(matchedElements), {}));
                             preColonContent.emplace_back(sectionOutputType);
+                            localIterator = matchResult.IteratorToLastElement();
                             parserState = ParserState::AwaitingColon;
-
                         } else {
                             auto parsedContent =  std::dynamic_pointer_cast<CLinkerScriptContentBase>(preColonExpressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator));
                             if (parsedContent == nullptr) {
