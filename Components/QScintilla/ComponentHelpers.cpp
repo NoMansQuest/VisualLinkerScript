@@ -25,7 +25,7 @@ void Components::QScintilla::SetComponentStyles(QsciScintilla& target)
   target.setFont(QFont("Monospace", 9));
 #endif
 #ifdef Q_OS_WIN32
-  target.setFont(QFont("Consolas", 9));
+  target.setFont(QFont("Consolas", 11));
 #endif
 
     // Set Lexer

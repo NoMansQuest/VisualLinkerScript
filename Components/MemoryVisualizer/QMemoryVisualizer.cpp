@@ -1,4 +1,4 @@
-#include "CMemoryVisualizer.h"
+#include "QMemoryVisualizer.h"
 #include <QPainter>
 
 using namespace VisualLinkerScript::Components::MemoryVisualizer;

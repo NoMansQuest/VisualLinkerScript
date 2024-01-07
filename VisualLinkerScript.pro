@@ -12,10 +12,10 @@ SOURCES += \
     Compiler/CCompiler.cpp \
     Compiler/ExpressionEvaluation/CExpressionEvaluator.cpp \
     Components/MemoryVisualizer/CGraphicsProcessor.cpp \
-    Components/MemoryVisualizer/CMemoryVisualizer.cpp \
     Components/MemoryVisualizer/CMouseInteractivity.cpp \
     Components/MemoryVisualizer/ModelTranslator.cpp \
     Components/MemoryVisualizer/Placement/CPlacementEngine.cpp \
+    Components/MemoryVisualizer/QMemoryVisualizer.cpp \
     Components/MemoryVisualizer/Rendering/CArrowsRenderer.cpp \
     Components/MemoryVisualizer/Rendering/CMemoryObjectRenderer.cpp \
     Components/MemoryVisualizer/Rendering/COverlapObjectRenderer.cpp \
@@ -98,7 +98,6 @@ SOURCES += \
     DrcEngine/Rules/CSymbolsDefinedInAdvanceRule.cpp \
     Helpers.cpp \
     LinkerScriptManager/CLinkerScriptManager.cpp \
-    LinkerScriptManager/CUndoRedoManager.cpp \
     Models/CAssignmentProcedureStatement.cpp \
     Models/CAssignmentStatement.cpp \
     Models/CExpression.cpp \
@@ -138,7 +137,8 @@ SOURCES += \
     ParsingEngine/SubParsers/CVersionRegionContentParser.cpp \
     ParsingEngine/SubParsers/Constants.cpp \
     ParsingEngine/SubParsers/SubParserHelpers.cpp \
-    QueryEngine/QueryCenter.tpp \    
+    QueryEngine/QueryCenter.tpp \
+    Widgets/QLinkerScriptPanel.cpp \
     main.cpp \
     mainwindow.cpp
 
@@ -156,7 +156,6 @@ HEADERS += \
     Compiler/FunctionEvaluation/CFunctionEvaluatorBase.h \
     Compiler/ProcedureExecution/CProcedureExecutorBase.h \
     Components/MemoryVisualizer/CGraphicsProcessor.h \
-    Components/MemoryVisualizer/CMemoryVisualizer.h \
     Components/MemoryVisualizer/CMouseInteractivity.h \
     Components/MemoryVisualizer/EInsertObjectType.h \
     Components/MemoryVisualizer/ModelTranslator.h \
@@ -183,6 +182,7 @@ HEADERS += \
     Components/MemoryVisualizer/Models/SRectangleF.h \
     Components/MemoryVisualizer/Models/CEntryPoint.h \
     Components/MemoryVisualizer/Placement/CPlacementEngine.h \
+    Components/MemoryVisualizer/QMemoryVisualizer.h \
     Components/MemoryVisualizer/Rendering/CArrowsRenderer.h \
     Components/MemoryVisualizer/Rendering/CMemoryObjectRenderer.h \
     Components/MemoryVisualizer/Rendering/COverlapObjectRenderer.h \
@@ -286,6 +286,20 @@ HEADERS += \
     DrcEngine/Rules/CSectionsDefinedOnlyOnceRule.h \
     DrcEngine/Rules/CSymbolsDefinedInAdvanceRule.h \
     Helpers.h \
+    Messaging/CEventAggregator.h \
+    Messaging/CPubSubEvent.h \
+    Messaging/General/CNotifyUserEvent.h \
+    Messaging/LinkerScriptManager/CFileWasClosedEvent.h \
+    Messaging/LinkerScriptManager/CFileWasOpenedEvent.h \
+    Messaging/UserInitiated/CCloseFileRequest.h \
+    Messaging/UserInitiated/CFindReplaceRequest.h \
+    Messaging/UserInitiated/CFindRequest.h \
+    Messaging/UserInitiated/CLoadMappingFileRequest.h \
+    Messaging/UserInitiated/COpenFileRequest.h \
+    Messaging/UserInitiated/CRedoRequest.h \
+    Messaging/UserInitiated/CSaveFileRequest.h \
+    Messaging/UserInitiated/CShowAboutRequest.h \
+    Messaging/UserInitiated/CUndoRequest.h \
     Models/CInputSectionWildcardWord.h \
     Models/CSectionOutputConstraint.h \
     Models/CSectionOutputDataExpression.h \
@@ -298,7 +312,6 @@ HEADERS += \
     QueryEngine/CLinq.h \
     QueryEngine/QueryCenter.h \
     LinkerScriptManager/CLinkerScriptManager.h \
-    LinkerScriptManager/CUndoRedoManager.h \
     Models/CAssignmentProcedureStatement.h \
     Models/CAssignmentStatement.h \
     Models/CExpression.h \
@@ -344,7 +357,8 @@ HEADERS += \
     Models/Raw/RawEntryType.h \
     Models/CSectionOverlayCommand.h \
     ParsingEngine/CMasterParser.h \
-    ParsingEngine/CMasterParserException.h \    
+    ParsingEngine/CMasterParserException.h \
+    Widgets/QLinkerScriptPanel.h \
     ParsingEngine/CParserViolation.h \
     ParsingEngine/CLexer.h \
     ParsingEngine/CLexerException.h \

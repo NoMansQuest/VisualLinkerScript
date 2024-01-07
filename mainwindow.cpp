@@ -1,3 +1,8 @@
+#include <QFile>
+#include <memory>
+#include <QString>
+#include <QTabWidget>
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "qscrollbar.h"
@@ -5,11 +10,10 @@
 #include "Components/QScintilla/ComponentHelpers.h"
 #include "Components/QScintilla/src/Qsci/qscilexerlinkerscript.h"
 #include "ParsingEngine/CLexer.h"
-#include <QFile>
-#include <memory.h>
-#include <QString>
-#include <QTabWidget>
 #include "ParsingEngine/CMasterParser.h"
+
+#include "Messaging/CEventAggregator.h"
+#include "Messaging/UserInitiated/COpenFileRequest
 
 using namespace VisualLinkerScript::ParsingEngine;
 using namespace VisualLinkerScript::Models;
@@ -22,6 +26,9 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);    
     this->BuildUserInterface();
+
+    // Subscribe to events
+
 }
 
 
