@@ -13,7 +13,7 @@
 #include "ParsingEngine/CMasterParser.h"
 
 #include "Messaging/CEventAggregator.h"
-#include "Messaging/UserInitiated/COpenFileRequest
+#include "Messaging/UserInitiated/COpenFileRequest.h"
 
 using namespace VisualLinkerScript::ParsingEngine;
 using namespace VisualLinkerScript::Models;

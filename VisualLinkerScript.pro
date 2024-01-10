@@ -22,6 +22,8 @@ SOURCES += \
     Components/MemoryVisualizer/Rendering/CSectionObjectRenderer.cpp \
     Components/MemoryVisualizer/Rendering/CStatementRenderer.cpp \
     Components/MemoryVisualizer/Rendering/CTooltipRenderer.cpp \
+    Components/QChromeTab/QChromeTab.cpp \
+    Components/QChromeTab/QChromeTabItem.cpp \
     Components/QScintilla/ComponentHelpers.cpp \
     Components/QScintilla/scintilla/lexers/LexCPP.cpp \
     Components/QScintilla/scintilla/lexers/LexLinkerScript.cpp \
@@ -190,6 +192,8 @@ HEADERS += \
     Components/MemoryVisualizer/Rendering/CStatementRenderer.h \
     Components/MemoryVisualizer/Rendering/CTooltipRenderer.h \
     Components/MemoryVisualizer/SBackendResponse.h \
+    Components/QChromeTab/QChromeTab.h \
+    Components/QChromeTab/QChromeTabItem.h \
     Components/QScintilla/ComponentHelpers.h \
     Components/QScintilla/scintilla/include/ILexer.h \
     Components/QScintilla/scintilla/include/ILoader.h \
