@@ -169,8 +169,6 @@ QWidget[objectName^="baseM8"]
      margin-bottom: 0;
  }
 
-
-
 /*
  *
  * Menu bar and items
@@ -200,13 +198,10 @@ QMenuBar::item
 
 QMenuBar::item:selected
 {    
-    padding-left: 8px;
-    padding-right: 8px;
     padding-top: 4px;
     padding-bottom: 4px;
     border: 0px solid @baseBackground;
     background: @level1;
-    color: @controlActiveTextColor;
 }
 
 QMenu
@@ -222,17 +217,8 @@ QMenu
 
 QMenu:selected
 {
-    padding-left: 8px;
-    padding-right: 8px;
-    padding-top: 6px;
-    padding-bottom: 6px;
-    border: 0px solid @baseBackground;
     background: @level2;
-    color: @controlActiveTextColor;
 }
-
-
-
 
 /*
  *
@@ -328,9 +314,6 @@ QSplitter::handle:hover {
 }
 
 
-
-
-
 /*
  *
  * QScintilla
@@ -344,5 +327,64 @@ QsciScintilla
 }
 
 
+/*
+ *
+ * QChromeTabWidget and QChromTabButtont
+ *
+ */
+
+QChromeTabItem > QLabel
+{
+    margin-left: 10px;
+    border: 0px solid #000000;
+    background: transparent;
+    font-family: Calibri;
+    font-size: 10px;
+}
+
+QChromeTabItem
+{
+    margin: 0px;
+    border: 0px solid transparent;
+    background: @level0;
+}
+
+QChromeTabItem[IsActiveTab="true"]
+{
+    margin: 0px;
+    border: 3px solid @activePurple;
+    background: @level1;
+}
+
+QChromeTabItem[IsHighlighted="true"]
+{
+    background: @level2;
+}
+
+QChromeTabItem[IsActiveTab="true"] > QLabel
+{
+    font-weight: bold;
+}
+
+QChromeTabItem > QPushButton
+{
+    margin-left: 10px;
+    border: 0px solid #000000;
+    background: transparent;
+    background: @level0;
+    color: white: // Color here will be applied to the SVG icon
+}
+
+QChromeTabItem > QPushButton:hover:!pressed
+{
+    background: white;
+    color: black; // The 'X' icon will be set to black.
+}
+
+QChromeTabItem > QPushButton:hover:pressed
+{
+    background: black;
+    color: white; // The 'X' icon will be set to white.
+}
 
 

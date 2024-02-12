@@ -8,10 +8,11 @@
 #include <QWidget>
 #include <QTabWidget>
 #include <QHBoxLayout>
-#include "Components/QScintilla/src/qsci/qsciscintilla.h"
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
+namespace VisualLinkerScript::Components { class QChromeTab; }
 QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow
@@ -38,10 +39,7 @@ private:
     QWidget* m_bottomtHalfWidget;
     QHBoxLayout* m_bottomHalfWidgetLayout;
 
-    QWidget* m_memoryVisualizer;
-    QsciScintilla* m_scintilla;
-    QTabWidget* m_contentTabRegion;
-    QTreeView* m_issuesTreeView;
+    VisualLinkerScript::Components::QChromeTab* m_contentTabRegion;
     Ui::MainWindow *ui;
 };
 #endif // MAINWINDOW_H

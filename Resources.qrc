@@ -2,5 +2,6 @@
     <qresource prefix="/resources">
         <file>Stylesheets/default.qss</file>
         <file>Stylesheets/colorpalette.txt</file>
+	<file>Images/close-sm-svgrepo-com.svg</file>
     </qresource>
 </RCC>

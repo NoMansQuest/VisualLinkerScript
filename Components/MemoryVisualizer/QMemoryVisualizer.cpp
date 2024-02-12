@@ -3,18 +3,18 @@
 
 using namespace VisualLinkerScript::Components::MemoryVisualizer;
 
-CMemoryVisualizer::CMemoryVisualizer(QWidget* parent)
+QMemoryVisualizer::QMemoryVisualizer(QWidget* parent)
     : QWidget(parent)
 {
     // No particular action at this point in time
 }
 
-CMemoryVisualizer::~CMemoryVisualizer()
+QMemoryVisualizer::~QMemoryVisualizer()
 {
     // No particular action at this point in time
 }
 
-void CMemoryVisualizer::paintEvent(QPaintEvent* paintEvent)
+void QMemoryVisualizer::paintEvent(QPaintEvent* paintEvent)
 {
     QPainter painter(this);
     //painter.tra
