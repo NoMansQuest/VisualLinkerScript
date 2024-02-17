@@ -6,7 +6,7 @@
 #include "EInsertObjectType.h"
 #include "SBackendResponse.h"
 
-namespace VisualLinkerScript::Components::MemoryVisualizer
+namespace VisualLinkerScript::Components
 {
     /// @brief Linker Script Memory Layout Visualizer
     class QMemoryVisualizer : public QWidget

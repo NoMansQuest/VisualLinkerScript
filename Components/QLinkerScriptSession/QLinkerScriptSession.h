@@ -5,10 +5,12 @@
 #include <QString>
 #include <vector>
 #include <memory>
-#include "../QScintilla/src/qsci/qsciscintilla.h"
 
 namespace VisualLinkerScript::Components
 {
+    class QMemoryVisualizer;
+    class QsciScintilla;
+
     /// @brief The main tab component to emulate google chrome's tab compoonent.
     class QLinkerScriptSession : public QWidget
     {
@@ -25,11 +27,18 @@ namespace VisualLinkerScript::Components
         ~QLinkerScriptSession()
         {}
 
-
     private:
-        QWidget* m_memoryVisualizer;
+        QMemoryVisualizer* m_memoryVisualizer;
         QsciScintilla* m_scintilla;
         QTreeView* m_issuesTreeView;
+
+    protected:
+        void BuildUserInterface();
+
+    public:
+        QMemoryVisualizer* MemoryVisualizerWdiget() { return this->m_memoryVisualizer; }
+        QsciScintilla* ScintillaEditor() { return this->m_scintilla; }
+        QTreeView* IssuesTreeView() { return this->m_issuesTreeView; }
     };
 };
 

@@ -11,20 +11,19 @@
 namespace VisualLinkerScript::Components::QChromeTab
 {
     /// @brief The QChromTab is composed of CChromeTabItem objects
-    class QChromeTabButton : QWidget
+    class QChromeTabButton : public QWidget
     {
         Q_OBJECT
         Q_PROPERTY(bool IsHighlighted READ IsHighlighted USER true)
         Q_PROPERTY(bool IsActiveTab READ IsActiveTab USER true)
-        Q_PROPERTY(QString  DisplayTitle READ DisplayTitle WRITE SetDisplayTitle USER true)
-        Q_PROPERTY(bool IsFileOnDisk READ IsFileOnDisk WRITE SetFileOnDisk USER true)
+        Q_PROPERTY(QString DisplayTitle READ DisplayTitle WRITE SetDisplayTitle USER true)
 
     private:
         QString m_displayTitle;
         bool m_isHighlighted;
         bool m_isActiveTab;
-        bool m_isFileOnDisk;
-        QString m_filePath;
+        QString m_toolTip;
+        uint32_t m_tabId;
         std::shared_ptr<QWidget> m_associatedContent;
 
         // Objects
@@ -34,14 +33,11 @@ namespace VisualLinkerScript::Components::QChromeTab
 
     public:
         /// @brief Default constructor
-        QChromeTabButton(std::shared_ptr<QWidget> associatedContent,
-                         QString displayTitle,
-                         bool isFileOnDisk,
-                         QWidget *parent = nullptr)
+        QChromeTabButton(uint32_t tabId, QWidget *parent = nullptr)
             : QWidget(parent),
-              m_displayTitle(displayTitle),
-              m_isFileOnDisk(isFileOnDisk),
-              m_associatedContent(associatedContent)
+              m_displayTitle(""),
+              m_toolTip(""),
+              m_tabId(tabId)
         {
             this->BuildUserInterface();
         }
@@ -51,23 +47,24 @@ namespace VisualLinkerScript::Components::QChromeTab
         {}
 
     signals:
-        void UserPressed();
-        void UserRequestedClosure();
+        void UserRequestedActivation(uint32_t tabId);
+        void UserRequestedClosure(uint32_t tabId);
+
+    protected slots:
+        void CloseButtonPressed();
 
     public:
         QString DisplayTitle() { return this->m_displayTitle; }
-        bool IsFileOnDisk() { return this->m_isFileOnDisk; }
-        QString FilePath() { return this->m_filePath; }
+        QString ToolTip() { return this->m_toolTip; }
         bool IsActiveTab() { return this->m_isActiveTab; }
         bool IsHighlighted() { return this->m_isHighlighted; }
-        std::shared_ptr<QWidget> AssociatedContent() { return this->m_associatedContent; }
 
         void SetDisplayTitle(QString displayTitle);
-        void SetFileOnDisk(bool fileOnDisk);
-        void SetFilePath(QString filePath);
+        void SetToolTip(QString toolTip);
         void SetActiveTab(bool activeTab);
 
-    private:
+    protected:
+        void mousePressEvent(QMouseEvent* event) override;
         void BuildUserInterface();
     };
 };
