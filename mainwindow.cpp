@@ -28,13 +28,14 @@ MainWindow::MainWindow(QWidget *parent)
     this->BuildUserInterface();
 
     // Subscribe to events
-
+    connect(this->ui->actionExit, &QAction::triggered, this, &MainWindow::MenuActionExitRequested);
 }
 
 
 void MainWindow::BuildUserInterface()
 {
     // Build Scintilla Editor
+    /*
     this->m_scintilla = new QsciScintilla;    
     auto lexer = new QsciLexerLinkerScript;
     this->m_scintilla->setLexer((QsciLexer*)lexer);
@@ -169,7 +170,7 @@ void MainWindow::BuildUserInterface()
                 break;
         }
 
-        /*auto formatTemplate = "Type: %1\t\t, From line %2\t to %3\t, BytePos: %4\t (%5\t bytes). P-Depth: %6\t, S-Depth: %7\t Content: %8\n";
+        auto formatTemplate = "Type: %1\t\t, From line %2\t to %3\t, BytePos: %4\t (%5\t bytes). P-Depth: %6\t, S-Depth: %7\t Content: %8\n";
         auto formattedOutput = QString(formatTemplate)
                 .arg(translatedType)
                 .arg(entry.StartLineNumber())
@@ -180,7 +181,7 @@ void MainWindow::BuildUserInterface()
                 .arg(entry.ScopeDepth())
                 .arg(fileContent.mid(entry.StartPosition(), entry.Length()));
 
-        debugOutput.append(formattedOutput);*/
+        debugOutput.append(formattedOutput);
 
         debugOutput.append(fileContent.mid(entry.StartPosition(), entry.Length()));
     }
@@ -207,18 +208,13 @@ void MainWindow::BuildUserInterface()
 
     // Produce output.    
     // this->m_scintilla->setText(fileContent);
-
+    */
 }
 
 
-void MainWindow::BuildBottomHalfOfScreen(QWidget* centralWidget)
+void MainWindow::MenuActionExitRequested(bool checked)
 {
-
-}
-
-void MainWindow::BuildTopHalfOfScreen(QWidget* centralWidget)
-{
-
+    QApplication::exit(0);
 }
 
 MainWindow::~MainWindow()

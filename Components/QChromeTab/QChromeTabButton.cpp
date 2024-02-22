@@ -1,6 +1,6 @@
 #include "QChromeTabButton.h"
 
-using namespace VisualLinkerScript::Components::QChromeTab;
+using namespace VisualLinkerScript::Components;
 
 void QChromeTabButton::BuildUserInterface()
 {

@@ -8,7 +8,7 @@
 #include <QIcon>
 #include <memory>
 
-namespace VisualLinkerScript::Components::QChromeTab
+namespace VisualLinkerScript::Components
 {
     /// @brief The QChromTab is composed of CChromeTabItem objects
     class QChromeTabButton : public QWidget

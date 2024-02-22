@@ -6,10 +6,11 @@
 #include <vector>
 #include <memory>
 
+class QsciScintilla;
+
 namespace VisualLinkerScript::Components
 {
     class QMemoryVisualizer;
-    class QsciScintilla;
 
     /// @brief The main tab component to emulate google chrome's tab compoonent.
     class QLinkerScriptSession : public QWidget
@@ -31,6 +32,9 @@ namespace VisualLinkerScript::Components
         QMemoryVisualizer* m_memoryVisualizer;
         QsciScintilla* m_scintilla;
         QTreeView* m_issuesTreeView;
+        QVBoxLayout* m_centralLayout;
+        QSplitter* m_horizontalSplitter;
+        QSplitter* m_verticalSplitter;
 
     protected:
         void BuildUserInterface();

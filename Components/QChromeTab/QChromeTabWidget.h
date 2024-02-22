@@ -7,7 +7,7 @@
 #include <memory>
 #include <QStackedWidget>
 
-namespace VisualLinkerScript::Components::QChromeTab
+namespace VisualLinkerScript::Components
 {
     class QChromeTabButton;
 

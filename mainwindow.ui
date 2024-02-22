@@ -53,8 +53,7 @@
     <addaction name="separator"/>
     <addaction name="actionSelect_All"/>
     <addaction name="separator"/>
-    <addaction name="actionFind"/>
-    <addaction name="actionReplace"/>
+    <addaction name="actionFindReplace"/>
    </widget>
    <widget class="QMenu" name="menu_Help">
     <property name="title">
@@ -67,7 +66,6 @@
      <string>&amp;Tools</string>
     </property>
     <addaction name="actionLoad_Mapping_File"/>
-    <addaction name="actionGenerate_CRT_0_Function"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menu_Edit"/>
@@ -200,13 +198,13 @@
     <string>Ctrl+A</string>
    </property>
   </action>
-  <action name="actionFind">
+  <action name="actionFindReplace">
    <property name="icon">
     <iconset theme="edit-find">
      <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
-    <string>&amp;Find...</string>
+    <string>&amp;Find/Replace...</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+F</string>

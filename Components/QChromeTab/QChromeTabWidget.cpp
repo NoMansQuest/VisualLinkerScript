@@ -2,7 +2,7 @@
 #include "QChromeTabButton.h"
 #include <utility>
 
-using namespace VisualLinkerScript::Components::QChromeTab;
+using namespace VisualLinkerScript::Components;
 
 void QChromeTabWidget::BuildUserInterface()
 {

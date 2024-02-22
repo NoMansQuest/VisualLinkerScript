@@ -1,7 +1,7 @@
 #include "QMemoryVisualizer.h"
 #include <QPainter>
 
-using namespace VisualLinkerScript::Components::MemoryVisualizer;
+using namespace VisualLinkerScript::Components;
 
 QMemoryVisualizer::QMemoryVisualizer(QWidget* parent)
     : QWidget(parent)

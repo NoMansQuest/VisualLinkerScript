@@ -24,21 +24,29 @@ public:
     ~MainWindow();
 
 private slots:
+    void MenuActionExitRequested(bool checked);
+
+signals:
+    void EventNewFileRequested();
+    void EventNewFileFromTemplateRequested(QString templateName);
+
+    void EventOpenFileRequested(QString fileName);
+    void EventSaveFileRequested(QString fileName);
+    void EventCloseFileRequeasted();
+    void EventReloadFileRequested();
+
+    void EventCutRequested();
+    void EventCopyRequested();
+    void EventPasteRequested();
+    void EventSelectAllRequested();
+    void EventFileReplaceRequested();
+    void EventLoadMappingFileRequested();
+    void EventHelpRequested();
 
 private:    
     void BuildUserInterface();
-    void BuildBottomHalfOfScreen(QWidget* centralWidget);
-    void BuildTopHalfOfScreen(QWidget* centralWidget);
 
 private:
-    QHBoxLayout* m_centralWidgetLayout;
-    QSplitter* m_centralWidgetVSplitter;
-    QWidget* m_topHalfWidget;
-    QHBoxLayout* m_topHalfWidgetLayout;
-    QSplitter* m_topHalfWidgetHSplitter;
-    QWidget* m_bottomtHalfWidget;
-    QHBoxLayout* m_bottomHalfWidgetLayout;
-
     VisualLinkerScript::Components::QChromeTab* m_contentTabRegion;
     Ui::MainWindow *ui;
 };
