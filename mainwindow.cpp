@@ -13,6 +13,7 @@
 #include "ParsingEngine/CMasterParser.h"
 
 #include "Messaging/CEventAggregator.h"
+#include "SearchDialog.h"
 #include "Messaging/UserInitiated/COpenFileRequest.h"
 
 using namespace VisualLinkerScript::ParsingEngine;
@@ -29,6 +30,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Subscribe to events
     connect(this->ui->actionExit, &QAction::triggered, this, &MainWindow::MenuActionExit);
+    connect(this->ui->actionFindReplace, &QAction::triggered, this, &MainWindow::MenuActionFindReplace);
 }
 
 
@@ -275,7 +277,8 @@ void MainWindow::MenuActionRedo()
 
 void MainWindow::MenuActionFindReplace()
 {
-    // To be implemented
+    SearchDialog* searchDialog = new SearchDialog();
+    searchDialog->show();
 }
 
 void MainWindow::MenuActionSelectAll()

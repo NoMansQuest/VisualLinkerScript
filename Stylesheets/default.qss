@@ -67,6 +67,16 @@ QWidget[objectName^="baseM8"]
     background: @level4;
 }
 
+/*
+ *
+ * SearchDialog
+ *
+ */
+QSearchDialog {
+    border: 0px solid #0000000;
+    background: @level0;
+}
+
 
 /*
  *
