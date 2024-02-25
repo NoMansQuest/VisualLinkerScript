@@ -100,7 +100,7 @@ SOURCES += \
     DrcEngine/Rules/CSectionsDefinedOnlyOnceRule.cpp \
     DrcEngine/Rules/CSymbolsDefinedInAdvanceRule.cpp \
     Helpers.cpp \
-    LinkerScriptManager/CLinkerScriptManager.cpp \
+    LinkerScriptManager/QLinkerScriptManager.cpp \
     Models/CAssignmentProcedureStatement.cpp \
     Models/CAssignmentStatement.cpp \
     Models/CExpression.cpp \
@@ -141,9 +141,10 @@ SOURCES += \
     ParsingEngine/SubParsers/Constants.cpp \
     ParsingEngine/SubParsers/SubParserHelpers.cpp \
     QueryEngine/QueryCenter.tpp \
+    SearchDialog.cpp \
     Widgets/QLinkerScriptPanel.cpp \
     main.cpp \
-    mainwindow.cpp
+    MainWindow.cpp
 
 HEADERS += \
     Compiler/CCompiler.h \
@@ -292,6 +293,7 @@ HEADERS += \
     DrcEngine/Rules/CSectionsDefinedOnlyOnceRule.h \
     DrcEngine/Rules/CSymbolsDefinedInAdvanceRule.h \
     Helpers.h \
+    LinkerScriptManager/QLinkerScriptManager.h \
     Messaging/CEventAggregator.h \
     Messaging/CPubSubEvent.h \
     Messaging/General/CNotifyUserEvent.h \
@@ -317,7 +319,6 @@ HEADERS += \
     ParsingEngine/SubParsers/SubParserHelpers.h \
     QueryEngine/CLinq.h \
     QueryEngine/QueryCenter.h \
-    LinkerScriptManager/CLinkerScriptManager.h \
     Models/CAssignmentProcedureStatement.h \
     Models/CAssignmentStatement.h \
     Models/CExpression.h \
@@ -364,6 +365,7 @@ HEADERS += \
     Models/CSectionOverlayCommand.h \
     ParsingEngine/CMasterParser.h \
     ParsingEngine/CMasterParserException.h \
+    SearchDialog.h \
     Widgets/QLinkerScriptPanel.h \
     ParsingEngine/CParserViolation.h \
     ParsingEngine/CLexer.h \
@@ -391,10 +393,11 @@ HEADERS += \
     ParsingEngine/SubParsers/SubParserType.h \
     ParsingEngine/SubParsers/CSectionsRegionParser.h \
     QueryEngine/QueryCenter.h \
-    mainwindow.h
+    MainWindow.h
 
 FORMS += \
-    mainwindow.ui
+    SearchDialog.ui \
+    MainWindow.ui
 
 # For QScintiall, these are needed
 DEFINES += SCINTILLA_QT SCI_LEXER INCLUDE_DEPRECATED_FEATURES

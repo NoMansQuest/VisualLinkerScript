@@ -21,3 +21,18 @@ void QLinkerScriptSession::BuildUserInterface()
 
     this->setLayout(this->m_centralLayout);
 }
+
+void QLinkerScriptSession::OnFindRequest(QString searchFor, bool isRegExt, bool isCaseSensitive)
+{
+    // To be implemented.
+}
+
+void QLinkerScriptSession::OnFindNext()
+{
+    // To be implemented.
+}
+
+void QLinkerScriptSession::OnFindReplace(QString replaceWith)
+{
+    // To be implemented.
+}

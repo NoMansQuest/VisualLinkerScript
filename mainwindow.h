@@ -24,7 +24,22 @@ public:
     ~MainWindow();
 
 private slots:
-    void MenuActionExitRequested(bool checked);
+    void MenuActionExit(bool checked);
+    void MenuActionNewFile();
+    void MenuActionOpenFile();
+    void MenuActionSaveFile();
+    void MenuActionSaveFileAs();
+    void MenuActionCloseFile();
+    void MenuActionReload();
+    void MenuActionCut();
+    void MenuActionCopy();
+    void MenuActionPaste();
+    void MenuActionUndo();
+    void MenuActionRedo();
+    void MenuActionFindReplace();
+    void MenuActionSelectAll();
+    void MenuActionLoadMappingFile();
+    void MenuActionHelp();
 
 signals:
     void EventNewFileRequested();
@@ -34,6 +49,7 @@ signals:
     void EventSaveFileRequested(QString fileName);
     void EventCloseFileRequeasted();
     void EventReloadFileRequested();
+    void EventExitRequested();
 
     void EventCutRequested();
     void EventCopyRequested();

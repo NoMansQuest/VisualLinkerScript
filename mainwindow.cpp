@@ -28,7 +28,7 @@ MainWindow::MainWindow(QWidget *parent)
     this->BuildUserInterface();
 
     // Subscribe to events
-    connect(this->ui->actionExit, &QAction::triggered, this, &MainWindow::MenuActionExitRequested);
+    connect(this->ui->actionExit, &QAction::triggered, this, &MainWindow::MenuActionExit);
 }
 
 
@@ -212,10 +212,87 @@ void MainWindow::BuildUserInterface()
 }
 
 
-void MainWindow::MenuActionExitRequested(bool checked)
+void MainWindow::MenuActionExit(bool checked)
 {
-    QApplication::exit(0);
+    emit this->EventExitRequested();
 }
+
+
+void MainWindow::MenuActionNewFile()
+{
+    // To be implemented
+}
+
+void MainWindow::MenuActionOpenFile()
+{
+    // To be implemented
+}
+
+void MainWindow::MenuActionSaveFile()
+{
+    // To be implemented
+}
+
+void MainWindow::MenuActionSaveFileAs()
+{
+    // To be implemented
+}
+
+void MainWindow::MenuActionCloseFile()
+{
+    // To be implemented
+}
+
+void MainWindow::MenuActionReload()
+{
+    // To be implemented
+}
+
+void MainWindow::MenuActionCut()
+{
+    // To be implemented
+}
+
+void MainWindow::MenuActionCopy()
+{
+    // To be implemented
+}
+
+void MainWindow::MenuActionPaste()
+{
+    // To be implemented
+}
+
+void MainWindow::MenuActionUndo()
+{
+    // To be implemented
+}
+
+void MainWindow::MenuActionRedo()
+{
+    // To be implemented
+}
+
+void MainWindow::MenuActionFindReplace()
+{
+    // To be implemented
+}
+
+void MainWindow::MenuActionSelectAll()
+{
+    // To be implemented
+}
+
+void MainWindow::MenuActionLoadMappingFile()
+{
+    // To be implemented
+}
+
+void MainWindow::MenuActionHelp()
+{
+    // To be implemented
+}
+
 
 MainWindow::~MainWindow()
 {
