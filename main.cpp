@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
     mainWindow.setWindowTitle("Untitled.ld - Visual Linker Script");
 
     // Apply the styles
-    mainWindow.setStyleSheet(GetStylesheetContent());
+    application.setStyleSheet(GetStylesheetContent());
 
     // Show & Run
     mainWindow.show();

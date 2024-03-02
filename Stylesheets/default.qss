@@ -1,183 +1,23 @@
 /*
  *
- * Generic background color application
- *
- */
-QWidget[objectName^="baseM0"]
-{
-    margin: 0px;
-    border: 0px solid #000000;
-    background: @level0;
-}
-
-
-QWidget[objectName^="baseM1"]
-{
-    margin: 0px;
-    border: 0px solid #000000;
-    background: @level1;
-}
-
-QWidget[objectName^="baseM2"]
-{
-    margin: 0px;
-    border: 0px solid #000000;
-    background: @level2;
-}
-
-QWidget[objectName^="baseM3"]
-{
-    margin: 0px;
-    border: 0px solid #000000;
-    background: @level3;
-}
-
-QWidget[objectName^="baseM4"]
-{
-    margin: 0px;
-    border: 0px solid #000000;
-    background: @level4;
-}
-
-QWidget[objectName^="baseM5"]
-{
-    margin: 0px;
-    border: 0px solid #000000;
-    background: @level5;
-}
-
-QWidget[objectName^="baseM6"]
-{
-    margin: 0px;
-    border: 0px solid #000000;
-    background: @level6;
-}
-
-QWidget[objectName^="baseM7"]
-{
-    margin: 0px;
-    border: 0px solid #000000;
-    background: @level4;
-}
-
-QWidget[objectName^="baseM8"]
-{
-    margin: 0px;
-    border: 0px solid #000000;
-    background: @level4;
-}
-
-/*
- *
  * SearchDialog
  *
  */
-QSearchDialog {
+SearchDialog {
     border: 0px solid #0000000;
-    background: @level0;
+    background: @DialogBackground;
 }
 
+SearchDialog::separator {
+    width: 30px;
+    height: 30px;
+    margin: 30px;
+}
 
-/*
- *
- * QTabWidget Styling
- *
- */
- QTabWidget::pane {
-     border-top: 0px solid transparent;
-     background: @level0;
- }
+SearchDialog QToolButton {
+    color: @ToolbarBackground;
+}
 
- QTabWidget::tab-bar:top {
-     top: 1px;
- }
-
- QTabWidget::tab-bar:bottom {
-     bottom: 1px;
- }
-
- QTabWidget::tab-bar:left {
-     right: 1px;
- }
-
- QTabWidget::tab-bar:right {
-     left: 1px;
- }
-
- QTabBar::tab {
-     border: 1px solid transparent;
-     color: @controlActiveTextColor;
- }
-
- QTabBar::tab:selected {
-     background: @level2;
-     color: @controlActiveTextColor;
- }
-
- QTabBar::tab:!selected {
-     background: @level1;
-     color: @controlInactiveTextColor;
- }
-
- QTabBar::tab:!selected:hover {
-     background: @level4;
-     color: @controlActiveTextColor;
- }
-
- QTabBar::tab:top:!selected {
-     margin-top: 3px;
-     background: @level1;
- }
-
- QTabBar::tab:bottom:!selected {
-     margin-bottom: 3px;
- }
-
- QTabBar::tab:top, QTabBar::tab:bottom {
-     min-width: 8ex;
-     margin-right: -1px;
-     padding: 5px 10px 5px 10px;
- }
-
- QTabBar::tab:top:selected {
-     border-bottom-color: none;
- }
-
- QTabBar::tab:bottom:selected {
-     border-top-color: none;
- }
-
- QTabBar::tab:top:last, QTabBar::tab:bottom:last,
- QTabBar::tab:top:only-one, QTabBar::tab:bottom:only-one {
-     margin-right: 0;
- }
-
- QTabBar::tab:left:!selected {
-     margin-right: 3px;
- }
-
- QTabBar::tab:right:!selected {
-     margin-left: 3px;
- }
-
- QTabBar::tab:left, QTabBar::tab:right {
-     min-height: 8ex;
-     margin-bottom: -1px;
-     padding: 10px 5px 10px 5px;
- }
-
- QTabBar::tab:left:selected {
-     border-left-color: none;
- }
-
- QTabBar::tab:right:selected {
-     border-right-color: none;
- }
-
- QTabBar::tab:left:last, QTabBar::tab:right:last,
- QTabBar::tab:left:only-one, QTabBar::tab:right:only-one {
-     margin-bottom: 0;
- }
 
 /*
  *
@@ -190,9 +30,10 @@ QMenuBar
     padding-top: 5px;
     padding-right: 5px;
     padding-bottom: 2px;
-    border-top: 1px solid #E0E0E0;
-    background: @baseBackground;
+    border-top: 1px solid @MenuBorder;
+    background: @MenuDefault;
     font-family: 'Segoe UI' ;
+    color: @ActiveTextColor;
     font-size: 10pt;
 }
 
@@ -202,16 +43,15 @@ QMenuBar::item
     padding-right: 8px;
     padding-top: 1px;
     padding-bottom: 1px;
-    background: transparent;
-    color: @controlActiveTextColor;
+    background: @MenuDefault;
 }
 
 QMenuBar::item:selected
 {    
     padding-top: 4px;
     padding-bottom: 4px;
-    border: 0px solid @baseBackground;
-    background: @level1;
+    border: 0px solid @MenuBorder;
+    background: @MenuHighlighted;
 }
 
 QMenu
@@ -220,15 +60,17 @@ QMenu
     padding-right: 8px;
     padding-top: 6px;
     padding-bottom: 6px;
-    border: 0px solid @baseBackground;
-    background: @level1;
-    color: @controlActiveTextColor;
+    border: 0px solid transparent;
+    background: @MenuOpened;
+    color: @ActiveTextColor;
 }
 
 QMenu:selected
 {
-    background: @level2;
+    border: 2px solid @MenuBorder;
+    background: @MenuHighlighted;
 }
+
 
 /*
  *
@@ -333,7 +175,7 @@ QsciScintilla
 {
     padding: 0px;
     border: 0px solid #000000;
-    background: @level2;
+    background: @level4;
 }
 
 

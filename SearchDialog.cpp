@@ -6,7 +6,7 @@ SearchDialog::SearchDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::SearchDialog)
 {
-    setWindowFlags(windowFlags() | Qt::FramelessWindowHint | Qt::Popup);
+    setWindowFlags(windowFlags() | Qt::Window | Qt::WindowMinMaxButtonsHint | Qt::Popup);
     ui->setupUi(this);
 }
 
