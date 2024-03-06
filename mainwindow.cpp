@@ -9,11 +9,11 @@
 #include "QElapsedTimer.h"
 #include "Components/QScintilla/ComponentHelpers.h"
 #include "Components/QScintilla/src/Qsci/qscilexerlinkerscript.h"
+#include "Components/QSearchPopup/QSearchPopup.h"
 #include "ParsingEngine/CLexer.h"
 #include "ParsingEngine/CMasterParser.h"
-
 #include "Messaging/CEventAggregator.h"
-#include "SearchDialog.h"
+
 #include "Messaging/UserInitiated/COpenFileRequest.h"
 
 using namespace VisualLinkerScript::ParsingEngine;
@@ -277,8 +277,8 @@ void MainWindow::MenuActionRedo()
 
 void MainWindow::MenuActionFindReplace()
 {
-    SearchDialog* searchDialog = new SearchDialog();
-    searchDialog->show();
+    //SearchDialog* searchDialog = new SearchDialog();
+    //searchDialog->show();
 }
 
 void MainWindow::MenuActionSelectAll()

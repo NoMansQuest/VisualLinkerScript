@@ -89,6 +89,7 @@ SOURCES += \
     Components/QScintilla/src/qsciscintillabase.cpp \
     Components/QScintilla/src/qscistyle.cpp \
     Components/QScintilla/src/qscistyledtext.cpp \
+    Components/QSearchPopup/QSearchPopup.cpp \
     DrcEngine/CDrcManager.cpp \
     DrcEngine/Rules/CDirectivesDeclaredOnlyOnceRule.cpp \
     DrcEngine/Rules/CEntryIsDefinedRule.cpp \
@@ -141,7 +142,6 @@ SOURCES += \
     ParsingEngine/SubParsers/Constants.cpp \
     ParsingEngine/SubParsers/SubParserHelpers.cpp \
     QueryEngine/QueryCenter.tpp \
-    SearchDialog.cpp \
     Widgets/QLinkerScriptPanel.cpp \
     main.cpp \
     MainWindow.cpp
@@ -277,6 +277,7 @@ HEADERS += \
     Components/QScintilla/src/SciAccessibility.h \
     Components/QScintilla/src/SciClasses.h \
     Components/QScintilla/src/ScintillaQt.h \
+    Components/QSearchPopup/QSearchPopup.h \
     DrcEngine/CDrcManager.h \
     DrcEngine/CDrcViolation.h \
     DrcEngine/DrcCommons.h \
@@ -365,7 +366,6 @@ HEADERS += \
     Models/CSectionOverlayCommand.h \
     ParsingEngine/CMasterParser.h \
     ParsingEngine/CMasterParserException.h \
-    SearchDialog.h \
     Widgets/QLinkerScriptPanel.h \
     ParsingEngine/CParserViolation.h \
     ParsingEngine/CLexer.h \
@@ -396,7 +396,6 @@ HEADERS += \
     MainWindow.h
 
 FORMS += \
-    SearchDialog.ui \
     MainWindow.ui
 
 # For QScintiall, these are needed

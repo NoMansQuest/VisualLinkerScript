@@ -1,2 +1,5 @@
 #Ignore everything in the /bin/ folder
 bin/*
+.vs/*
+debug/*
+release/*

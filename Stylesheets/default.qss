@@ -3,18 +3,18 @@
  * SearchDialog
  *
  */
-SearchDialog {
+QSearchDialog {
     border: 0px solid #0000000;
     background: @DialogBackground;
 }
 
-SearchDialog::separator {
+QSearchDialog::separator {
     width: 30px;
     height: 30px;
     margin: 30px;
 }
 
-SearchDialog QToolButton {
+QSearchDialog QToolButton {
     color: @ToolbarBackground;
 }
 
