@@ -1051,9 +1051,6 @@
     <QtMoc Include="Components\MemoryVisualizer\QMemoryVisualizer.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <ClInclude Include="Components\QSearchPopup\QSearchPopup.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="QueryEngine\QueryCenter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1191,49 +1188,12 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     <CustomBuild Include="debug\moc_predefs.h.cbt">
       <Filter>Generated Files</Filter>
     </CustomBuild>
     <CustomBuild Include="release\moc_predefs.h.cbt">
       <Filter>Generated Files</Filter>
     </CustomBuild>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="MainWindow.ui">
@@ -1253,5 +1213,10 @@
     <None Include="Stylesheets\default.qss">
       <Filter>Resource Files</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="Components\QSearchPopup\QSearchPopup.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
 </Project>
