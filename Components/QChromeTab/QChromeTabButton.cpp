@@ -11,7 +11,7 @@ void QChromeTabButton::BuildUserInterface()
     this->m_closeButton = new QPushButton(this);
     this->m_closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     this->m_closeButton->setFixedHeight(30);
-    this->m_closeButton->setFixedHeight(30);
+    this->m_closeButton->setFixedWidth(30);
     this->m_closeButton->setIcon(pixmap);
 
     this->m_titleLabel = new QLabel(this->m_displayTitle, this);

@@ -3,6 +3,7 @@
  * SearchDialog
  *
  */
+ /*
 QSearchDialog {
     border: 0px solid #0000000;
     background: @DialogBackground;
@@ -16,7 +17,7 @@ QSearchDialog::separator {
 
 QSearchDialog QToolButton {
     color: @ToolbarBackground;
-}
+}*/
 
 
 /*
@@ -165,7 +166,6 @@ QSplitter::handle:hover {
     background: @splitterHandleHover;
 }
 
-
 /*
  *
  * QScintilla
@@ -239,4 +239,32 @@ QChromeTabItem > QPushButton:hover:pressed
     color: white; // The 'X' icon will be set to white.
 }
 
+/*
+ * QSearchPopup
+ */
+QSearchPopup
+{
+    background-color: black;
+    color: blue;
+}
 
+QSearchPopup QPushButton
+{
+    margin-left: 10px;
+    border: 0px solid #000000;
+    background: transparent;
+    background: @level0;
+    color: white: // Color here will be applied to the SVG icon
+}
+
+QSearchPopup QPushButton:hover:!pressed
+{
+    background: white;
+    color: black; // The 'X' icon will be set to black.
+}
+
+QSearchPopup QPushButton:hover:pressed
+{
+    background: black;
+    color: white; // The 'X' icon will be set to white.
+}

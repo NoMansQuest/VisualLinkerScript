@@ -348,6 +348,9 @@
     <ClInclude Include="Components\QScintilla\scintilla\lexlib\Accessor.h" />
     <ClInclude Include="Compiler\ExpressionEvaluation\ArithmeticOperationType.h" />
     <ClInclude Include="Components\QScintilla\scintilla\src\AutoComplete.h" />
+    <ClInclude Include="Components\QSearchPopup\ReplaceRequestTypeEnum.h" />
+    <ClInclude Include="Components\QSearchPopup\SearchPerimeterTypeEnum.h" />
+    <ClInclude Include="Components\QSearchPopup\SearchRequestTypeEnum.h" />
     <ClInclude Include="Models\Intervention\CActionBase.h" />
     <ClInclude Include="Models\Intervention\CAddTextAction.h" />
     <ClInclude Include="Compiler\ExpressionEvaluation\CArithmeticResultOp.h" />

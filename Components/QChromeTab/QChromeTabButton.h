@@ -42,7 +42,7 @@ namespace VisualLinkerScript::Components
             this->BuildUserInterface();
         }
 
-        /// @brief Default desctructor
+        /// @brief Default destructor
         ~QChromeTabButton()
         {}
 

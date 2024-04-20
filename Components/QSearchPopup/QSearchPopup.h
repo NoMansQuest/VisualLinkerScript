@@ -3,107 +3,88 @@
 
 #include <QtWidgets>
 #include <QString>
+#include "SearchRequestTypeEnum.h"
+#include "ReplaceRequestTypeEnum.h"
+#include "SearchPerimeterTypeEnum.h"
 
-namespace VisualLinkerScript::Components
+/// @brief QSeachPopup
+class QSearchPopup : public QWidget
 {
+    Q_OBJECT
+    Q_PROPERTY(bool NoMatchDetected READ NoMatchDetected USER true)
 
-    /// @brief Search request type
-    enum class SearchRequestType
+private:
+    QHBoxLayout* m_row0HBox;
+    QHBoxLayout* m_row1HBox;
+    QHBoxLayout* m_row2HBox;
+    QHBoxLayout* m_row3HBox;
+    QVBoxLayout* m_vbox;
+
+    QPushButton* m_closePopupButton;
+    QPushButton* m_findOrReplaceSelectorButton;
+    QPushButton* m_searchActionButton;
+    QPushButton* m_searchActionSelectorButton;
+    QComboBox* m_searchFieldComboBox;
+    QComboBox* m_replaceFieldComboBox;
+    QPushButton* m_replaceNextButton;
+    QPushButton* m_replaceAllButton;
+    QPushButton* m_matchCaseCheckButton;
+    QPushButton* m_matchWholeWordCheckButton;
+    QPushButton* m_matchRegularExpressionButton;
+    QComboBox* m_searchPerimeterComboBox;
+    QSizeGrip* m_sizeGrip;
+
+    void PopulateDynamicFields();
+    void PopulateStaticFields();
+    void PopulateSearchHistory(const QSettings& settings);
+    void PopulateReplaceHistory(const QSettings& settings);
+    void RegisterNewSearchEntry(QSettings& settings, QString newEntry);
+    void RegisterNewReplaceEntry(QSettings& settings, QString newEntry);
+
+    bool m_textBlockSelected = false;
+    bool m_noMatchDetected = false;
+
+public:
+	/// @brief Default constructor
+	QSearchPopup(bool textBlockSelected, QWidget* parent = 0)
+		: QWidget(parent)
+	{
+        this->m_textBlockSelected = textBlockSelected;
+		this->BuildUserInterface();
+	}
+
+	/// @brief Default destructor
+	~QSearchPopup()
+	{}
+        
+    /// @brief Sets the default text shown when popup is opened.
+    void SetText(QString defaultText);
+
+
+    /// @brief Reports back if no match was detected for the provided text value.
+    bool NoMatchDetected() 
     {
-        FindNext,
-        FindPrevious,
-        FindAll        
-    };
+        return this->m_noMatchDetected;
+    }
 
-    /// @brief Replace request type
-    enum class ReplaceRequestType
-    {
-        ReplaceNext,
-        ReplaceAll
-    };
+protected:
+    void BuildUserInterface();    
 
-    /// @brief Search perimeter
-    enum class SearchPerimeterType
-    {
-        CurrentFile,
-        AllOpenFiles
-    };
+signals:
+    void SearchReaplceRequested(
+        QString searchText,
+        QString replaceWith,
+        bool caseMatch,
+        bool wordMatch,
+        bool regEx,
+        SearchRequestType searchType,
+        ReplaceRequestType replaceType,
+        SearchPerimeterType searchPerimeter);
 
-
-    /// @brief QSeachPopup
-    class QSearchPopup : public QWidget
-    {
-        Q_OBJECT
-
-    public:
-        /// @brief Default constructor
-        QSearchPopup(QWidget* parent = 0)
-            : QWidget(parent)
-        {}
-
-        /// @brief Default desctructor
-        ~QSearchPopup()
-        {}
-
-    private:        
-        QPushButton* m_closePopupButton;
-        QPushButton* m_findOrReplaceSelector;
-
-        QWidget* m_searchTextContainer;
-        QTextEdit* m_searchTextEditBox;
-        QPushButton* m_searchTextActioButton;
-        QPushButton* m_searchTextDropdownButton;
-        QMenu* m_searchTextRecentEntriesMenu;
-        QHBoxLayout* m_row0HBox;
-        QWidget* m_row0HBoxContainer;
-
-        QWidget* m_performSearchContainer;
-        QPushButton* m_performSearchActionButton;
-        QPushButton* m_performSearchDropdownButton;
-        QMenu* m_performSearchActionListMenu;
-
-        QWidget* m_replaceTextContainer;
-        QTextEdit* m_replaceTextEdit;
-        QPushButton* m_replaceTextActionSelector;
-        QMenu* m_replaceTextActionMenu;
-        QHBoxLayout* m_row1HBox;
-        QWidget* m_row1HBoxContainer;
-
-        QPushButton* m_replaceNextButton;
-        QPushButton* m_replaceAllButton;
-
-        QCheckBox* m_matchCaseCheckBox;
-        QCheckBox* m_matchWordCheckBox;
-        QCheckBox* m_regExCheckBox;
-        QComboBox* m_searchPerimeterSelector;
-        QHBoxLayout* m_row2HBox;
-        QWidget* m_row2HBoxContainer;
-
-        QSizeGrip* m_sizeGrip;
-        QGridLayout* m_masterLayout;
-    
-    public:
-        /// @param Sets the default text shown when popup is opened.
-        void SetText(QString defaultText);
-
-    protected:
-        void BuildUserInterface();
-
-    signals:
-        void SearchReaplceRequested(
-            QString searchText,
-            QString replaceWith,
-            bool caseMatch,
-            bool wordMatch,
-            bool regEx,
-            SearchRequestType searchType,
-            ReplaceRequestType replaceType,
-            SearchPerimeterType searchPerimeter);
-
-    protected slots:
-        void OnTextNotFound();
-    };
+protected slots:
+    void OnTextNotFound();
+    void OnTextFound();
+    void OnToggleSearchReplace();
 };
 
-
-#endif // end of QLINKERSCRIPTSESSION_H__
+#endif // end of QSEARCHPOPUP_H__

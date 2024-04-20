@@ -13,11 +13,11 @@
 #include "ParsingEngine/CLexer.h"
 #include "ParsingEngine/CMasterParser.h"
 #include "Messaging/CEventAggregator.h"
-
 #include "Messaging/UserInitiated/COpenFileRequest.h"
 
 using namespace VisualLinkerScript::ParsingEngine;
 using namespace VisualLinkerScript::Models;
+using namespace VisualLinkerScript::Components;
 
 void ConstructUi(MainWindow& mainWindow);
 
@@ -31,6 +31,7 @@ MainWindow::MainWindow(QWidget *parent)
     // Subscribe to events
     connect(this->ui->actionExit, &QAction::triggered, this, &MainWindow::MenuActionExit);
     connect(this->ui->actionFindReplace, &QAction::triggered, this, &MainWindow::MenuActionFindReplace);
+    connect(this->ui->actionNew_Linker_Script, &QAction::triggered, this, &MainWindow::MenuActionNewFile);
 }
 
 
@@ -213,15 +214,23 @@ void MainWindow::BuildUserInterface()
     */
 }
 
-
 void MainWindow::MenuActionExit(bool checked)
 {
     emit this->EventExitRequested();
 }
 
-
 void MainWindow::MenuActionNewFile()
 {
+    auto newDialog = new QDialog();
+    auto newVBoxLayout = new QVBoxLayout(newDialog);
+    auto searchPopup = new QSearchPopup(this);
+    newVBoxLayout->addWidget(searchPopup);
+    newVBoxLayout->setAlignment(Qt::AlignTop | Qt::AlignRight);
+    searchPopup->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);    
+    newDialog->setLayout(newVBoxLayout);
+    newDialog->resize(300, 100);
+    newDialog->show();    
+    
     // To be implemented
 }
 

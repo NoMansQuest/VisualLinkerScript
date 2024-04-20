@@ -2,6 +2,15 @@
     <qresource prefix="/resources">
         <file>Stylesheets/default.qss</file>
         <file>Stylesheets/colorpalette.txt</file>
-	<file>Images/close-sm-svgrepo-com.svg</file>
+        <file>Images/close-sm-svgrepo-com.svg</file>
+        <file>Images/arrow-drop-down-icon.svg</file>
+        <file>Images/chevron-right-icon.svg</file>
+        <file>Images/close-icon.svg</file>
+        <file>Images/find-replace-icon.svg</file>
+        <file>Images/match-case-icon.svg</file>
+        <file>Images/match-word-icon.svg</file>
+        <file>Images/regular-expression-icon.svg</file>
+        <file>Images/expand-more-icon.svg</file>
+        <file>Images/arrow-drop-up-icon.svg</file>
     </qresource>
 </RCC>
