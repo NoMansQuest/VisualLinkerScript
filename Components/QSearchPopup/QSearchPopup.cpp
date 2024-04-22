@@ -17,50 +17,51 @@ void QSearchPopup::BuildUserInterface()
 	this->m_closePopupButton->setIcon(QIcon(":/resources/Images/close-icon.svg").pixmap(QSize(20, 22)));
 	
 	this->m_findOrReplaceSelectorButton = new QPushButton(this);
-	this->m_findOrReplaceSelectorButton->setFixedSize(20, 22);
+	this->m_findOrReplaceSelectorButton->setFixedSize(24, 26);
 	this->m_findOrReplaceSelectorButton->setFocusPolicy(Qt::NoFocus);
 	this->m_findOrReplaceSelectorButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 	this->m_findOrReplaceSelectorButton->setIcon(QIcon(":/resources/Images/arrow-drop-down-icon.svg").pixmap(QSize(20, 22)));
 	connect(this->m_findOrReplaceSelectorButton, &QPushButton::clicked, this, &QSearchPopup::OnToggleSearchReplace);
 
 	this->m_searchActionButton = new QPushButton(this);
-	this->m_searchActionButton->setFixedSize(28, 22);
+	this->m_searchActionButton->setFixedSize(32, 26);
 	this->m_searchActionButton->setFocusPolicy(Qt::NoFocus);
 	this->m_searchActionButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
-	this->m_searchActionButton->setIcon(QIcon(":/resources/Images/chevron-right-icon.svg").pixmap(QSize(20, 22)));
+	this->m_searchActionButton->setIcon(QIcon(":/resources/Images/arrow-right-icon.svg").pixmap(QSize(20, 22)));
 
 	this->m_searchActionSelectorButton = new QPushButton(this);
-	this->m_searchActionSelectorButton->setFixedSize(16, 22);
+	this->m_searchActionSelectorButton->setFixedSize(20, 26);
 	this->m_searchActionSelectorButton->setFocusPolicy(Qt::NoFocus);
 	this->m_searchActionSelectorButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 	this->m_searchActionSelectorButton->setIcon(QIcon(":/resources/Images/expand-more-icon.svg").pixmap(QSize(16, 22)));
+	QObject::connect(this->m_searchActionSelectorButton, &QPushButton::clicked, this, &QSearchPopup::OnSearchActionSelectorClicked);
 
 	this->m_replaceNextButton = new QPushButton(this);
-	this->m_replaceNextButton->setFixedSize(20, 22);
+	this->m_replaceNextButton->setFixedSize(24, 26);
 	this->m_replaceNextButton->setFocusPolicy(Qt::NoFocus);
 	this->m_replaceNextButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 	this->m_replaceNextButton->setIcon(QIcon(":/resources/Images/find-replace-icon.svg").pixmap(QSize(20, 22)));
 
 	this->m_replaceAllButton = new QPushButton(this);	
-	this->m_replaceAllButton->setFixedSize(20, 22);
+	this->m_replaceAllButton->setFixedSize(24, 26);
 	this->m_replaceAllButton->setFocusPolicy(Qt::NoFocus);
 	this->m_replaceAllButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 	this->m_replaceAllButton->setIcon(QIcon(":/resources/Images/find-replace-icon.svg").pixmap(QSize(20, 22)));
 
 	this->m_matchCaseCheckButton = new QPushButton(this);
-	this->m_matchCaseCheckButton->setFixedSize(20, 22);
+	this->m_matchCaseCheckButton->setFixedSize(24, 26);
 	this->m_matchCaseCheckButton->setFocusPolicy(Qt::NoFocus);
 	this->m_matchCaseCheckButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 	this->m_matchCaseCheckButton->setIcon(QIcon(":/resources/Images/match-case-icon.svg").pixmap(QSize(20, 22)));
 
 	this->m_matchWholeWordCheckButton = new QPushButton(this);
-	this->m_matchWholeWordCheckButton->setFixedSize(20, 22);
+	this->m_matchWholeWordCheckButton->setFixedSize(24, 26);
 	this->m_matchWholeWordCheckButton->setFocusPolicy(Qt::NoFocus);
 	this->m_matchWholeWordCheckButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 	this->m_matchWholeWordCheckButton->setIcon(QIcon(":/resources/Images/match-word-icon.svg").pixmap(QSize(20, 22)));
 
 	this->m_matchRegularExpressionButton = new QPushButton(this);
-	this->m_matchRegularExpressionButton->setFixedSize(20, 22);
+	this->m_matchRegularExpressionButton->setFixedSize(24, 26);
 	this->m_matchRegularExpressionButton->setFocusPolicy(Qt::NoFocus);
 	this->m_matchRegularExpressionButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 	this->m_matchRegularExpressionButton->setIcon(QIcon(":/resources/Images/regular-expression-icon.svg").pixmap(QSize(20, 22)));
@@ -135,6 +136,45 @@ void QSearchPopup::OnTextNotFound()
 void QSearchPopup::OnTextFound()
 {
 
+}
+
+void QSearchPopup::OnSearchActionSelectorClicked()
+{
+	QMenu searchActionSelectorMenu(this);
+	auto findNextAction = searchActionSelectorMenu.addAction(
+		QIcon(":/resources/Images/arrow-right-icon.svg"),
+		"Find Next");
+
+	auto findPrevious = searchActionSelectorMenu.addAction(
+		QIcon(":/resources/Images/arrow-left-icon.svg"),
+		"Find Previous");
+
+	auto findAll = searchActionSelectorMenu.addAction(
+		QIcon(":/resources/Images/search-magnifying-glass-icon.svg"),
+		"Find All");
+
+	findNextAction->setShortcut(QKeySequence(Qt::Key_F3));
+	findPrevious->setShortcut(QKeySequence(Qt::SHIFT + Qt::Key_F3));
+
+	QObject::connect(findNextAction, &QAction::triggered, [this]() 
+		{ 
+			this->m_currentSearchRequestType = SearchRequestType::FindNext;
+			this->TriggerSearchRequest();
+		});
+
+	QObject::connect(findPrevious, &QAction::triggered, [this]() 
+		{
+			this->m_currentSearchRequestType = SearchRequestType::FindPrevious;
+			this->TriggerSearchRequest();
+		});
+
+	QObject::connect(findAll, &QAction::triggered, [this]() 
+		{ 
+			this->m_currentSearchRequestType = SearchRequestType::FindAll;
+			this->TriggerSearchRequest();
+		});
+
+	searchActionSelectorMenu.exec(QCursor::pos());
 }
 
 SearchPerimeterType ConvertIndexToSearchPerimeter(int comboBoxIndex)
@@ -226,4 +266,9 @@ void QSearchPopup::OnToggleSearchReplace()
 	this->m_replaceNextButton->setVisible(valueToSet);
 	this->m_replaceAllButton->setVisible(valueToSet);
 	this->m_findOrReplaceSelectorButton->setIcon(QIcon(iconToSetPath).pixmap(QSize(20, 22)));
+}
+
+void QSearchPopup::TriggerSearchRequest()
+{
+
 }

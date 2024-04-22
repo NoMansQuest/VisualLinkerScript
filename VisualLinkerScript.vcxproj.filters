@@ -1228,4 +1228,18 @@
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\arrow-drop-down-icon.svg" />
+    <None Include="Images\chevron-right-icon.svg" />
+    <None Include="Images\close-icon.svg" />
+    <None Include="Images\find-replace-icon.svg" />
+    <None Include="Images\expand-more-icon.svg" />
+    <None Include="Images\match-case-icon.svg" />
+    <None Include="Images\regular-expression-icon.svg" />
+    <None Include="Images\match-word-icon.svg" />
+    <None Include="Images\search-magnifying-glass-icon.svg" />
+    <None Include="Images\arrow-drop-up-icon.svg" />
+    <None Include="Images\arrow-left-icon.svg" />
+    <None Include="Images\arrow-right-icon.svg" />
+  </ItemGroup>
 </Project>

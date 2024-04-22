@@ -12,5 +12,8 @@
         <file>Images/regular-expression-icon.svg</file>
         <file>Images/expand-more-icon.svg</file>
         <file>Images/arrow-drop-up-icon.svg</file>
+        <file>Images/search-magnifying-glass-icon.svg</file>
+        <file>Images/arrow-left-icon.svg</file>
+        <file>Images/arrow-right-icon.svg</file>
     </qresource>
 </RCC>

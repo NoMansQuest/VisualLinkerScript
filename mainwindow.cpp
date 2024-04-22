@@ -223,13 +223,13 @@ void MainWindow::MenuActionNewFile()
 {
     auto newDialog = new QDialog();
     auto newVBoxLayout = new QVBoxLayout(newDialog);
-    auto searchPopup = new QSearchPopup(this);
+    auto searchPopup = new QSearchPopup(false);
     newVBoxLayout->addWidget(searchPopup);
-    newVBoxLayout->setAlignment(Qt::AlignTop | Qt::AlignRight);
+    newVBoxLayout->setAlignment(Qt::AlignTop | Qt::AlignRight);    
     searchPopup->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);    
     newDialog->setLayout(newVBoxLayout);
     newDialog->resize(300, 100);
-    newDialog->show();    
+    newDialog->show();        
     
     // To be implemented
 }

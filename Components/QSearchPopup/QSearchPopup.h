@@ -12,7 +12,8 @@ class QSearchPopup : public QWidget
 {
     Q_OBJECT
     Q_PROPERTY(bool NoMatchDetected READ NoMatchDetected USER true)
-
+    Q_PROPERTY(SearchRequestType CurrentSearchRequestType READ CurrentSearchRequestType USER true)
+    
 private:
     QHBoxLayout* m_row0HBox;
     QHBoxLayout* m_row1HBox;
@@ -44,6 +45,8 @@ private:
     bool m_textBlockSelected = false;
     bool m_noMatchDetected = false;
 
+    SearchRequestType m_currentSearchRequestType = SearchRequestType::FindNext;
+
 public:
 	/// @brief Default constructor
 	QSearchPopup(bool textBlockSelected, QWidget* parent = 0)
@@ -67,8 +70,15 @@ public:
         return this->m_noMatchDetected;
     }
 
+    /// @brief Reports back the type of search currently set by the user
+    SearchRequestType CurrentSearchRequestType()
+    {
+        return this->m_currentSearchRequestType;
+    }
+
 protected:
-    void BuildUserInterface();    
+    void BuildUserInterface();  
+    void TriggerSearchRequest();
 
 signals:
     void SearchReaplceRequested(
@@ -85,6 +95,7 @@ protected slots:
     void OnTextNotFound();
     void OnTextFound();
     void OnToggleSearchReplace();
+    void OnSearchActionSelectorClicked();
 };
 
 #endif // end of QSEARCHPOPUP_H__

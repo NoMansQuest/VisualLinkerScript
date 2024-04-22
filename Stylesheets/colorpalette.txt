@@ -42,4 +42,5 @@
 @TabItemDefault = #ff2e2e2e
 @TabItemSelected = #ff3d3d3d
 @VSplitter = #ff1f1f1f
+@ButtonHoverColor = #ff353535
 @DialogBackground = #ff2e2e2e
