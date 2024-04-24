@@ -236,15 +236,15 @@ QChromeTabItem > QPushButton:hover:pressed
  * QSearchPopup
  */
  
- QSearchPopup {
+QSearchPopup {
+    border: 3px solid red;
     background-color: @DialogBackground;
-    color: @DialogBackground;
 }
 
 QSearchPopup QPushButton {
-    margin-left: 10px;
-    border: 2px solid transparent;
-    background-color: transparent;
+    /*margin-left: 10px;*/
+    /*border: 2px solid transparent;*/
+    background-color: @DialogBackground;
 }
 
 QSearchPopup QPushButton:hover:!pressed {
@@ -253,5 +253,5 @@ QSearchPopup QPushButton:hover:!pressed {
 
 QSearchPopup QPushButton:hover:pressed {
     background-color: @ButtonHoverColor;    
-    border: 2px solid @level6;
+    /*border: 2px solid @level6;*/
 }
