@@ -452,6 +452,9 @@
     <ClCompile Include="Components\QScintilla\src\qscistyledtext.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Components\QFlatCheckBox\QFlatCheckBox.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Components\QScintilla\scintilla\lexlib\Accessor.h">
@@ -1226,6 +1229,9 @@
   <ItemGroup>
     <QtMoc Include="Components\QSearchPopup\QSearchPopup.h">
       <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Components\QFlatCheckBox\QFlatCheckBox.h">
+      <Filter>Generated Files</Filter>
     </QtMoc>
   </ItemGroup>
   <ItemGroup>

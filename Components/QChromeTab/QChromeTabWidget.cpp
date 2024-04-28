@@ -2,8 +2,6 @@
 #include "QChromeTabButton.h"
 #include <utility>
 
-using namespace VisualLinkerScript::Components;
-
 void QChromeTabWidget::BuildUserInterface()
 {
     this->m_stackedWidget = new QStackedWidget(this);
@@ -18,6 +16,8 @@ void QChromeTabWidget::BuildUserInterface()
     this->m_scrollAreaForTabButtons->setLayout(this->m_tabButtonsHLayout);
     this->m_tabIdCounter = 0;
     this->m_currentTabId.reset();
+
+    
 }
 
 uint32_t QChromeTabWidget::AddTab(std::shared_ptr<QWidget> associatedWidget)

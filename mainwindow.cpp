@@ -19,6 +19,7 @@ using namespace VisualLinkerScript::ParsingEngine;
 using namespace VisualLinkerScript::Models;
 using namespace VisualLinkerScript::Components;
 
+
 void ConstructUi(MainWindow& mainWindow);
 
 MainWindow::MainWindow(QWidget *parent)
@@ -223,10 +224,10 @@ void MainWindow::MenuActionNewFile()
 {
     auto newDialog = new QDialog();
     auto newVBoxLayout = new QVBoxLayout(newDialog);
-    auto searchPopup = new QSearchPopup(false);
-    newVBoxLayout->addWidget(searchPopup);
-    newVBoxLayout->setAlignment(Qt::AlignTop | Qt::AlignRight);    
-    searchPopup->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);    
+    auto searchPopup = new QSearchPopup(false);        
+    newVBoxLayout->addWidget(searchPopup);       
+    newVBoxLayout->setAlignment(Qt::AlignTop);
+    searchPopup->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);    
     newDialog->setLayout(newVBoxLayout);
     newDialog->resize(300, 100);
     newDialog->show();        

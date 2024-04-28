@@ -113,6 +113,66 @@ QScrollBar::sub-page:vertical {
     background: none;
 }
 
+/*
+ * QPushbutton
+ */
+
+QPushButton 
+{
+    background-color: @DialogBackground;
+    border: 2px solid transparent;
+}
+
+QPushButton:hover:!pressed {
+    background-color: @ButtonHoverColor;    
+}
+
+QPushButton:hover:pressed {
+    background-color: @ButtonPressedColor;
+    border: 2px solid @level7;
+}
+
+
+/*
+ * QComboBox
+ */
+
+QComboBox
+{
+    border: 0px solid transparent;
+    background-color: @StaticComboboxBackground;
+    color: white;
+}
+
+QComboBox[editable="true"]
+{
+    background-color: @EditableComboboxBackground;
+}   
+
+/*
+ * QFlatCheckBox
+ */
+
+QFlatCheckBox 
+{
+    background-color: @DialogBackground;
+    border: 2px solid transparent;
+}
+
+QFlatCheckBox:hover:!pressed 
+{
+    background-color: @ButtonHoverColor;    
+}
+
+QFlatCheckBox:hover:pressed {
+    background-color: @ButtonPressedColor;
+    border: 2px solid @level7;
+}
+
+QFlatCheckBox[IsChecked="true"] {
+    background-color: @ButtonPressedColor;
+    border: 2px solid @level7;
+}
 
 /*
  *
@@ -177,7 +237,7 @@ QsciScintilla
 
  /*
 
-QChromeTabItem > QLabel
+QChromeTabItem QLabel
 {
     margin-left: 10px;
     border: 0px solid #000000;
@@ -205,12 +265,12 @@ QChromeTabItem[IsHighlighted="true"]
     background: @level2;
 }
 
-QChromeTabItem[IsActiveTab="true"] > QLabel
+QChromeTabItem[IsActiveTab="true"] QLabel
 {
     font-weight: bold;
 }
 
-QChromeTabItem > QPushButton
+QChromeTabItem QPushButton
 {
     margin-left: 10px;
     border: 0px solid #000000;
@@ -219,13 +279,13 @@ QChromeTabItem > QPushButton
     color: white: // Color here will be applied to the SVG icon
 }
 
-QChromeTabItem > QPushButton:hover:!pressed
+QChromeTabItem QPushButton:hover:!pressed
 {
     background: white;
     color: black; // The 'X' icon will be set to black.
 }
 
-QChromeTabItem > QPushButton:hover:pressed
+QChromeTabItem QPushButton:hover:pressed
 {
     background: black;
     color: white; // The 'X' icon will be set to white.
@@ -235,23 +295,16 @@ QChromeTabItem > QPushButton:hover:pressed
 /*
  * QSearchPopup
  */
- 
-QSearchPopup {
-    border: 3px solid red;
+QSearchPopup 
+{
     background-color: @DialogBackground;
+    border-bottom: 4px solid @PurpleRibbon;
 }
 
-QSearchPopup QPushButton {
-    /*margin-left: 10px;*/
-    /*border: 2px solid transparent;*/
-    background-color: @DialogBackground;
+QSearchPopup[HasFocus="true"]
+{
+    background-color: red;
+    border-bottom: 4px solid @PurpleRibbon;
 }
 
-QSearchPopup QPushButton:hover:!pressed {
-    background-color: @ButtonHoverColor;    
-}
 
-QSearchPopup QPushButton:hover:pressed {
-    background-color: @ButtonHoverColor;    
-    /*border: 2px solid @level6;*/
-}

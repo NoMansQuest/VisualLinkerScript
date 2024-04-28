@@ -29,7 +29,8 @@
 @MenuOpened = #ff2e2e2e
 @MenuBorder = #ff707070
 @MenuHighlighted2 = #ff2c4957
-@ComboboxBackground = #ff383838
+@StaticComboboxBackground = #ff383838
+@EditableComboboxBackground = #ff1f1f1f
 @ToolbarBackground = #ff1f1f1f
 @ToolbarSelected = #ff3c3c3c
 @ToolbarHighlighted = #ff3d3d3d
@@ -43,4 +44,5 @@
 @TabItemSelected = #ff3d3d3d
 @VSplitter = #ff1f1f1f
 @ButtonHoverColor = #ff454545
+@ButtonPressedColor = #ff353535
 @DialogBackground = #ff2e2e2e

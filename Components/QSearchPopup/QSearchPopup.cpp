@@ -1,5 +1,5 @@
 #include "QSearchPopup.h"
-
+#include "../QFlatCheckBox/QFlatCheckBox.h"
 
 SearchPerimeterType ConvertIndexToSearchPerimeter(int comboBoxIndex);
 
@@ -33,6 +33,7 @@ void QSearchPopup::BuildUserInterface()
 	this->m_searchActionSelectorButton->setFixedSize(20, 24);
 	this->m_searchActionSelectorButton->setFocusPolicy(Qt::NoFocus);
 	this->m_searchActionSelectorButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+	this->m_searchActionSelectorButton->setFlat(true);
 	this->m_searchActionSelectorButton->setIcon(QIcon(":/resources/Images/expand-more-icon.svg").pixmap(QSize(16, 22)));
 	QObject::connect(this->m_searchActionSelectorButton, &QPushButton::clicked, this, &QSearchPopup::OnSearchActionSelectorClicked);
 
@@ -48,19 +49,19 @@ void QSearchPopup::BuildUserInterface()
 	this->m_replaceAllButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 	this->m_replaceAllButton->setIcon(QIcon(":/resources/Images/find-replace-icon.svg").pixmap(QSize(20, 22)));
 
-	this->m_matchCaseCheckButton = new QPushButton(this);
+	this->m_matchCaseCheckButton = new QFlatCheckBox(this);
 	this->m_matchCaseCheckButton->setFixedSize(24, 24);
 	this->m_matchCaseCheckButton->setFocusPolicy(Qt::NoFocus);
 	this->m_matchCaseCheckButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 	this->m_matchCaseCheckButton->setIcon(QIcon(":/resources/Images/match-case-icon.svg").pixmap(QSize(20, 22)));
 
-	this->m_matchWholeWordCheckButton = new QPushButton(this);
+	this->m_matchWholeWordCheckButton = new QFlatCheckBox(this);
 	this->m_matchWholeWordCheckButton->setFixedSize(24, 24);
 	this->m_matchWholeWordCheckButton->setFocusPolicy(Qt::NoFocus);
 	this->m_matchWholeWordCheckButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 	this->m_matchWholeWordCheckButton->setIcon(QIcon(":/resources/Images/match-word-icon.svg").pixmap(QSize(20, 22)));
 
-	this->m_matchRegularExpressionButton = new QPushButton(this);
+	this->m_matchRegularExpressionButton = new QFlatCheckBox(this);
 	this->m_matchRegularExpressionButton->setFixedSize(24, 24);
 	this->m_matchRegularExpressionButton->setFocusPolicy(Qt::NoFocus);
 	this->m_matchRegularExpressionButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
@@ -92,7 +93,7 @@ void QSearchPopup::BuildUserInterface()
 	this->m_row0HBox->addWidget(this->m_closePopupButton);
 
 	this->m_row1HBox->setSpacing(2);
-	this->m_row1HBox->addSpacing(17);
+	this->m_row1HBox->addSpacing(21);
 	this->m_row1HBox->addWidget(this->m_replaceFieldComboBox);
 	this->m_row1HBox->addWidget(this->m_replaceNextButton);
 	this->m_row1HBox->addWidget(this->m_replaceAllButton);

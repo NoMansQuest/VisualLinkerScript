@@ -208,6 +208,7 @@
     </QtUic>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Components\QFlatCheckBox\QFlatCheckBox.cpp" />
     <ClCompile Include="Components\QScintilla\scintilla\lexlib\Accessor.cpp" />
     <ClCompile Include="Components\QScintilla\scintilla\src\AutoComplete.cpp" />
     <ClCompile Include="Components\MemoryVisualizer\Rendering\CArrowsRenderer.cpp" />
@@ -345,6 +346,7 @@
     <ClCompile Include="Components\QScintilla\src\qscistyledtext.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <QtMoc Include="Components\QFlatCheckBox\QFlatCheckBox.h" />
     <ClInclude Include="Components\QScintilla\scintilla\lexlib\Accessor.h" />
     <ClInclude Include="Compiler\ExpressionEvaluation\ArithmeticOperationType.h" />
     <ClInclude Include="Components\QScintilla\scintilla\src\AutoComplete.h" />

@@ -1,7 +1,5 @@
 #include "QChromeTabButton.h"
 
-using namespace VisualLinkerScript::Components;
-
 void QChromeTabButton::BuildUserInterface()
 {
     QIcon icon(":/LocalResources/close-sm-svgrep-com.svg");

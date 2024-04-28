@@ -7,11 +7,14 @@
 #include "ReplaceRequestTypeEnum.h"
 #include "SearchPerimeterTypeEnum.h"
 
+class QFlatCheckBox;
+
 /// @brief QSeachPopup
-class QSearchPopup : public QWidget
+class QSearchPopup : public QFrame
 {
     Q_OBJECT
     Q_PROPERTY(bool NoMatchDetected READ NoMatchDetected USER true)
+    Q_PROPERTY(bool HasFocus READ HasFocus NOTIFY HasFocusChanged)
     Q_PROPERTY(SearchRequestType CurrentSearchRequestType READ CurrentSearchRequestType USER true)
     
 private:
@@ -29,9 +32,9 @@ private:
     QComboBox* m_replaceFieldComboBox;
     QPushButton* m_replaceNextButton;
     QPushButton* m_replaceAllButton;
-    QPushButton* m_matchCaseCheckButton;
-    QPushButton* m_matchWholeWordCheckButton;
-    QPushButton* m_matchRegularExpressionButton;
+    QFlatCheckBox* m_matchCaseCheckButton;
+    QFlatCheckBox* m_matchWholeWordCheckButton;
+    QFlatCheckBox* m_matchRegularExpressionButton;
     QComboBox* m_searchPerimeterComboBox;
     QSizeGrip* m_sizeGrip;
 
@@ -44,13 +47,14 @@ private:
 
     bool m_textBlockSelected = false;
     bool m_noMatchDetected = false;
+    bool m_hasFocus = false;
 
     SearchRequestType m_currentSearchRequestType = SearchRequestType::FindNext;
 
 public:
 	/// @brief Default constructor
 	QSearchPopup(bool textBlockSelected, QWidget* parent = 0)
-		: QWidget(parent)
+		: QFrame(parent)
 	{
         this->m_textBlockSelected = textBlockSelected;
 		this->BuildUserInterface();
@@ -76,11 +80,23 @@ public:
         return this->m_currentSearchRequestType;
     }
 
+    /// @brief Reports back if the component as a whole has focus.
+    bool HasFocus()
+    {
+        return this->m_replaceFieldComboBox->hasFocus() ||
+            this->m_searchFieldComboBox->hasFocus() ||
+            this->m_searchPerimeterComboBox->hasFocus();
+    }
+
 protected:
     void BuildUserInterface();  
     void TriggerSearchRequest();
 
 signals:
+    /// @brief Notifies the QT subsystem that the focus has changed.
+    void HasFocusChanged();
+
+    /// @brief Notifies the recepients that a search or replace action was requested by the user.
     void SearchReaplceRequested(
         QString searchText,
         QString replaceWith,
