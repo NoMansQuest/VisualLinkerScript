@@ -9,12 +9,12 @@
 
 
 /// @brief The QChromTab is composed of CChromeTabItem objects
-class QChromeTabButton : public QWidget
+class QChromeTabButton : public QFrame
 {
     Q_OBJECT
     Q_PROPERTY(bool IsHighlighted READ IsHighlighted USER true)
-    Q_PROPERTY(bool IsActiveTab READ IsActiveTab USER true)
-    Q_PROPERTY(QString DisplayTitle READ DisplayTitle WRITE SetDisplayTitle USER true)
+    Q_PROPERTY(bool IsActiveTab READ IsActiveTab NOTIFY ActiveTabStateChanged USER true)
+    Q_PROPERTY(QString DisplayTitle READ DisplayTitle WRITE SetDisplayTitle NOTIFY DisplayTitleChanged USER true)
 
 private:
     QString m_displayTitle;
@@ -32,7 +32,7 @@ private:
 public:
     /// @brief Default constructor
     QChromeTabButton(uint32_t tabId, QWidget *parent = nullptr)
-        : QWidget(parent),
+        : QFrame(parent),
             m_displayTitle(""),
             m_toolTip(""),
             m_tabId(tabId)
@@ -47,6 +47,8 @@ public:
 signals:
     void UserRequestedActivation(uint32_t tabId);
     void UserRequestedClosure(uint32_t tabId);
+    void ActiveTabStateChanged();
+    void DisplayTitleChanged();
 
 protected slots:
     void CloseButtonPressed();

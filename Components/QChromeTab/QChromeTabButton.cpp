@@ -41,6 +41,8 @@ void QChromeTabButton::SetToolTip(QString toolTip)
 void QChromeTabButton::SetActiveTab(bool activeTab)
 {    
     this->m_isActiveTab = activeTab;
+    style()->unpolish(this);
+    style()->polish(this);
 }
 
 void QChromeTabButton::CloseButtonPressed()

@@ -10,8 +10,8 @@
 
 class QChromeTabButton;
 
-/// @brief The main tab component to emulate google chrome's tab compoonent.
-class QChromeTabWidget : public QWidget
+/// @brief The main tab component to emulate google chrome's tab component.
+class QChromeTabWidget : public QFrame
 {
     Q_OBJECT
 
@@ -27,7 +27,7 @@ private:
 public:
     /// @brief Default constructor
     QChromeTabWidget(QWidget *parent = 0)
-        : QWidget(parent)
+        : QFrame(parent)
     {            
         this->BuildUserInterface();
     }
