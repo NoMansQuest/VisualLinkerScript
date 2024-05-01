@@ -136,7 +136,6 @@ QPushButton:hover:pressed {
 /*
  * QComboBox
  */
-
 QComboBox
 {
     border: 0px solid transparent;
@@ -147,7 +146,19 @@ QComboBox
 QComboBox[editable="true"]
 {
     background-color: @EditableComboboxBackground;
-}   
+    border: 1px solid blue;
+}  
+
+QComboBox QAbstractItemView {
+    background-color: @ComboBoxDropDownBackground;
+    color: white;
+    border: 1px solid transparent;
+}
+
+QComboBox QAbstractItemView::item:selected {
+    background-color: @ComboBoxSelectedItemBackground;
+    border: 1px solid @ComboBoxSelectedItemBorder;
+}
 
 /*
  * QFlatCheckBox
@@ -291,7 +302,6 @@ QChromeTabItem QPushButton:hover:pressed
     color: white; 
 }
 
-
 /*
  * QSearchPopup
  */
@@ -305,6 +315,11 @@ QSearchPopup[HasFocus="true"]
 {
     background-color: red;
     border-bottom: 4px solid @PurpleRibbon;
+}
+
+QSearchPopup[NoMatchDetected="true"] QComboBox[editable="true"]
+{
+    border: 1px solid @ComboBoxErrorBorder;        
 }
 
 

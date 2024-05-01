@@ -1189,10 +1189,7 @@
     <ClInclude Include="Components\QScintilla\src\Qsci\qscistyledtext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Components\QSearchPopup\SearchRequestTypeEnum.h">
-      <Filter>Generated Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\QSearchPopup\ReplaceRequestTypeEnum.h">
+    <ClInclude Include="Components\QSearchPopup\SearchReplaceRequestTypeEnum.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="Components\QSearchPopup\SearchPerimeterTypeEnum.h">

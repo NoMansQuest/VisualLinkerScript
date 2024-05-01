@@ -222,15 +222,34 @@ void MainWindow::MenuActionExit(bool checked)
 
 void MainWindow::MenuActionNewFile()
 {
-    auto newDialog = new QDialog();
-    auto newVBoxLayout = new QVBoxLayout(newDialog);
-    auto searchPopup = new QSearchPopup(false);        
-    newVBoxLayout->addWidget(searchPopup);       
-    newVBoxLayout->setAlignment(Qt::AlignTop);
-    searchPopup->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);    
-    newDialog->setLayout(newVBoxLayout);
-    newDialog->resize(300, 100);
-    newDialog->show();        
+    //auto newDialog = new QDialog();
+ //   auto centralWidget = new QWidget(this);
+ //   centralWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);    
+ //   auto widgetToAdd = new QPushButton(centralWidget);
+ //   widgetToAdd->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+ //   widgetToAdd->setFixedHeight(100);    
+ //   auto newVBoxLayout = new QVBoxLayout(centralWidget);
+	//newVBoxLayout->addWidget(widgetToAdd);
+	//this->setCentralWidget(centralWidget);
+
+
+	auto centralWidget = new QWidget(this);	
+    auto searchPopup = new QSearchPopup(false, centralWidget);
+    searchPopup->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);    
+    auto newVBoxLayout = new QVBoxLayout(centralWidget);
+    newVBoxLayout->addWidget(searchPopup);
+    this->setCentralWidget(centralWidget);
+
+    searchPopup->OnTextNotFound();
+    
+    //searchPopup->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    //searchPopup->show();
+    //searchPopup->setBaseSize(300, 300);   
+
+
+    //newDialog->setLayout(newVBoxLayout);
+    //newDialog->resize(300, 100);
+    //newDialog->show();        
     
     // To be implemented
 }

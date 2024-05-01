@@ -3,8 +3,7 @@
 
 #include <QtWidgets>
 #include <QString>
-#include "SearchRequestTypeEnum.h"
-#include "ReplaceRequestTypeEnum.h"
+#include "SearchReplaceRequestTypeEnum.h"
 #include "SearchPerimeterTypeEnum.h"
 
 class QFlatCheckBox;
@@ -14,8 +13,8 @@ class QSearchPopup : public QFrame
 {
     Q_OBJECT
     Q_PROPERTY(bool NoMatchDetected READ NoMatchDetected USER true)
-    Q_PROPERTY(bool HasFocus READ HasFocus NOTIFY HasFocusChanged)
-    Q_PROPERTY(SearchRequestType CurrentSearchRequestType READ CurrentSearchRequestType USER true)
+    Q_PROPERTY(bool MatchDetected READ MatchDetected USER true)
+    Q_PROPERTY(bool HasFocus READ HasFocus NOTIFY HasFocusChanged)    
     
 private:
     QHBoxLayout* m_row0HBox;
@@ -47,9 +46,10 @@ private:
 
     bool m_textBlockSelected = false;
     bool m_noMatchDetected = false;
+    bool m_matchDetected = false;
     bool m_hasFocus = false;
 
-    SearchRequestType m_currentSearchRequestType = SearchRequestType::FindNext;
+    SearchReplaceRequestType m_currentSearchRequestType = SearchReplaceRequestType::FindNext;    
 
 public:
 	/// @brief Default constructor
@@ -74,44 +74,50 @@ public:
         return this->m_noMatchDetected;
     }
 
-    /// @brief Reports back the type of search currently set by the user
-    SearchRequestType CurrentSearchRequestType()
-    {
-        return this->m_currentSearchRequestType;
-    }
+	/// @brief Reports back if a was detected for the provided text value.
+	bool MatchDetected()
+	{
+        return this->m_matchDetected;
+	}
 
     /// @brief Reports back if the component as a whole has focus.
     bool HasFocus()
     {
         return this->m_replaceFieldComboBox->hasFocus() ||
-            this->m_searchFieldComboBox->hasFocus() ||
-            this->m_searchPerimeterComboBox->hasFocus();
+               this->m_searchFieldComboBox->hasFocus() ||
+               this->m_searchPerimeterComboBox->hasFocus();
     }
 
 protected:
     void BuildUserInterface();  
-    void TriggerSearchRequest();
+    void Repolish();
+    SearchPerimeterType CurrentSearchPerimeter();
 
 signals:
     /// @brief Notifies the QT subsystem that the focus has changed.
     void HasFocusChanged();
 
-    /// @brief Notifies the recepients that a search or replace action was requested by the user.
+    /// @brief Notifies the recipients that a search or replace action was requested by the user.
     void SearchReaplceRequested(
         QString searchText,
         QString replaceWith,
         bool caseMatch,
         bool wordMatch,
         bool regEx,
-        SearchRequestType searchType,
-        ReplaceRequestType replaceType,
+        SearchReplaceRequestType searchReplaceType,
         SearchPerimeterType searchPerimeter);
 
-protected slots:
+public slots:
     void OnTextNotFound();
     void OnTextFound();
+
+private slots:
     void OnToggleSearchReplace();
     void OnSearchActionSelectorClicked();
+    void OnClosePopupPressed();
+    void OnSearchActionButtonPressed();
+    void OnReplaceNextButtonPressed();
+    void OnReplaceAllButtonPressed();
 };
 
 #endif // end of QSEARCHPOPUP_H__

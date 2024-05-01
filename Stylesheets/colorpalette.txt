@@ -20,6 +20,10 @@
 @InactiveTextColor = #ffa0a0a0
 @DisabledTextColor = #ff707070
 
+@ComboBoxSelectedItemBorder = #ff656565
+@ComboBoxSelectedItemBackground = #ff2c4957
+@ComboBoxDropDownBackground = #ff353535
+@ComboBoxErrorBorder = #ffa3a4
 @PurpleRibbon = #ff7160e8
 @PurpleRibbonInactive = #ff666666
 @SvgIconColor = #ff999999

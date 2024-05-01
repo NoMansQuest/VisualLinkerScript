@@ -2,11 +2,13 @@
 #define SEARCH_REQUEST_TYPE_ENUM_H__
 
 /// @brief Search request type
-enum class SearchRequestType
+enum class SearchReplaceRequestType
 {
 	FindNext,
 	FindPrevious,
-	FindAll
+	FindAll,
+	ReplaceNext,
+	ReplaceAll
 };
 
 #endif

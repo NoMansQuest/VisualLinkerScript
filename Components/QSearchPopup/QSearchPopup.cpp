@@ -15,19 +15,21 @@ void QSearchPopup::BuildUserInterface()
 	this->m_closePopupButton->setFocusPolicy(Qt::NoFocus);
 	this->m_closePopupButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 	this->m_closePopupButton->setIcon(QIcon(":/resources/Images/close-icon.svg").pixmap(QSize(20, 22)));
+	QObject::connect(this->m_closePopupButton, &QPushButton::clicked, this, &QSearchPopup::OnClosePopupPressed);
 	
 	this->m_findOrReplaceSelectorButton = new QPushButton(this);
 	this->m_findOrReplaceSelectorButton->setFixedSize(24, 24);
 	this->m_findOrReplaceSelectorButton->setFocusPolicy(Qt::NoFocus);
 	this->m_findOrReplaceSelectorButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 	this->m_findOrReplaceSelectorButton->setIcon(QIcon(":/resources/Images/arrow-drop-down-icon.svg").pixmap(QSize(20, 22)));
-	connect(this->m_findOrReplaceSelectorButton, &QPushButton::clicked, this, &QSearchPopup::OnToggleSearchReplace);
+	QObject::connect(this->m_findOrReplaceSelectorButton, &QPushButton::clicked, this, &QSearchPopup::OnToggleSearchReplace);
 
 	this->m_searchActionButton = new QPushButton(this);
 	this->m_searchActionButton->setFixedSize(32, 24);
 	this->m_searchActionButton->setFocusPolicy(Qt::NoFocus);
 	this->m_searchActionButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 	this->m_searchActionButton->setIcon(QIcon(":/resources/Images/arrow-right-icon.svg").pixmap(QSize(20, 22)));
+	QObject::connect(this->m_searchActionButton, &QPushButton::clicked, this, &QSearchPopup::OnSearchActionButtonPressed);
 
 	this->m_searchActionSelectorButton = new QPushButton(this);
 	this->m_searchActionSelectorButton->setFixedSize(20, 24);
@@ -42,18 +44,20 @@ void QSearchPopup::BuildUserInterface()
 	this->m_replaceNextButton->setFocusPolicy(Qt::NoFocus);
 	this->m_replaceNextButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 	this->m_replaceNextButton->setIcon(QIcon(":/resources/Images/find-replace-icon.svg").pixmap(QSize(20, 22)));
+	QObject::connect(this->m_replaceNextButton, &QPushButton::clicked, this, &QSearchPopup::OnReplaceNextButtonPressed);
 
 	this->m_replaceAllButton = new QPushButton(this);	
 	this->m_replaceAllButton->setFixedSize(24, 24);
 	this->m_replaceAllButton->setFocusPolicy(Qt::NoFocus);
 	this->m_replaceAllButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 	this->m_replaceAllButton->setIcon(QIcon(":/resources/Images/find-replace-icon.svg").pixmap(QSize(20, 22)));
+	QObject::connect(this->m_replaceAllButton, &QPushButton::clicked, this, &QSearchPopup::OnReplaceAllButtonPressed);
 
 	this->m_matchCaseCheckButton = new QFlatCheckBox(this);
 	this->m_matchCaseCheckButton->setFixedSize(24, 24);
 	this->m_matchCaseCheckButton->setFocusPolicy(Qt::NoFocus);
 	this->m_matchCaseCheckButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
-	this->m_matchCaseCheckButton->setIcon(QIcon(":/resources/Images/match-case-icon.svg").pixmap(QSize(20, 22)));
+	this->m_matchCaseCheckButton->setIcon(QIcon(":/resources/Images/match-case-icon.svg").pixmap(QSize(20, 22)));	
 
 	this->m_matchWholeWordCheckButton = new QFlatCheckBox(this);
 	this->m_matchWholeWordCheckButton->setFixedSize(24, 24);
@@ -129,22 +133,6 @@ void QSearchPopup::BuildUserInterface()
 	this->m_replaceAllButton->setVisible(false);	
 }
 
-/// @param Sets the default text shown when popup is opened.
-void QSearchPopup::SetText(QString defaultText)
-{
-
-}
-
-void QSearchPopup::OnTextNotFound()
-{
-
-}
-
-void QSearchPopup::OnTextFound()
-{
-
-}
-
 void QSearchPopup::OnSearchActionSelectorClicked()
 {
 	QMenu searchActionSelectorMenu(this);
@@ -164,21 +152,21 @@ void QSearchPopup::OnSearchActionSelectorClicked()
 	findPrevious->setShortcut(QKeySequence(Qt::SHIFT + Qt::Key_F3));
 
 	QObject::connect(findNextAction, &QAction::triggered, [this]() 
-		{ 
-			this->m_currentSearchRequestType = SearchRequestType::FindNext;
-			this->TriggerSearchRequest();
+		{
+			this->m_currentSearchRequestType = SearchReplaceRequestType::FindNext;
+			this->OnSearchActionButtonPressed();
 		});
 
 	QObject::connect(findPrevious, &QAction::triggered, [this]() 
 		{
-			this->m_currentSearchRequestType = SearchRequestType::FindPrevious;
-			this->TriggerSearchRequest();
+			this->m_currentSearchRequestType = SearchReplaceRequestType::FindPrevious;
+			this->OnSearchActionButtonPressed();
 		});
 
 	QObject::connect(findAll, &QAction::triggered, [this]() 
 		{ 
-			this->m_currentSearchRequestType = SearchRequestType::FindAll;
-			this->TriggerSearchRequest();
+			this->m_currentSearchRequestType = SearchReplaceRequestType::FindAll;
+			this->OnSearchActionButtonPressed();
 		});
 
 	searchActionSelectorMenu.exec(QCursor::pos());
@@ -275,7 +263,82 @@ void QSearchPopup::OnToggleSearchReplace()
 	this->m_findOrReplaceSelectorButton->setIcon(QIcon(iconToSetPath).pixmap(QSize(20, 22)));
 }
 
-void QSearchPopup::TriggerSearchRequest()
+/// @param Sets the default text shown when popup is opened.
+void QSearchPopup::SetText(QString defaultText)
 {
+	auto foundIndex = this->m_searchFieldComboBox->findText(defaultText);
+	if (foundIndex != -1)
+	{
+		this->m_searchFieldComboBox->setCurrentIndex(foundIndex);
+	}
+	else
+	{
+		this->m_searchFieldComboBox->setEditText(defaultText);
+	}
+}
 
+SearchPerimeterType QSearchPopup::CurrentSearchPerimeter()
+{
+	return ConvertIndexToSearchPerimeter(this->m_searchPerimeterComboBox->currentIndex());
+}
+
+void QSearchPopup::OnTextNotFound()
+{
+	this->m_noMatchDetected = true;
+	this->m_matchDetected = false;
+	this->Repolish();
+}
+
+void QSearchPopup::OnTextFound()
+{
+	this->m_matchDetected = true;
+	this->m_noMatchDetected = false;
+	this->Repolish();
+}
+
+void QSearchPopup::OnClosePopupPressed()
+{
+	this->hide();
+}
+
+void QSearchPopup::OnSearchActionButtonPressed()
+{
+	emit this->SearchReaplceRequested(
+		this->m_searchFieldComboBox->currentText(),
+		this->m_replaceFieldComboBox->currentText(),
+		this->m_matchCaseCheckButton->IsChecked(),
+		this->m_matchWholeWordCheckButton->IsChecked(),
+		this->m_matchRegularExpressionButton->IsChecked(),
+		this->m_currentSearchRequestType,
+		CurrentSearchPerimeter());		
+}
+
+void QSearchPopup::OnReplaceNextButtonPressed()
+{
+	emit this->SearchReaplceRequested(
+		this->m_searchFieldComboBox->currentText(),
+		this->m_replaceFieldComboBox->currentText(),
+		this->m_matchCaseCheckButton->IsChecked(),
+		this->m_matchWholeWordCheckButton->IsChecked(),
+		this->m_matchRegularExpressionButton->IsChecked(),
+		SearchReplaceRequestType::ReplaceNext,
+		CurrentSearchPerimeter());
+}
+
+void QSearchPopup::OnReplaceAllButtonPressed()
+{
+	emit this->SearchReaplceRequested(
+		this->m_searchFieldComboBox->currentText(),
+		this->m_replaceFieldComboBox->currentText(),
+		this->m_matchCaseCheckButton->IsChecked(),
+		this->m_matchWholeWordCheckButton->IsChecked(),
+		this->m_matchRegularExpressionButton->IsChecked(),
+		SearchReplaceRequestType::ReplaceAll,
+		CurrentSearchPerimeter());
+}
+
+void QSearchPopup::Repolish()
+{
+	style()->unpolish(this);
+	style()->polish(this);
 }
