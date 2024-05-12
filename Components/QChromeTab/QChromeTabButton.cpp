@@ -8,19 +8,20 @@ void QChromeTabButton::BuildUserInterface()
 
     this->m_closeButton = new QPushButton(this);
     this->m_closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    this->m_closeButton->setFixedHeight(30);
-    this->m_closeButton->setFixedWidth(30);
+    this->m_closeButton->setFixedHeight(20);
+    this->m_closeButton->setFixedWidth(20);
     this->m_closeButton->setIcon(pixmap);
 
-    this->m_titleLabel = new QLabel(this->m_displayTitle, this);
-    this->m_titleLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    this->m_titleLabel = new QLabel(this->m_displayTitle);
+    this->m_titleLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    this->m_titleLabel->setAlignment(Qt::AlignCenter);
 
-    this->m_hboxLayout = new QHBoxLayout(this);
+    this->m_hboxLayout = new QHBoxLayout;
     this->setLayout(this->m_hboxLayout);
 
     this->m_hboxLayout->addWidget(this->m_titleLabel);
     this->m_hboxLayout->addWidget(this->m_closeButton);
-    this->m_hboxLayout->setContentsMargins(20, 20, 20, 10);
+    this->m_hboxLayout->setContentsMargins(3, 2, 2, 10);
 
     connect(this->m_closeButton, &QPushButton::pressed, this, &QChromeTabButton::CloseButtonPressed);
 }

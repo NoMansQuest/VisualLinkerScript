@@ -248,19 +248,25 @@ QsciScintilla
 
 /*
  *
- * QChromeTabWidget and QChromTabButtont
+ * QChromeTabWidget and QChromTabButton
  *
  */
 
-QChromeTabItem QLabel
+QChromeTabWidget
 {
-    margin-left: 10px;
-    border: 0px solid #000000;
-    background-color: transparent;
-    font-family: Calibri;
-    font-size: 10px;
+    background-color: pink;
 }
 
+QStackedWidget
+{
+    background-color: blue;
+}
+
+QScrollArea {
+    background-color: violet;
+    margin-top: 0px;
+    margin-left: 0px;
+}
 
 QChromeTabItem
 {   
@@ -306,6 +312,38 @@ QChromeTabItem QPushButton:hover:pressed
 {
     background-color: black;
     color: white; 
+}
+
+
+QChromeTabButton {
+    background-color: @TabItemDefault;
+    padding-right: 2px; 
+}
+
+QChromeTabButton[IsActiveTab="true"] {
+    background-color: @TabItemSelectedOrActive;
+}
+
+QChromeTabButton:hover {
+    background-color: @TabItemSelectedOrActive;
+}
+
+QChromeTabButton QLabel {
+    margin-left: 2px;
+    border: 0px solid transparent;
+    background-color: transparent;
+    font-family: Calibri;
+    font-weight:normal;
+    color: @TabItemDefaultTextColor;
+}
+
+QChromeTabButton:hover QLabel {
+    color: @TabItemSelectedOrActiveTextColor;
+}
+
+QChromeTabButton[IsActiveTab="true"] QLabel {
+    color: @TabItemSelectedOrActiveTextColor;
+    font-weight: bold;
 }
 
 /*

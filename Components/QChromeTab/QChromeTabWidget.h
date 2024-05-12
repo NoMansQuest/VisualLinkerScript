@@ -15,7 +15,8 @@ class QChromeTabWidget : public QFrame
     Q_OBJECT
 
 private:
-    QStackedWidget* m_stackedWidget;
+    QFrame* m_stackedRegionParent;
+    QVBoxLayout* m_stackedRegionLayout;
     QVBoxLayout* m_vBoxLayout;
     QScrollArea* m_scrollAreaForTabButtons;
     QHBoxLayout* m_tabButtonsHLayout;

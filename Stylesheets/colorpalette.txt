@@ -45,7 +45,9 @@
 @TreeviewHighlightedBorder = #ff707070
 @TreeviewSelected =  #ff3d3d3d
 @TabItemDefault = #ff2e2e2e
-@TabItemSelected = #ff3d3d3d
+@TabItemDefaultTextColor = #ffb1b1b1
+@TabItemSelectedOrActive = #ff3d3d3d
+@TabItemSelectedOrActiveTextColor = #ffffffff
 @VSplitter = #ff1f1f1f
 @ButtonHoverColor = #ff454545
 @ButtonPressedColor = #ff353535

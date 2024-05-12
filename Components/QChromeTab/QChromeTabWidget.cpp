@@ -4,38 +4,50 @@
 
 void QChromeTabWidget::BuildUserInterface()
 {
-    this->m_stackedWidget = new QStackedWidget(this);
+    this->m_stackedRegionParent = new QFrame;
+    this->m_stackedRegionLayout = new QVBoxLayout;
     this->m_vBoxLayout = new QVBoxLayout(this);
+
     this->m_scrollAreaForTabButtons = new QScrollArea(this);
-    this->m_tabButtonsHLayout = new QHBoxLayout(this->m_scrollAreaForTabButtons);
+    this->m_scrollAreaForTabButtons->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+    this->m_scrollAreaForTabButtons->setFixedHeight(166);
+    this->m_tabButtonsHLayout = new QHBoxLayout;
+    this->m_scrollAreaForTabButtons->setLayout(this->m_tabButtonsHLayout);    
+
+    this->m_stackedRegionParent->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    this->m_stackedRegionParent->setLayout(this->m_stackedRegionLayout);    
+    this->m_vBoxLayout->addWidget(this->m_scrollAreaForTabButtons);
+    this->m_vBoxLayout->addWidget(this->m_stackedRegionParent);
+
+    this->m_stackedRegionParent->setStyleSheet("background-color: yellow;");
 
     this->setLayout(this->m_vBoxLayout);
-    this->m_vBoxLayout->addWidget(this->m_scrollAreaForTabButtons);
-    this->m_vBoxLayout->addWidget(this->m_stackedWidget);
-    this->m_stackedWidget->setStyleSheet("margin-top: 10px;");
-    this->m_scrollAreaForTabButtons->setLayout(this->m_tabButtonsHLayout);
-    this->m_tabIdCounter = 0;
-    this->m_currentTabId.reset();
 
-    
+    this->m_tabIdCounter = 0;
+    this->m_currentTabId.reset();    
 }
 
 uint32_t QChromeTabWidget::AddTab(std::shared_ptr<QWidget> associatedWidget)
 {
     auto tabId = this->m_tabIdCounter++;
-    auto tabHeader = std::shared_ptr<QChromeTabButton>(new QChromeTabButton(tabId, this->m_scrollAreaForTabButtons));
+    auto tabHeader = std::shared_ptr<QChromeTabButton>(new QChromeTabButton(tabId, this->m_scrollAreaForTabButtons));    
     this->m_tabs[tabId] = std::make_pair(tabHeader, associatedWidget);
     this->m_tabButtonsHLayout->addWidget(tabHeader.get());
-    this->m_stackedWidget->addWidget(associatedWidget.get());
-
+    this->m_tabButtonsHLayout->addWidget(new QPushButton);
+    this->m_stackedRegionLayout->addWidget(associatedWidget.get());    
+    associatedWidget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    tabHeader->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);    
+    tabHeader->setFixedHeight(24);
     connect(tabHeader.get(), &QChromeTabButton::UserRequestedClosure, this, &QChromeTabWidget::CloseButtonClicked);
     connect(tabHeader.get(), &QChromeTabButton::UserRequestedActivation, this, &QChromeTabWidget::TabRequestedActivation);
 
+    
     if (!this->m_currentTabId.has_value())
     {
         this->NavigateToTab(tabId);
     }
-
+    
+    
     return tabId;
 }
 
@@ -48,7 +60,7 @@ void QChromeTabWidget::RemoveTab(uint32_t tabToRemove)
     }
 
     this->m_tabButtonsHLayout->removeWidget(iterator->second.first.get());
-    this->m_stackedWidget->removeWidget(iterator->second.second.get());
+    this->m_stackedRegionLayout->removeWidget(iterator->second.second.get());
     this->m_tabs.erase(iterator);
 
     if (this->m_currentTabId.has_value() && this->m_currentTabId.value() == tabToRemove)
@@ -89,7 +101,11 @@ void QChromeTabWidget::NavigateToTab(uint32_t tabToNavigateTo)
         iterator->second.first->SetActiveTab(false);
     }
 
-    this->m_stackedWidget->setCurrentWidget(iteratorTabToNavigateTo->second.second.get());
+    for (auto entry : this->m_tabs)
+    {
+        entry.second.second->setVisible((entry.first == tabToNavigateTo));
+    }
+    
     iteratorTabToNavigateTo->second.first->SetActiveTab(true);
     emit this->ActiveTabChanged(tabToNavigateTo);
 }

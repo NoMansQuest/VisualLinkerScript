@@ -9,6 +9,7 @@
 #include "QElapsedTimer.h"
 #include "Components/QScintilla/ComponentHelpers.h"
 #include "Components/QScintilla/src/Qsci/qscilexerlinkerscript.h"
+#include "Components/QScintilla/src/Qsci/qsciscintilla.h"
 #include "Components/QSearchPopup/QSearchPopup.h"
 #include "Components/QChromeTab/QChromeTabWidget.h"
 #include "ParsingEngine/CLexer.h"
@@ -247,12 +248,13 @@ void MainWindow::MenuActionNewFile()
 
 
 	auto centralWidget = new QWidget(this);	
-    auto chromeTab = new QChromeTabWidget(centralWidget);
+    auto chromeTab = new QChromeTabWidget(centralWidget);    
 	auto newVBoxLayout = new QVBoxLayout(centralWidget);
 	newVBoxLayout->addWidget(chromeTab);
 	newVBoxLayout->addWidget(new QTextEdit(centralWidget));
 	this->setCentralWidget(centralWidget);
-   
+    chromeTab->SetTabTitle(chromeTab->AddTab(std::shared_ptr<QWidget>(new QTextEdit)), "Funny Tab");
+    
     
     // To be implemented
 }
