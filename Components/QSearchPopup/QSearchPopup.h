@@ -93,6 +93,9 @@ protected:
     void Repolish();
     SearchPerimeterType CurrentSearchPerimeter();
 
+public:
+    bool eventFilter(QObject* obj, QEvent* event) override;
+
 signals:
     /// @brief Notifies the QT subsystem that the focus has changed.
     void HasFocusChanged();
@@ -111,7 +114,7 @@ public slots:
     void OnTextNotFound();
     void OnTextFound();
 
-private slots:
+private slots:;
     void OnToggleSearchReplace();
     void OnSearchActionSelectorClicked();
     void OnClosePopupPressed();

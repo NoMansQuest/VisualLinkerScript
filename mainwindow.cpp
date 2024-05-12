@@ -10,6 +10,7 @@
 #include "Components/QScintilla/ComponentHelpers.h"
 #include "Components/QScintilla/src/Qsci/qscilexerlinkerscript.h"
 #include "Components/QSearchPopup/QSearchPopup.h"
+#include "Components/QChromeTab/QChromeTabWidget.h"
 #include "ParsingEngine/CLexer.h"
 #include "ParsingEngine/CMasterParser.h"
 #include "Messaging/CEventAggregator.h"
@@ -233,23 +234,25 @@ void MainWindow::MenuActionNewFile()
 	//this->setCentralWidget(centralWidget);
 
 
-	auto centralWidget = new QWidget(this);	
-    auto searchPopup = new QSearchPopup(false, centralWidget);
-    searchPopup->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);    
-    auto newVBoxLayout = new QVBoxLayout(centralWidget);
-    newVBoxLayout->addWidget(searchPopup);
-    this->setCentralWidget(centralWidget);
+	//auto centralWidget = new QWidget(this);	
+ //   auto searchPopup = new QSearchPopup(false, centralWidget);
 
-    searchPopup->OnTextNotFound();
+ //   searchPopup->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);    
+ //   searchPopup->OnTextNotFound();
+ //   auto newVBoxLayout = new QVBoxLayout(centralWidget);
+ //   newVBoxLayout->addWidget(searchPopup);
+ //   newVBoxLayout->addWidget(new QTextEdit(centralWidget));
+ //   this->setCentralWidget(centralWidget);
     
-    //searchPopup->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    //searchPopup->show();
-    //searchPopup->setBaseSize(300, 300);   
 
 
-    //newDialog->setLayout(newVBoxLayout);
-    //newDialog->resize(300, 100);
-    //newDialog->show();        
+	auto centralWidget = new QWidget(this);	
+    auto chromeTab = new QChromeTabWidget(centralWidget);
+	auto newVBoxLayout = new QVBoxLayout(centralWidget);
+	newVBoxLayout->addWidget(chromeTab);
+	newVBoxLayout->addWidget(new QTextEdit(centralWidget));
+	this->setCentralWidget(centralWidget);
+   
     
     // To be implemented
 }

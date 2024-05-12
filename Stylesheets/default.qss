@@ -35,11 +35,11 @@ QMenuBar::item:selected
 
 QMenu
 {
-    padding-left: 8px;
-    padding-right: 8px;
-    padding-top: 6px;
-    padding-bottom: 6px;
-    border: 1px solid transparent;
+    padding-left: 4px;
+    padding-right: 4px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    border: 1px solid @MenuBorder;
     background: @MenuOpened;
     color: @ActiveTextColor;
 }
@@ -146,7 +146,13 @@ QComboBox
 QComboBox[editable="true"]
 {
     background-color: @EditableComboboxBackground;
-    border: 1px solid blue;
+    border: 1px solid transparent;
+}  
+
+QComboBox[editable="true"][inError="true"]
+{
+    background-color: @EditableComboboxBackground;
+    border: 1px solid @ComboBoxErrorBorder;        
 }  
 
 QComboBox QAbstractItemView {
@@ -307,19 +313,18 @@ QChromeTabItem QPushButton:hover:pressed
  */
 QSearchPopup 
 {
-    background-color: @DialogBackground;
-    border-bottom: 4px solid @PurpleRibbon;
+    background-color: @DialogBackground;    
 }
 
 QSearchPopup[HasFocus="true"]
 {
-    background-color: red;
     border-bottom: 4px solid @PurpleRibbon;
 }
 
-QSearchPopup[NoMatchDetected="true"] QComboBox[editable="true"]
+QSearchPopup[HasFocus="false"]
 {
-    border: 1px solid @ComboBoxErrorBorder;        
+    border-bottom: 4px solid @DialogBackground;
 }
+
 
 

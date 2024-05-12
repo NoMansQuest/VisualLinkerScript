@@ -31,7 +31,7 @@
 @MenuDefault = #ff1f1f1f
 @MenuHighlighted = #ff3d3d3d
 @MenuOpened = #ff2e2e2e
-@MenuBorder = #ff707070
+@MenuBorder = #ff505050
 @MenuHighlighted2 = #ff2c4957
 @StaticComboboxBackground = #ff383838
 @EditableComboboxBackground = #ff1f1f1f

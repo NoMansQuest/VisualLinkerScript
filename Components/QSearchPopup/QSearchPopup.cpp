@@ -26,13 +26,14 @@ void QSearchPopup::BuildUserInterface()
 
 	this->m_searchActionButton = new QPushButton(this);
 	this->m_searchActionButton->setFixedSize(32, 24);
+	this->m_searchActionButton->setToolTip("Find next");
 	this->m_searchActionButton->setFocusPolicy(Qt::NoFocus);
 	this->m_searchActionButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 	this->m_searchActionButton->setIcon(QIcon(":/resources/Images/arrow-right-icon.svg").pixmap(QSize(20, 22)));
 	QObject::connect(this->m_searchActionButton, &QPushButton::clicked, this, &QSearchPopup::OnSearchActionButtonPressed);
 
 	this->m_searchActionSelectorButton = new QPushButton(this);
-	this->m_searchActionSelectorButton->setFixedSize(20, 24);
+	this->m_searchActionSelectorButton->setFixedSize(20, 24);	
 	this->m_searchActionSelectorButton->setFocusPolicy(Qt::NoFocus);
 	this->m_searchActionSelectorButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 	this->m_searchActionSelectorButton->setFlat(true);
@@ -40,6 +41,7 @@ void QSearchPopup::BuildUserInterface()
 	QObject::connect(this->m_searchActionSelectorButton, &QPushButton::clicked, this, &QSearchPopup::OnSearchActionSelectorClicked);
 
 	this->m_replaceNextButton = new QPushButton(this);
+	this->m_replaceNextButton->setToolTip("Replace next");
 	this->m_replaceNextButton->setFixedSize(24, 24);
 	this->m_replaceNextButton->setFocusPolicy(Qt::NoFocus);
 	this->m_replaceNextButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
@@ -47,6 +49,7 @@ void QSearchPopup::BuildUserInterface()
 	QObject::connect(this->m_replaceNextButton, &QPushButton::clicked, this, &QSearchPopup::OnReplaceNextButtonPressed);
 
 	this->m_replaceAllButton = new QPushButton(this);	
+	this->m_replaceAllButton->setToolTip("Replace all");
 	this->m_replaceAllButton->setFixedSize(24, 24);
 	this->m_replaceAllButton->setFocusPolicy(Qt::NoFocus);
 	this->m_replaceAllButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
@@ -54,18 +57,21 @@ void QSearchPopup::BuildUserInterface()
 	QObject::connect(this->m_replaceAllButton, &QPushButton::clicked, this, &QSearchPopup::OnReplaceAllButtonPressed);
 
 	this->m_matchCaseCheckButton = new QFlatCheckBox(this);
+	this->m_matchCaseCheckButton->setToolTip("Match exact case");
 	this->m_matchCaseCheckButton->setFixedSize(24, 24);
 	this->m_matchCaseCheckButton->setFocusPolicy(Qt::NoFocus);
 	this->m_matchCaseCheckButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 	this->m_matchCaseCheckButton->setIcon(QIcon(":/resources/Images/match-case-icon.svg").pixmap(QSize(20, 22)));	
 
 	this->m_matchWholeWordCheckButton = new QFlatCheckBox(this);
+	this->m_matchWholeWordCheckButton->setToolTip("Match whole word");
 	this->m_matchWholeWordCheckButton->setFixedSize(24, 24);
 	this->m_matchWholeWordCheckButton->setFocusPolicy(Qt::NoFocus);
 	this->m_matchWholeWordCheckButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 	this->m_matchWholeWordCheckButton->setIcon(QIcon(":/resources/Images/match-word-icon.svg").pixmap(QSize(20, 22)));
 
 	this->m_matchRegularExpressionButton = new QFlatCheckBox(this);
+	this->m_matchRegularExpressionButton->setToolTip("Match regular expression");
 	this->m_matchRegularExpressionButton->setFixedSize(24, 24);
 	this->m_matchRegularExpressionButton->setFocusPolicy(Qt::NoFocus);
 	this->m_matchRegularExpressionButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
@@ -75,15 +81,19 @@ void QSearchPopup::BuildUserInterface()
 	this->m_searchFieldComboBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 	this->m_searchFieldComboBox->setEditable(true);
 	this->m_searchFieldComboBox->setFixedHeight(24);
+	this->m_searchFieldComboBox->installEventFilter(this);
+	this->m_searchFieldComboBox->setProperty("inError", false);
 
 	this->m_replaceFieldComboBox = new QComboBox(this);
 	this->m_replaceFieldComboBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 	this->m_replaceFieldComboBox->setEditable(true);
 	this->m_replaceFieldComboBox->setFixedHeight(24);
+	this->m_replaceFieldComboBox->installEventFilter(this);
 
 	this->m_searchPerimeterComboBox = new QComboBox(this);
 	this->m_searchPerimeterComboBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-	this->m_searchPerimeterComboBox->setFixedHeight(24);
+	this->m_searchPerimeterComboBox->setFixedHeight(24);	
+	this->m_searchPerimeterComboBox->installEventFilter(this);
 
 	this->m_sizeGrip = new QSizeGrip(this);
 		
@@ -286,6 +296,7 @@ void QSearchPopup::OnTextNotFound()
 {
 	this->m_noMatchDetected = true;
 	this->m_matchDetected = false;
+	this->m_searchFieldComboBox->setProperty("inError", true);
 	this->Repolish();
 }
 
@@ -293,6 +304,7 @@ void QSearchPopup::OnTextFound()
 {
 	this->m_matchDetected = true;
 	this->m_noMatchDetected = false;
+	this->m_searchFieldComboBox->setProperty("inError", false);
 	this->Repolish();
 }
 
@@ -335,6 +347,19 @@ void QSearchPopup::OnReplaceAllButtonPressed()
 		this->m_matchRegularExpressionButton->IsChecked(),
 		SearchReplaceRequestType::ReplaceAll,
 		CurrentSearchPerimeter());
+}
+
+bool QSearchPopup::eventFilter(QObject* obj, QEvent* event) 
+{
+	if ((obj == this->m_searchFieldComboBox) || (obj == this->m_replaceFieldComboBox) || (obj == this->m_searchPerimeterComboBox))
+	{
+		if ((event->type() == QEvent::FocusIn) || (event->type() == QEvent::FocusOut)) 
+		{
+			emit this->HasFocusChanged();
+			this->Repolish();
+		}
+	}
+	return QObject::eventFilter(obj, event);
 }
 
 void QSearchPopup::Repolish()

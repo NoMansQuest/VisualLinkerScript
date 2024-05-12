@@ -7,7 +7,6 @@
 #include <memory>
 #include <QStackedWidget>
 
-
 class QChromeTabButton;
 
 /// @brief The main tab component to emulate google chrome's tab component.
@@ -75,7 +74,7 @@ protected slots:
     void TabRequestedActivation(uint32_t tabId) { this->NavigateToTab(tabId); }
 
 protected:
-    /// @brief Overriden as this is where we paint the object
+    /// @brief Overridden as this is where we paint the object
     void BuildUserInterface();
 
     /// @brief Recalculates tab location, height, etc.
