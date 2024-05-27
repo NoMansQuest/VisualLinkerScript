@@ -15,5 +15,6 @@
         <file>Images/search-magnifying-glass-icon.svg</file>
         <file>Images/arrow-left-icon.svg</file>
         <file>Images/arrow-right-icon.svg</file>
+        <file>Images/close-icon-black.svg</file>
     </qresource>
 </RCC>

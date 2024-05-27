@@ -2,15 +2,19 @@
 
 void QChromeTabButton::BuildUserInterface()
 {
-    QIcon icon(":/LocalResources/close-sm-svgrep-com.svg");
+    QIcon icon(":/resources/Images/close-icon.svg");
     QSize iconSize(20, 20);
     QPixmap pixmap = icon.pixmap(iconSize);
 
-    this->m_closeButton = new QPushButton(this);
-    this->m_closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    this->m_closeButton->setFixedHeight(20);
-    this->m_closeButton->setFixedWidth(20);
-    this->m_closeButton->setIcon(pixmap);
+    if (!this->m_isFixed)
+    {
+		this->m_closeButton = new QPushButton(this);
+		this->m_closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+		this->m_closeButton->setFixedHeight(16);
+		this->m_closeButton->setFixedWidth(16);
+		this->m_closeButton->setIcon(pixmap);
+        connect(this->m_closeButton, &QPushButton::pressed, this, &QChromeTabButton::CloseButtonPressed);
+    }    
 
     this->m_titleLabel = new QLabel(this->m_displayTitle);
     this->m_titleLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -20,10 +24,12 @@ void QChromeTabButton::BuildUserInterface()
     this->setLayout(this->m_hboxLayout);
 
     this->m_hboxLayout->addWidget(this->m_titleLabel);
-    this->m_hboxLayout->addWidget(this->m_closeButton);
-    this->m_hboxLayout->setContentsMargins(3, 2, 2, 10);
 
-    connect(this->m_closeButton, &QPushButton::pressed, this, &QChromeTabButton::CloseButtonPressed);
+    if (!this->m_isFixed)
+    {
+        this->m_hboxLayout->addWidget(this->m_closeButton);
+    }
+    this->m_hboxLayout->setContentsMargins(0, 0, 0, 0);
 }
 
 void QChromeTabButton::SetDisplayTitle(QString displayTitle)
@@ -42,8 +48,7 @@ void QChromeTabButton::SetToolTip(QString toolTip)
 void QChromeTabButton::SetActiveTab(bool activeTab)
 {    
     this->m_isActiveTab = activeTab;
-    style()->unpolish(this);
-    style()->polish(this);
+    RefreshStyling();
 }
 
 void QChromeTabButton::CloseButtonPressed()
@@ -58,5 +63,38 @@ void QChromeTabButton::mousePressEvent(QMouseEvent* event)
         emit this->UserRequestedActivation(this->m_tabId);
     }
     QWidget::mousePressEvent(event); // Ensure default handling of the event
+}
+
+void QChromeTabButton::enterEvent(QEnterEvent* event)
+{
+	this->m_isHovering = true;
+    RefreshStyling();
+}
+
+void QChromeTabButton::leaveEvent(QEvent* event)
+{
+	this->m_isHovering = false;
+    RefreshStyling();
+}
+
+
+void QChromeTabButton::RefreshStyling()
+{
+    if (!this->m_isFixed)
+    {
+        this->setContentsMargins(0, 0, (this->m_isHovering ? 2 : 24), 0);
+        this->m_closeButton->setVisible(this->m_isHovering);
+		style()->unpolish(this->m_closeButton);
+		style()->polish(this->m_closeButton);
+    }
+    else
+    {
+        this->setContentsMargins(0, 0, 13, 0);
+    }
+
+    style()->unpolish(this);    
+    style()->unpolish(this->m_titleLabel);
+	style()->polish(this->m_titleLabel);	
+	style()->polish(this);
 }
 

@@ -245,15 +245,15 @@ void MainWindow::MenuActionNewFile()
  //   newVBoxLayout->addWidget(new QTextEdit(centralWidget));
  //   this->setCentralWidget(centralWidget);
     
-
-
+        
 	auto centralWidget = new QWidget(this);	
     auto chromeTab = new QChromeTabWidget(centralWidget);    
 	auto newVBoxLayout = new QVBoxLayout(centralWidget);
 	newVBoxLayout->addWidget(chromeTab);
-	newVBoxLayout->addWidget(new QTextEdit(centralWidget));
 	this->setCentralWidget(centralWidget);
-    chromeTab->SetTabTitle(chromeTab->AddTab(std::shared_ptr<QWidget>(new QTextEdit)), "Funny Tab");
+    chromeTab->SetTabTitle(chromeTab->AddTab(std::shared_ptr<QWidget>(new QTextEdit), true), "Funny Tabddddddddddddddddddddddd");
+    chromeTab->SetTabTitle(chromeTab->AddTab(std::shared_ptr<QWidget>(new QPushButton)), "Funny Tab2");
+    chromeTab->SetTabTitle(chromeTab->AddTab(std::shared_ptr<QWidget>(new QLabel("Funny Label"))), "Funny Tab3");
     
     
     // To be implemented

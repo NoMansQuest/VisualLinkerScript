@@ -642,6 +642,7 @@
     <None Include="Images\arrow-left-icon.svg" />
     <None Include="Images\arrow-right-icon.svg" />
     <None Include="Images\chevron-right-icon.svg" />
+    <None Include="Images\close-icon-black.svg" />
     <None Include="Images\close-icon.svg" />
     <None Include="Images\close-sm-svgrepo-com.svg" />
     <None Include="Images\expand-more-icon.svg" />

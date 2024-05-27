@@ -1244,5 +1244,6 @@
     <None Include="Images\arrow-drop-up-icon.svg" />
     <None Include="Images\arrow-left-icon.svg" />
     <None Include="Images\arrow-right-icon.svg" />
+    <None Include="Images\close-icon-black.svg" />
   </ItemGroup>
 </Project>

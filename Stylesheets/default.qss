@@ -1,28 +1,32 @@
 /*
+ * QMainWindow       
+ *
+ */
+QMainWindow {
+    background-color: @level0;
+}
+
+/*
  *
  * Menu bar and items
  *
  */
-QMenuBar 
-{    
+QMenuBar {
     padding-left: 5px;
     padding-top: 5px;
     padding-right: 5px;
     padding-bottom: 2px;
     border-top: 1px solid @MenuBorder;
-    background: @MenuDefault;
-    font-family: 'Segoe UI' ;
+    background-color: @level0;
     color: @ActiveTextColor;
-    font-size: 10pt;
 }
 
-QMenuBar::item
-{
+QMenuBar::item {
     padding-left: 8px;
     padding-right: 8px;
     padding-top: 1px;
     padding-bottom: 1px;
-    background: @MenuDefault;
+    background-color: @level0;
 }
 
 QMenuBar::item:selected
@@ -68,6 +72,7 @@ QMenu::item:selected
  * Scroll Bars
  *
  */
+
 QScrollBar {
     background: @level1;
     border-radius: 0px;
@@ -116,7 +121,6 @@ QScrollBar::sub-page:vertical {
 /*
  * QPushbutton
  */
-
 QPushButton 
 {
     background-color: @DialogBackground;
@@ -252,20 +256,20 @@ QsciScintilla
  *
  */
 
-QChromeTabWidget
-{
-    background-color: pink;
+QChromeTabWidget {
+    background-color: @level0;
 }
 
-QStackedWidget
-{
-    background-color: blue;
+QChromeTabWidget QStackedWidget {
+    background-color: @level0;
 }
 
-QScrollArea {
-    background-color: violet;
-    margin-top: 0px;
-    margin-left: 0px;
+QChromeTabWidget QScrollArea {
+    border-top: 0px solid transparent;
+    border-left: 0px solid transparent;
+    border-right: 0px solid transparent;
+    border-bottom: 3px solid @PurpleRibbon;
+    background-color: @level0;
 }
 
 QChromeTabItem
@@ -278,10 +282,9 @@ QChromeTabItem
 QChromeTabItem[IsActiveTab="true"]
 {    
     margin: 0px;
-    border: 3px solid @PurpleRibbon;
+    border: 0px solid transparent;
     background-color: @level1;
 }
-
 
 QChromeTabItem[IsHighlighted="true"]
 {
@@ -293,55 +296,64 @@ QChromeTabItem[IsActiveTab="true"] QLabel
     font-weight: bold;
 }
 
-QChromeTabItem QPushButton
-{
-    margin-left: 10px;
-    border: 0px solid #000000;    
-    background-color: @level0;
-    color: white;
-}
-
-QChromeTabItem QPushButton:hover:!pressed
-{
-    background-color: white;
-    color: black; 
-}
-
-
-QChromeTabItem QPushButton:hover:pressed
-{
-    background-color: black;
-    color: white; 
-}
-
-
 QChromeTabButton {
-    background-color: @TabItemDefault;
-    padding-right: 2px; 
+    border-top: none;    
+}
+
+QChromeTabButton QPushButton {
+    background-color: transparent;
+    border: none;
+}
+
+QChromeTabButton QPushButton:hover:!pressed {
+    background-color: white;
+    icon: url(:/resources/Images/close-icon-black.svg);
+    border: none;
+}
+
+QChromeTabButton QPushButton:hover:pressed {
+    background-color: transparent;
+    border: 0px solid transparent;
 }
 
 QChromeTabButton[IsActiveTab="true"] {
-    background-color: @TabItemSelectedOrActive;
+    border-top: 3px solid @PurpleRibbon;
 }
 
-QChromeTabButton:hover {
-    background-color: @TabItemSelectedOrActive;
+QChromeTabButton[IsActiveTab="false"][IsHovering="false"] {
+    background-color: @level2;
+}
+
+QChromeTabButton[IsActiveTab="false"][IsHovering="true"] {
+    background-color: @level3;
+}
+
+QChromeTabButton[IsActiveTab="true"][IsHovering="false"] {
+    background-color: @level3;
+}
+
+QChromeTabButton[IsActiveTab="true"][IsHovering="true"] {
+    background-color: @level3;
 }
 
 QChromeTabButton QLabel {
-    margin-left: 2px;
+    margin-left: 5px;
     border: 0px solid transparent;
     background-color: transparent;
-    font-family: Calibri;
-    font-weight:normal;
     color: @TabItemDefaultTextColor;
 }
 
-QChromeTabButton:hover QLabel {
+QChromeTabButton[IsHovering="true"] QLabel {
     color: @TabItemSelectedOrActiveTextColor;
+    font-weight: normal;
 }
 
 QChromeTabButton[IsActiveTab="true"] QLabel {
+    color: @TabItemSelectedOrActiveTextColor;
+    font-weight: bold;    
+}
+
+QChromeTabButton[IsActiveTab="true"][IsHovering="true"] QLabel {
     color: @TabItemSelectedOrActiveTextColor;
     font-weight: bold;
 }

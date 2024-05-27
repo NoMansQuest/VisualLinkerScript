@@ -38,7 +38,7 @@ public:
 
 public:
     /// @brief Add the tab to the list
-    uint32_t AddTab(std::shared_ptr<QWidget> associatedWidget);
+    uint32_t AddTab(std::shared_ptr<QWidget> associatedWidget, bool isFixed = false);
 
     /// @brief Remove the given tab.
     void RemoveTab(uint32_t tabToRemove);
