@@ -29,16 +29,14 @@ QMenuBar::item {
     background-color: @level0;
 }
 
-QMenuBar::item:selected
-{    
+QMenuBar::item:selected {    
     padding-top: 4px;
     padding-bottom: 4px;
     border: 1px solid @MenuBorder;
     background: @MenuHighlighted;
 }
 
-QMenu
-{
+QMenu {
     padding-left: 4px;
     padding-right: 4px;
     padding-top: 3px;
@@ -48,31 +46,87 @@ QMenu
     color: @ActiveTextColor;
 }
 
-QMenu:selected
-{    
+QMenu:selected {    
     background: @MenuHighlighted;
 }
 
-QMenu::item 
-{
+QMenu::item {
     border: 1px solid transparent; /* 1px border with silver color */    
     padding: 2px 5px;
 }
 
-QMenu::item:selected 
-{
+QMenu::item:selected {
     /* Selected item properties */
     border: 1px solid @MenuBorder; /* 1px border with silver color */
     background: @MenuHighlighted;
     padding: 2px 5px;
 }
 
+
+/*
+ * QPushbutton
+ */
+QPushButton {
+    background-color: @DialogBackground;
+    border: 2px solid transparent;
+}
+
+QPushButton:hover:!pressed {
+    background-color: @ButtonHoverColor;
+}
+
+QPushButton:hover:pressed {
+    background-color: @ButtonPressedColor;
+    border: 2px solid @level7;
+}
+
+
+/*
+ * QStatusBar
+ *
+ */
+QStatusBar {
+    background-color: @level3;    
+}
+
+QStatusBar::item {
+    border: none; /* Remove separators in QStatusBar */
+}
+
+QStatusBar QLabel
+{
+    background-color: transparent;
+    color: white;
+    padding-left: 5px;
+}
+
+QStatusBar QPushButton {
+    background-color: transparent;
+    border: 0px solid transparent;
+    color: white;
+    padding-left: 3px;
+    padding-right: 3px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    cursor: pointer; /* Hand cursor */
+}
+
+QStatusBar QPushButton:hover:!pressed {
+    background-color: @level5;
+    border: 0px solid transparent;
+}
+
+QStatusBar QPushButton:hover:pressed {
+    background-color: @level7;
+    border: 0px solid transparent;
+}
+
+
 /*
  *
  * Scroll Bars
  *
  */
-
 QScrollBar {
     background: @level1;
     border-radius: 0px;
@@ -119,42 +173,20 @@ QScrollBar::sub-page:vertical {
 }
 
 /*
- * QPushbutton
- */
-QPushButton 
-{
-    background-color: @DialogBackground;
-    border: 2px solid transparent;
-}
-
-QPushButton:hover:!pressed {
-    background-color: @ButtonHoverColor;    
-}
-
-QPushButton:hover:pressed {
-    background-color: @ButtonPressedColor;
-    border: 2px solid @level7;
-}
-
-
-/*
  * QComboBox
  */
-QComboBox
-{
+QComboBox {
     border: 0px solid transparent;
     background-color: @StaticComboboxBackground;
     color: white;
 }
 
-QComboBox[editable="true"]
-{
+QComboBox[editable="true"] {
     background-color: @EditableComboboxBackground;
     border: 1px solid transparent;
 }  
 
-QComboBox[editable="true"][inError="true"]
-{
+QComboBox[editable="true"][inError="true"] {
     background-color: @EditableComboboxBackground;
     border: 1px solid @ComboBoxErrorBorder;        
 }  
@@ -174,14 +206,12 @@ QComboBox QAbstractItemView::item:selected {
  * QFlatCheckBox
  */
 
-QFlatCheckBox 
-{
+QFlatCheckBox {
     background-color: @DialogBackground;
     border: 2px solid transparent;
 }
 
-QFlatCheckBox:hover:!pressed 
-{
+QFlatCheckBox:hover:!pressed {
     background-color: @ButtonHoverColor;    
 }
 
@@ -200,8 +230,7 @@ QFlatCheckBox[IsChecked="true"] {
  * Splitters
  *
  */
-QSplitter::handle
-{
+QSplitter::handle {
     background: @splitterBackground;
 }
 
@@ -242,8 +271,7 @@ QSplitter::handle:hover {
  * QScintilla
  *
  */
-QsciScintilla
-{
+QsciScintilla {
     padding: 0px;
     border: 0px solid #000000;
     background: @level4;
@@ -255,7 +283,6 @@ QsciScintilla
  * QChromeTabWidget and QChromTabButton
  *
  */
-
 QChromeTabWidget {
     background-color: @level0;
 }
@@ -270,30 +297,6 @@ QChromeTabWidget QScrollArea {
     border-right: 0px solid transparent;
     border-bottom: 3px solid @PurpleRibbon;
     background-color: @level0;
-}
-
-QChromeTabItem
-{   
-    margin: 0px;
-    border: 0px solid transparent;
-    background-color: @level0;
-}
-
-QChromeTabItem[IsActiveTab="true"]
-{    
-    margin: 0px;
-    border: 0px solid transparent;
-    background-color: @level1;
-}
-
-QChromeTabItem[IsHighlighted="true"]
-{
-    background-color: @level2;
-}
-
-QChromeTabItem[IsActiveTab="true"] QLabel
-{
-    font-weight: bold;
 }
 
 QChromeTabButton {
@@ -361,18 +364,15 @@ QChromeTabButton[IsActiveTab="true"][IsHovering="true"] QLabel {
 /*
  * QSearchPopup
  */
-QSearchPopup 
-{
+QSearchPopup {
     background-color: @DialogBackground;    
 }
 
-QSearchPopup[HasFocus="true"]
-{
+QSearchPopup[HasFocus="true"] {
     border-bottom: 4px solid @PurpleRibbon;
 }
 
-QSearchPopup[HasFocus="false"]
-{
+QSearchPopup[HasFocus="false"] {
     border-bottom: 4px solid @DialogBackground;
 }
 

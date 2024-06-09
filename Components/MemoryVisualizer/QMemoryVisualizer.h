@@ -6,32 +6,30 @@
 #include "EInsertObjectType.h"
 #include "SBackendResponse.h"
 
-namespace VisualLinkerScript::Components
+
+/// @brief Linker Script Memory Layout Visualizer
+class QMemoryVisualizer : public QWidget
 {
-    /// @brief Linker Script Memory Layout Visualizer
-    class QMemoryVisualizer : public QWidget
-    {
-        Q_OBJECT
+    Q_OBJECT
 
-    public:
-        /// @brief Default constructor
-        QMemoryVisualizer(QWidget* parent = 0);
+public:
+    /// @brief Default constructor
+    QMemoryVisualizer(QWidget* parent = 0);
 
-        /// @brief Default destructor
-        ~QMemoryVisualizer();
+    /// @brief Default destructor
+    ~QMemoryVisualizer();
 
-    protected:
-        /// @brief Overriden Paint-Event, which is where our painting takes place.
-        virtual void paintEvent(QPaintEvent* paintEvent) override;        
+protected:
+    /// @brief Overridden Paint-Event, which is where our painting takes place.
+    virtual void paintEvent(QPaintEvent* paintEvent) override;        
     
-    signals:
+signals:
 
 
-    public slots:
-
-    };
+public slots:
 
 };
+
 
 #endif // CMEMORY_VISUALIZER_H__
 

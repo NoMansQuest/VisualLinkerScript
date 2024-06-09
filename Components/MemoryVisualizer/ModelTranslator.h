@@ -7,16 +7,10 @@
 #include "../../Models/CLinkerScriptFile.h"
 #include "Models/CFloorplan.h"
 
-namespace MemoryVisualizerModels = VisualLinkerScript::Components::MemoryVisualizer::Models;
+using namespace VisualLinkerScript;
 namespace ProjectModels = VisualLinkerScript::Models;
 
-namespace VisualLinkerScript::MemoryVisualizer
-{
-    using namespace VisualLinkerScript;
-
-    /// @brief From a group of Linker-Script files, it generates a CFloorplan
-    std::shared_ptr<MemoryVisualizerModels::CFloorplan> Translate(SharedPtrVector<ProjectModels::CLinkerScriptFile> linkerScriptFiles);
-};
-
+/// @brief From a group of Linker-Script files, it generates a CFloorplan
+std::shared_ptr<CFloorplan> Translate(SharedPtrVector<ProjectModels::CLinkerScriptFile> linkerScriptFiles);
 
 #endif // MODELTRANSLATOR_H__

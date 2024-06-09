@@ -455,6 +455,12 @@
     <ClCompile Include="Components\QFlatCheckBox\QFlatCheckBox.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="Components\InputDialogs\QListAssistedInput.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\InputDialogs\QLabelAssistedInput.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Components\QScintilla\scintilla\lexlib\Accessor.h">
@@ -1195,6 +1201,9 @@
     <ClInclude Include="Components\QSearchPopup\SearchPerimeterTypeEnum.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
+    <ClInclude Include="Components\InputDialogs\QListAssistedInput.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="debug\moc_predefs.h.cbt">
@@ -1228,6 +1237,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="Components\QFlatCheckBox\QFlatCheckBox.h">
+      <Filter>Generated Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Components\InputDialogs\QLabelAssistedInput.h">
       <Filter>Generated Files</Filter>
     </QtMoc>
   </ItemGroup>

@@ -1,11 +1,9 @@
 #include "ModelTranslator.h"
 
-using namespace VisualLinkerScript::MemoryVisualizer;
-
 /// @copydoc
-std::shared_ptr<MemoryVisualizerModels::CFloorplan> Translate(std::vector<std::shared_ptr<ProjectModels::CLinkerScriptFile>> linkerScriptFiles) {
+std::shared_ptr<CFloorplan> Translate(std::vector<std::shared_ptr<ProjectModels::CLinkerScriptFile>> linkerScriptFiles) {
 
-    auto translatedFloorplan = std::make_shared<MemoryVisualizerModels::CFloorplan>();
+    auto translatedFloorplan = std::make_shared<CFloorplan>();
     /*
     for (auto lsFile : linkerScriptFiles) {
         lsFile->

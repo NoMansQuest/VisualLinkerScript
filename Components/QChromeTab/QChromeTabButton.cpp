@@ -21,7 +21,6 @@ void QChromeTabButton::BuildUserInterface()
     this->m_titleLabel->setAlignment(Qt::AlignCenter);
 
     this->m_hboxLayout = new QHBoxLayout;
-    this->setLayout(this->m_hboxLayout);
 
     this->m_hboxLayout->addWidget(this->m_titleLabel);
 
@@ -29,6 +28,9 @@ void QChromeTabButton::BuildUserInterface()
     {
         this->m_hboxLayout->addWidget(this->m_closeButton);
     }
+
+    this->setLayout(this->m_hboxLayout);
+    this->setContentsMargins(0, 0, 0, 0);
     this->m_hboxLayout->setContentsMargins(0, 0, 0, 0);
 }
 

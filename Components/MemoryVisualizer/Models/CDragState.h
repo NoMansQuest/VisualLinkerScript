@@ -8,15 +8,12 @@
 #include <cstdint>
 #include "SPointF.h"
 
-namespace VisualLinkerScript::Components::MemoryVisualizer::Models
+/// @brief Drag data shared across models.
+class CDragState
 {
-    /// @brief Drag data shared across models.
-    class CDragState
-    {
-        DECLARE_STANDARD_PROPERTY( bool, IsBeingDragged )
-        DECLARE_STANDARD_PROPERTY( SPointF, DragStartCursorPosition )
-        DECLARE_STANDARD_PROPERTY( SPointF, DragCurrentPosition )
-    };
-}
+    DECLARE_STANDARD_PROPERTY( bool, IsBeingDragged )
+    DECLARE_STANDARD_PROPERTY( SPointF, DragStartCursorPosition )
+    DECLARE_STANDARD_PROPERTY( SPointF, DragCurrentPosition )
+};
 
 #endif // CDRAGSTATE_H__

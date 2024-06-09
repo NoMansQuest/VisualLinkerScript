@@ -6,23 +6,20 @@
 #include <string>
 #include "CContentBase.h"
 
-namespace VisualLinkerScript::Components::MemoryVisualizer::Models
+/// @brief Represents the "ENTRY()" directive.
+class CEntryPoint : public CContentBase
 {
-    /// @brief Represents the "ENTRY()" directive.
-    class CEntryPoint : public CContentBase
-    {
-        DECLARE_STANDARD_PROPERTY(std::string, EntryPointContent)
+    DECLARE_STANDARD_PROPERTY(std::string, EntryPointContent)
 
-    public:
-        /// @brief Default Constructor;
-        CEntryPoint(bool isExternal) :
-            CContentBase(true, isExternal)
-        {}
+public:
+    /// @brief Default Constructor;
+    CEntryPoint(bool isExternal) :
+        CContentBase(true, isExternal)
+    {}
 
-        /// @brief Destructor
-        ~CEntryPoint()
-        {}
-    };
+    /// @brief Destructor
+    ~CEntryPoint()
+    {}
 };
 
 #endif // CMMEORYOBJECT_H__

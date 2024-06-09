@@ -1,6 +1,6 @@
 @baseBackground = #ff0a0a0a
-@level0 = #ff161616
-@level1 = #ff242424
+@level0 = #ff1f1f1f
+@level1 = #ff272727
 @level2 = #ff353535
 @level3 = #ff454545
 @level4 = #ff555555

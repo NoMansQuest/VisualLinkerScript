@@ -6,17 +6,14 @@
 #include "SPointF.h"
 #include "SRectangleF.h"
 
-namespace VisualLinkerScript::Components::MemoryVisualizer::Models
+/// @brief Represents full coordinates of a load-mapper aarrow
+class CLmaToVmaArrowCoordinates
 {
-    /// @brief Represents full coordinates of a load-mapper aarrow
-    class CLmaToVmaArrowCoordinates
-    {
-        DECLARE_STANDARD_PROPERTY(SPointF, VmaSideCoordinates)
-        DECLARE_STANDARD_PROPERTY(SPointF, LmaSideCoordinates)
-        DECLARE_STANDARD_PROPERTY(SRectangleF, VmaSidePointerRegion)
-        DECLARE_STANDARD_PROPERTY(SRectangleF, LmaSidePointerRegion)
-        DECLARE_STANDARD_PROPERTY(int, AllocatingVerticalSlot)
-    };
+    DECLARE_STANDARD_PROPERTY(SPointF, VmaSideCoordinates)
+    DECLARE_STANDARD_PROPERTY(SPointF, LmaSideCoordinates)
+    DECLARE_STANDARD_PROPERTY(SRectangleF, VmaSidePointerRegion)
+    DECLARE_STANDARD_PROPERTY(SRectangleF, LmaSidePointerRegion)
+    DECLARE_STANDARD_PROPERTY(int, AllocatingVerticalSlot)
 };
 
 #endif // CLMATOVMAARROWCOORDINATES_H

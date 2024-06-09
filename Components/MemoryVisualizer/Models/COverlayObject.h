@@ -8,16 +8,12 @@
 #include "CContentBase.h"
 #include "COverlaySectionObject.h"
 
-namespace VisualLinkerScript::Components::MemoryVisualizer::Models
+/// @brief Represents an 'Overlay' object found in "SECTION"
+class COverlayObject : CContentBase
 {
-    /// @brief Represents an 'Overlay' object found in "SECTION"
-    class COverlayObject : CContentBase
-    {
-        DECLARE_READONLY_PROPERTY( std::string VmalRegion, ProgramHeaders )
-        DECLARE_READONLY_PROPERTY( SharedPtrVector<COverlaySectionObject>, ChildContent )
-        DECLARE_READONLY_PROPERTY( std::vector<std::string>, ProgramHeaders )
-    };
+    DECLARE_READONLY_PROPERTY( std::string VmalRegion, ProgramHeaders )
+    DECLARE_READONLY_PROPERTY( SharedPtrVector<COverlaySectionObject>, ChildContent )
+    DECLARE_READONLY_PROPERTY( std::vector<std::string>, ProgramHeaders )
 };
-
 
 #endif // CARROWOBJECT_H__

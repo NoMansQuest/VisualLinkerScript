@@ -12,6 +12,7 @@
 #include "Components/QScintilla/src/Qsci/qsciscintilla.h"
 #include "Components/QSearchPopup/QSearchPopup.h"
 #include "Components/QChromeTab/QChromeTabWidget.h"
+#include "Components/QLinkerScriptSession/QLinkerScriptSession.h"
 #include "ParsingEngine/CLexer.h"
 #include "ParsingEngine/CMasterParser.h"
 #include "Messaging/CEventAggregator.h"
@@ -19,8 +20,6 @@
 
 using namespace VisualLinkerScript::ParsingEngine;
 using namespace VisualLinkerScript::Models;
-using namespace VisualLinkerScript::Components;
-
 
 void ConstructUi(MainWindow& mainWindow);
 
@@ -40,6 +39,8 @@ MainWindow::MainWindow(QWidget *parent)
 
 void MainWindow::BuildUserInterface()
 {
+    this->BuildUserInterfaceForStatusBar();
+
     // Build Scintilla Editor
     /*
     this->m_scintilla = new QsciScintilla;    
@@ -215,7 +216,32 @@ void MainWindow::BuildUserInterface()
     // Produce output.    
     // this->m_scintilla->setText(fileContent);
     */
+
+    this->m_contentTabRegion = new QChromeTabWidget;        
+    this->setContentsMargins(0, 0, 0, 0);
+    this->setCentralWidget(this->m_contentTabRegion);
+    this->m_contentTabRegion->SetTabTitle(this->m_contentTabRegion->AddTab(std::shared_ptr<QWidget>(new QLinkerScriptSession(1)), false), "DummyLinkerScript.lds");
 }
+
+void MainWindow::BuildUserInterfaceForStatusBar()
+{
+	// Build status-bar buttons
+	this->m_statusBarMessageLabel = new QLabel("Ready!", this->statusBar());
+	this->m_statusBarLineColumnButton = new QPushButton("Ln 214, Col 38", this->statusBar());
+	this->m_statusBarSpacesButton = new QPushButton("Spaces: 4", this->statusBar());
+	this->m_statusBarEncodingButton = new QPushButton("UTF-8", this->statusBar());
+	this->m_statusBarLineEndingButton = new QPushButton("CRLF", this->statusBar());
+	this->m_statusBarPositionButton = new QPushButton("Pos: 544", this->statusBar());
+
+	this->statusBar()->addPermanentWidget(this->m_statusBarMessageLabel, 1);
+	this->statusBar()->addPermanentWidget(this->m_statusBarLineColumnButton, 0);
+	this->statusBar()->addPermanentWidget(this->m_statusBarSpacesButton, 0);
+	this->statusBar()->addPermanentWidget(this->m_statusBarEncodingButton, 0);
+	this->statusBar()->addPermanentWidget(this->m_statusBarLineEndingButton, 0);
+	this->statusBar()->addPermanentWidget(this->m_statusBarPositionButton, 0);
+}
+
+
 
 void MainWindow::MenuActionExit(bool checked)
 {

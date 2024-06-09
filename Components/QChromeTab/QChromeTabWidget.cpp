@@ -6,11 +6,13 @@ void QChromeTabWidget::BuildUserInterface()
 {
     this->m_stackedRegionParent = new QFrame;
     this->m_stackedRegionLayout = new QVBoxLayout;
-    this->m_vBoxLayout = new QVBoxLayout(this);
-
+    this->m_vBoxLayout = new QVBoxLayout(this);    
+    this->m_vBoxLayout->setContentsMargins(3, 3, 3, 2);
+    
     this->m_scrollAreaForTabButtons = new QScrollArea(this);
     this->m_scrollAreaForTabButtons->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
-    this->m_scrollAreaForTabButtons->setFixedHeight(29);
+    this->m_scrollAreaForTabButtons->setFixedHeight(28);
+    this->m_scrollAreaForTabButtons->setContentsMargins(0, 0, 0, 0);
 
     this->m_tabButtonsHLayout = new QHBoxLayout;
     this->m_tabButtonsHLayout->setSpacing(0);
@@ -18,7 +20,7 @@ void QChromeTabWidget::BuildUserInterface()
     this->m_tabButtonsHLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
         
     this->m_scrollAreaForTabButtons->setLayout(this->m_tabButtonsHLayout);    
-    this->m_scrollAreaForTabButtons->setContentsMargins(0, 0, 0, 0);
+    this->m_scrollAreaForTabButtons->setContentsMargins(0, 0, 0, 0);    
 
     this->m_stackedRegionLayout->setContentsMargins(0, 2, 0, 0);
     this->m_stackedRegionParent->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
