@@ -55,14 +55,14 @@ void QChromeTabButton::SetActiveTab(bool activeTab)
 
 void QChromeTabButton::CloseButtonPressed()
 {
-    emit this->UserRequestedClosure(this->m_tabId);
+    emit this->evUserRequestedClosure(this->m_tabId);
 }
 
 void QChromeTabButton::mousePressEvent(QMouseEvent* event)
 {
     if (!this->m_isActiveTab)
     {
-        emit this->UserRequestedActivation(this->m_tabId);
+        emit this->evUserRequestedActivation(this->m_tabId);
     }
     QWidget::mousePressEvent(event); // Ensure default handling of the event
 }

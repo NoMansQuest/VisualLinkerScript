@@ -53,10 +53,10 @@ public:
     {}
 
 signals:
-    void UserRequestedActivation(uint32_t tabId);
-    void UserRequestedClosure(uint32_t tabId);
-    void ActiveTabStateChanged();
-    void DisplayTitleChanged();
+    void evUserRequestedActivation(uint32_t tabId);
+    void evUserRequestedClosure(uint32_t tabId);
+    void evActiveTabStateChanged();
+    void evDisplayTitleChanged();
 
 protected slots:
     void CloseButtonPressed();

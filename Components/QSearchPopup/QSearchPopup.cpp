@@ -315,7 +315,7 @@ void QSearchPopup::OnClosePopupPressed()
 
 void QSearchPopup::OnSearchActionButtonPressed()
 {
-	emit this->SearchReaplceRequested(
+	emit this->evSearchReaplceRequested(
 		this->m_searchFieldComboBox->currentText(),
 		this->m_replaceFieldComboBox->currentText(),
 		this->m_matchCaseCheckButton->IsChecked(),
@@ -327,7 +327,7 @@ void QSearchPopup::OnSearchActionButtonPressed()
 
 void QSearchPopup::OnReplaceNextButtonPressed()
 {
-	emit this->SearchReaplceRequested(
+	emit this->evSearchReaplceRequested(
 		this->m_searchFieldComboBox->currentText(),
 		this->m_replaceFieldComboBox->currentText(),
 		this->m_matchCaseCheckButton->IsChecked(),
@@ -339,7 +339,7 @@ void QSearchPopup::OnReplaceNextButtonPressed()
 
 void QSearchPopup::OnReplaceAllButtonPressed()
 {
-	emit this->SearchReaplceRequested(
+	emit this->evSearchReaplceRequested(
 		this->m_searchFieldComboBox->currentText(),
 		this->m_replaceFieldComboBox->currentText(),
 		this->m_matchCaseCheckButton->IsChecked(),
@@ -355,7 +355,7 @@ bool QSearchPopup::eventFilter(QObject* obj, QEvent* event)
 	{
 		if ((event->type() == QEvent::FocusIn) || (event->type() == QEvent::FocusOut)) 
 		{
-			emit this->HasFocusChanged();
+			emit this->evFocusChanged();
 			this->Repolish();
 		}
 	}

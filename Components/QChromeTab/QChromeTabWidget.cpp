@@ -46,8 +46,8 @@ uint32_t QChromeTabWidget::AddTab(std::shared_ptr<QWidget> associatedWidget, boo
     associatedWidget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     tabHeader->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);        
     tabHeader->setFixedHeight(24);
-    connect(tabHeader.get(), &QChromeTabButton::UserRequestedClosure, this, &QChromeTabWidget::CloseButtonClicked);
-    connect(tabHeader.get(), &QChromeTabButton::UserRequestedActivation, this, &QChromeTabWidget::TabRequestedActivation);
+    connect(tabHeader.get(), &QChromeTabButton::evUserRequestedClosure, this, &QChromeTabWidget::CloseButtonClicked);
+    connect(tabHeader.get(), &QChromeTabButton::evUserRequestedActivation, this, &QChromeTabWidget::TabRequestedActivation);
         
     if (!this->m_currentTabId.has_value())
     {
@@ -83,7 +83,7 @@ void QChromeTabWidget::RemoveTab(uint32_t tabToRemove)
         else
         {
             this->m_currentTabId.reset();
-            emit this->ActiveTabChanged(this->m_currentTabId);
+            emit this->evActiveTabChanged(this->m_currentTabId);
         }
     }
 }
@@ -119,7 +119,7 @@ void QChromeTabWidget::NavigateToTab(uint32_t tabToNavigateTo)
     
     iteratorTabToNavigateTo->second.first->SetActiveTab(true);
     this->m_currentTabId = tabToNavigateTo;
-    emit this->ActiveTabChanged(tabToNavigateTo);
+    emit this->evActiveTabChanged(tabToNavigateTo);
 }
 
 void QChromeTabWidget::SetTabToolTip(uint32_t targetTab, QString toolTip)

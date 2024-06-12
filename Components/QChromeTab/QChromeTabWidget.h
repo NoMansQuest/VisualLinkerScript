@@ -64,14 +64,14 @@ public:
 signals:
     /// @brief Triggered when user selects a different tab
     /// @param activeTab An optional ID of the tab that is currently active. If no tabs are present, the activeTab will contain no value.
-    void ActiveTabChanged(std::optional<uint32_t> activeTab);
+    void evActiveTabChanged(std::optional<uint32_t> activeTab);
 
     /// @brief User has pressed the 'close' button of the tab.
     /// @param requestedTabToClose Id of the tab user has requested to close.
-    void UserRequestedTabClosure(uint32_t requestedTabToClose);
+    void evUserRequestedTabClosure(uint32_t requestedTabToClose);
 
 protected slots:
-    void CloseButtonClicked(uint32_t tabId) { emit UserRequestedTabClosure(tabId); }
+    void CloseButtonClicked(uint32_t tabId) { emit evUserRequestedTabClosure(tabId); }
     void TabRequestedActivation(uint32_t tabId) { this->NavigateToTab(tabId); }
 
 protected:

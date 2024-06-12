@@ -42,14 +42,14 @@ public:
 	{
 		this->m_isChecked = isChecked;
 		this->setDown(isChecked);
-		emit this->IsCheckedChanged();
+		emit this->evIsCheckedChanged();
 		style()->unpolish(this);
 		style()->polish(this);
 	}
 
 signals:
-	void IsCheckedChanged();
-	void CheckStateChanged();
+	void evIsCheckedChanged();
+	void evCheckStateChanged();
 
 protected slots:
 

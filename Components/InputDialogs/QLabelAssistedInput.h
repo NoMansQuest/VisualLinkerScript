@@ -34,7 +34,7 @@ private:
 
 signals:
 	/// @brief Notifies the QT subsystem that the focus has changed.
-	void InputValidated(QString validatedInput);
+	void evInputValidated(QString validatedInput);
 };
 
 #endif // end of QLISTASSISTEDINPUT_H__

@@ -17,8 +17,12 @@ void QLinkerScriptSession::BuildUserInterface()
 
     this->m_horizontalSplitter->addWidget(this->m_scintilla);
     this->m_horizontalSplitter->addWidget(this->m_memoryVisualizer);
+    this->m_horizontalSplitter->setStretchFactor(0, 2);
+    this->m_horizontalSplitter->setStretchFactor(1, 1);
     this->m_verticalSplitter->addWidget(this->m_horizontalSplitter);
     this->m_verticalSplitter->addWidget(this->m_issuesTreeView);
+    this->m_verticalSplitter->setStretchFactor(0, 5);
+    this->m_verticalSplitter->setStretchFactor(1, 1);
     this->m_centralLayout->addWidget(this->m_verticalSplitter);
 	this->m_centralLayout->setSpacing(0);
 	this->m_centralLayout->setContentsMargins(0, 0, 0, 0);
@@ -31,7 +35,12 @@ void QLinkerScriptSession::BuildUserInterface()
     this->setLayout(this->m_centralLayout);
 }
 
-void QLinkerScriptSession::OnFindRequest(QString searchFor, bool isRegExt, bool isCaseSensitive)
+std::string QLinkerScriptSession::LinkerScriptContent()
+{
+    return this->m_scintilla->text().toStdString();
+}
+
+void QLinkerScriptSession::OnFindRequest(std::string searchFor, bool isRegExt, bool isCaseSensitive)
 {
     // To be implemented.
 }
@@ -41,7 +50,12 @@ void QLinkerScriptSession::OnFindNext()
     // To be implemented.
 }
 
-void QLinkerScriptSession::OnFindReplace(QString replaceWith)
+void QLinkerScriptSession::OnFindReplace(std::string replaceWith)
 {
     // To be implemented.
+}
+
+void QLinkerScriptSession::SetSessionFileInfo(CLinkerScriptSessionFileInfo newSessionFileInfo)
+{
+    this->m_sessionFileInfo = newSessionFileInfo;
 }

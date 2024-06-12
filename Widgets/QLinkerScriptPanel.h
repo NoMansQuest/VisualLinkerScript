@@ -68,9 +68,9 @@ namespace VisualLinkerScript::Widgets
 
     // Signals emitted by the QScintillaPanel
     signals:
-        void TitleUpdated(QString newTitle);
-        void FilePathUpdated(QString newFilePath);
-        void ContentUpdated();
+        void evTitleUpdated(QString newTitle);
+        void evFilePathUpdated(QString newFilePath);
+        void evContentUpdated();
 
     // UI related fields
     private:

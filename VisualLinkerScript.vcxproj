@@ -211,6 +211,7 @@
     <ClCompile Include="Components\InputDialogs\QLabelAssistedInput.cpp" />
     <ClCompile Include="Components\InputDialogs\QListAssistedInput.cpp" />
     <ClCompile Include="Components\QFlatCheckBox\QFlatCheckBox.cpp" />
+    <ClCompile Include="Components\QLinkerScriptSession\CLinkerScriptSessionFileInfo.h" />
     <ClCompile Include="Components\QScintilla\scintilla\lexlib\Accessor.cpp" />
     <ClCompile Include="Components\QScintilla\scintilla\src\AutoComplete.cpp" />
     <ClCompile Include="Components\MemoryVisualizer\Rendering\CArrowsRenderer.cpp" />

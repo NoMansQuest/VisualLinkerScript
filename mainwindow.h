@@ -54,23 +54,29 @@ private slots:
     void MenuActionLoadMappingFile(void);
     void MenuActionHelp(void);
 
+    void StatusBarLineColumnButtonPressed(void);
+    void StatusBarSpacesButtonPressed(void);
+    void StatusBarEncodingButtonPressed(void);
+    void StatusBarLineEndingButtonPressed(void);
+    void StatusBarPositionButtonPressed(void);
+
 signals:
-    void EventNewFileRequested(void);
-    void EventNewFileFromTemplateRequested(QString templateName);
+    void evNewFileRequested(void);
+    void evNewFileFromTemplateRequested(QString templateName);
 
-    void EventOpenFileRequested(QString fileName);
-    void EventSaveFileRequested(QString fileName);
-    void EventCloseFileRequeasted(void);
-    void EventReloadFileRequested(void);
-    void EventExitRequested(void);
+    void evOpenFileRequested(QString fileName);
+    void evSaveFileRequested(QString fileName);
+    void evCloseFileRequeasted(void);
+    void evReloadFileRequested(void);
+    void evExitRequested(void);
 
-    void EventCutRequested(void);
-    void EventCopyRequested(void);
-    void EventPasteRequested(void);
-    void EventSelectAllRequested(void);
-    void EventFileReplaceRequested(void);
-    void EventLoadMappingFileRequested(void);
-    void EventHelpRequested(void);
+    void evCutRequested(void);
+    void evCopyRequested(void);
+    void evPasteRequested(void);
+    void evSelectAllRequested(void);
+    void evFileReplaceRequested(void);
+    void evLoadMappingFileRequested(void);
+    void evHelpRequested(void);
 
 private:    
     void BuildUserInterface(void);

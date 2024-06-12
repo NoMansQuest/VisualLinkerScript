@@ -98,10 +98,10 @@ public:
 
 signals:
     /// @brief Notifies the QT subsystem that the focus has changed.
-    void HasFocusChanged();
+    void evFocusChanged();
 
     /// @brief Notifies the recipients that a search or replace action was requested by the user.
-    void SearchReaplceRequested(
+    void evSearchReaplceRequested(
         QString searchText,
         QString replaceWith,
         bool caseMatch,

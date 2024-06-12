@@ -461,6 +461,9 @@
     <ClCompile Include="Components\InputDialogs\QLabelAssistedInput.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="Components\QLinkerScriptSession\CLinkerScriptSessionFileInfo.h">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Components\QScintilla\scintilla\lexlib\Accessor.h">

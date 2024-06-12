@@ -5,9 +5,11 @@
 #include <QString>
 #include <vector>
 #include <memory>
+#include "CLinkerScriptSessiosnFileInfo.h"
 
 class QsciScintilla;
 class QMemoryVisualizer;
+class CLinkerScriptSessionFileInfo;
 
 /// @brief The main tab component to emulate google chrome's tab component.
 class QLinkerScriptSession : public QWidget
@@ -16,12 +18,15 @@ class QLinkerScriptSession : public QWidget
 
 private:
     uint32_t m_sessionId;
+    uint32_t m_tabIndex;
 
 public:
     /// @brief Default constructor
-    QLinkerScriptSession(uint32_t sessionId, QWidget *parent = 0)
+    QLinkerScriptSession(uint32_t sessionId, CLinkerScriptSessionFileInfo sessionFileInfo, QWidget *parent = 0)
         : QWidget(parent),
-            m_sessionId(sessionId)
+          m_tabIndex(0),
+          m_sessionId(sessionId),
+          m_sessionFileInfo(sessionFileInfo)
     {
         this->BuildUserInterface();
     }
@@ -36,42 +41,48 @@ private:
     QTreeView* m_issuesTreeView;
     QVBoxLayout* m_centralLayout;
     QSplitter* m_horizontalSplitter;
-    QSplitter* m_verticalSplitter;
+    QSplitter* m_verticalSplitter;  
+    CLinkerScriptSessionFileInfo m_sessionFileInfo;
 
 protected:
     void BuildUserInterface();
 
 public:
+    void SetTabIndex(uint32_t tabIndex) { this->m_tabIndex = tabIndex; }    
+    uint32_t TabIndex() { return this->m_tabIndex; }
+    void SetSessionFileInfo(CLinkerScriptSessionFileInfo newSessionFileInfo);        
+    CLinkerScriptSessionFileInfo SessionFileInfo(void) const { return this->m_sessionFileInfo; }
+    std::string LinkerScriptContent(void);
     QMemoryVisualizer* MemoryVisualizerWdiget() { return this->m_memoryVisualizer; }
     QsciScintilla* ScintillaEditor() { return this->m_scintilla; }
     QTreeView* IssuesTreeView() { return this->m_issuesTreeView; }
 
 signals:
-    void SignalIssueSelected(uint32_t sessionId, uint32_t issueId);
-    void SignalLinkerScriptContentChanged(uint32_t sessionId);
-    void SignalUndo(uint32_t sessionId);
-    void SignalRedo(uint32_t sessionId);
-    void SignalCut(uint32_t sessionId);
-    void SignalCopy(uint32_t sessionId);
-    void SignalPaste(uint32_t sessionId);
+    void evIssueSelected(uint32_t sessionId, uint32_t issueId);
+    void evLinkerScriptContentChanged(uint32_t sessionId);
+    void evUndo(uint32_t sessionId);
+    void evRedo(uint32_t sessionId);
+    void evCut(uint32_t sessionId);
+    void evCopy(uint32_t sessionId);
+    void evPaste(uint32_t sessionId);
 
-    void SignalTextPositionChanged(uint32_t sessionId, int line, int index);
-    void SignalCopyAvailable(uint32_t sessionId, bool yes);
-    void SignalIndicatorClicked(uint32_t sessionId, int line, int index, Qt::KeyboardModifiers state);
-    void SignalIndicatorReleased(uint32_t sessionId, int line, int index, Qt::KeyboardModifiers state);
-    void SignalLinesChanged(uint32_t sessionId);
-    void SignalMarginClicked(uint32_t sessionId, int margin, int line, Qt::KeyboardModifiers state);
-    void SignalMarginRightClicked(uint32_t sessionId, int margin, int line, Qt::KeyboardModifiers state);
-    void SignalModificationAttempted(uint32_t sessionId);
-    void SignalModificationChanged(uint32_t sessionId, bool m);
-    void SignalSelectionChanged(uint32_t sessionId);
-    void SignalUserListActivated(uint32_t sessionId, int id, QString string);
+    void evSessionFileInfoChanged(void);
+    void evTextPositionChanged(uint32_t sessionId, int line, int index);
+    void evCopyAvailable(uint32_t sessionId, bool yes);
+    void evIndicatorClicked(uint32_t sessionId, int line, int index, Qt::KeyboardModifiers state);
+    void evIndicatorReleased(uint32_t sessionId, int line, int index, Qt::KeyboardModifiers state);
+    void evLinesChanged(uint32_t sessionId);
+    void evMarginClicked(uint32_t sessionId, int margin, int line, Qt::KeyboardModifiers state);
+    void evMarginRightClicked(uint32_t sessionId, int margin, int line, Qt::KeyboardModifiers state);
+    void evModificationAttempted(uint32_t sessionId);
+    void evModificationChanged(uint32_t sessionId, bool m);
+    void evSelectionChanged(uint32_t sessionId);
+    void evUserListActivated(uint32_t sessionId, int id, std::string activatorString);
 
 public slots:
-    void OnFindRequest(QString searchFor, bool isRegExt, bool isCaseSensitive);
+    void OnFindRequest(std::string searchFor, bool isRegExt, bool isCaseSensitive);
     void OnFindNext();
-    void OnFindReplace(QString replaceWith);
-
+    void OnFindReplace(std::string replaceWith);
 };
 
 
