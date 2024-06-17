@@ -61,6 +61,9 @@
 
 namespace VisualLinkerScript
 {
+    /// @brief Read back the content oa given file
+    bool ReadFileContent(const std::string& filePath, std::string& fileContent, std::string& errorMessage);
+
     /// @brief Type widely used across the code-base
     template <typename T>
     using SharedPtrVector = std::vector<std::shared_ptr<T>>;

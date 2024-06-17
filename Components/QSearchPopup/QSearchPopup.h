@@ -14,7 +14,7 @@ class QSearchPopup : public QFrame
     Q_OBJECT
     Q_PROPERTY(bool NoMatchDetected READ NoMatchDetected USER true)
     Q_PROPERTY(bool MatchDetected READ MatchDetected USER true)
-    Q_PROPERTY(bool HasFocus READ HasFocus NOTIFY HasFocusChanged)    
+    Q_PROPERTY(bool HasFocus READ HasFocus NOTIFY evFocusChanged)
     
 private:
     QHBoxLayout* m_row0HBox;

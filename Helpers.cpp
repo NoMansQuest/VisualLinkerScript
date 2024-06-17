@@ -1,5 +1,8 @@
 #include "Helpers.h"
 #include <functional>
+#include <QFile>
+#include <string>
+#include <QTextStream>
 
 using namespace VisualLinkerScript;
 
@@ -45,4 +48,18 @@ std::vector<std::string> VisualLinkerScript::StringSplit(
 
     output.push_back(sourceString.substr(prev_pos, pos-prev_pos)); // Last word
     return output;
+}
+
+bool VisualLinkerScript::ReadFileContent(const std::string& filePath, std::string& fileContent, std::string& errorMessage)
+{
+    QFile file(QString::fromStdString(filePath));
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        errorMessage = "Error", "Cannot open file for reading";
+        return false;
+    }
+
+    QTextStream in(&file);
+    fileContent = in.readAll().toStdString();
+    file.close();
+    return true;
 }

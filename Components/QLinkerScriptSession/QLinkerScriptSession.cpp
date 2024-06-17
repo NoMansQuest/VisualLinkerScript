@@ -30,8 +30,6 @@ void QLinkerScriptSession::BuildUserInterface()
 	auto lexer = new QsciLexerLinkerScript;
 	this->m_scintilla->setLexer((QsciLexer*)lexer);
     Components::QScintilla::SetComponentStyles(*this->m_scintilla);
-
-
     this->setLayout(this->m_centralLayout);
 }
 
@@ -58,4 +56,9 @@ void QLinkerScriptSession::OnFindReplace(std::string replaceWith)
 void QLinkerScriptSession::SetSessionFileInfo(CLinkerScriptSessionFileInfo newSessionFileInfo)
 {
     this->m_sessionFileInfo = newSessionFileInfo;
+}
+
+void QLinkerScriptSession::setLinkerScriptContent(std::string linkerScriptContent)
+{
+    this->m_scintilla->setText(QString::fromStdString(linkerScriptContent));
 }

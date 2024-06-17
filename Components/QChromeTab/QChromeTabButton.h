@@ -14,9 +14,9 @@ class QChromeTabButton : public QFrame
 {
     Q_OBJECT
     Q_PROPERTY(bool IsHighlighted READ IsHighlighted USER true)
-    Q_PROPERTY(bool IsActiveTab READ IsActiveTab NOTIFY ActiveTabStateChanged USER true)
+    Q_PROPERTY(bool IsActiveTab READ IsActiveTab NOTIFY evActiveTabStateChanged USER true)
     Q_PROPERTY(bool IsHovering READ IsHovering USER true)
-    Q_PROPERTY(QString DisplayTitle READ DisplayTitle WRITE SetDisplayTitle NOTIFY DisplayTitleChanged USER true)
+    Q_PROPERTY(QString DisplayTitle READ DisplayTitle WRITE SetDisplayTitle NOTIFY evDisplayTitleChanged USER true)
 
 private:
     QString m_displayTitle;
@@ -72,6 +72,7 @@ public:
     void SetDisplayTitle(QString displayTitle);
     void SetToolTip(QString toolTip);
     void SetActiveTab(bool activeTab);
+    void SetTabFixedState(bool isFixed);
 
 protected:
     void enterEvent(QEnterEvent* event) override;

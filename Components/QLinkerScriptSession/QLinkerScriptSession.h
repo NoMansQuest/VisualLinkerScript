@@ -5,7 +5,7 @@
 #include <QString>
 #include <vector>
 #include <memory>
-#include "CLinkerScriptSessiosnFileInfo.h"
+#include "CLinkerScriptSessionFileInfo.h"
 
 class QsciScintilla;
 class QMemoryVisualizer;
@@ -53,6 +53,7 @@ public:
     void SetSessionFileInfo(CLinkerScriptSessionFileInfo newSessionFileInfo);        
     CLinkerScriptSessionFileInfo SessionFileInfo(void) const { return this->m_sessionFileInfo; }
     std::string LinkerScriptContent(void);
+    void setLinkerScriptContent(std::string linkerScriptContent);
     QMemoryVisualizer* MemoryVisualizerWdiget() { return this->m_memoryVisualizer; }
     QsciScintilla* ScintillaEditor() { return this->m_scintilla; }
     QTreeView* IssuesTreeView() { return this->m_issuesTreeView; }

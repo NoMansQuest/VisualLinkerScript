@@ -52,6 +52,9 @@ public:
     /// @brief Updates tab's title
     void SetTabTitle(uint32_t targetTab, QString title);
 
+    /// @brief Updates a given tabs closure policy.
+    void SetTabClosurePolicy(uint32_t targetTabId, bool isClosureAllowed);
+
     /// @brief Returns associated content of a given tab.
     std::shared_ptr<QWidget> GetTabContent(uint32_t targetTab);
 
@@ -61,6 +64,9 @@ public:
     /// @brief Reports back the current active tab.
     std::optional<uint32_t> CurrentTab();
 
+    /// @brief Returns the available number of tabs.
+    uint32_t TabCount() const { return this->m_tabs.size(); }
+
 signals:
     /// @brief Triggered when user selects a different tab
     /// @param activeTab An optional ID of the tab that is currently active. If no tabs are present, the activeTab will contain no value.
@@ -69,6 +75,9 @@ signals:
     /// @brief User has pressed the 'close' button of the tab.
     /// @param requestedTabToClose Id of the tab user has requested to close.
     void evUserRequestedTabClosure(uint32_t requestedTabToClose);
+
+    /// @brief Triggered when the tabs collections changes (either tabs added or removed).
+    void evTabsCollectionUpdated();
 
 protected slots:
     void CloseButtonClicked(uint32_t tabId) { emit evUserRequestedTabClosure(tabId); }

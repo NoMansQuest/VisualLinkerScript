@@ -53,6 +53,12 @@ void QChromeTabButton::SetActiveTab(bool activeTab)
     RefreshStyling();
 }
 
+void QChromeTabButton::SetTabFixedState(bool isFixed)
+{
+    this->m_isFixed = isFixed;
+    RefreshStyling();
+}
+
 void QChromeTabButton::CloseButtonPressed()
 {
     emit this->evUserRequestedClosure(this->m_tabId);

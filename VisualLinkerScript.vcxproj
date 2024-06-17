@@ -215,6 +215,7 @@
     <ClCompile Include="Components\QScintilla\scintilla\lexlib\Accessor.cpp" />
     <ClCompile Include="Components\QScintilla\scintilla\src\AutoComplete.cpp" />
     <ClCompile Include="Components\MemoryVisualizer\Rendering\CArrowsRenderer.cpp" />
+    <ClCompile Include="MD5\MD5.cpp" />
     <ClCompile Include="ParsingEngine\SubParsers\CAssignmentParser.cpp" />
     <ClCompile Include="ParsingEngine\SubParsers\CAssignmentProcedureParser.cpp" />
     <ClCompile Include="Models\CAssignmentProcedureStatement.cpp" />
@@ -357,6 +358,8 @@
     <ClInclude Include="Components\QScintilla\scintilla\src\AutoComplete.h" />
     <ClInclude Include="Components\QSearchPopup\SearchPerimeterTypeEnum.h" />
     <ClInclude Include="Components\QSearchPopup\SearchReplaceRequestTypeEnum.h" />
+    <ClInclude Include="MD5\MD5.h" />
+    <ClInclude Include="MD5\MD5_loc.h" />
     <ClInclude Include="Models\Intervention\CActionBase.h" />
     <ClInclude Include="Models\Intervention\CAddTextAction.h" />
     <ClInclude Include="Compiler\ExpressionEvaluation\CArithmeticResultOp.h" />

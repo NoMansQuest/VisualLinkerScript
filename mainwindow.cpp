@@ -2,6 +2,8 @@
 #include <memory>
 #include <QString>
 #include <QTabWidget>
+#include <QFileInfo>
+#include <QMessageBox>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -13,10 +15,12 @@
 #include "Components/QSearchPopup/QSearchPopup.h"
 #include "Components/QChromeTab/QChromeTabWidget.h"
 #include "Components/QLinkerScriptSession/QLinkerScriptSession.h"
+#include "LinkerScriptManager/QLinkerScriptManager.h"
 #include "ParsingEngine/CLexer.h"
 #include "ParsingEngine/CMasterParser.h"
 #include "Messaging/CEventAggregator.h"
 #include "Messaging/UserInitiated/COpenFileRequest.h"
+#include "MD5/MD5.h"
 
 using namespace VisualLinkerScript::ParsingEngine;
 using namespace VisualLinkerScript::Models;
@@ -29,11 +33,13 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);    
     this->BuildUserInterface();
+    this->InitializeLinkerScriptManager();   
 
     // Subscribe to events
     connect(this->ui->actionExit, &QAction::triggered, this, &MainWindow::MenuActionExit);
     connect(this->ui->actionFindReplace, &QAction::triggered, this, &MainWindow::MenuActionFindReplace);
     connect(this->ui->actionNew_Linker_Script, &QAction::triggered, this, &MainWindow::MenuActionNewFile);
+    connect(this->ui->actionOpen, &QAction::triggered, this, &MainWindow::MenuActionOpenFile);
 }
 
 MainWindow::~MainWindow()
@@ -47,7 +53,43 @@ void MainWindow::BuildUserInterface()
 
     this->m_contentTabRegion = new QChromeTabWidget;        
     this->setContentsMargins(0, 0, 0, 0);
-    this->setCentralWidget(this->m_contentTabRegion);    
+    this->setCentralWidget(this->m_contentTabRegion); 
+    QObject::connect(this->m_contentTabRegion, &QChromeTabWidget::evTabsCollectionUpdated, this, &MainWindow::ContentRegionTabCollectionUpdated);
+}
+
+void MainWindow::InitializeLinkerScriptManager()
+{
+    this->m_linkerScriptManager = std::make_unique<QLinkerScriptManager>(this);   
+
+    // Create Untitled session
+    auto linkerScriptSession = this->m_linkerScriptManager->CreateSessionForUntitled();
+    auto tabId = this->m_contentTabRegion->AddTab(linkerScriptSession, false);    
+    auto formattedFileName = StringFormat("*%s", linkerScriptSession->SessionFileInfo().FileName().c_str());
+    this->m_contentTabRegion->SetTabTitle(tabId, QString::fromStdString(formattedFileName));    
+}
+
+void MainWindow::ContentRegionTabCollectionUpdated()
+{
+    if (this->m_contentTabRegion->TabCount() == 1)
+    {
+        this->m_contentTabRegion->SetTabClosurePolicy(this->m_contentTabRegion->Tabs().at(0), false);
+        return;
+    }
+
+    for (auto tabId : this->m_contentTabRegion->Tabs())
+    {
+        this->m_contentTabRegion->SetTabClosurePolicy(tabId, true);
+    }
+}
+
+void MainWindow::SaveLastUsedDirectory(const QString& directory) {
+    QSettings settings("Nasser.G64", "VisualLinkerScript");
+    settings.setValue("lastUsedDirectory", directory);
+}
+
+QString MainWindow::GetLastUsedDirectory() {
+    QSettings settings("Nasser.G64", "VisualLinkerScript");
+    return settings.value("lastUsedDirectory", QDir::homePath()).toString();
 }
 
 void MainWindow::BuildUserInterfaceForStatusBar()
@@ -75,12 +117,53 @@ void MainWindow::MenuActionExit(bool checked)
 
 void MainWindow::MenuActionNewFile()
 {        
-
+    auto linkerScriptSession = this->m_linkerScriptManager->CreateSessionForUntitled();
+    auto tabId = this->m_contentTabRegion->AddTab(linkerScriptSession, false);
+    auto formattedFileName = StringFormat("*%s", linkerScriptSession->SessionFileInfo().FileName().c_str());
+    this->m_contentTabRegion->SetTabTitle(tabId, QString::fromStdString(formattedFileName));
+    this->m_contentTabRegion->NavigateToTab(tabId);
 }
 
 void MainWindow::MenuActionOpenFile()
 {
-    // To be implemented
+    auto fileName = QFileDialog::getOpenFileName(this, 
+        "Open LinkerScript File", 
+        this->GetLastUsedDirectory(),
+        "LinkerScript Files (*.lds);;All Files (*)");
+
+    if (fileName.isEmpty()) {
+        return;
+    }
+            
+    std::string fileContent;
+    std::string errorMessage;
+    if (!ReadFileContent(fileName.toStdString(), fileContent, errorMessage))
+    {
+        QMessageBox::warning(nullptr, "Error", QString::fromStdString(errorMessage));
+        return;
+    }
+
+    QFileInfo fileInfo(fileName);
+
+    // We save this for next use.
+    SaveLastUsedDirectory(fileInfo.absolutePath());
+
+    char signatureBuffer[16];
+    char signatureString[64];
+    MD5::CMD5Hasher md5Hash(fileContent.c_str(), fileInfo.size(), signatureBuffer);
+    MD5::sig_to_string(signatureBuffer, signatureString, 64);
+
+    CLinkerScriptSessionFileInfo sessionFileInfo(
+        true,
+        fileInfo.fileName().toStdString(),
+        fileInfo.absolutePath().toStdString(),
+        std::string(signatureString));        
+
+    auto linkerScriptSession = this->m_linkerScriptManager->CreateSessionForExistingFile(sessionFileInfo);
+    linkerScriptSession->setLinkerScriptContent(fileContent);
+    auto tabId = this->m_contentTabRegion->AddTab(linkerScriptSession, false);        
+    this->m_contentTabRegion->SetTabTitle(tabId, QString::fromStdString(sessionFileInfo.FileName()));    
+    this->m_contentTabRegion->NavigateToTab(tabId);    
 }
 
 void MainWindow::MenuActionSaveFile()

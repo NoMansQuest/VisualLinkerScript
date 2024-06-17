@@ -10,7 +10,7 @@ using namespace VisualLinkerScript;
 class QLinkerScriptSession;
 class CLinkerScriptSessionFileInfo;
 
-/// @brief The QChromTab is composed of CChromeTabItem objects
+
 class QLinkerScriptManager : public QObject
 {
     Q_OBJECT
@@ -31,11 +31,18 @@ public:
 
 signals:
     void evNewSessionCreated(std::shared_ptr<QLinkerScriptSession> createdSession);
+    void evSessionClosureRequested(std::shared_ptr<QLinkerScriptSession> origin);
 
 protected slots:
     void CloseButtonPressed(uint32_t tabId);
 
 public:
+    /// @brief Returns the number of sessions.
+    uint32_t GetSessionsCount() const { return this->m_sessions.size(); }
+
+    /// @brief Returns the session based on the given index.
+    std::shared_ptr<QLinkerScriptSession> GetSession(uint32_t sessionIndex) { return this->m_sessions.at(sessionIndex); }
+
     /// @brief Create a new session for an 'untitled' linker script.
     std::shared_ptr<QLinkerScriptSession> CreateSessionForUntitled(void);
 

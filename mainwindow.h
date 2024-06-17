@@ -10,12 +10,15 @@
 #include <QTabWidget>
 #include <QPushButton>
 #include <QHBoxLayout>
+#include <memory>
 
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
-class QChromeTabWidget;
 QT_END_NAMESPACE
+
+class QChromeTabWidget;
+class QLinkerScriptManager;
 
 class MainWindow : public QMainWindow
 {
@@ -35,8 +38,15 @@ private:
     QPushButton* m_statusBarEncodingButton;
     QPushButton* m_statusBarLineEndingButton;
     QPushButton* m_statusBarPositionButton;
+    std::unique_ptr<QLinkerScriptManager> m_linkerScriptManager;
+
+private:
+    void SaveLastUsedDirectory(const QString& directory);
+    QString GetLastUsedDirectory(void);
 
 private slots:
+    void ContentRegionTabCollectionUpdated(void);
+
     void MenuActionExit(bool checked);
     void MenuActionNewFile(void);
     void MenuActionOpenFile(void);
@@ -81,5 +91,6 @@ signals:
 private:    
     void BuildUserInterface(void);
     void BuildUserInterfaceForStatusBar(void);
+    void InitializeLinkerScriptManager(void);
 };
 #endif // MAINWINDOW_H

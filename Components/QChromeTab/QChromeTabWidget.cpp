@@ -86,6 +86,8 @@ void QChromeTabWidget::RemoveTab(uint32_t tabToRemove)
             emit this->evActiveTabChanged(this->m_currentTabId);
         }
     }
+
+    emit this->evTabsCollectionUpdated();
 }
 
 void QChromeTabWidget::NavigateToTab(uint32_t tabToNavigateTo)
@@ -142,6 +144,17 @@ void QChromeTabWidget::SetTabTitle(uint32_t targetTab, QString title)
     }
 
     iterator->second.first->SetDisplayTitle(title);
+}
+
+void QChromeTabWidget::SetTabClosurePolicy(uint32_t targetTabId, bool isClosureAllowed)
+{
+    auto iterator = this->m_tabs.find(targetTabId);
+    if (iterator == this->m_tabs.end())
+    {
+        throw std::out_of_range("'targetTab' out of range.");
+    }
+
+    iterator->second.first->SetTabFixedState(!isClosureAllowed);
 }
 
 std::shared_ptr<QWidget> QChromeTabWidget::GetTabContent(uint32_t targetTab)

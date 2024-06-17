@@ -8,7 +8,7 @@
 class QFlatCheckBox : public QPushButton
 {
 	Q_OBJECT
-    Q_PROPERTY(bool IsChecked READ IsChecked WRITE SetCheckedState NOTIFY IsCheckedChanged)
+    Q_PROPERTY(bool IsChecked READ IsChecked WRITE SetCheckedState NOTIFY evIsCheckedChanged)
 
 private:
 	bool m_isChecked = false;

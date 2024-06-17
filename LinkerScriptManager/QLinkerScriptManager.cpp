@@ -6,7 +6,7 @@
 std::shared_ptr<QLinkerScriptSession> QLinkerScriptManager::CreateSessionForUntitled()
 {
     uint32_t proposedIndex = 0;
-    std::string untitledFileNameTemplate = "Untitled-{}.lds";
+    std::string untitledFileNameTemplate = "Untitled-%d.lds";
     while (proposedIndex++)
     {
         bool matchFound = false;
@@ -23,9 +23,10 @@ std::shared_ptr<QLinkerScriptSession> QLinkerScriptManager::CreateSessionForUnti
 
     auto newSessionId = this->m_sessionIdHolder++;
     auto targetFileName = StringFormat(untitledFileNameTemplate, proposedIndex);
-    auto newSession = std::shared_ptr<QLinkerScriptSession>(new QLinkerScriptSession(newSessionId, CLinkerScriptSessionFileInfo(false, targetFileName, "")));
+    auto newSession = std::shared_ptr<QLinkerScriptSession>(new QLinkerScriptSession(newSessionId, CLinkerScriptSessionFileInfo(false, targetFileName, "", "")));
     this->m_sessions.emplace_back(newSession);
     emit this->evNewSessionCreated(newSession);
+    return newSession;
 }
 
 /// @brief Creates a new session based on an existing file on the disk
@@ -35,6 +36,7 @@ std::shared_ptr<QLinkerScriptSession> QLinkerScriptManager::CreateSessionForExis
     auto newSession = std::shared_ptr<QLinkerScriptSession>(new QLinkerScriptSession(newSessionId, existingFileInfo));
     this->m_sessions.emplace_back(newSession);
     emit this->evNewSessionCreated(newSession);
+    return newSession;
 }
 
 void QLinkerScriptManager::CloseButtonPressed(uint32_t tabId)
@@ -51,4 +53,5 @@ void QLinkerScriptManager::CloseButtonPressed(uint32_t tabId)
     }
 
     // Now we have to prepare for closure.
+    std::string stuff;
 }

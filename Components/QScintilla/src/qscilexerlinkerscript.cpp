@@ -82,7 +82,7 @@ QColor QsciLexerLinkerScript::defaultColor(int style) const
             return colorYellow;        
                     
         case Comments:
-            return colorStaleGreen;
+            return colorDarkGray;
 
         case String_Start:            
         case String_Content:
