@@ -1,6 +1,6 @@
 // The implementation of the class that implements accessibility support.
 //
-// Copyright (c) 2022 Riverbank Computing Limited <info@riverbankcomputing.com>
+// Copyright (c) 2023 Riverbank Computing Limited <info@riverbankcomputing.com>
 // 
 // This file is part of QScintilla.
 // 
@@ -113,7 +113,7 @@ void QsciAccessibleScintillaBase::textInserted(QsciScintillaBase *sb,
 {
     Q_ASSERT(text);
 
-    QString new_text = bytesAsText(sb, text, length);
+    QString new_text = sb->bytesAsText(text, length);
     int offset = positionAsOffset(sb, position);
 
     QAccessibleTextInsertEvent ev(sb, offset, new_text);
@@ -220,7 +220,7 @@ void QsciAccessibleScintillaBase::textDeleted(QsciScintillaBase *sb,
 {
     Q_ASSERT(text);
 
-    QString old_text = bytesAsText(sb, text, length);
+    QString old_text = sb->bytesAsText(text, length);
     int offset = positionAsOffset(sb, position);
 
     QAccessibleTextRemoveEvent ev(sb, offset, old_text);
@@ -359,29 +359,7 @@ QString QsciAccessibleScintillaBase::textRange(QsciScintillaBase *sb,
     sb->SendScintilla(QsciScintillaBase::SCI_GETTEXTRANGE, start_position,
             end_position, bytes.data());
 
-    return bytesAsText(sb, bytes.constData(), bytes.size() - 1);
-}
-
-
-// Convert bytes to text.
-QString QsciAccessibleScintillaBase::bytesAsText(QsciScintillaBase *sb,
-        const char *bytes, int length)
-{
-    if (sb->SendScintilla(QsciScintillaBase::SCI_GETCODEPAGE) == QsciScintillaBase::SC_CP_UTF8)
-        return QString::fromUtf8(bytes, length);
-
-    return QString::fromLatin1(bytes, length);
-}
-
-
-// Convert text to bytes.
-QByteArray QsciAccessibleScintillaBase::textAsBytes(QsciScintillaBase *sb,
-        const QString &text)
-{
-    if (sb->SendScintilla(QsciScintillaBase::SCI_GETCODEPAGE) == QsciScintillaBase::SC_CP_UTF8)
-        return text.toUtf8();
-
-    return text.toLatin1();
+    return sb->bytesAsText(bytes.constData(), bytes.size() - 1);
 }
 
 
@@ -702,7 +680,7 @@ void QsciAccessibleScintillaBase::insertText(int offset, const QString &text)
     QsciScintillaBase *sb = sciWidget();
 
     sb->SendScintilla(QsciScintillaBase::SCI_INSERTTEXT,
-            offsetAsPosition(sb, offset), textAsBytes(sb, text).constData());
+            offsetAsPosition(sb, offset), sb->textAsBytes(text).constData());
 }
 
 
@@ -714,7 +692,7 @@ void QsciAccessibleScintillaBase::replaceText(int startOffset, int endOffset,
 
     addSelection(startOffset, endOffset);
     sb->SendScintilla(QsciScintillaBase::SCI_REPLACESEL,
-            textAsBytes(sb, text).constData());
+            sb->textAsBytes(text).constData());
 }
 
 

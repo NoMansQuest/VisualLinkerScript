@@ -155,8 +155,8 @@ void QsciScintillaBase::inputMethodEvent(QInputMethodEvent *event)
         for (int i = 0; i < commitStrLen;) {
             const int ucWidth = commitStr.at(i).isHighSurrogate() ? 2 : 1;
             const QString oneCharUTF16 = commitStr.mid(i, ucWidth);
-            const QByteArray oneChar = textAsBytes(oneCharUTF16);            
-
+            const QByteArray oneChar = textAsBytes(oneCharUTF16);
+            const int oneCharLen = oneChar.length();
             sci->AddCharUTF(oneChar.data(), oneChar.length());
             i += ucWidth;
         }
@@ -175,7 +175,7 @@ void QsciScintillaBase::inputMethodEvent(QInputMethodEvent *event)
 
         std::vector<int> imeIndicator = MapImeIndicators(event);
 
-        for (int i = 0; i < preeditStrLen;) {
+        for (unsigned int i = 0; i < preeditStrLen;) {
             const unsigned int ucWidth = preeditStr.at(i).isHighSurrogate() ? 2 : 1;
             const QString oneCharUTF16 = preeditStr.mid(i, ucWidth);
             const QByteArray oneChar = textAsBytes(oneCharUTF16);
@@ -253,25 +253,17 @@ QVariant QsciScintillaBase::inputMethodQuery(Qt::InputMethodQuery query) const
             int paraEnd = sci->pdoc->ParaDown(pos);
             QVarLengthArray<char,1024> buffer(paraEnd - paraStart + 1);
 
-            Sci_CharacterRange charRange;
-            charRange.cpMin = paraStart;
-            charRange.cpMax = paraEnd;
+            SendScintilla(SCI_GETTEXTRANGE, paraStart, paraEnd, buffer.data());
 
-            Sci_TextRange textRange;
-            textRange.chrg = charRange;
-            textRange.lpstrText = buffer.data();
-
-            SendScintilla(SCI_GETTEXTRANGE, 0, (sptr_t)&textRange);
-
-            return bytesAsText(buffer.constData());
+            return bytesAsText(buffer.constData(), buffer.size());
         }
 
         case Qt::ImCurrentSelection:
         {
-            QVarLengthArray<char,1024> buffer(SendScintilla(SCI_GETSELTEXT));
+            QVarLengthArray<char,1024> buffer(SendScintilla(SCI_GETSELTEXT) + 1);
             SendScintilla(SCI_GETSELTEXT, 0, (sptr_t)buffer.data());
 
-            return bytesAsText(buffer.constData());
+            return bytesAsText(buffer.constData(), buffer.size() - 1);
         }
 
         default:

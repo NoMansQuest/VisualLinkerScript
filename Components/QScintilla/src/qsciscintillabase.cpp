@@ -1,6 +1,6 @@
 // This module implements the "official" low-level API.
 //
-// Copyright (c) 2022 Riverbank Computing Limited <info@riverbankcomputing.com>
+// Copyright (c) 2023 Riverbank Computing Limited <info@riverbankcomputing.com>
 // 
 // This file is part of QScintilla.
 // 
@@ -389,7 +389,7 @@ void QsciScintillaBase::keyPressEvent(QKeyEvent *e)
 
     if (!text.isEmpty() && text[0].isPrint())
     {
-        ScintillaBytes bytes = textAsBytes(text);
+        QByteArray bytes = textAsBytes(text);
         sci->AddCharUTF(bytes.data(), bytes.length());
         e->accept();
     }
@@ -492,7 +492,7 @@ int QsciScintillaBase::commandKey(int qt_key, int &modifiers)
 
 
 // Encode a QString as bytes.
-QsciScintillaBase::ScintillaBytes QsciScintillaBase::textAsBytes(const QString &text) const
+QByteArray QsciScintillaBase::textAsBytes(const QString &text) const
 {
     if (sci->IsUnicodeMode())
         return text.toUtf8();
@@ -502,12 +502,12 @@ QsciScintillaBase::ScintillaBytes QsciScintillaBase::textAsBytes(const QString &
 
 
 // Decode bytes as a QString.
-QString QsciScintillaBase::bytesAsText(const char *bytes) const
+QString QsciScintillaBase::bytesAsText(const char *bytes, int size) const
 {
     if (sci->IsUnicodeMode())
-        return QString::fromUtf8(bytes);
+        return QString::fromUtf8(bytes, size);
 
-    return QString::fromLatin1(bytes);
+    return QString::fromLatin1(bytes, size);
 }
 
 

@@ -1,6 +1,6 @@
 // This module implements the QsciAPIs class.
 //
-// Copyright (c) 2022 Riverbank Computing Limited <info@riverbankcomputing.com>
+// Copyright (c) 2023 Riverbank Computing Limited <info@riverbankcomputing.com>
 // 
 // This file is part of QScintilla.
 // 
@@ -43,9 +43,8 @@ const unsigned char PreparedDataFormatVersion = 0;
 
 
 // This class contains prepared API information.
-class QsciAPIsPrepared
+struct QsciAPIsPrepared
 {
-public:
     // The word dictionary is a map of individual words and a list of positions
     // each occurs in the sorted list of APIs.  A position is a tuple of the
     // index into the list of APIs and the index into the particular API.
@@ -59,10 +58,8 @@ public:
     // The raw API information.
     QStringList raw_apis;
 
-    QStringList apiWords(int api_idx,
-                         const QStringList &wseps,
-                         bool strip_image) const;
-
+    QStringList apiWords(int api_idx, const QStringList &wseps,
+            bool strip_image) const;
     static QString apiBaseName(const QString &api);
 };
 

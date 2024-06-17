@@ -1,6 +1,6 @@
 // This module implements the QsciLexer class.
 //
-// Copyright (c) 2022 Riverbank Computing Limited <info@riverbankcomputing.com>
+// Copyright (c) 2023 Riverbank Computing Limited <info@riverbankcomputing.com>
 // 
 // This file is part of QScintilla.
 // 
@@ -728,4 +728,22 @@ void QsciLexer::setPaper(const QColor &c, int style)
 
         emit paperChanged(c, QsciScintillaBase::STYLE_DEFAULT);
     }
+}
+
+
+// Encode a QString as bytes.
+QByteArray QsciLexer::textAsBytes(const QString &text) const
+{
+    Q_ASSERT(attached_editor);
+
+    return attached_editor->textAsBytes(text);
+}
+
+
+// Decode bytes as a QString.
+QString QsciLexer::bytesAsText(const char *bytes, int size) const
+{
+    Q_ASSERT(attached_editor);
+
+    return attached_editor->bytesAsText(bytes, size);
 }
