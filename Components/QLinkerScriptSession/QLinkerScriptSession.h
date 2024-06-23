@@ -3,36 +3,39 @@
 
 #include <QtWidgets>
 #include <QString>
-#include <vector>
 #include <memory>
 #include "CLinkerScriptSessionFileInfo.h"
+#include "DrcEngine/CDrcManager.h"
+#include "ParsingEngine/CLexer.h"
+#include "ParsingEngine/CMasterParser.h"
+
 
 class QsciScintilla;
 class QMemoryVisualizer;
 class CLinkerScriptSessionFileInfo;
 
-/// @brief The main tab component to emulate google chrome's tab component.
+/// @brief Object representing the full context of a loaded/created linker script file.
 class QLinkerScriptSession : public QWidget
 {
     Q_OBJECT
 
 private:
     uint32_t m_sessionId;
-    uint32_t m_tabIndex;
+    uint32_t m_sessionsTabIndex;
 
 public:
     /// @brief Default constructor
-    QLinkerScriptSession(uint32_t sessionId, CLinkerScriptSessionFileInfo sessionFileInfo, QWidget *parent = 0)
+    QLinkerScriptSession(const uint32_t sessionId, CLinkerScriptSessionFileInfo sessionFileInfo, QWidget *parent = nullptr)
         : QWidget(parent),
-          m_tabIndex(0),
           m_sessionId(sessionId),
-          m_sessionFileInfo(sessionFileInfo)
+          m_sessionsTabIndex(0),
+          m_sessionFileInfo(std::move(sessionFileInfo))
     {
         this->BuildUserInterface();
     }
 
     /// @brief Default destructor
-    ~QLinkerScriptSession()
+    ~QLinkerScriptSession() override
     {}
 
 private:
@@ -43,20 +46,49 @@ private:
     QSplitter* m_horizontalSplitter;
     QSplitter* m_verticalSplitter;  
     CLinkerScriptSessionFileInfo m_sessionFileInfo;
+    QTimer m_deferredProcedureCaller;
+
+    std::unique_ptr<VisualLinkerScript::ParsingEngine::CMasterParser> m_masterParser;
+    std::unique_ptr<VisualLinkerScript::ParsingEngine::CLexer> m_linkerScriptLexer;
+    std::unique_ptr<VisualLinkerScript::DrcEngine::CDrcManager> m_drcManager;
+
+    void InitiateDeferredProcessing();
+    void DeferredContentProcessingAction() const;
+    void EditorContentUpdated();
 
 protected:
     void BuildUserInterface();
 
 public:
-    void SetTabIndex(uint32_t tabIndex) { this->m_tabIndex = tabIndex; }    
-    uint32_t TabIndex() { return this->m_tabIndex; }
-    void SetSessionFileInfo(CLinkerScriptSessionFileInfo newSessionFileInfo);        
-    CLinkerScriptSessionFileInfo SessionFileInfo(void) const { return this->m_sessionFileInfo; }
-    std::string LinkerScriptContent(void);
-    void setLinkerScriptContent(std::string linkerScriptContent);
-    QMemoryVisualizer* MemoryVisualizerWdiget() { return this->m_memoryVisualizer; }
-    QsciScintilla* ScintillaEditor() { return this->m_scintilla; }
-    QTreeView* IssuesTreeView() { return this->m_issuesTreeView; }
+    /// @brief Sets the 'tabIndex' this session belongs to at higher level.
+    void SetSessionsTabIndex(const uint32_t tabIndex) { this->m_sessionsTabIndex = tabIndex; }
+
+    /// @brief Reports back the session's tab index.
+    [[nodiscard]] uint32_t TabIndex() const { return this->m_sessionsTabIndex; }
+
+    /// @brief Updates session's file information.
+    void SetSessionFileInfo(const CLinkerScriptSessionFileInfo& newSessionFileInfo);
+
+    /// @brief Reports back the session's file info.
+    [[nodiscard]] CLinkerScriptSessionFileInfo SessionFileInfo(void) const { return this->m_sessionFileInfo; }
+
+    /// @brief Reports back the linker script content.
+    [[nodiscard]] std::string LinkerScriptContent(void) const;
+
+    /// @brief: Update's linker script content. This action is reversible via "Undo".
+    void SetLinkerScriptContent(const std::string& linkerScriptContent) const;
+
+    /// TODO: DISCARD IF POSSIBLE
+    /// @brief Returns back the memory visualizer widget
+    QMemoryVisualizer* MemoryVisualizerWidget() const { return this->m_memoryVisualizer; }
+
+    /// TODO: DISCARD IF POSSIBLE
+    /// @brief Returns back the Scintilla Editor. 
+    QsciScintilla* ScintillaEditor() const { return this->m_scintilla; }
+
+    /// TODO: DISCARD IF POSSIBLE
+    /// @brief Returns back the issues tree-view. 
+    QTreeView* IssuesTreeView() const { return this->m_issuesTreeView; }
 
 signals:
     void evIssueSelected(uint32_t sessionId, uint32_t issueId);
@@ -85,6 +117,5 @@ public slots:
     void OnFindNext();
     void OnFindReplace(std::string replaceWith);
 };
-
 
 #endif // end of QLINKERSCRIPTSESSION_H__

@@ -3,7 +3,7 @@
 
 class QsciScintilla;
 
-namespace Components::QScintilla
+namespace VisualLinkerScript::Components::QScintilla
 {
     /**
         * @brief As QSciScintilla cannot be stylized via QStyleSheet, we need to set those here.

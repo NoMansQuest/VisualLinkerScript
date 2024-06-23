@@ -1,12 +1,13 @@
 #include "CEntryIsDefinedRule.h"
 #include "../DrcCommons.h"
 #include "../CDrcManager.h"
-#include "../IDrcRuleBase.h"
-
 #include "../../Models/CLinkerScriptFile.h"
 #include "../../Models/CFunctionCall.h"
 #include "../../Helpers.h"
 #include "../../QueryEngine/QueryCenter.h"
+#include "DrcEngine/CDrcViolation.h"
+#include "DrcEngine/EDrcViolationCode.h"
+#include "DrcEngine/EDrcViolationSeverity.h"
 
 REGISTER_DRC_RULE(CEntryIsDefinedRule)
 
@@ -18,19 +19,19 @@ using namespace VisualLinkerScript::Models;
 SharedPtrVector<CViolationBase> CEntryIsDefinedRule::PerformCheck(const SharedPtrVector<CLinkerScriptFile>& linkerScriptFiles) {
     SharedPtrVector<CViolationBase> violations;
 
-    auto foundDirectives = QueryObject<CFunctionCall>(
-                linkerScriptFiles,
-                [&](std::shared_ptr<CLinkerScriptFile> linkerScriptFile, std::shared_ptr<CFunctionCall> ResolveEntryText) {
-                    return StringEquals(linkerScriptFile->ResolveEntryText(ResolveEntryText->FunctionName()), "ENTRY", true);
-                });
-
-    if (foundDirectives.size() == 0) {
-         violations.emplace_back(std::shared_ptr<CViolationBase>(new CDrcViolation(
-                                 std::vector<std::shared_ptr<CLinkerScriptContentBase>>(),
-                                 this->DrcRuleTitle(),
-                                 "Directive is defined more than once.",
-                                 EDrcViolationCode::EntryDirectiveDefinedMoreThanOnce,
-                                 EDrcViolationSeverity::Error)));
+    if (auto foundDirectives = QueryObject<CFunctionCall>(
+	    linkerScriptFiles,
+	    [&](const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile, const std::shared_ptr<CFunctionCall>& resolveEntryText) {
+		    return StringEquals(linkerScriptFile->ResolveEntryText(resolveEntryText->FunctionName()), "ENTRY", true);
+	    }); 
+		foundDirectives.size() == 0) 
+	{
+         violations.emplace_back(std::static_pointer_cast<CViolationBase>(std::shared_ptr<CDrcViolation>(new CDrcViolation(
+	         std::vector<std::shared_ptr<CLinkerScriptContentBase>>(),
+	         this->DrcRuleTitle(),
+	         "Directive is defined more than once.",
+	         EDrcViolationCode::EntryDirectiveDefinedMoreThanOnce,
+	         EDrcViolationSeverity::Error))));
     }
 
     return violations;

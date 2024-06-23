@@ -155,12 +155,13 @@ void MainWindow::MenuActionOpenFile()
 
     CLinkerScriptSessionFileInfo sessionFileInfo(
         true,
+        fileName.toStdString(),
         fileInfo.fileName().toStdString(),
         fileInfo.absolutePath().toStdString(),
         std::string(signatureString));        
 
     auto linkerScriptSession = this->m_linkerScriptManager->CreateSessionForExistingFile(sessionFileInfo);
-    linkerScriptSession->setLinkerScriptContent(fileContent);
+    linkerScriptSession->SetLinkerScriptContent(fileContent);
     auto tabId = this->m_contentTabRegion->AddTab(linkerScriptSession, false);        
     this->m_contentTabRegion->SetTabTitle(tabId, QString::fromStdString(sessionFileInfo.FileName()));    
     this->m_contentTabRegion->NavigateToTab(tabId);    

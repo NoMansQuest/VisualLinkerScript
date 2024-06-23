@@ -7,10 +7,10 @@
 #include <vector>
 #include <memory>
 
-using namespace VisualLinkerScript::Models;
-
 namespace VisualLinkerScript::ParsingEngine
 {
+	using namespace VisualLinkerScript::Models;
+
     /// @brief The main parser, in charge of parsing a give linker-script file
     class CMasterParser
     {

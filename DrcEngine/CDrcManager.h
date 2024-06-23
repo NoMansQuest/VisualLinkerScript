@@ -1,41 +1,38 @@
 #ifndef CDRCENGINEMANAGER_H__
 #define CDRCENGINEMANAGER_H__
 
-#include <map>
-#include <string>
 #include <memory>
-#include <algorithm>
-#include <iterator>
 #include "../Helpers.h"
-#include "IDrcRuleBase.h"
 
-namespace VisualLinkerScript::DrcEngine
+namespace VisualLinkerScript
 {
-    using namespace VisualLinkerScript;
-
-    /// @brief In charge of Design-Rule-Check operations
-    class CDrcManager
+    namespace Models
     {
-        typedef std::vector<std::shared_ptr<IDrcRuleBase>> DrcRulesType;
+        class CViolationBase;
+    }
 
-    private:
-        DrcRulesType m_drcRules;
-        SharedPtrVector<CViolationBase> m_violations;
+    namespace DrcEngine
+    {
+	    class IDrcRuleBase;
 
-    public:
-        /// @brief Implementation of the singleton
-        static CDrcManager& Instance() {
-            static CDrcManager drcManager;
-            return drcManager;
-        }
+	    /// @brief In charge of Design-Rule-Check operations
+        class CDrcManager
+        {
+            typedef SharedPtrVector<IDrcRuleBase> DrcRulesType;
+            static DrcRulesType m_drcRules;
+            SharedPtrVector<Models::CViolationBase> m_violations;
 
-        /// @brief Registers a class as DRC-Rule
-        bool RegisterRule(std::shared_ptr<IDrcRuleBase> drcRule);
+        public:
+            /// @brief Default constructor;
+            CDrcManager() = default;
 
-        /// @brief Reports back a list of currently identified violations
-        SharedPtrVector<CViolationBase> Violations();
-    };
+            /// @brief Registers a class as DRC-Rule
+            static bool RegisterRule(const std::shared_ptr<IDrcRuleBase>& drcRule);
+
+            /// @brief Reports back a list of currently identified violations
+            SharedPtrVector<Models::CViolationBase> Violations();
+        };
+    }
 }
-
 
 #endif // CDRCENGINEMANAGER_H__

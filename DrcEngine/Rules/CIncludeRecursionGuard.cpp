@@ -10,6 +10,9 @@
 #include "../../Models/CIncludeCommand.h"
 #include "../../Helpers.h"
 #include "../../QueryEngine/QueryCenter.h"
+#include "DrcEngine/CDrcViolation.h"
+#include "DrcEngine/EDrcViolationCode.h"
+#include "DrcEngine/EDrcViolationSeverity.h"
 
 REGISTER_DRC_RULE(CIncludeRecursionGuard)
 
@@ -30,7 +33,7 @@ typedef std::unordered_map<std::shared_ptr<CLinkerScriptFile>, std::shared_ptr<C
 
 /// @brief Recursively checks the given scope to see if @see {sourceFile} is re-observed in the 'include' chain
 bool RecursiveCheck(const SharedPtrVector<CLinkerScriptFile>& scope,
-                    std::shared_ptr<CLinkerScriptFile> fileToCheck,
+                    const std::shared_ptr<CLinkerScriptFile>& fileToCheck,
                     std::shared_ptr<CLinkerScriptFile> subjectOfInterest,
                     RecursionMap& recursionMap);
 
@@ -52,7 +55,7 @@ SharedPtrVector<CViolationBase> CIncludeRecursionGuard::PerformCheck(const Share
             // Check if any other file has the name described
             for (auto hoveringFile: linkerScriptFiles) {
                 if (hoveringFile->AbsoluteFilePath().compare(includeCommandResult->LinkerScriptFile()->AbsoluteFilePath()) == 0) {
-                    continue; // The file isn not cross-checked against itself
+                    continue; // The file isn't cross-checked against itself
                 }
 
                 if (hoveringFile->FileName().compare(targetFile) == 0) {
@@ -63,8 +66,7 @@ SharedPtrVector<CViolationBase> CIncludeRecursionGuard::PerformCheck(const Share
 
             // If target file was found, no violation is needed
             if (fileToCheckRecursively != nullptr) {
-                if (RecursiveCheck(linkerScriptFiles, fileToCheckRecursively, file, recursionMap)){
-
+                if (RecursiveCheck(linkerScriptFiles, fileToCheckRecursively, file, recursionMap)) {
                     auto errorMessage = StringFormat("Recursion detected in file '{}' when included '{}' on line '{}':\n",
                                                      file->FileName(),
                                                      targetFile,
@@ -82,12 +84,12 @@ SharedPtrVector<CViolationBase> CIncludeRecursionGuard::PerformCheck(const Share
                         errorMessage.append(messageToAppend);
                     }
 
-                    violations.emplace_back(std::make_shared<CDrcViolation>(
-                                            std::vector<std::shared_ptr<CLinkerScriptContentBase>> { std::dynamic_pointer_cast<CLinkerScriptContentBase>(includeCommandResult->Result()) },
+                    violations.emplace_back(std::shared_ptr<CDrcViolation>(new CDrcViolation(
+                                            std::vector { std::dynamic_pointer_cast<CLinkerScriptContentBase>(includeCommandResult->Result()) },
                                             this->DrcRuleTitle(),
                                             errorMessage,
                                             EDrcViolationCode::RecursiveIncludeChainDetected,
-                                            EDrcViolationSeverity::Error));
+                                            EDrcViolationSeverity::Error)));
                 }
 
                 continue;
@@ -95,12 +97,14 @@ SharedPtrVector<CViolationBase> CIncludeRecursionGuard::PerformCheck(const Share
 
             // Include file was not found
             auto errorMessage = StringFormat("Included files are expected to be present, but '{}' was not found", targetFile);
-            violations.emplace_back(std::shared_ptr<CViolationBase>(new CDrcViolation(
-                                    SharedPtrVector<CLinkerScriptContentBase> { std::dynamic_pointer_cast<CLinkerScriptContentBase>(includeCommandResult->Result()) },
-                                    this->DrcRuleTitle(),
-                                    errorMessage,
-                                    EDrcViolationCode::IncludedFilesArePresentRule,
-                                    EDrcViolationSeverity::Error)));
+            violations.emplace_back(std::static_pointer_cast<CViolationBase>(std::shared_ptr<CDrcViolation>(new CDrcViolation(
+	            SharedPtrVector<CLinkerScriptContentBase>{
+		            std::dynamic_pointer_cast<CLinkerScriptContentBase>(includeCommandResult->Result())
+	            },
+	            this->DrcRuleTitle(),
+	            errorMessage,
+	            EDrcViolationCode::IncludedFilesArePresentRule,
+	            EDrcViolationSeverity::Error))));
         }
     }
 
@@ -109,31 +113,30 @@ SharedPtrVector<CViolationBase> CIncludeRecursionGuard::PerformCheck(const Share
 
 
 bool RecursiveCheck(const SharedPtrVector<CLinkerScriptFile>& scope,
-                    std::shared_ptr<CLinkerScriptFile> fileToCheck,
+                    const std::shared_ptr<CLinkerScriptFile>& fileToCheck,
                     std::shared_ptr<CLinkerScriptFile> subjectOfInterest,
                     RecursionMap& recursionMap)
 {
-    auto includeCommands  = QueryObject<CIncludeCommand>(fileToCheck);
+	const auto includeCommands  = QueryObject<CIncludeCommand>(fileToCheck);
 
-    for (auto includeCommandResult: includeCommands) {
-        auto fileToInclude = fileToCheck->ResolveEntryText(includeCommandResult->Result()->IncludeFileEntry());
-
-        if (StringEquals(fileToInclude, subjectOfInterest->FileName(), IGNORE_CASE_WHEN_COMPARING_PATHS)) {
+    for (const auto includeCommandResult: includeCommands) 
+    {
+	    if (auto fileToInclude = fileToCheck->ResolveEntryText(includeCommandResult->Result()->IncludeFileEntry()); 
+            StringEquals(fileToInclude, subjectOfInterest->FileName(),IGNORE_CASE_WHEN_COMPARING_PATHS)) 
+        {
             recursionMap.insert_or_assign(fileToCheck, includeCommandResult->Result());
             return true;
         }
 
         // Find the include file in the scope
-        auto foundFile = std::find_if(
-                    scope.cbegin(),
-                    scope.cend(),
-                    [=, &subjectOfInterest](const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile){
-                        return StringEquals(subjectOfInterest->FileName(),
-                                            linkerScriptFile->FileName(),
-                                            IGNORE_CASE_WHEN_COMPARING_PATHS);
-                    });
-
-        if (foundFile == scope.cend() || !RecursiveCheck(scope, *foundFile, subjectOfInterest, recursionMap)) {
+        if (auto foundFile = std::find_if(
+	        scope.cbegin(),
+	        scope.cend(),
+	        [=, &subjectOfInterest](const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile){
+		        return StringEquals(subjectOfInterest->FileName(),
+		                            linkerScriptFile->FileName(),
+		                            IGNORE_CASE_WHEN_COMPARING_PATHS);
+	        }); foundFile == scope.cend() || !RecursiveCheck(scope, *foundFile, subjectOfInterest, recursionMap)) {
             continue;
         }
 

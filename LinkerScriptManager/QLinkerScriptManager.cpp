@@ -23,7 +23,7 @@ std::shared_ptr<QLinkerScriptSession> QLinkerScriptManager::CreateSessionForUnti
 
     auto newSessionId = this->m_sessionIdHolder++;
     auto targetFileName = StringFormat(untitledFileNameTemplate, proposedIndex);
-    auto newSession = std::shared_ptr<QLinkerScriptSession>(new QLinkerScriptSession(newSessionId, CLinkerScriptSessionFileInfo(false, targetFileName, "", "")));
+    auto newSession = std::make_shared<QLinkerScriptSession>(newSessionId, CLinkerScriptSessionFileInfo(false, "", targetFileName, "", ""));
     this->m_sessions.emplace_back(newSession);
     emit this->evNewSessionCreated(newSession);
     return newSession;
@@ -33,7 +33,7 @@ std::shared_ptr<QLinkerScriptSession> QLinkerScriptManager::CreateSessionForUnti
 std::shared_ptr<QLinkerScriptSession> QLinkerScriptManager::CreateSessionForExistingFile(CLinkerScriptSessionFileInfo existingFileInfo)
 {
     auto newSessionId = this->m_sessionIdHolder++;
-    auto newSession = std::shared_ptr<QLinkerScriptSession>(new QLinkerScriptSession(newSessionId, existingFileInfo));
+    auto newSession = std::make_shared<QLinkerScriptSession>(newSessionId, existingFileInfo);
     this->m_sessions.emplace_back(newSession);
     emit this->evNewSessionCreated(newSession);
     return newSession;

@@ -4,7 +4,9 @@
 #include "src/Qsci/qsciscintilla.h"
 #include <QOperatingSystemVersion>
 
-void Components::QScintilla::SetComponentStyles(QsciScintilla& target)
+using namespace VisualLinkerScript::Components;
+
+void QScintilla::SetComponentStyles(QsciScintilla& target)
 {
     // Color styling            
     target.setCaretForegroundColor(QColor::fromRgba(0xFFF0F0F0));
@@ -18,7 +20,8 @@ void Components::QScintilla::SetComponentStyles(QsciScintilla& target)
     //target.setMarginsForegroundColor(QColor::fromRgba(0xff5e1dc9));
     //target.setMarginsForegroundColor(QColor::fromRgba(0xffa276eb));
     //target.setMarginsForegroundColor(QColor::fromRgba(0xff404040));
-    target.setMarginsForegroundColor(QColor::fromRgba(0xff505050));   
+    target.setMarginsForegroundColor(QColor::fromRgba(0xff505050));       
+    target.setMarginWidth(0, 50);
 
     target.setMarginType(0, QsciScintilla::NumberMargin);
     target.setMarginWidth(0, 50);
@@ -38,7 +41,7 @@ void Components::QScintilla::SetComponentStyles(QsciScintilla& target)
     //target.setLexer()
 }
 
-void Components::QScintilla::SetTextEditorStyles(QsciScintilla& target)
+void QScintilla::SetTextEditorStyles(QsciScintilla& target)
 {
     UNREFERENCED_PARAMETER(target); // TODO: Fix this later on.
 }

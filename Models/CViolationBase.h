@@ -6,10 +6,10 @@
 #include <memory>
 #include "Raw/CRawEntry.h"
 
-using namespace VisualLinkerScript::Models::Raw;
-
 namespace VisualLinkerScript::Models 
 {
+	using namespace VisualLinkerScript::Models::Raw;
+
     /// @brief Type of violation.
     enum class EViolationType
     {

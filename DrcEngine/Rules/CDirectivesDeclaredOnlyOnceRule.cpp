@@ -7,6 +7,9 @@
 #include "../../Models/CFunctionCall.h"
 #include "../../Helpers.h"
 #include "../../QueryEngine/QueryCenter.h"
+#include "DrcEngine/CDrcViolation.h"
+#include "DrcEngine/EDrcViolationCode.h"
+#include "DrcEngine/EDrcViolationSeverity.h"
 
 REGISTER_DRC_RULE(CDirectivesDeclaredOnlyOnceRule)
 
@@ -28,20 +31,21 @@ SharedPtrVector<CViolationBase> CDirectivesDeclaredOnlyOnceRule::PerformCheck(co
         "SEARCH_DIR",
     };
 
-    for (auto directive : directives) {
-        auto foundDirectives = QueryObject<CFunctionCall>(
-                    linkerScriptFiles,
-                    [&](std::shared_ptr<CLinkerScriptFile> linkerScriptFile, std::shared_ptr<CFunctionCall> ResolveEntryText) {
-                        return StringEquals(linkerScriptFile->ResolveEntryText(ResolveEntryText->FunctionName()), directive, true);
-                    });
-
-        if (foundDirectives.size() > 1) {
-             violations.emplace_back(std::shared_ptr<CViolationBase>(new CDrcViolation(
-                                     std::vector<std::shared_ptr<CLinkerScriptContentBase>>(),
-                                     this->DrcRuleTitle(),
-                                     "Directive is defined more than once.",
-                                     EDrcViolationCode::EntryDirectiveDefinedMoreThanOnce,
-                                     EDrcViolationSeverity::Error)));
+    for (auto directive : directives) 
+    {
+	    if (auto foundDirectives = QueryObject<CFunctionCall>(
+		    linkerScriptFiles,
+		    [&](const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile, const std::shared_ptr<CFunctionCall>& ResolveEntryText) {
+			    return StringEquals(linkerScriptFile->ResolveEntryText(ResolveEntryText->FunctionName()), directive, true);
+		    }); 
+            foundDirectives.size() > 1) 
+        {
+             violations.emplace_back(std::static_pointer_cast<CViolationBase>(std::shared_ptr<CDrcViolation>(new CDrcViolation(
+	             std::vector<std::shared_ptr<CLinkerScriptContentBase>>(),
+	             this->DrcRuleTitle(),
+	             "Directive is defined more than once.",
+	             EDrcViolationCode::EntryDirectiveDefinedMoreThanOnce,
+	             EDrcViolationSeverity::Error))));
         }
     }
 

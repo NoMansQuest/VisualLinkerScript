@@ -2,7 +2,6 @@
 #define CSYMBOLSAREDEFINEDINADVANCERULE_H
 
 #include "../IDrcRuleBase.h"
-#include <memory>
 
 namespace VisualLinkerScript::DrcEngine::Rules
 {
@@ -10,8 +9,7 @@ namespace VisualLinkerScript::DrcEngine::Rules
     {
     public:
         /// @brief Default constructor
-        CSymbolsDefinedInAdvanceRule()
-        {}
+        CSymbolsDefinedInAdvanceRule() = default;
 
         /// @copydoc
         virtual std::string DrcRuleTitle() override
@@ -23,8 +21,7 @@ namespace VisualLinkerScript::DrcEngine::Rules
         virtual SharedPtrVector<CViolationBase> PerformCheck(const SharedPtrVector<CLinkerScriptFile>& linkerScriptFiles) override;
 
         /// @brief Default destructor
-        ~CSymbolsDefinedInAdvanceRule()
-        {}
+        ~CSymbolsDefinedInAdvanceRule() override = default;
     };
 }
 

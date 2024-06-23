@@ -5,16 +5,16 @@
 
 #include "../DrcCommons.h"
 #include "../CDrcManager.h"
-#include "../IDrcRuleBase.h"
+#include "DrcEngine/CDrcViolation.h"
+#include "DrcEngine/EDrcViolationCode.h"
+#include "DrcEngine/EDrcViolationSeverity.h"
 
 REGISTER_DRC_RULE(CSectionsDefinedOnlyOnceRule)
 
+using namespace VisualLinkerScript;
 using namespace VisualLinkerScript::DrcEngine::Rules;
 using namespace VisualLinkerScript::Models;
 using namespace VisualLinkerScript::QueryEngine;
-using namespace VisualLinkerScript;
-
-using namespace VisualLinkerScript::DrcEngine::Rules;
 
 SharedPtrVector<CViolationBase> CSectionsDefinedOnlyOnceRule::PerformCheck(const SharedPtrVector<CLinkerScriptFile>& linkerScriptFiles) {
     SharedPtrVector<CViolationBase> violations;
@@ -27,17 +27,19 @@ SharedPtrVector<CViolationBase> CSectionsDefinedOnlyOnceRule::PerformCheck(const
            continue;
        }
 
-       for (auto sectionsRegionResult: foundSectionsRegion) {
+       for (const auto sectionsRegionResult: foundSectionsRegion) {
            auto errorMessage = "'SECTIONS' region could only be defined once in linker-script file.";
-           violations.emplace_back(std::shared_ptr<CViolationBase>(new CDrcViolation(
-                                       SharedPtrVector<CLinkerScriptContentBase> { std::dynamic_pointer_cast<CLinkerScriptContentBase>(sectionsRegionResult->Result()) },
-                                       this->DrcRuleTitle(),
-                                       errorMessage,
-                                       sectionsRegionResult->Result()->ObjectPath(),
-                                       {},
-                                       nullptr,
-                                       EDrcViolationCode::SectionsRegionDefinedMultipleTimes,
-                                       EDrcViolationSeverity::Error)));
+           violations.emplace_back(std::static_pointer_cast<CViolationBase>(std::shared_ptr<CDrcViolation>( new CDrcViolation(
+	           SharedPtrVector<CLinkerScriptContentBase>{
+		           std::dynamic_pointer_cast<CLinkerScriptContentBase>(sectionsRegionResult->Result())
+	           },
+	           this->DrcRuleTitle(),
+	           errorMessage,
+	           sectionsRegionResult->Result()->ObjectPath(),
+	           {},
+	           nullptr,
+	           EDrcViolationCode::SectionsRegionDefinedMultipleTimes,
+	           EDrcViolationSeverity::Error))));
        }
     }
 

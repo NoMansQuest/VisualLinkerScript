@@ -9,6 +9,7 @@ class CLinkerScriptSessionFileInfo
 public:
 	CLinkerScriptSessionFileInfo(
 		bool isSavedOnDisk,
+		std::string absoluteFilePath,
 		std::string fileName, 
 		std::string filePath,
 		std::string onDiskSignature)
@@ -21,14 +22,16 @@ public:
 private:
 	bool m_isSavedOnDisk;
 	std::string m_fileName;
-	std::string m_filePath;	
+	std::string m_filePath;
+	std::string m_absoluteFilePath;
 	std::string m_onDiskSignature;
 
 public:
-	bool IsSavedOnDisk() const { return this->m_isSavedOnDisk; }
-	std::string FileName() const { return this->m_fileName; }
-	std::string FilePath() const { return this->m_filePath; }
-	std::string OnDiskSignature() const { return this->m_onDiskSignature; }
+	bool IsSavedOnDisk() const			 { return this->m_isSavedOnDisk; }
+	std::string AbsoluteFilePath() const { return this->m_absoluteFilePath; }
+	std::string FileName() const		 { return this->m_fileName; }
+	std::string FilePath() const		 { return this->m_filePath; }
+	std::string OnDiskSignature() const	 { return this->m_onDiskSignature; }
 };
 
 #endif

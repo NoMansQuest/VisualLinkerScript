@@ -10,21 +10,19 @@ namespace VisualLinkerScript::DrcEngine::Rules
     {
     public:
         /// @brief Default constructor
-        CNoDuplicateMemoryRegionNameRule()
-        {}
+        CNoDuplicateMemoryRegionNameRule() = default;
 
         /// @copydoc
-        virtual std::string DrcRuleTitle() override
+        std::string DrcRuleTitle() override
         {
             return "No Duplicate Memory Region Name Rule";
         }
 
         /// @copydoc
-        virtual SharedPtrVector<CViolationBase> PerformCheck(const SharedPtrVector<CLinkerScriptFile>& linkerScriptFiles) override;
+        SharedPtrVector<CViolationBase> PerformCheck(const SharedPtrVector<CLinkerScriptFile>& linkerScriptFiles) override;
 
         /// @brief Default destructor
-        ~CNoDuplicateMemoryRegionNameRule()
-        {}
+        ~CNoDuplicateMemoryRegionNameRule() override = default;
     };
 }
 

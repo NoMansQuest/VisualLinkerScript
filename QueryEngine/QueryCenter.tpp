@@ -9,7 +9,8 @@ template <typename T>
 SharedPtrVector<QueryResult<T>> VisualLinkerScript::QueryEngine::QueryObject(
     const SharedPtrVector<CLinkerScriptFile>& scope,
     std::function<bool(std::shared_ptr<CLinkerScriptFile> linkerScriptFile, std::shared_ptr<T> filterInput)> filterFunction,
-    bool deepSearch) {
+    bool deepSearch)
+{
 
     return SharedPtrVector<QueryResult<T>>();
 }
@@ -19,7 +20,8 @@ template <typename T>
 SharedPtrVector<QueryResult<T>> VisualLinkerScript::QueryEngine::QueryObject(
     std::shared_ptr<CLinkerScriptFile> scope,
     std::function<bool(std::shared_ptr<CLinkerScriptFile> linkerScriptFile, std::shared_ptr<T> filterInput)> filterFunction,
-    bool deepSearch) {
+    bool deepSearch)
+{
 
     return SharedPtrVector<QueryResult<T>>();
 }

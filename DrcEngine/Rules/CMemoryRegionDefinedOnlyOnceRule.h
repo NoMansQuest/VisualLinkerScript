@@ -10,21 +10,19 @@ namespace VisualLinkerScript::DrcEngine::Rules
     {
     public:
         /// @brief Default constructor
-        CMemoryRegionDefinedOnlyOnceRule()
-        {}
+        CMemoryRegionDefinedOnlyOnceRule() = default;
 
         /// @copydoc
-        virtual std::string DrcRuleTitle() override
+        std::string DrcRuleTitle() override
         {
             return "Memory Region Defined Only Once Rule";
         }
 
         /// @copydoc
-        virtual SharedPtrVector<CViolationBase> PerformCheck(const SharedPtrVector<CLinkerScriptFile>& linkerScriptFiles) override;
+        SharedPtrVector<CViolationBase> PerformCheck(const SharedPtrVector<CLinkerScriptFile>& linkerScriptFiles) override;
 
         /// @brief Default destructor
-        ~CMemoryRegionDefinedOnlyOnceRule()
-        {}
+        ~CMemoryRegionDefinedOnlyOnceRule() override = default;
     };
 }
 

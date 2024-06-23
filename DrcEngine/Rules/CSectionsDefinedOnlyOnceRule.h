@@ -2,7 +2,6 @@
 #define CSECTIONSDEFINEDONLYONCERULE_H
 
 #include "../IDrcRuleBase.h"
-#include <memory>
 
 namespace VisualLinkerScript::DrcEngine::Rules
 {
@@ -10,21 +9,19 @@ namespace VisualLinkerScript::DrcEngine::Rules
     {
     public:
         /// @brief Default constructor
-        CSectionsDefinedOnlyOnceRule()
-        {}
+        CSectionsDefinedOnlyOnceRule() = default;
 
         /// @copydoc
-        virtual std::string DrcRuleTitle() override
+        std::string DrcRuleTitle() override
         {
             return "Sections Region Defined Only Once Rule";
         }
 
         /// @copydoc
-        virtual SharedPtrVector<CViolationBase> PerformCheck(const SharedPtrVector<CLinkerScriptFile>& linkerScriptFiles) override;
+        SharedPtrVector<CViolationBase> PerformCheck(const SharedPtrVector<CLinkerScriptFile>& linkerScriptFiles) override;
 
         /// @brief Default destructor
-        ~CSectionsDefinedOnlyOnceRule()
-        {}
+        ~CSectionsDefinedOnlyOnceRule() override = default;
     };
 }
 

@@ -2,7 +2,6 @@
 #define CDIRECTIVESDECLAREDONLYONCERULE_H
 
 #include "../IDrcRuleBase.h"
-#include <memory>
 
 namespace VisualLinkerScript::DrcEngine::Rules
 {
@@ -10,21 +9,19 @@ namespace VisualLinkerScript::DrcEngine::Rules
     {
     public:
         /// @brief Default constructor
-        CDirectivesDeclaredOnlyOnceRule()
-        {}
+        CDirectivesDeclaredOnlyOnceRule() = default;
 
         /// @copydoc
-        virtual std::string DrcRuleTitle() override
+        std::string DrcRuleTitle() override
         {
             return "Directives Defined Only Once Rule";
         }
 
         /// @copydoc
-        virtual SharedPtrVector<CViolationBase> PerformCheck(const SharedPtrVector<CLinkerScriptFile>& linkerScriptFiles) override;
+        SharedPtrVector<CViolationBase> PerformCheck(const SharedPtrVector<CLinkerScriptFile>& linkerScriptFiles) override;
 
         /// @brief Default destructor
-        ~CDirectivesDeclaredOnlyOnceRule()
-        {}
+        ~CDirectivesDeclaredOnlyOnceRule() override = default;
     };
 }
 #endif // CDIRECTIVESDECLAREDONLYONCERULE_H

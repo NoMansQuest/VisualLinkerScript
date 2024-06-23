@@ -2,7 +2,6 @@
 #define CINCLUDE_RECURSION_GUARD_H__
 
 #include "../IDrcRuleBase.h"
-#include <memory>
 
 namespace VisualLinkerScript::DrcEngine::Rules
 {
@@ -10,21 +9,19 @@ namespace VisualLinkerScript::DrcEngine::Rules
     {
     public:
         /// @brief Default constructor
-        CIncludeRecursionGuard()
-        {}
+        CIncludeRecursionGuard() = default;
 
         /// @copydoc
-        virtual std::string DrcRuleTitle() override
+        std::string DrcRuleTitle() override
         {
             return "Include Recursions Guard Rule";
         }
 
         /// @copydoc
-        virtual SharedPtrVector<CViolationBase> PerformCheck(const SharedPtrVector<CLinkerScriptFile>& linkerScriptFiles) override;
+        SharedPtrVector<CViolationBase> PerformCheck(const SharedPtrVector<CLinkerScriptFile>& linkerScriptFiles) override;
 
         /// @brief Default destructor
-        ~CIncludeRecursionGuard()
-        {}
+        ~CIncludeRecursionGuard() override = default;
     };
 }
 
