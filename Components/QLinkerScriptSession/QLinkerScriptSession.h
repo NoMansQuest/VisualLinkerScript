@@ -35,8 +35,7 @@ public:
     }
 
     /// @brief Default destructor
-    ~QLinkerScriptSession() override
-    {}
+    ~QLinkerScriptSession() override = default;
 
 private:
     QMemoryVisualizer* m_memoryVisualizer;

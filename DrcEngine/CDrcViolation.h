@@ -36,26 +36,26 @@ namespace VisualLinkerScript::DrcEngine
                                std::string title,
                                std::string violationMessage,
                                std::string contentSensitivePath,
-                               SharedPtrVector<CDrcViolation>&& subitems,
-                               std::shared_ptr<CIntervention> correctiveAction,                                
+                               SharedPtrVector<CDrcViolation> subitems,
+                               const std::shared_ptr<CIntervention>& correctiveAction,                                
                                EDrcViolationCode violationCode,
                                EDrcViolationSeverity drcViolationSeverity)
             : m_violationCode(violationCode),
               m_violationSeverity(drcViolationSeverity),
               m_involvedElements(std::move(involvedElements)),
-              m_subitems(subitems),
-              m_violationMessage(violationMessage),
-              m_title(title),
-              m_contentSensitivePath(contentSensitivePath),
+              m_subitems(std::move(subitems)),
+              m_violationMessage(std::move(violationMessage)),
+              m_title(std::move(title)),
+              m_contentSensitivePath(std::move(contentSensitivePath)),
               m_correctiveAction(correctiveAction)
         {}
 
         /// @brief Specialized constructor - ContentSensitivePath not taken
         explicit CDrcViolation(SharedPtrVector<CLinkerScriptContentBase> involvedElements,
-                               std::string title,
-                               std::string violationMessage,
+                               const std::string& title,
+                               const std::string& violationMessage,
                                SharedPtrVector<CDrcViolation>&& subitems,
-                               std::shared_ptr<CIntervention> correctiveAction,
+                               const std::shared_ptr<CIntervention>& correctiveAction,
                                EDrcViolationCode violationCode,
                                EDrcViolationSeverity drcViolationSeverity)
             : m_violationCode(violationCode),
@@ -70,9 +70,9 @@ namespace VisualLinkerScript::DrcEngine
 
         /// @brief Specialized constructor - ContentSensitivePath and SubItems not taken
         explicit CDrcViolation(SharedPtrVector<CLinkerScriptContentBase> involvedElements,
-                               std::string title,
-                               std::string violationMessage,
-                               std::shared_ptr<CIntervention> correctiveAction,
+                               const std::string& title,
+                               const std::string& violationMessage,
+                               const std::shared_ptr<CIntervention>& correctiveAction,
                                EDrcViolationCode violationCode,
                                EDrcViolationSeverity drcViolationSeverity)
             : m_violationCode(violationCode),
@@ -87,8 +87,8 @@ namespace VisualLinkerScript::DrcEngine
 
         /// @brief Specialized constructor - ContentSensitivePath, SubItems and CorrectiveAction not taken
         explicit CDrcViolation(SharedPtrVector<CLinkerScriptContentBase> involvedElements,
-                               std::string title,
-                               std::string violationMessage,
+                               const std::string& title,
+                               const std::string& violationMessage,
                                EDrcViolationCode violationCode,
                                EDrcViolationSeverity drcViolationSeverity)
             : m_violationCode(violationCode),

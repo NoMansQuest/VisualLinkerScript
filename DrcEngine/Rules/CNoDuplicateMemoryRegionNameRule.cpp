@@ -69,15 +69,17 @@ SharedPtrVector<CViolationBase> CNoDuplicateMemoryRegionNameRule::PerformCheck(c
             std::dynamic_pointer_cast<CLinkerScriptContentBase>(memoryStatementToInspect->Result())
         };
 
-        violations.emplace_back(std::static_pointer_cast<CViolationBase>(std::shared_ptr<CDrcViolation>(new CDrcViolation(
-	        memoryStatementsToInspect,
-	        this->DrcRuleTitle(),
-	        errorMessage,
-	        memoryStatementToInspect->Result()->ObjectPath(),
-	        std::move(subitems),
-	        std::shared_ptr<Intervention::CIntervention>(nullptr),
-	        EDrcViolationCode::DuplicateNameForMemoryStatement,
-	        EDrcViolationSeverity::Error))));
+        auto violation = std::shared_ptr<CDrcViolation>(new CDrcViolation(
+            memoryStatementsToInspect,
+            this->DrcRuleTitle(),
+            errorMessage,
+            memoryStatementToInspect->Result()->ObjectPath(),
+            std::move(subitems),
+            std::shared_ptr<Intervention::CIntervention>(nullptr),
+            EDrcViolationCode::DuplicateNameForMemoryStatement,
+            EDrcViolationSeverity::Error));
+
+        violations.emplace_back(std::static_pointer_cast<CViolationBase>(violation));
     }
 
     return violations;

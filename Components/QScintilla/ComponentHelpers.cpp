@@ -22,6 +22,7 @@ void QScintilla::SetComponentStyles(QsciScintilla& target)
     //target.setMarginsForegroundColor(QColor::fromRgba(0xff404040));
     target.setMarginsForegroundColor(QColor::fromRgba(0xff505050));       
     target.setMarginWidth(0, 50);
+    target.setTabWidth(4);
 
     target.setMarginType(0, QsciScintilla::NumberMargin);
     target.setMarginWidth(0, 50);
