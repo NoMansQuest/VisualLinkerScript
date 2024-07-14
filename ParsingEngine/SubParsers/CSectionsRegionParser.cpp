@@ -2,8 +2,12 @@
 #include <memory>
 #include <string>
 #include <iterator>
+#include <QDebug>
 
 #include "CSectionsRegionParser.h"
+
+#include <qlogging.h>
+
 #include "CSectionOutputCommandParser.h"
 #include "CFunctionParser.h"
 #include "CAssignmentParser.h"
@@ -64,7 +68,6 @@ std::shared_ptr<CSectionsRegion> CSectionsRegionParser::TryParse(
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
     {
         auto resolvedContent = linkerScriptFile.ResolveRawEntry(*localIterator);
-
         switch (localIterator->EntryType())
         {
             case RawEntryType::Comment:
@@ -203,6 +206,7 @@ std::shared_ptr<CSectionsRegion> CSectionsRegionParser::TryParse(
             case RawEntryType::String:
             case RawEntryType::ParenthesisOpen:
             case RawEntryType::ParenthesisClose:
+            case RawEntryType::Colon:
             {
                 violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
                 break;

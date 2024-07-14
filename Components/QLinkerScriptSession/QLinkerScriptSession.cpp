@@ -36,6 +36,12 @@ void QLinkerScriptSession::BuildUserInterface()
     // Setup Scintilla Text Editor
 	this->m_scintilla->setLexer(new QsciLexerLinkerScript);
     QScintilla::SetComponentStyles(*this->m_scintilla);
+    this->m_scintilla->setAutoIndent(true);
+    this->m_scintilla->setTabWidth(4);
+    this->m_scintilla->setIndentationGuides(true);
+    this->m_scintilla->setIndentationsUseTabs(false);
+	this->m_scintilla->setBackspaceUnindents(true);
+
     this->setLayout(this->m_centralLayout);
 
     this->m_masterParser = std::make_unique<CMasterParser>();
@@ -45,6 +51,7 @@ void QLinkerScriptSession::BuildUserInterface()
     // Setup deferred procedure call system
     QObject::connect(&this->m_deferredProcedureCaller, &QTimer::timeout, this, &QLinkerScriptSession::DeferredContentProcessingAction);
     QObject::connect(this->m_scintilla, &QsciScintilla::textChanged, this, &QLinkerScriptSession::EditorContentUpdated);
+    //QObject::connect(this->m_scintilla, &QsciScintilla::handleCharAdded, )
     this->m_deferredProcedureCaller.setSingleShot(true);
 }
 

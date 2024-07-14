@@ -236,7 +236,6 @@ void QsciScintilla::setBraceMatching(BraceMatch bm)
     braceMode = bm;
 }
 
-
 // Handle the addition of a character.
 void QsciScintilla::handleCharAdded(int ch)
 {
@@ -1350,8 +1349,8 @@ void QsciScintilla::setFolding(FoldStyle folding, int margin)
         break;
 
     case PlainFoldStyle:
-        setFoldMarker(SC_MARKNUM_FOLDEROPEN, SC_MARK_MINUS);
-        setFoldMarker(SC_MARKNUM_FOLDER, SC_MARK_PLUS);
+        setFoldMarker(SC_MARKNUM_FOLDEROPEN, SC_MARK_ARROWDOWN);
+        setFoldMarker(SC_MARKNUM_FOLDER, SC_MARK_ARROW);
         setFoldMarker(SC_MARKNUM_FOLDERSUB);
         setFoldMarker(SC_MARKNUM_FOLDERTAIL);
         setFoldMarker(SC_MARKNUM_FOLDEREND);

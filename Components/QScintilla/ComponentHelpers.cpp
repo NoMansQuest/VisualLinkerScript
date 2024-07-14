@@ -4,31 +4,37 @@
 #include "src/Qsci/qsciscintilla.h"
 #include <QOperatingSystemVersion>
 
+#include "Scintilla.h"
+
 using namespace VisualLinkerScript::Components;
 
 void QScintilla::SetComponentStyles(QsciScintilla& target)
 {
-    // Color styling            
-    target.setCaretForegroundColor(QColor::fromRgba(0xFFF0F0F0));
     target.setColor(QColor::fromRgba(0xffffffff));
+    target.setCaretForegroundColor(QColor::fromRgba(0xfff0f0f0));
+    target.setCaretLineVisible(true);
+	target.setCaretLineFrameWidth(2);
+    target.setCaretLineBackgroundColor(0xff464646);
 
-    target.setMargins(2);    
-    target.setMarginsBackgroundColor(QColor::fromRgba(0xff161616)); // This is equivalent to @level0
-    //target.setMarginsForegroundColor(QColor::fromRgba(0xff858585));
-    //target.setMarginsForegroundColor(QColor::fromRgba(0xff7160e8));
-    //target.setMarginsForegroundColor(QColor::fromRgba(0xff533ee3));
-    //target.setMarginsForegroundColor(QColor::fromRgba(0xff5e1dc9));
-    //target.setMarginsForegroundColor(QColor::fromRgba(0xffa276eb));
-    //target.setMarginsForegroundColor(QColor::fromRgba(0xff404040));
-    target.setMarginsForegroundColor(QColor::fromRgba(0xff505050));       
+    target.setMargins(3);
+    target.setMarginsBackgroundColor(QColor::fromRgba(0xff161616)); 
+    target.setMarginsForegroundColor(QColor::fromRgba(0xff707070));
     target.setMarginWidth(0, 50);
     target.setTabWidth(4);
 
     target.setMarginType(0, QsciScintilla::NumberMargin);
     target.setMarginWidth(0, 50);
-
-    target.setMarginType(1, QsciScintilla::SymbolMargin);
+        
+    target.setMarginType(1, QsciScintilla::SymbolMargin);    
+    target.setMarginBackgroundColor(1, QColor::fromRgba(0xff161616));
+    target.setFolding(QsciScintilla::PlainFoldStyle, 1);
+    target.setFoldMarginColors(QColor::fromRgb(0xff262626), QColor::fromRgba(0xff161616));
+    target.setMarkerForegroundColor(QColor::fromRgb(0xff464646), SC_MARK_ARROWDOWN);
+    target.setMarkerBackgroundColor(QColor::fromRgb(0xff464646), SC_MARK_ARROWDOWN);    
     target.setMarginWidth(1, 16);
+
+    target.setMarginType(2, QsciScintilla::SymbolMarginDefaultBackgroundColor);
+    target.setMarginWidth(2, 5);
 
     // Font-Related
 #ifdef Q_OS_LINUX

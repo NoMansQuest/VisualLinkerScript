@@ -9,6 +9,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <exception>
 #include <stdio.h>
 #include <stdarg.h>
 #include <assert.h>
@@ -359,45 +360,12 @@ static void ColouriseLinkerScriptDoc(Sci_PositionU startPos, Sci_Position length
 {
     UNREFERENCED_PARAMETER(keywordLists);
 
-    int state = (startPos == 0) ? SCE_LINKERSCRIPT_DEFAULT : initStyle;    
-    auto processedStartPosition = startPos;    
-
-    // Adjust state and position based on special cases  
-    switch (state)
-    {   
-        case SCE_LINKERSCRIPT_RESERVED:
-        case SCE_LINKERSCRIPT_FUNCTION:
-            processedStartPosition = LinkerScript::FindStartOfWord(startPos, styler);
-            state = SCE_LINKERSCRIPT_DEFAULT;
-            break;
-
-        case SCE_LINKERSCRIPT_HEXADECIMAL_NUMBER:
-        case SCE_LINKERSCRIPT_DECIMAL_NUMBER:
-        case SCE_LINKERSCRIPT_OCTAL_NUMBER:
-        case SCE_LINKERSCRIPT_BINARY_NUMBER:
-            processedStartPosition = LinkerScript::FindStartOfNumber(startPos, styler);
-            state = SCE_LINKERSCRIPT_DEFAULT; 
-            break;
-
-        case SCE_LINKERSCRIPT_COMMENTS:
-            processedStartPosition = LinkerScript::FindStartOfComment(startPos, styler);
-            state = SCE_LINKERSCRIPT_DEFAULT; 
-            break;
-
-        case SCE_LINKERSCRIPT_STRING_START:
-            state = SCE_LINKERSCRIPT_STRING_CONTENT;
-            break;
-
-        case SCE_LINKERSCRIPT_STRING_END:
-            state = SCE_LINKERSCRIPT_DEFAULT;
-            break;
-    }
-
-    // We need to know the length of the document
+    int state = SCE_LINKERSCRIPT_DEFAULT;
+    constexpr Sci_PositionU processedStartPosition = 0;        
+    const Sci_PositionU lastPositionToCheck = styler.Length() - 1;
     auto nextChar = styler.SafeGetCharAt(processedStartPosition);
-    Sci_PositionU lastPositionToCheck = processedStartPosition + length - 1;         
 
-    // Go through all provided text segment using the hand-written state machine shown below
+    // Go through all provided text segment using the handwritten state machine shown below
     styler.StartAt(processedStartPosition);
     styler.StartSegment(processedStartPosition);
 
@@ -483,13 +451,15 @@ static void ColouriseLinkerScriptDoc(Sci_PositionU startPos, Sci_Position length
                     state = SCE_LINKERSCRIPT_UNKNOWN_NUMBER;
                     continue;    
                }
-               else if ((currentChar == '{') || (currentChar == '}'))
+
+               if ((currentChar == '{') || (currentChar == '}'))
                {
                     styler.ColourTo(index, SCE_LINKERSCRIPT_CURLY_BRACKETS);
                     nextChar = styler.SafeGetCharAt(++index);
                     continue;
                }
-               else if ((currentChar == '(') || (currentChar == ')'))
+
+               if ((currentChar == '(') || (currentChar == ')'))
                {
                     styler.ColourTo(index, SCE_LINKERSCRIPT_PARENTHESIS);
                     nextChar = styler.SafeGetCharAt(++index);
@@ -511,10 +481,9 @@ static void ColouriseLinkerScriptDoc(Sci_PositionU startPos, Sci_Position length
                }
 
                // OK, We have the position of the last character in the number. 
-               auto lastIndexToConsider = LinkerScript::IsNumberPostfix(currentChar) ? index : index - 1;
-               auto numberType = LinkerScript::CheckNumber(unknownObjectStartIndex, lastIndexToConsider - unknownObjectStartIndex + 1, styler);
+               const auto lastIndexToConsider = LinkerScript::IsNumberPostfix(currentChar) ? index : index - 1;
 
-               switch (numberType) 
+               switch (LinkerScript::CheckNumber(unknownObjectStartIndex, lastIndexToConsider - unknownObjectStartIndex + 1, styler)) 
                {
                 case LinkerScript::NumberType::Decimal:
                     styler.ColourTo(lastIndexToConsider, SCE_LINKERSCRIPT_DECIMAL_NUMBER);
@@ -579,7 +548,7 @@ static void ColouriseLinkerScriptDoc(Sci_PositionU startPos, Sci_Position length
                }
                else
                {
-                   styler.ColourTo(lastIndexToConsider, SCE_LINKERSCRIPT_DEFAULT);
+                   styler.ColourTo(lastIndexToConsider, SCE_LINKERSCRIPT_DEFAULT);					
                }
 
                // We now need to reinvestigate the current character               
@@ -651,5 +620,114 @@ static void ColouriseLinkerScriptDoc(Sci_PositionU startPos, Sci_Position length
     }
 }
 
-LexerModule lmLinkerScript(SCLEX_LINKERSCRIPT, ColouriseLinkerScriptDoc, "linkerScript", 0);
+static void FoldLinkerScriptDoc(Sci_PositionU startingPosition, Sci_Position length, int initStyle, WordList *keywordLists[], Accessor &styler)
+{
+    UNREFERENCED_PARAMETER(keywordLists);
+
+    enum class FolderStateEnum
+    {
+        Default,
+        InComment,
+        InString,
+    };
+
+    const auto endingPosition = 0 + styler.Length();
+    auto currentLine = styler.GetLine(0);
+    auto currentFolderState = FolderStateEnum::Default;
+    auto previousCharacter = ' '; // We don't care what it truly had been
+    int levelPrev = styler.LevelAt(currentLine);
+    int levelCurrent = levelPrev;
+
+    for (unsigned int hoveringIndex = 0; hoveringIndex < endingPosition; hoveringIndex++) 
+    {
+        const auto nextCharacter = styler.SafeGetCharAt(hoveringIndex + 1);	    
+	    const char currentCharacter = styler.SafeGetCharAt(hoveringIndex);
+        const auto newLineJumpToNextCharacter = (currentCharacter == '\r' && nextCharacter == '\n');
+        const auto atEndOfLine = newLineJumpToNextCharacter || (currentCharacter == '\n');
+
+        switch (currentFolderState)
+        {
+	        case FolderStateEnum::Default:
+	        {
+                if (currentCharacter == '{')
+                {
+                    levelCurrent++;
+                }
+
+                if (currentCharacter == '}')
+                {
+                    levelCurrent--;
+                }
+
+				if ((currentCharacter == '/') && (nextCharacter == '*'))
+				{
+                    levelCurrent++;
+                    currentFolderState = FolderStateEnum::InComment;
+				}
+				
+                if ((currentCharacter == '"'))
+                {
+                    currentFolderState = FolderStateEnum::InString;
+                }
+
+				break;
+	        }
+
+	        case FolderStateEnum::InComment:
+	        {
+				if (currentCharacter == '*' && nextCharacter == '/')
+				{
+                    levelCurrent--;
+                    currentFolderState = FolderStateEnum::Default;
+				}				
+                break;
+	        }
+
+	        case FolderStateEnum::InString:
+	        {
+				if ((currentCharacter == '"') && (previousCharacter != '\\'))
+				{
+                    currentFolderState = FolderStateEnum::Default;
+				}
+                break;
+	        }
+
+            /*
+             * The default was left here to catch potential exceptions triggered
+             * by a potential future enum entry not referenced in the switch statement.
+             */
+	        default:
+	            throw std::exception("Unrecognized enum state in 'FolderStateEnum'");            
+        }
+
+        if (atEndOfLine || (hoveringIndex == (endingPosition - 1)))
+        {
+            int lev = levelPrev;
+            if (levelCurrent > levelPrev)
+            {
+                lev |= SC_FOLDLEVELHEADERFLAG;
+            }
+
+            if (lev != styler.LevelAt(currentLine))
+            {
+                styler.SetLevel(currentLine, lev);
+            }
+            
+            currentLine++;            
+            levelPrev = levelCurrent;
+        }
+
+        if (newLineJumpToNextCharacter)
+        {            
+            previousCharacter = nextCharacter;
+            hoveringIndex++;
+        }
+        else
+        {            
+            previousCharacter = currentCharacter;
+        }
+        
+    }
+}
+LexerModule lmLinkerScript(SCLEX_LINKERSCRIPT, ColouriseLinkerScriptDoc, "linkerScript", FoldLinkerScriptDoc);
 
