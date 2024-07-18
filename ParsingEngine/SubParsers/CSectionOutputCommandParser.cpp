@@ -15,8 +15,8 @@
 #include "../CMasterParserException.h"
 
 #include "../../Models/CInputSectionStatement.h"
-#include "../../Models/CSectionOutputConstraint.h"
 #include "../../Models/CFunctionCall.h"
+#include "../../Models/CSectionOutputConstraint.h"
 #include "../../Models/CSectionOutputDataExpression.h"
 #include "../../Models/CSectionOutputToVmaRegion.h"
 #include "../../Models/CSectionOutputAtLmaRegion.h"
@@ -80,9 +80,42 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
 
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
     {
+        // Edge case coverage, where we read end-of-file prematurely.
+        if (localIterator == endOfVectorIterator)
+        {
+            switch (parserState)
+            {
+            case ParserState::AwaitingHeader:
+            case ParserState::AwaitingColon:
+                return nullptr;
+
+            case ParserState::AwaitingBracketOpen:
+                violations.emplace_back(std::make_shared<CParserViolation>(sectionOutputNameEntry, EParserViolationCode::SectionOutputDefinitionIncomplete));
+                --localIterator;
+                break;
+
+            case ParserState::AwaitingBracketClosure:
+                violations.emplace_back(std::make_shared<CParserViolation>(bracketOpenEntry, EParserViolationCode::SectionOutputBracketClosureMissing));
+                --localIterator;
+                break;
+
+            case ParserState::AwaitingEndOfParse:
+            {
+                // This is the start of a new expression or statement, etc. We need to rewind the iterator
+                // and return back to the caller.
+                --localIterator;
+                parserState = ParserState::ParsingComplete;
+            }
+
+            default:
+                throw CMasterParsingException(
+                    MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
+                    "ParserState invalid in CSectionOutputCommandParser");
+            }
+        }
+
         auto rawEntry = *localIterator;
         auto resolvedContent = linkerScriptFile.ResolveRawEntry(rawEntry);
-
         switch (localIterator->EntryType())
         {
             case RawEntryType::Comment:

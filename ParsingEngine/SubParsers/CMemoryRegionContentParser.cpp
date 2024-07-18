@@ -69,12 +69,40 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
 
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
     {
+        // Edge case coverage, where we read end-of-file prematurely.
+        if (localIterator == endOfVectorIterator)
+        {
+            switch (parserState)
+            {
+            case ParserState::AwaitingName:
+            case ParserState::AwaitingAttributes:
+            case ParserState::AwaitingColon:
+                return nullptr;
+            
+            case ParserState::AwaitingOriginHeader:
+            case ParserState::AwaitingOriginAssignmentSymbol:
+            case ParserState::AwaitingOriginRValue:
+            case ParserState::AwaitingLengthHeader:
+            case ParserState::AwaitingLengthAssignmentSymbol:
+            case ParserState::AwaitingLengthRValue:
+            case ParserState::AwaitingCommaSeparatingOriginAndLength:     
+                violations.emplace_back(std::make_shared<CParserViolation>(nameEntry, EParserViolationCode::IncompleteMemoryDefinition));
+                --localIterator;
+                break;
+
+            default:
+                throw CMasterParsingException(
+                    MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
+                    "ParserState invalid in CInputSectionStatementParser");
+            }
+        }
+
         auto resolvedContent = linkerScriptFile.ResolveRawEntry(*localIterator);
         auto lineChangeDetected = parsingStartIteratorPosition->EndLineNumber() != localIterator->EndLineNumber();
 
         if (lineChangeDetected)
         {
-            // Any line-change would be rended parsing attempt null and void (however, it may be possible to report
+            // Any line-change would be rendered parsing attempt null and void (however, it may be possible to report
             // back a type of statement)
             break;
         }
@@ -313,7 +341,7 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
                     {
                         if (resolvedContent != "=")
                         {
-                            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::CompoundAssignmentOperatoreNotAllowedHere)));
+                            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::CompoundAssignmentOperatorNotAllowedHere)));
                         }
 
                         lengthAssignmentSymbol = *localIterator;
@@ -325,7 +353,7 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
                     {
                         if (resolvedContent != "=")
                         {
-                            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::CompoundAssignmentOperatoreNotAllowedHere)));
+                            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::CompoundAssignmentOperatorNotAllowedHere)));
                         }
 
                         originAssignmentSymbol = *localIterator;

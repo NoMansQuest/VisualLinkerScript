@@ -77,6 +77,40 @@ std::shared_ptr<CSectionOverlayCommand> CSectionOverlayParser::TryParse(
 
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
     {
+        // Edge case coverage, where we read end-of-file prematurely.
+        if (localIterator == endOfVectorIterator)
+        {
+            switch (parserState)
+            {
+            case ParserState::AwaitingHeader:
+            case ParserState::AwaitingColon:
+                return nullptr;
+
+            case ParserState::AwaitingBracketOpen:
+                violations.emplace_back(std::make_shared<CParserViolation>(overlayHeaderEntry, EParserViolationCode::SectionOutputDefinitionIncomplete));
+                --localIterator;
+                break;
+
+            case ParserState::AwaitingBracketClosure:
+                violations.emplace_back(std::make_shared<CParserViolation>(bracketOpenEntry, EParserViolationCode::SectionOutputBracketClosureMissing));
+                --localIterator;
+                break;
+
+            case ParserState::AwaitingEndOfParse:
+            {
+                // This is the start of a new expression or statement, etc. We need to rewind the iterator
+                // and return back to the caller.
+                --localIterator;
+                parserState = ParserState::ParsingComplete;
+            }
+
+            default:
+                throw CMasterParsingException(
+                    MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
+                    "ParserState invalid in CSectionOverlayParser");
+            }
+        }
+
         std::vector<CRawEntry>::const_iterator pushedLocalIterator = localIterator;
         auto resolvedContent = linkerScriptFile.ResolveRawEntry(*localIterator);
 

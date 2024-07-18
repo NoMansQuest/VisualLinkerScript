@@ -59,6 +59,33 @@ std::shared_ptr<CVersionScope> CVersionRegionContentParser::TryParse(
 
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
     {
+        // Edge case coverage, where we read end-of-file prematurely.
+        if (localIterator == endOfVectorIterator)
+        {
+            switch (parserState)
+            {
+            case ParserState::AwaitingHeader:
+            case ParserState::AwaitingBracketOpen:
+                return nullptr;
+
+            case ParserState::AwaitingBracketClosure:
+                violations.emplace_back(std::make_shared<CParserViolation>(bracketOpenEntry, EParserViolationCode::VersionScriptBracketClosureMissing));
+                --localIterator;
+                break;
+
+            case ParserState::AwaitingSemicolon:
+                violations.emplace_back(std::make_shared<CParserViolation>(scopeHeaderEntry, EParserViolationCode::VersionScriptSemicolonMissing));
+                --localIterator;
+                break;
+
+            default:
+                throw CMasterParsingException(
+                    MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
+                    "ParserState invalid in CVersionRegionContentParser");
+            }
+        }
+
+
         auto resolvedContent = linkerScriptFile.ResolveRawEntry(*localIterator);
         auto localIteratorPlusOne = localIterator + 1;
         CRawEntry rawEntryPlusOne;

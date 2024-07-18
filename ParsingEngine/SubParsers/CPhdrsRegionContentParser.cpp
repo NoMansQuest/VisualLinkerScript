@@ -61,8 +61,33 @@ std::shared_ptr<CPhdrsStatement> CPhdrsRegionContentParser::TryParse(
 
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
     {
-        auto resolvedContent = linkerScriptFile.ResolveRawEntry(*localIterator);
+        // Edge case coverage, where we read end-of-file prematurely.
+        if (localIterator == endOfVectorIterator)
+        {
+            switch (parserState)
+            {
+            case ParserState::AwaitingName:
+            case ParserState::AwaitingType:
+                return nullptr;            
 
+            case ParserState::AwaitingOptionalFields:
+                violations.emplace_back(std::make_shared<CParserViolation>(nameEntry, EParserViolationCode::PhdrsCommandIsIncomplete));
+                --localIterator;
+                break;
+
+            case ParserState::AwaitingSemicolon:
+                violations.emplace_back(std::make_shared<CParserViolation>(nameEntry, EParserViolationCode::ExpectedSemicolonWasNotFound));
+                --localIterator;
+                break;
+
+            default:
+                throw CMasterParsingException(
+                    MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
+                    "ParserState invalid in CPhdrsRegionContentParser");
+            }
+        }
+
+        auto resolvedContent = linkerScriptFile.ResolveRawEntry(*localIterator);
         switch (localIterator->EntryType())
         {
             case RawEntryType::Comment:

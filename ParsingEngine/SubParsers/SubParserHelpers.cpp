@@ -16,7 +16,6 @@ namespace
 {
     bool CanBePartOfWildcard(CRawFile& linkerScriptFile, CRawEntry rawEntry)
     {
-
         switch (rawEntry.EntryType())
         {
             case RawEntryType::Word:

@@ -77,8 +77,30 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
         parenthesisOpen = *localIterator++; // We both save this parenthesis and increment the iterator.
     }
 
-    while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
+    while (parserState != ParserState::ParsingComplete)
     {
+        // Edge case coverage, where we read end-of-file prematurely.
+        if (localIterator == endOfVectorIterator)
+        {
+            switch (parserState)
+            {
+            case ParserState::AwaitingContent:
+                violations.emplace_back(std::make_shared<CParserViolation>(*(localIterator - 1), EParserViolationCode::WasExpectingASymbolOrNumberBeforeExpressionEnds));
+                --localIterator;
+                break;
+
+            case ParserState::AwaitingOperator:
+                violations.emplace_back(std::make_shared<CParserViolation>(*(localIterator - 1), EParserViolationCode::WasExpectingAnOperatorHere));
+                --localIterator;
+                break;
+
+            default:
+                throw CMasterParsingException(
+                    MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
+                    "ParserState invalid in CExpressionParser");
+            }
+        }
+
         auto resolvedContent = linkerScriptFile.ResolveRawEntry(*localIterator);
         switch (localIterator->EntryType())
         {

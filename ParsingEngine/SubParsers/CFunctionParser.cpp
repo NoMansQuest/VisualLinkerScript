@@ -63,10 +63,30 @@ std::shared_ptr<CFunctionCall> CFunctionParser::TryParse(
         return nullptr;
     }
 
-    while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
+    while (parserState != ParserState::ParsingComplete)
     {
-        auto resolvedContent = linkerScriptFile.ResolveRawEntry(*localIterator);
+        // Edge case coverage, where we read end-of-file prematurely.
+        if (localIterator == endOfVectorIterator)
+        {
+            switch (parserState)
+            {
+            case ParserState::AwaitingName:
+            case ParserState::AwaitingParenthesisOverture:
+                return nullptr;
 
+            case ParserState::AwaitingParenthesisClosure:
+                violations.emplace_back(std::make_shared<CParserViolation>(parenthesisOverture, EParserViolationCode::ParenthesisClosureForExpressionIsMissing));
+                --localIterator;
+                break;
+
+            default:
+                throw CMasterParsingException(
+                    MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
+                    "ParserState invalid in CFunctionParser");
+            }
+        }
+
+        auto resolvedContent = linkerScriptFile.ResolveRawEntry(*localIterator);
         switch (localIterator->EntryType())
         {
             case RawEntryType::Comment:

@@ -51,6 +51,7 @@ void QLinkerScriptSession::BuildUserInterface()
     // Setup deferred procedure call system
     QObject::connect(&this->m_deferredProcedureCaller, &QTimer::timeout, this, &QLinkerScriptSession::DeferredContentProcessingAction);
     QObject::connect(this->m_scintilla, &QsciScintilla::textChanged, this, &QLinkerScriptSession::EditorContentUpdated);
+    QObject::connect(this->m_scintilla, &QsciScintilla::SCN_CHARADDED, this, &QLinkerScriptSession::OnCharAddedToEditor);
     //QObject::connect(this->m_scintilla, &QsciScintilla::handleCharAdded, )
     this->m_deferredProcedureCaller.setSingleShot(true);
 }
@@ -112,4 +113,9 @@ void QLinkerScriptSession::DeferredContentProcessingAction() const
 void QLinkerScriptSession::InitiateDeferredProcessing()
 {
     this->m_deferredProcedureCaller.start(500);
+}
+
+void QLinkerScriptSession::OnCharAddedToEditor(int charAdded)
+{
+    qDebug() << "Char was inserted: " << charAdded << "\n";
 }

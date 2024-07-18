@@ -34,7 +34,7 @@ void QScintilla::SetComponentStyles(QsciScintilla& target)
     target.setMarginWidth(1, 16);
 
     target.setMarginType(2, QsciScintilla::SymbolMarginDefaultBackgroundColor);
-    target.setMarginWidth(2, 5);
+    target.setMarginWidth(2, 5);   
 
     // Font-Related
 #ifdef Q_OS_LINUX

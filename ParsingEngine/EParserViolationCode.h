@@ -23,12 +23,13 @@ namespace VisualLinkerScript::ParsingEngine
         WasExpectingProgramHeaderTypeHere,
 
         // Memory region violations:
+        IncompleteMemoryDefinition,
         NoSymbolOrKeywordAllowedAfterMemoryHeader,
         ReadAttributeIsAlreadySet,
         WasExpectingEqualOperatorHere,
         ReadWriteAttributeIsAlreadySet,
-        AlloctableAttributeIsAlreadySet,
-        CompoundAssignmentOperatoreNotAllowedHere,
+        AllocatableAttributeIsAlreadySet,
+        CompoundAssignmentOperatorNotAllowedHere,
         ExecutableAttributeIsAlreadySet,
         InitializedAttributeIsAlreadySet,
         NegatingSymbolIsAlreadySet,
@@ -54,6 +55,7 @@ namespace VisualLinkerScript::ParsingEngine
         WasExpectingParenthesisOverture,
         WasExpectingParenthesisClosure,
         WasExpectingAnotherParameterOrParenthesisClosure,
+        ParenthesisClosureForExpressionIsMissing,
 
         // Functions parsing violations:
         FunctionsCannotSpanMultipleLines,
@@ -72,11 +74,13 @@ namespace VisualLinkerScript::ParsingEngine
         LValueCannotContainRValueExpression,
         MultipleAssignmentOperatorsDetected,
         RValueExpressionParsingFailed,
+        RValueExpressionMissing,
         UnexpectedEarlyTermination,
         MissingLValue,
 
         // Assignment procedure parsing violations:
-        WasExpectingSemicolonHere,        
+        ExpectedSemicolonWasNotFound,
+        AssignmentIsMissingParenthesisClosure,
 
         // Section Output Content
         OnlyOneSectionOutputTypeIsAllowed,
@@ -96,6 +100,8 @@ namespace VisualLinkerScript::ParsingEngine
         IllegalFunctionCallInSectionOutputStatement,
         InvalidExcludeFileCall,
         InvalidSortFunctionCall,
+        SectionOutputDefinitionIncomplete,
+        SectionOutputBracketClosureMissing,
 
         // OVERLAYS:
         NotAllowedInOverlayCommand,
@@ -108,11 +114,15 @@ namespace VisualLinkerScript::ParsingEngine
         WasExpectingBracketOverture,
         InvalidParentScope,
         ParentScopeIsAlreadyDefined,
+        VersionScriptBracketClosureMissing,
+        VersionScriptSemicolonMissing,
 
         // Master Parser Errors
         MemoryRegionParsingFailed,
         SectionsRegionParsingFailed,
+        SectionsRegionBracketClosureMissing,
         PhdrsRegionParsingFailed,
+        PhdrsCommandIsIncomplete,
         VersionRegionParsingFailed,
 
         // General violations:

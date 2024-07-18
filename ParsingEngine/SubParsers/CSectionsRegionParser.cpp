@@ -67,6 +67,27 @@ std::shared_ptr<CSectionsRegion> CSectionsRegionParser::TryParse(
 
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
     {
+        // Edge case coverage, where we read end-of-file prematurely.
+        if (localIterator == endOfVectorIterator)
+        {
+            switch (parserState)
+            {
+            case ParserState::AwaitingHeader:
+            case ParserState::AwaitingBracketOpen:
+                return nullptr;
+                            
+            case ParserState::AwaitingBracketClosure:
+                violations.emplace_back(std::make_shared<CParserViolation>(bracketOpenEntry, EParserViolationCode::SectionsRegionBracketClosureMissing));
+                --localIterator;
+                break;
+
+            default:
+                throw CMasterParsingException(
+                    MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
+                    "ParserState invalid in CSectionsRegionParser");
+            }
+        }
+
         auto resolvedContent = linkerScriptFile.ResolveRawEntry(*localIterator);
         switch (localIterator->EntryType())
         {

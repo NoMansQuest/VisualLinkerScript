@@ -115,6 +115,7 @@ public slots:
     void OnFindRequest(std::string searchFor, bool isRegExt, bool isCaseSensitive);
     void OnFindNext();
     void OnFindReplace(std::string replaceWith);
+    void OnCharAddedToEditor(int charAdded);
 };
 
 #endif // end of QLINKERSCRIPTSESSION_H__

@@ -467,6 +467,9 @@
     <ClCompile Include="MD5\MD5.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="Components\QScintilla\VlsScintilla.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Components\QScintilla\scintilla\lexlib\Accessor.h">
@@ -1214,6 +1217,9 @@
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="MD5\MD5_loc.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\QScintilla\VlsScintilla.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>

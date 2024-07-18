@@ -64,6 +64,27 @@ std::shared_ptr<CInputSectionStatement> CInputSectionStatementParser::TryParse(
 
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
     {
+        // Edge case coverage, where we read end-of-file prematurely.
+        if (localIterator == endOfVectorIterator)
+        {
+            switch (parserState)
+            {
+            case ParserState::AwaitingHeader:
+            case ParserState::AwaitingOptionalParenthesisOverture:
+                return nullptr;
+
+            case ParserState::AwaitingOptionalParenthesisClosure:
+                violations.emplace_back(std::make_shared<CParserViolation>(parenthesisOpen, EParserViolationCode::ParenthesisClosureForExpressionIsMissing));
+                --localIterator;
+                break;
+
+            default:
+                throw CMasterParsingException(
+                    MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
+                    "ParserState invalid in CInputSectionStatementParser");
+            }
+        }
+
         auto resolvedContent = linkerScriptFile.ResolveRawEntry(*localIterator);
         switch (localIterator->EntryType())
         {

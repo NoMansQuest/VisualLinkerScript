@@ -44,7 +44,7 @@ std::shared_ptr<CAssignmentProcedureStatement> CAssignmentProcedureParser::TryPa
     std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
     SharedPtrVector<CViolationBase> violations;
 
-    CRawEntry proceduerNameEntry;
+    CRawEntry procedureNameEntry;
     CRawEntry parenthesisOpenEntry;
     CRawEntry parenthesisCloseEntry;
     CRawEntry lValueSymbol;    
@@ -59,8 +59,36 @@ std::shared_ptr<CAssignmentProcedureStatement> CAssignmentProcedureParser::TryPa
         return nullptr;
     }
 
-    while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
+    while (parserState != ParserState::ParsingComplete)
     {
+        // Edge case coverage, where we read end-of-file prematurely.
+        if (localIterator == endOfVectorIterator)
+        {
+            switch (parserState)
+            {
+            case ParserState::AwaitingProcedureName:
+            case ParserState::AwaitingParenthesisOverture:
+                return nullptr;
+
+            case ParserState::AwaitingParenthesisClosure:
+            {
+                violations.emplace_back(std::make_shared<CParserViolation>(parenthesisOpenEntry, EParserViolationCode::MissingClosingParenthesis));
+                --localIterator;
+                break;
+            }
+            case ParserState::AwaitingSemicolon:
+            {
+                violations.emplace_back(std::make_shared<CParserViolation>(parenthesisCloseEntry, EParserViolationCode::ExpectedSemicolonWasNotFound));
+                --localIterator;
+                break;
+            }
+            default:
+                throw CMasterParsingException(
+                    MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
+                    "ParserState invalid in CAssignmentProcedureParser");
+            }
+        }
+
         auto localIteratorPlusOne = localIterator + 1;
         auto nextEntryExists = (localIteratorPlusOne != endOfVectorIterator);
         auto resolvedContent = linkerScriptFile.ResolveRawEntry(*localIterator);        
@@ -108,7 +136,7 @@ std::shared_ptr<CAssignmentProcedureStatement> CAssignmentProcedureParser::TryPa
                             return nullptr;
                         }
 
-                        proceduerNameEntry = *localIterator;
+                        procedureNameEntry = *localIterator;
                         parserState = ParserState::AwaitingParenthesisOverture;
                         break;
                     }
@@ -127,7 +155,7 @@ std::shared_ptr<CAssignmentProcedureStatement> CAssignmentProcedureParser::TryPa
 
                     case ParserState::AwaitingSemicolon:
                     {
-                        violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::WasExpectingSemicolonHere)));
+                        violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::ExpectedSemicolonWasNotFound)));
                         break;
                     }
 
@@ -357,7 +385,7 @@ std::shared_ptr<CAssignmentProcedureStatement> CAssignmentProcedureParser::TryPa
     iterator = localIterator;
 
     return std::shared_ptr<CAssignmentProcedureStatement>(
-                new CAssignmentProcedureStatement(proceduerNameEntry,
+                new CAssignmentProcedureStatement(procedureNameEntry,
                                                   parenthesisOpenEntry,
                                                   parenthesisCloseEntry,
                                                   assignmentStatement,

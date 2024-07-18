@@ -79,7 +79,7 @@ namespace
                 case 'A':
                 case 'a':
                 {
-                    ProcessAttribute(rawEntry, inversion, allocatableSection, detectedViolations, EParserViolationCode::AlloctableAttributeIsAlreadySet);
+                    ProcessAttribute(rawEntry, inversion, allocatableSection, detectedViolations, EParserViolationCode::AllocatableAttributeIsAlreadySet);
                     inversion = false;
                     break;
                 }
@@ -155,6 +155,26 @@ std::shared_ptr<CMemoryStatementAttribute> CMemoryStatementAttributeParser::TryP
 
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
     {
+        // Edge case coverage, where we read end-of-file prematurely.
+        if (localIterator == endOfVectorIterator)
+        {
+            switch (parserState)
+            {
+            case ParserState::AwaitingParenthesisOverture:
+                return nullptr;
+
+            case ParserState::AwaitingParenthesisClosure:
+                violations.emplace_back(std::make_shared<CParserViolation>(parenthesisOpen, EParserViolationCode::ParenthesisClosureForExpressionIsMissing));
+                --localIterator;
+                break;
+
+            default:
+                throw CMasterParsingException(
+                    MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
+                    "ParserState invalid in CMemoryStatementAttributeParser");
+            }
+        }
+
         auto resolvedContent = linkerScriptFile.ResolveRawEntry(*localIterator);
         auto lineChangeDetected = parsingStartIteratorPosition->EndLineNumber() != localIterator->EndLineNumber();
 
