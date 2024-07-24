@@ -367,6 +367,7 @@
     <ClInclude Include="Compiler\ExpressionEvaluation\CArithmeticResultOp.h" />
     <ClInclude Include="Components\MemoryVisualizer\Models\CArrowObject.h" />
     <ClInclude Include="Components\MemoryVisualizer\Rendering\CArrowsRenderer.h" />
+    <ClInclude Include="Models\CIndentationInfo.h" />
     <ClInclude Include="ParsingEngine\SubParsers\CAssignmentParser.h" />
     <ClInclude Include="ParsingEngine\SubParsers\CAssignmentProcedureParser.h" />
     <ClInclude Include="Models\CAssignmentProcedureStatement.h" />

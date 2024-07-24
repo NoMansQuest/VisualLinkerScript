@@ -82,7 +82,7 @@ namespace VisualLinkerScript::Models
         /// @brief Does content pass integrity check?
         bool IsValid() const
         {
-            return m_violations.size() == 0;
+            return m_violations.empty();
         }
 
         /// @brief Returns the first element present        

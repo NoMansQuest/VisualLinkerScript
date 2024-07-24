@@ -22,6 +22,7 @@ class QLinkerScriptSession : public QWidget
 private:
     uint32_t m_sessionId;
     uint32_t m_sessionsTabIndex;
+    std::shared_ptr<CRawFile> m_lexedLinkerScript;
 
 public:
     /// @brief Default constructor
@@ -115,7 +116,7 @@ public slots:
     void OnFindRequest(std::string searchFor, bool isRegExt, bool isCaseSensitive);
     void OnFindNext();
     void OnFindReplace(std::string replaceWith);
-    void OnCharAddedToEditor(int charAdded);
+    void OnCharAddedToEditor(int charAdded) const;
 };
 
 #endif // end of QLINKERSCRIPTSESSION_H__

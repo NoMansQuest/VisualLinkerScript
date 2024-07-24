@@ -326,7 +326,7 @@ QFile fileToRead(fileName);
 fileToRead.open(QFile::ReadOnly | QFile::Text);
 QTextStream in(&fileToRead);
 auto fileContent = in.readAll();
-auto preliminaryParseResult = linkerScriptLexer.ProcessLinkerScript(fileName.toStdString(), fileContent.toStdString());
+auto preliminaryParseResult = linkerScriptLexer.LexLinkerScript(fileName.toStdString(), fileContent.toStdString());
 auto contentToAnalyze = preliminaryParseResult->Content();
 
 // Generate result

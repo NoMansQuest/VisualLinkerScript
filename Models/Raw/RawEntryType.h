@@ -5,10 +5,10 @@
 
 namespace VisualLinkerScript::Models::Raw 
 {
-    /// @brief Type of entries procued by Preliminary-Parsing engine
+    /// @brief Type of entries extracted by the lexer
     enum class RawEntryType : uint32_t
     {
-        /// @brief This element is not present, and serves as a placedholder only.
+        /// @brief This element is not present, and serves as a place-holder only.
         NotPresent,
 
         /// @brief A word, which may only be a single dot as well

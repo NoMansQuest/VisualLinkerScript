@@ -18,7 +18,7 @@ using namespace VisualLinkerScript::ParsingEngine;
 namespace
 {
     /// @brief Various states of the parser.
-    enum class ParserStates
+    enum class LexerStates
     {
         Default,
         InComment,        
@@ -63,7 +63,7 @@ namespace
     bool SafeTestPatternInString(
         const std::string& input,
         uint32_t position,
-        std::vector<char> characterSequence)
+        const std::vector<char>& characterSequence)
     {
         for (const auto element : characterSequence)
         {
@@ -85,7 +85,7 @@ namespace
     }
 
     /// @brief If true, then the character can be considered as part of a word
-    bool CanCharBeWithinWord(char input)
+    bool CanCharBeWithinWord(const char input)
     {
         return ((input >= '0') && (input <= '9')) || CanCharBeStartOfWord(input);
     }
@@ -133,24 +133,24 @@ namespace
     }
 
     /// @brief Checks the character for being a potential prefix (such as 0x, 0b, etc.)
-    bool IsNumberPrefix(char input)
+    bool IsNumberPrefix(const char input)
     {
         return ((input == 'x') || (input == 'X') || (input == 'b') || (input == 'B'));
     }
 
     /// @brief Checks the character for being a potential postfixes ('K' and 'M')
-    bool IsNumberPostfix(char input)
+    bool IsNumberPostfix(const char input)
     {
         return ((input == 'K') ||
                 (input == 'M'));
     }
 
     /// @brief The following characters are considered wild-card characters. The list here is
-    ///        not exchaustive (*, ? and - can also be wildcards), however the other character's 
+    ///        not exhaustive (*, ? and - can also be wildcards), however the other character's 
     ///        role as wild-card as subjective. 
     /// @param input 
     /// @return 
-    bool IsWildCardCharacter(char input)
+    bool IsWildCardCharacter(const char input)
     {
         return (input == '[') ||
                (input == ']') ||
@@ -158,9 +158,9 @@ namespace
     }
 
     /// @brief Detects if the input character is a white-space
-    bool IsWhitespace(char input)
+    bool IsWhitespace(const char input)
     {
-        return ((input >= (char)0x09) && (input <= (char)0x0D)) || (input == ' ');
+        return ((input >= 0x09) && (input <= 0x0D)) || (input == ' ');
     }
 
     /// @brief Checks if input is a digit. 
@@ -171,7 +171,7 @@ namespace
 
 
     /// @brief Checks if input is a digit or a hexadecimal. 
-    bool IsNumberOrHex(char input)
+    bool IsNumberOrHex(const char input)
     {
         return ((input >= '0') && (input <= '9')) || 
                ((input >= 'A') && (input <= 'F')) ||
@@ -179,13 +179,13 @@ namespace
     }
 
     /// @brief Checks if input is a double-quotation symbo, marking the start/end of a string
-    bool IsDoubleQuotation(char input)
+    bool IsDoubleQuotation(const char input)
     {
         return (input == '"');
     }
 
     /// @brief Checks if input is Line-Feed symbol
-    bool IsLineFeed(char input)
+    bool IsLineFeed(const char input)
     {
         return (input == '\n');
     }
@@ -265,12 +265,18 @@ namespace
     }
 
     /// @brief Procedure in charge of maintaining scope-depth, parenthesis-depth and line-number based on detected character
-    void ProcessLineAndScopeIncrement(char inputCharacter, uint32_t& lineNumberHolder, uint32_t& parenthesisDepthHolder, uint32_t& scopeDepthHolder)
+    /// @return True if we have moved to the next line, false otherwise.
+    bool ProcessLineAndScopeIncrement(char inputCharacter,
+        uint32_t& lineNumberHolder,
+        uint32_t& parenthesisDepthHolder, 
+        uint32_t& scopeDepthHolder)
     {
+        auto applyIndentationDataToLine = false;
         switch (inputCharacter)
         {
             case '\n':
                 lineNumberHolder++;
+                applyIndentationDataToLine = true;
                 break;
 
             case '{':
@@ -292,10 +298,12 @@ namespace
             default:
                 break;
         }
+
+        return applyIndentationDataToLine;
     }
 
     /// @brief Alters the parser-engines state along with scan-position adjustement
-    void SwitchToState(ParserStates& stateMachine, uint32_t& scanPosition, ParserLoopActionType scanPositionAdjustment)
+    void SwitchToState(LexerStates& stateMachine, uint32_t& scanPosition, ParserLoopActionType scanPositionAdjustment)
     {
         switch (scanPositionAdjustment)
         {
@@ -306,25 +314,29 @@ namespace
             default: throw CLexerException(PreliminaryParsingExceptionType::InternalParserError, "Unrecognized 'ParserLoopActionType' value.");
         }
 
-        stateMachine = ParserStates::Default;
-    };
+        stateMachine = LexerStates::Default;
+    }
 }
 
-std::shared_ptr<CRawFile> CLexer::ProcessLinkerScript(std::string absoluteFilePath, std::string rawContent)
+std::shared_ptr<CRawFile> CLexer::LexLinkerScript(std::string absoluteFilePath, std::string rawContent)
 {    
     // TODO: Revise code in event of available capacity to reduce cyclomatic complexity
     std::vector<CRawEntry> lexedContent;
-    auto currentState = ParserStates::Default;    
-    auto scopeDepth = (uint32_t)0; // Depth increases each time we encounter a '{' and decreases on each '}'
-    auto parenthesisDepth = (uint32_t)0; // Depth increases each time we encounter a '(' and decreases on each ')'
+    std::unordered_map<uint32_t, CIndentationInfo> indentationMap;
+    auto currentState = LexerStates::Default;
+    auto scopeDepth = static_cast<uint32_t>(0); // Depth increases each time we encounter a '{' and decreases on each '}'
+    auto previousLineScopeDepth = static_cast<uint32_t>(0); 
+    auto commentLinePrefixing = false;
+    auto parenthesisDepth = static_cast<uint32_t>(0); // Depth increases each time we encounter a '(' and decreases on each ')'
 
-    auto entryStartPosition = (uint32_t)0;   
-    auto entryStartLine = (uint32_t)0;
+    auto entryStartPosition = static_cast<uint32_t>(0);   
+    auto entryStartLine = static_cast<uint32_t>(0);
     auto backslashArmed = false;     
     auto endOfStreamReached = false;
-    auto lineNumber = (uint32_t)1;
-    auto scanPosition = (uint32_t)0;
-    auto supressLineAndScopeUpdate = false;
+    auto isLastCharacterInStream = false;
+    auto lineNumber = static_cast<uint32_t>(0);
+    auto scanPosition = static_cast<uint32_t>(0);
+    auto suppressLineAndScopeUpdate = false;    
 
     auto nextCharacterExists = false;
     auto nextCharacter = ' ';
@@ -332,9 +344,13 @@ std::shared_ptr<CRawFile> CLexer::ProcessLinkerScript(std::string absoluteFilePa
     auto previousCharacterExists = false;
     auto previousCharacter = ' ';
 
+    // Note: Line-0 will always be at depth-0 and regular-space indentation type (i.e. it cannot be indented).
+    indentationMap.emplace(0, CIndentationInfo(0, EIndentationLineType::RegularSpace, false));
+
     for (scanPosition = 0;; scanPosition++)
     {        
         auto currentCharacter = rawContent[scanPosition];
+        isLastCharacterInStream = scanPosition == rawContent.length() - 1;
         endOfStreamReached = scanPosition >= rawContent.length();
 
         nextCharacterExists = !endOfStreamReached;
@@ -342,7 +358,7 @@ std::shared_ptr<CRawFile> CLexer::ProcessLinkerScript(std::string absoluteFilePa
 
         switch (currentState)
         {
-            case ParserStates::Default:
+            case LexerStates::Default:
             {                
                 if (IsWhitespace(currentCharacter))
                 {
@@ -353,7 +369,7 @@ std::shared_ptr<CRawFile> CLexer::ProcessLinkerScript(std::string absoluteFilePa
                 {     
                     entryStartPosition = scanPosition;
                     entryStartLine = lineNumber;
-                    currentState = ParserStates::InNumber;
+                    currentState = LexerStates::InNumber;
                     scanPosition--;
                     break;
                 }
@@ -362,14 +378,15 @@ std::shared_ptr<CRawFile> CLexer::ProcessLinkerScript(std::string absoluteFilePa
                 {
                     entryStartPosition = scanPosition;
                     entryStartLine = lineNumber;
-                    currentState = ParserStates::InComment;
+                    commentLinePrefixing = true;
+                    currentState = LexerStates::InComment;
                     scanPosition--;
                     break;
                 }
 
                 if (SafeTestPatternInString(rawContent, scanPosition, { '/', 'D', 'I', 'S', 'C', 'A', 'R', 'D', '/' }))
                 {
-                    lexedContent.emplace_back(CRawEntry(RawEntryType::Word, lineNumber, scanPosition, 9, parenthesisDepth, scopeDepth));
+                    lexedContent.emplace_back(RawEntryType::Word, lineNumber, scanPosition, 9, parenthesisDepth, scopeDepth);
                     scanPosition += 9 - 1;
                     break;
                 }
@@ -378,7 +395,7 @@ std::shared_ptr<CRawFile> CLexer::ProcessLinkerScript(std::string absoluteFilePa
                 {
                     entryStartPosition = scanPosition;
                     entryStartLine = lineNumber;
-                    currentState = ParserStates::InString;                    
+                    currentState = LexerStates::InString;                    
                     break;
                 }
 
@@ -386,7 +403,7 @@ std::shared_ptr<CRawFile> CLexer::ProcessLinkerScript(std::string absoluteFilePa
                 if (assignmentSymbolType != AssignmentSymbolTypes::NotAnAssignmentSymbol)
                 {
                     auto assignmentOperatorLength = static_cast<uint32_t>(assignmentSymbolType);
-                    lexedContent.emplace_back(CRawEntry(RawEntryType::AssignmentOperator, lineNumber, scanPosition, assignmentOperatorLength, parenthesisDepth, scopeDepth));
+                    lexedContent.emplace_back(RawEntryType::AssignmentOperator, lineNumber, scanPosition, assignmentOperatorLength, parenthesisDepth, scopeDepth);
                     scanPosition += (assignmentOperatorLength - 1);
                     break;
                 }
@@ -395,45 +412,45 @@ std::shared_ptr<CRawFile> CLexer::ProcessLinkerScript(std::string absoluteFilePa
                 if (evaluatingSymbolType != EvaluativeSymbolTypes::NotAnEvaluativeSymbol)
                 {
                     auto evaluatingSymbolTypeLength = static_cast<uint32_t>(evaluatingSymbolType);
-                    lexedContent.emplace_back(CRawEntry(RawEntryType::EvaluativeOperators, lineNumber, scanPosition, evaluatingSymbolTypeLength, parenthesisDepth, scopeDepth));
+                    lexedContent.emplace_back(RawEntryType::EvaluativeOperators, lineNumber, scanPosition, evaluatingSymbolTypeLength, parenthesisDepth, scopeDepth);
                     scanPosition += (evaluatingSymbolTypeLength - 1);
                     break;
                 }
 
                 if (IsComma(currentCharacter))
                 {
-                    lexedContent.emplace_back(CRawEntry(RawEntryType::Comma, lineNumber, scanPosition, 1, parenthesisDepth, scopeDepth));
+                    lexedContent.emplace_back(RawEntryType::Comma, lineNumber, scanPosition, 1, parenthesisDepth, scopeDepth);
                     break;
                 }
 
                 if (IsSemicolon(currentCharacter))
                 {
-                    lexedContent.emplace_back(CRawEntry(RawEntryType::Semicolon, lineNumber, scanPosition, 1, parenthesisDepth, scopeDepth));
+                    lexedContent.emplace_back(RawEntryType::Semicolon, lineNumber, scanPosition, 1, parenthesisDepth, scopeDepth);
                     break;
                 }
 
                 if (IsColon(currentCharacter))
                 {
-                    lexedContent.emplace_back(CRawEntry(RawEntryType::Colon, lineNumber, scanPosition, 1, parenthesisDepth, scopeDepth));
+                    lexedContent.emplace_back(RawEntryType::Colon, lineNumber, scanPosition, 1, parenthesisDepth, scopeDepth);
                     break;
                 }
 
                 if (IsQuestionMark(currentCharacter))
                 {
-                    lexedContent.emplace_back(CRawEntry(RawEntryType::QuestionMark, lineNumber, scanPosition, 1, parenthesisDepth, scopeDepth));
+                    lexedContent.emplace_back(RawEntryType::QuestionMark, lineNumber, scanPosition, 1, parenthesisDepth, scopeDepth);
                     break;
                 }
 
                 if (IsWildCardCharacter(currentCharacter))
                 {
-                    lexedContent.emplace_back(CRawEntry(RawEntryType::Wildcard, lineNumber, scanPosition, 1, parenthesisDepth, scopeDepth));
+                    lexedContent.emplace_back(RawEntryType::Wildcard, lineNumber, scanPosition, 1, parenthesisDepth, scopeDepth);
                     break;
                 }
 
                 uint32_t arithmeticOperatorLength;
                 if (IsArithmeticOperator(currentCharacter, nextCharacter, arithmeticOperatorLength))
                 {
-                    lexedContent.emplace_back(CRawEntry(RawEntryType::ArithmeticOperator, lineNumber, scanPosition, arithmeticOperatorLength, parenthesisDepth, scopeDepth));
+                    lexedContent.emplace_back(RawEntryType::ArithmeticOperator, lineNumber, scanPosition, arithmeticOperatorLength, parenthesisDepth, scopeDepth);
                     scanPosition += arithmeticOperatorLength - 1;
                     break;
                 }
@@ -448,7 +465,7 @@ std::shared_ptr<CRawFile> CLexer::ProcessLinkerScript(std::string absoluteFilePa
 
                     if (entryType != RawEntryType::Unknown)
                     {
-                        lexedContent.emplace_back(CRawEntry(entryType, lineNumber, scanPosition, 1, parenthesisDepth, scopeDepth));
+                        lexedContent.emplace_back(entryType, lineNumber, scanPosition, 1, parenthesisDepth, scopeDepth);
                         break;
                     }
                 }
@@ -457,30 +474,31 @@ std::shared_ptr<CRawFile> CLexer::ProcessLinkerScript(std::string absoluteFilePa
                 {
                     entryStartPosition = scanPosition;
                     entryStartLine = lineNumber;
-                    currentState = ParserStates::InWord;
+                    currentState = LexerStates::InWord;
                     scanPosition--;                    
                 }
                 else // If all else failed, this character is unknown to us.
                 {
-                    lexedContent.emplace_back(CRawEntry(RawEntryType::Unknown, lineNumber, scanPosition, 1, parenthesisDepth, scopeDepth));
+                    lexedContent.emplace_back(RawEntryType::Unknown, lineNumber, scanPosition, 1, parenthesisDepth, scopeDepth);
                 }
 
                 break;
             }
 
-            case ParserStates::InComment:
+            case LexerStates::InComment:
             {
                 if (!SafeTestPatternInString(rawContent, scanPosition, { '*', '/' }) && !endOfStreamReached)
                 {
                     break;
                 }
 
-                lexedContent.emplace_back(CRawEntry(RawEntryType::Comment, entryStartLine, lineNumber, entryStartPosition, (scanPosition + 1 - entryStartPosition) + 1, parenthesisDepth, scopeDepth));
+                lexedContent.emplace_back(RawEntryType::Comment, entryStartLine, lineNumber, entryStartPosition, (scanPosition + 1 - entryStartPosition) + 1, parenthesisDepth, scopeDepth);
                 SwitchToState(currentState, scanPosition, ParserLoopActionType::StartFromTwoCharactersAfter);
+                commentLinePrefixing = false;
                 break;
             }
 
-            case ParserStates::InString:
+            case LexerStates::InString:
             {   
                 // Note: We accept the current character in the event that
                 //       1 - It is not Double-Quotation (unless preceded by a back-slash)
@@ -495,12 +513,12 @@ std::shared_ptr<CRawFile> CLexer::ProcessLinkerScript(std::string absoluteFilePa
                 backslashArmed = (backslashArmed) ? false : (currentCharacter == '\\');
 
                 // Note: Strings are always placed on the same line. A word cannot be split across two lines.
-                lexedContent.emplace_back(CRawEntry(RawEntryType::String, entryStartLine, entryStartLine, entryStartPosition, (scanPosition - entryStartPosition) + 1, parenthesisDepth, scopeDepth));
+                lexedContent.emplace_back(RawEntryType::String, entryStartLine, entryStartLine, entryStartPosition, (scanPosition - entryStartPosition) + 1, parenthesisDepth, scopeDepth);
                 SwitchToState(currentState, scanPosition, ParserLoopActionType::StartFromOneCharacterAfter);
                 break;
             }
 
-            case ParserStates::InWord:
+            case LexerStates::InWord:
             {
                 if (CanCharBeWithinWord(currentCharacter) && !endOfStreamReached) 
                 {
@@ -514,13 +532,13 @@ std::shared_ptr<CRawFile> CLexer::ProcessLinkerScript(std::string absoluteFilePa
                 }
 
                 // Note: Words are always placed on the same line. A word cannot be split across two lines.
-                lexedContent.emplace_back(CRawEntry(RawEntryType::Word, entryStartLine, entryStartLine, entryStartPosition, (scanPosition - 1 - entryStartPosition) + 1, parenthesisDepth, scopeDepth));
+                lexedContent.emplace_back(RawEntryType::Word, entryStartLine, entryStartLine, entryStartPosition, (scanPosition - 1 - entryStartPosition) + 1, parenthesisDepth, scopeDepth);
                 SwitchToState(currentState, scanPosition, ParserLoopActionType::StartFromSamePosition);
-                supressLineAndScopeUpdate = true;
+                suppressLineAndScopeUpdate = true;
                 break;
             }
 
-            case ParserStates::InNumber:
+            case LexerStates::InNumber:
             {
                 if ((IsNumberPostfix(currentCharacter) || IsNumberPrefix(currentCharacter) || IsNumberOrHex(currentCharacter)) && !endOfStreamReached)
                 {
@@ -528,9 +546,9 @@ std::shared_ptr<CRawFile> CLexer::ProcessLinkerScript(std::string absoluteFilePa
                 }
 
                 // Note: Numbers are always placed on the same line. A word cannot be split across two lines.
-                lexedContent.emplace_back(CRawEntry(RawEntryType::Number, entryStartLine, entryStartLine, entryStartPosition, (scanPosition - 1 - entryStartPosition) + 1, parenthesisDepth, scopeDepth));
+                lexedContent.emplace_back(RawEntryType::Number, entryStartLine, entryStartLine, entryStartPosition, (scanPosition - 1 - entryStartPosition) + 1, parenthesisDepth, scopeDepth);
                 SwitchToState(currentState, scanPosition, ParserLoopActionType::StartFromSamePosition);
-                supressLineAndScopeUpdate = true;
+                suppressLineAndScopeUpdate = true;
                 break;
             }
 
@@ -540,13 +558,32 @@ std::shared_ptr<CRawFile> CLexer::ProcessLinkerScript(std::string absoluteFilePa
             }
         }
 
-        if (!supressLineAndScopeUpdate)
+        if (!suppressLineAndScopeUpdate)
         {
-            ProcessLineAndScopeIncrement(currentCharacter, lineNumber, parenthesisDepth, scopeDepth);
+            auto indentationType = currentState == LexerStates::InComment ?
+                EIndentationLineType::MultiLineCommentStar :
+                EIndentationLineType::RegularSpace;
+
+	        if (ProcessLineAndScopeIncrement(currentCharacter, lineNumber, parenthesisDepth, scopeDepth))                
+            {
+                // Note: The map is zero-based, yet our line number starts from 1.
+                if (previousLineScopeDepth < scopeDepth) // Meaning bracket-closure
+                {
+                    indentationMap[lineNumber - 1] = CIndentationInfo(scopeDepth, indentationType, commentLinePrefixing);                    
+                }
+
+                // The new line itself is always affected
+	        	indentationMap[lineNumber] = CIndentationInfo(scopeDepth, indentationType, commentLinePrefixing);
+                previousLineScopeDepth = scopeDepth;
+            }
+            else if (endOfStreamReached)
+            {
+                indentationMap[lineNumber] = CIndentationInfo(scopeDepth, indentationType, commentLinePrefixing);
+            }
+            
         }
 
-        supressLineAndScopeUpdate = false;
-
+        suppressLineAndScopeUpdate = false;
         if (endOfStreamReached)
         {
             break;
@@ -569,9 +606,9 @@ std::shared_ptr<CRawFile> CLexer::ProcessLinkerScript(std::string absoluteFilePa
 
     extractedFileName = splittedString.back();
 
-    return std::shared_ptr<CRawFile>(
-                new CRawFile(std::move(rawContent),
-                             extractedFileName,
-                             absoluteFilePath,
-                             std::move(lexedContent)));
+    return std::make_shared<CRawFile>(std::move(rawContent),
+                                      extractedFileName,
+                                      absoluteFilePath,
+                                      std::move(indentationMap),
+                                      std::move(lexedContent));
 }
