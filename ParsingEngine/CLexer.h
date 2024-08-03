@@ -18,10 +18,14 @@ namespace VisualLinkerScript::ParsingEngine
 
     public:
         /// @brief Default constructor
-        explicit CLexer() {}
+        explicit CLexer()
+        {	        
+        }
 
         /// @brief Default destructor
-        ~CLexer() {}
+        ~CLexer()
+        {	        
+        }
 
     public:
         /// @brief Process the input file. This function can throw an exception 
@@ -29,7 +33,7 @@ namespace VisualLinkerScript::ParsingEngine
         /// @param rawContent Contains the linker-script content.
         /// @exception 
         /// @return Unique pointer to the processing result in form of a CRawFile.
-        std::shared_ptr<CRawFile> LexLinkerScript(std::string absoluteFilePath, std::string rawContent);
+        std::shared_ptr<CRawFile> LexLinkerScript(const std::string& absoluteFilePath, std::string rawContent);
     };
 }
 

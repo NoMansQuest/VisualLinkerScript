@@ -13,56 +13,67 @@ namespace VisualLinkerScript::Models::Raw
         /// @brief Explicitly made based on callers request
         explicit CRawEntry(RawEntryType typeOfEntry,                  
                     uint32_t startLineNumber,
+					uint32_t startIndexInLine,
                     uint32_t endLineNumber,
-                    uint32_t startPosition,
+				    uint32_t endIndexInLine,
+                    uint32_t startAbsPosition,
                     uint32_t length,
                     uint32_t parenthesisDepth,
                     uint32_t scopeDepth)
-            : m_startPosition(startPosition),
+            : m_startAbsPosition(startAbsPosition),
               m_length(length),
               m_parenthesisDepth(parenthesisDepth),
               m_scopeDepth(scopeDepth),
               m_startLineNumber(startLineNumber),
               m_endLineNumber(endLineNumber),
+              m_startIndexInLine(startIndexInLine),
+		      m_endIndexInLine(endIndexInLine),
               m_entryType(typeOfEntry)
         {}
 
         /// @brief Explicitly made based on callers request for single-line entries
         explicit CRawEntry(RawEntryType typeOfEntry,
                     uint32_t lineNumber,
-                    uint32_t startPosition,
+					uint32_t startIndexInLine,
+                    uint32_t startAbsPosition,
                     uint32_t length,
                     uint32_t parenthesisDepth,
                     uint32_t scopeDepth)
-            : m_startPosition(startPosition),
+            : m_startAbsPosition(startAbsPosition),
               m_length(length),
               m_parenthesisDepth(parenthesisDepth),
               m_scopeDepth(scopeDepth),
               m_startLineNumber(lineNumber),
               m_endLineNumber(lineNumber),
+              m_startIndexInLine(startIndexInLine),
+              m_endIndexInLine(startIndexInLine + length - 1),
               m_entryType(typeOfEntry)
         {}
 
         /// @brief Explicitly constructs a "Null" entry, indicating that the entry does not exist.
         explicit CRawEntry()
-            : m_startPosition(0),
+            : m_startAbsPosition(0),
               m_length(0),
               m_parenthesisDepth(0),
               m_scopeDepth(0),
               m_startLineNumber(0),
               m_endLineNumber(0),
+			  m_startIndexInLine(0),
+			  m_endIndexInLine(0),
               m_entryType(RawEntryType::NotPresent)
         {}
 
         /// @brief Object-Copy constructor
         CRawEntry(const CRawEntry& cloneSource)
-            : m_startPosition(cloneSource.StartPosition()),
-              m_length(cloneSource.Length()),
-              m_parenthesisDepth(cloneSource.ParenthesisDepth()),
-              m_scopeDepth(cloneSource.ScopeDepth()),
-              m_startLineNumber(cloneSource.StartLineNumber()),
-              m_endLineNumber(cloneSource.EndLineNumber()),
-              m_entryType(cloneSource.EntryType())
+	        : m_startAbsPosition(cloneSource.StartPosition()),
+	          m_length(cloneSource.Length()),
+	          m_parenthesisDepth(cloneSource.ParenthesisDepth()),
+	          m_scopeDepth(cloneSource.ScopeDepth()),
+	          m_startLineNumber(cloneSource.StartLineNumber()),
+	          m_endLineNumber(cloneSource.EndLineNumber()),
+    		  m_startIndexInLine(cloneSource.StartIndexInLine()),
+    	      m_endIndexInLine(cloneSource.EndIndexInLine()),
+	          m_entryType(cloneSource.EntryType())
         {}
 
         /// @brief Default destructor
@@ -72,7 +83,7 @@ namespace VisualLinkerScript::Models::Raw
         /// @brief Assignment operator
         CRawEntry& operator= (const CRawEntry& cloneSource)
         {
-            this->m_startPosition = cloneSource.StartPosition();
+            this->m_startAbsPosition = cloneSource.StartPosition();
             this->m_length = cloneSource.Length();
             this->m_parenthesisDepth = cloneSource.ParenthesisDepth();
             this->m_scopeDepth = cloneSource.ScopeDepth();
@@ -83,12 +94,14 @@ namespace VisualLinkerScript::Models::Raw
         }
 
     private:
-        uint32_t m_startPosition;
+        uint32_t m_startAbsPosition;
         uint32_t m_length;
         uint32_t m_parenthesisDepth;
         uint32_t m_scopeDepth;
         uint32_t m_startLineNumber;
         uint32_t m_endLineNumber;
+        uint32_t m_startIndexInLine;
+        uint32_t m_endIndexInLine;
         RawEntryType m_entryType;
         
     public:
@@ -116,7 +129,7 @@ namespace VisualLinkerScript::Models::Raw
         /// @return Start position of this entry
         uint32_t StartPosition() const
         { 
-            return this->m_startPosition; 
+            return this->m_startAbsPosition; 
         }
 
         /// @brief Line number where this entry begins on
@@ -126,11 +139,25 @@ namespace VisualLinkerScript::Models::Raw
             return this->m_startLineNumber;
         }
 
+        /// @brief Starting index (in line) of the entry.
+		/// @return The starting index in line.
+        uint32_t StartIndexInLine() const
+        {
+            return this->m_startIndexInLine;
+        }
+
         /// @brief Line number where this entry ends on
         /// @return The ending line number
         uint32_t EndLineNumber() const
         {
             return this->m_endLineNumber;
+        }
+
+        /// @brief Ending index (in line) of the entry.
+		/// @return The ending index in line.
+        uint32_t EndIndexInLine() const
+        {
+            return this->m_endIndexInLine;
         }
 
         /// @brief Reports the 'Parenthesis Depth' of this piece of data. This referes to how deep this portion

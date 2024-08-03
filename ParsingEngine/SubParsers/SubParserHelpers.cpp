@@ -237,7 +237,7 @@ CRawEntry VisualLinkerScript::ParsingEngine::SubParsers::FuseEntriesToFormAWilca
 
         firstEntry = false;
         previousEntryEndPosition = copyOfIterator->StartPosition() + copyOfIterator->Length() - 1;
-        copyOfIterator++;
+        ++copyOfIterator;
     }
 
     if (copyOfIterator == iterator) {
@@ -248,12 +248,16 @@ CRawEntry VisualLinkerScript::ParsingEngine::SubParsers::FuseEntriesToFormAWilca
     }
     else
     {
-        copyOfIterator--;
+        --copyOfIterator;
         iterator = copyOfIterator;
+        auto newWordLength = copyOfIterator->Length() + copyOfIterator->StartPosition() - startPosition;
         return CRawEntry(RawEntryType::Wildcard,
                          startLine,
+						 copyOfIterator->StartIndexInLine(),
+						 startLine, // Not: Words are never spanned across multiple lines.
+						 copyOfIterator->StartIndexInLine() + newWordLength - 1,
                          startPosition,
-                         copyOfIterator->Length() + copyOfIterator->StartPosition() - startPosition,
+						 newWordLength,
                          copyOfIterator->ParenthesisDepth(),
                          copyOfIterator->ScopeDepth());
     }

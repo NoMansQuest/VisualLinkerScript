@@ -2217,6 +2217,21 @@ void QsciScintilla::insertAtPos(const QString &text, int pos)
 }
 
 
+// Replaces text at the given line
+void QsciScintilla::setLineText(const QString& text, int line)
+{
+    bool ro = ensureRW();
+    
+    const int start = this->SendScintilla(QsciScintilla::SCI_POSITIONFROMLINE, line);
+    const int end = this->SendScintilla(QsciScintilla::SCI_GETLINEENDPOSITION, line);       
+    this->SendScintilla(QsciScintilla::SCI_SETTARGETSTART, start);
+    this->SendScintilla(QsciScintilla::SCI_SETTARGETEND, end);
+    this->SendScintilla(QsciScintilla::SCI_REPLACETARGET, text.length(), text.toUtf8().constData());
+
+    setReadOnly(ro);
+}
+
+
 // Begin a sequence of undoable actions.
 void QsciScintilla::beginUndoAction()
 {

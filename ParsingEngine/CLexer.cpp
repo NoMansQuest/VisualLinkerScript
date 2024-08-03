@@ -4,6 +4,11 @@
 #include <vector>
 
 #include "CLexer.h"
+#include <QDebug>
+#include <QString>
+
+#include <ostream>
+
 #include "CLexerException.h"
 
 #include "../Models/Raw/CRawEntry.h"
@@ -28,7 +33,7 @@ namespace
     };
 
     /// @brief Types of assignment symbols we can have in a linker-script (i.e. =, +=, -=, &=, >>=, etc.)
-    enum class AssignmentSymbolTypes : uint32_t
+    enum class AssignmentSymbolTypes : int32_t
     {
         SingleCharacter = 1,
         DoubleCharacter = 2,
@@ -37,20 +42,112 @@ namespace
     };
 
     /// @brief Types of evaluative symbols we can have in a linker-script (i.e. >=, <=, ==, etc.)
-    enum class EvaluativeSymbolTypes : uint32_t
+    enum class EvaluativeSymbolTypes : int32_t
     {
         SingleCharacter = 1,
         DoubleCharacter = 2,
         NotAnEvaluativeSymbol = 3
     };
 
-    /// @brief The loop needs alignment after an entry is detected and registerd
+    /// @brief The loop needs alignment after an entry is detected and registered
     enum class ParserLoopActionType
     {
         StartFromSamePosition,
         StartFromOneCharacterAfter,
         StartFromOneCharacterBefore,
         StartFromTwoCharactersAfter
+    };
+
+    /// @brief Structure holds data relevant to the start of a blocked section (i.e. String, Commands, Words, etc.).
+    struct LexerPosition
+    {
+        uint32_t AbsolutePosition;
+        uint32_t LineNumber;
+        uint32_t IndexInLine;
+        LexerStates State;
+        uint32_t ScopeDepth;
+        uint32_t ParenthesisDepth;
+        uint32_t LineStartScopeDepth;
+
+        void AdvanceByLineFeed()
+        {
+            ++this->AbsolutePosition;
+            ++this->LineNumber;
+            this->IndexInLine = 0;
+            this->LineStartScopeDepth = this->ScopeDepth;
+        }
+
+        void AdvanceByLineFeed(const LexerStates newLexerState)
+        {
+            this->AdvanceByLineFeed();
+            this->State = newLexerState;
+        }
+
+        void Advance(const uint32_t movement)
+        {
+            this->AbsolutePosition += movement;
+            this->IndexInLine += movement;
+        }
+
+        void Retreat(const uint32_t movement)
+        {
+            this->AbsolutePosition -= movement;
+            this->IndexInLine -= movement;
+        }
+
+        void Advance(const uint32_t movement, const LexerStates newLexerState)
+        {
+            this->AbsolutePosition += movement;
+            this->IndexInLine += movement;
+            this->State = newLexerState;
+        }
+
+        LexerPosition Clone(const int32_t movement) const
+        {
+            auto absolutePositionPostAdjustmentResult = static_cast<int32_t>(this->AbsolutePosition) + movement;
+            auto indexInLinePostAdjustmentResult = static_cast<int32_t>(this->IndexInLine) + movement;
+
+            if (absolutePositionPostAdjustmentResult < 0)
+            {
+                throw std::exception("AbsolutePosition, after adjustment, became negative!");
+            }
+
+            if (indexInLinePostAdjustmentResult < 0)
+            {
+                throw std::exception("IndexInLine, after adjustment, became negative!");
+            }
+
+            return LexerPosition{
+            	static_cast<uint32_t>(absolutePositionPostAdjustmentResult),
+            	this->LineNumber,
+            	static_cast<uint32_t>(indexInLinePostAdjustmentResult),
+            	this->State,
+            	this->ScopeDepth,
+            	this->ParenthesisDepth,
+            	this->LineStartScopeDepth };
+        }
+
+        void SafeAddScopeDepth(int32_t scopeDepthToAdd)
+        {
+            auto postAdjustmentResult = static_cast<int32_t>(this->ScopeDepth) + scopeDepthToAdd;
+            this->ScopeDepth = static_cast<uint32_t>(std::max(postAdjustmentResult,0));
+        }
+
+        void SafeAddParenthesisDepth(int32_t parenthesisDepthToAdd)
+        {
+            auto postAdjustmentResult = static_cast<int32_t>(this->ParenthesisDepth) + parenthesisDepthToAdd;
+            this->ParenthesisDepth = static_cast<uint32_t>(std::max(postAdjustmentResult, 0));
+        }
+
+        void UpdatedState(const LexerStates newLexerState)
+        {
+            this->State = newLexerState;
+        }
+
+        static uint32_t LengthDiff(const LexerPosition& endPosition, const LexerPosition& startPosition)
+        {
+            return endPosition.AbsolutePosition - startPosition.AbsolutePosition + 1;
+        }
     };
 
     /// @brief Checks if the character at the given position matches @see testAgainst.
@@ -87,22 +184,20 @@ namespace
     /// @brief If true, then the character can be considered as part of a word
     bool CanCharBeWithinWord(const char input)
     {
-        return ((input >= '0') && (input <= '9')) || CanCharBeStartOfWord(input);
+        return ((input >= '0') && (input <= '9')) || (input == '\\') || CanCharBeStartOfWord(input);
+    }
+
+    /// @brief Checks to see if a given characters make an 'L-Shift' ir 'R-Shift' operator
+    bool IsArithmeticShiftOperator(const char input, const char inputPlusOne)
+    {
+        return ((input == '>' && inputPlusOne == '>') ||
+				(input == '<' && inputPlusOne == '<'));
     }
 
     /// @brief Checks to see if a given character can be an arithmetic operator.
     ///        These include right-shift and left-shift operators ('<<' and '>>').
-    bool IsArithmeticOperator(const char input, const char inputPlusOne, uint32_t& arithmeticOperatorLength)
+    bool IsArithmeticOperator(const char input)
     {
-        arithmeticOperatorLength = 1;
-
-        if ((input == '>' && inputPlusOne == '>') ||
-            (input == '<' && inputPlusOne == '<'))
-        {
-            arithmeticOperatorLength = 2;
-            return true;
-        }
-
         return ((input == '*') || (input == '/') || (input == '&') || (input == '|') ||
                 (input == '-') || (input == '+') || (input == '~') || (input == '!') ||
                 (input == '%') || (input == '^'));
@@ -169,7 +264,6 @@ namespace
         return (input >= '0') && (input <= '9');
     }
 
-
     /// @brief Checks if input is a digit or a hexadecimal. 
     bool IsNumberOrHex(const char input)
     {
@@ -201,24 +295,68 @@ namespace
                     AssignmentSymbolTypes::SingleCharacter :
                     AssignmentSymbolTypes::NotAnAssignmentSymbol; // Note: '==' is not an assignment operator, but an evaluation operator.
         }
-        else if ((charAtPosition == '*') || (charAtPosition == '/') || (charAtPosition == '%') || (charAtPosition == '-') ||
-                 (charAtPosition == '~') || (charAtPosition == '|') || (charAtPosition == '&') || (charAtPosition == '^') ||
-                 (charAtPosition == '+'))
-        {
-            return (!SafeTestCharacterInString(input, position + 1, '=')) ?
-                   AssignmentSymbolTypes::NotAnAssignmentSymbol :
-                   AssignmentSymbolTypes::SingleCharacter;
-        }
-        else if ((charAtPosition == '>') || (charAtPosition == '<'))
-        {
-            bool isAssignment = (SafeTestCharacterInString(input, position + 1, charAtPosition) &&
-                                 SafeTestCharacterInString(input, position + 2, '='));
 
-            return isAssignment ? AssignmentSymbolTypes::TripleCharacter : AssignmentSymbolTypes::NotAnAssignmentSymbol;
+        if ((charAtPosition == '*') || (charAtPosition == '/') || (charAtPosition == '%') || (charAtPosition == '-') ||
+	        (charAtPosition == '~') || (charAtPosition == '|') || (charAtPosition == '&') || (charAtPosition == '^') ||
+	        (charAtPosition == '+'))
+        {
+	        return (!SafeTestCharacterInString(input, position + 1, '=')) ?
+		               AssignmentSymbolTypes::NotAnAssignmentSymbol :
+		               AssignmentSymbolTypes::SingleCharacter;
+        }
+
+        if ((charAtPosition == '>') || (charAtPosition == '<'))
+        {
+	        bool isAssignment = (SafeTestCharacterInString(input, position + 1, charAtPosition) &&
+		        SafeTestCharacterInString(input, position + 2, '='));
+
+	        return isAssignment ? AssignmentSymbolTypes::TripleCharacter : AssignmentSymbolTypes::NotAnAssignmentSymbol;
         }
 
         return AssignmentSymbolTypes::NotAnAssignmentSymbol;
     }
+
+    /// @brief Tests character against single-character punctuates and wildcards
+    RawEntryType TestForStatementPunctuatesAndWildcards(const char characterToTest)
+    {
+        if (IsComma(characterToTest))
+        {
+            return RawEntryType::Comma;
+        }
+
+        if (IsSemicolon(characterToTest))
+        {
+            return RawEntryType::Semicolon;
+        }
+
+        if (IsColon(characterToTest))
+        {
+            return RawEntryType::Colon;
+        }
+
+        if (IsQuestionMark(characterToTest))
+        {
+            return RawEntryType::QuestionMark;
+        }
+
+        if (IsWildCardCharacter(characterToTest))
+        {
+            return RawEntryType::Wildcard;
+        }
+
+        return RawEntryType::Unknown;
+    }
+
+    /// @brief Tests character against scope and depth punctuates
+    RawEntryType TestForScopeDepthPunctuates(const char characterToTest)
+    {
+        return (characterToTest == '{') ? RawEntryType::BracketOpen :
+			   (characterToTest == '}') ? RawEntryType::BracketClose :
+			   (characterToTest == '(') ? RawEntryType::ParenthesisOpen :
+			   (characterToTest == ')') ? RawEntryType::ParenthesisClose :
+			   RawEntryType::Unknown;
+    }
+
 
     /// @brief Test against evaluative operators:
     ///        such as '<=', '>=', '==', '!=', '<', '>', '||', '&&'
@@ -264,351 +402,381 @@ namespace
         return EvaluativeSymbolTypes::NotAnEvaluativeSymbol;
     }
 
-    /// @brief Procedure in charge of maintaining scope-depth, parenthesis-depth and line-number based on detected character
-    /// @return True if we have moved to the next line, false otherwise.
-    bool ProcessLineAndScopeIncrement(char inputCharacter,
-        uint32_t& lineNumberHolder,
-        uint32_t& parenthesisDepthHolder, 
-        uint32_t& scopeDepthHolder)
+    /// @brief Generic function to insert multi-character lexer content. This is a massive help to code readability.
+    void AddLexerContent(
+        std::vector<CRawEntry>& contentVector, 
+        const RawEntryType entryType, 
+        const LexerPosition& startPosition, 
+        const LexerPosition& endPosition)
     {
-        auto applyIndentationDataToLine = false;
-        switch (inputCharacter)
-        {
-            case '\n':
-                lineNumberHolder++;
-                applyIndentationDataToLine = true;
-                break;
-
-            case '{':
-                scopeDepthHolder++;
-                break;
-
-            case '}':
-                scopeDepthHolder--;
-                break;
-
-            case '(':
-                parenthesisDepthHolder++;
-                break;
-
-            case ')':
-                parenthesisDepthHolder--;
-                break;
-
-            default:
-                break;
-        }
-
-        return applyIndentationDataToLine;
+        contentVector.emplace_back(
+            entryType,
+            startPosition.LineNumber,
+            startPosition.IndexInLine,
+            endPosition.LineNumber,
+            endPosition.IndexInLine,
+            startPosition.AbsolutePosition,
+            endPosition.AbsolutePosition - startPosition.AbsolutePosition + 1,
+            startPosition.ParenthesisDepth,
+            startPosition.ScopeDepth);
     }
 
-    /// @brief Alters the parser-engines state along with scan-position adjustement
-    void SwitchToState(LexerStates& stateMachine, uint32_t& scanPosition, ParserLoopActionType scanPositionAdjustment)
+    /// @brief Generic function to insert single-character lexer content. This is a massive help to code readability.
+    void AddLexerContent(
+        std::vector<CRawEntry>& contentVector,
+        const RawEntryType entryType,
+        const LexerPosition& startPosition)
     {
-        switch (scanPositionAdjustment)
-        {
-            case ParserLoopActionType::StartFromSamePosition:       scanPosition -= 1; break;
-            case ParserLoopActionType::StartFromOneCharacterAfter:  scanPosition += 0; break;
-            case ParserLoopActionType::StartFromOneCharacterBefore: scanPosition -= 2; break;
-            case ParserLoopActionType::StartFromTwoCharactersAfter: scanPosition += 1; break;
-            default: throw CLexerException(PreliminaryParsingExceptionType::InternalParserError, "Unrecognized 'ParserLoopActionType' value.");
-        }
-
-        stateMachine = LexerStates::Default;
+        contentVector.emplace_back(
+            entryType,
+            startPosition.LineNumber,
+            startPosition.IndexInLine,
+            startPosition.LineNumber,
+            startPosition.IndexInLine,
+            startPosition.AbsolutePosition,
+            1,
+            startPosition.ParenthesisDepth,
+            startPosition.ScopeDepth);
     }
+
 }
 
-std::shared_ptr<CRawFile> CLexer::LexLinkerScript(std::string absoluteFilePath, std::string rawContent)
+std::shared_ptr<CRawFile> CLexer::LexLinkerScript(const std::string& absoluteFilePath, std::string rawContent)
 {    
     // TODO: Revise code in event of available capacity to reduce cyclomatic complexity
-    std::vector<CRawEntry> lexedContent;
-    std::unordered_map<uint32_t, CIndentationInfo> indentationMap;
-    auto currentState = LexerStates::Default;
-    auto scopeDepth = static_cast<uint32_t>(0); // Depth increases each time we encounter a '{' and decreases on each '}'
-    auto previousLineScopeDepth = static_cast<uint32_t>(0); 
-    auto commentLinePrefixing = false;
-    auto parenthesisDepth = static_cast<uint32_t>(0); // Depth increases each time we encounter a '(' and decreases on each ')'
-
-    auto entryStartPosition = static_cast<uint32_t>(0);   
-    auto entryStartLine = static_cast<uint32_t>(0);
-    auto backslashArmed = false;     
+    std::vector<CRawEntry> lexerContent;
+    std::unordered_map<uint32_t, CIndentationInfo> lineIndentationMap;
+    LexerPosition lexerContext { 0, 0, 0, LexerStates::Default, 0, 0, 0};
+    LexerPosition blockStartPosition;
     auto endOfStreamReached = false;
-    auto isLastCharacterInStream = false;
-    auto lineNumber = static_cast<uint32_t>(0);
-    auto scanPosition = static_cast<uint32_t>(0);
-    auto suppressLineAndScopeUpdate = false;    
 
-    auto nextCharacterExists = false;
-    auto nextCharacter = ' ';
+    do
+    {
+        endOfStreamReached = lexerContext.AbsolutePosition + 1 > rawContent.length();
+        auto nextCharacter = (lexerContext.AbsolutePosition + 1 < rawContent.length()) ? rawContent[lexerContext.AbsolutePosition + 1] : ' ';
+        auto previousCharacter = lexerContext.AbsolutePosition > 0 ? rawContent[lexerContext.AbsolutePosition - 1] : ' ';
+        auto currentCharacter = !endOfStreamReached ? rawContent[lexerContext.AbsolutePosition] : ' ';
+        auto isLineFeed = IsLineFeed(currentCharacter);
 
-    auto previousCharacterExists = false;
-    auto previousCharacter = ' ';
+        // We assign the ScopeDepth to a line under two scenarios: End-Of-Stream and New-Line
+        if (endOfStreamReached || isLineFeed)
+        {
+            auto scopeDepthToAssign = std::min(lexerContext.ScopeDepth, lexerContext.LineStartScopeDepth);
+            auto commentLinePrefixingNeeded = (lexerContext.State == LexerStates::InComment) && (blockStartPosition.LineNumber != lexerContext.LineNumber);
+            auto indentationType = (lexerContext.State == LexerStates::InComment) ? EIndentationLineType::MultiLineCommentStar : EIndentationLineType::RegularSpace;
+            lineIndentationMap.emplace(lexerContext.LineNumber, CIndentationInfo(scopeDepthToAssign, indentationType, commentLinePrefixingNeeded));
+        }
 
-    // Note: Line-0 will always be at depth-0 and regular-space indentation type (i.e. it cannot be indented).
-    indentationMap.emplace(0, CIndentationInfo(0, EIndentationLineType::RegularSpace, false));
-
-    for (scanPosition = 0;; scanPosition++)
-    {        
-        auto currentCharacter = rawContent[scanPosition];
-        isLastCharacterInStream = scanPosition == rawContent.length() - 1;
-        endOfStreamReached = scanPosition >= rawContent.length();
-
-        nextCharacterExists = !endOfStreamReached;
-        nextCharacter = (nextCharacterExists) ? rawContent[scanPosition + 1] : ' ';        
-
-        switch (currentState)
+        // Process the current character
+        switch (lexerContext.State)
         {
             case LexerStates::Default:
-            {                
+            {
                 if (IsWhitespace(currentCharacter))
                 {
-                    break;
+                    if (isLineFeed)
+                    {
+                        lexerContext.AdvanceByLineFeed();
+                    }
+                    else
+                    {
+                        lexerContext.Advance(1);
+                    }
+                    continue;
                 }
 
                 if (IsNumber(currentCharacter))
-                {     
-                    entryStartPosition = scanPosition;
-                    entryStartLine = lineNumber;
-                    currentState = LexerStates::InNumber;
-                    scanPosition--;
-                    break;
+                {
+                    blockStartPosition = lexerContext; // Save this position
+                    lexerContext.Advance(1, LexerStates::InNumber);                    
+                    continue;
                 }
 
-                if (SafeTestPatternInString(rawContent, scanPosition, { '/', '*' }))
+                if (SafeTestPatternInString(rawContent, lexerContext.AbsolutePosition, { '/', '*' }))
                 {
-                    entryStartPosition = scanPosition;
-                    entryStartLine = lineNumber;
-                    commentLinePrefixing = true;
-                    currentState = LexerStates::InComment;
-                    scanPosition--;
-                    break;
+                    blockStartPosition = lexerContext; // Save this position                    
+                    lexerContext.Advance(1, LexerStates::InComment);
+                    continue;
                 }
 
-                if (SafeTestPatternInString(rawContent, scanPosition, { '/', 'D', 'I', 'S', 'C', 'A', 'R', 'D', '/' }))
+                if (SafeTestPatternInString(rawContent, lexerContext.AbsolutePosition, { '/', 'D', 'I', 'S', 'C', 'A', 'R', 'D', '/' }))
                 {
-                    lexedContent.emplace_back(RawEntryType::Word, lineNumber, scanPosition, 9, parenthesisDepth, scopeDepth);
-                    scanPosition += 9 - 1;
-                    break;
+                    auto wordLength = 9;
+                    auto endWordPosition = lexerContext.Clone(wordLength - 1);
+                    AddLexerContent(lexerContent, RawEntryType::Word, lexerContext, endWordPosition);
+                    lexerContext.Advance(wordLength); // Move lexer to the character after the word (= length).
+                    continue;
                 }
 
                 if (IsDoubleQuotation(currentCharacter))
                 {
-                    entryStartPosition = scanPosition;
-                    entryStartLine = lineNumber;
-                    currentState = LexerStates::InString;                    
-                    break;
+                    blockStartPosition = lexerContext;
+                    lexerContext.Advance(1, LexerStates::InString);
+                    continue;
                 }
 
-                auto assignmentSymbolType = TestForAssignmentSymbol(rawContent, scanPosition);
+                auto assignmentSymbolType = TestForAssignmentSymbol(rawContent, lexerContext.AbsolutePosition);
                 if (assignmentSymbolType != AssignmentSymbolTypes::NotAnAssignmentSymbol)
                 {
-                    auto assignmentOperatorLength = static_cast<uint32_t>(assignmentSymbolType);
-                    lexedContent.emplace_back(RawEntryType::AssignmentOperator, lineNumber, scanPosition, assignmentOperatorLength, parenthesisDepth, scopeDepth);
-                    scanPosition += (assignmentOperatorLength - 1);
-                    break;
+                    auto assignmentOperatorLength = static_cast<int32_t>(assignmentSymbolType);
+                    auto endWordPosition = lexerContext.Clone(assignmentOperatorLength - 1);
+                    AddLexerContent(lexerContent, RawEntryType::AssignmentOperator, lexerContext, endWordPosition);
+                    lexerContext.Advance(assignmentOperatorLength);
+                    continue;
                 }
 
-                auto evaluatingSymbolType = TestForEvaluativeSymbol(rawContent, scanPosition);
+                auto evaluatingSymbolType = TestForEvaluativeSymbol(rawContent, lexerContext.AbsolutePosition);
                 if (evaluatingSymbolType != EvaluativeSymbolTypes::NotAnEvaluativeSymbol)
                 {
-                    auto evaluatingSymbolTypeLength = static_cast<uint32_t>(evaluatingSymbolType);
-                    lexedContent.emplace_back(RawEntryType::EvaluativeOperators, lineNumber, scanPosition, evaluatingSymbolTypeLength, parenthesisDepth, scopeDepth);
-                    scanPosition += (evaluatingSymbolTypeLength - 1);
-                    break;
+                    auto symbolTypeLength = static_cast<int32_t>(evaluatingSymbolType);
+                    auto endWordPosition = lexerContext.Clone(symbolTypeLength - 1);
+                    AddLexerContent(lexerContent, RawEntryType::EvaluativeOperators, lexerContext, endWordPosition);
+                    lexerContext.Advance(symbolTypeLength);
+                    continue;
                 }
 
-                if (IsComma(currentCharacter))
+                auto punctuateType = TestForStatementPunctuatesAndWildcards(currentCharacter);
+                if (punctuateType != RawEntryType::Unknown)
                 {
-                    lexedContent.emplace_back(RawEntryType::Comma, lineNumber, scanPosition, 1, parenthesisDepth, scopeDepth);
-                    break;
+                    AddLexerContent(lexerContent, punctuateType, lexerContext);                    
+                    lexerContext.Advance(1);
+                    continue;
                 }
-
-                if (IsSemicolon(currentCharacter))
+                                                
+                if (IsArithmeticOperator(currentCharacter))
                 {
-                    lexedContent.emplace_back(RawEntryType::Semicolon, lineNumber, scanPosition, 1, parenthesisDepth, scopeDepth);
-                    break;
+                    auto operatorLength = IsArithmeticShiftOperator(currentCharacter, nextCharacter) ? 2 : 1;
+                    auto endWordPosition = lexerContext.Clone(operatorLength - 1);
+                    AddLexerContent(lexerContent, RawEntryType::ArithmeticOperator, lexerContext, endWordPosition);
+                    lexerContext.Advance(operatorLength);
+                    continue;
                 }
 
-                if (IsColon(currentCharacter))
-                {
-                    lexedContent.emplace_back(RawEntryType::Colon, lineNumber, scanPosition, 1, parenthesisDepth, scopeDepth);
-                    break;
-                }
-
-                if (IsQuestionMark(currentCharacter))
-                {
-                    lexedContent.emplace_back(RawEntryType::QuestionMark, lineNumber, scanPosition, 1, parenthesisDepth, scopeDepth);
-                    break;
-                }
-
-                if (IsWildCardCharacter(currentCharacter))
-                {
-                    lexedContent.emplace_back(RawEntryType::Wildcard, lineNumber, scanPosition, 1, parenthesisDepth, scopeDepth);
-                    break;
-                }
-
-                uint32_t arithmeticOperatorLength;
-                if (IsArithmeticOperator(currentCharacter, nextCharacter, arithmeticOperatorLength))
-                {
-                    lexedContent.emplace_back(RawEntryType::ArithmeticOperator, lineNumber, scanPosition, arithmeticOperatorLength, parenthesisDepth, scopeDepth);
-                    scanPosition += arithmeticOperatorLength - 1;
-                    break;
-                }
-
-                // Test against bracket and parenthesis
-                {
-                    auto entryType = (currentCharacter == '{') ? RawEntryType::BracketOpen :
-                                     (currentCharacter == '}') ? RawEntryType::BracketClose :
-                                     (currentCharacter == '(') ? RawEntryType::ParenthesisOpen :
-                                     (currentCharacter == ')') ? RawEntryType::ParenthesisClose :
-                                     RawEntryType::Unknown;
-
-                    if (entryType != RawEntryType::Unknown)
-                    {
-                        lexedContent.emplace_back(entryType, lineNumber, scanPosition, 1, parenthesisDepth, scopeDepth);
-                        break;
-                    }
-                }
+                auto scopeDepthPunctuates = TestForScopeDepthPunctuates(currentCharacter);
+				if (scopeDepthPunctuates != RawEntryType::Unknown)
+				{
+                    auto scopeDepthIncrease = (scopeDepthPunctuates == RawEntryType::BracketOpen) ? 1 : (scopeDepthPunctuates == RawEntryType::BracketClose) ? -1 : 0; 
+                    auto parenthesisDepthIncrease = (scopeDepthPunctuates == RawEntryType::ParenthesisOpen) ? 1 : (scopeDepthPunctuates == RawEntryType::ParenthesisClose) ? -1 : 0;
+                    AddLexerContent(lexerContent, scopeDepthPunctuates, lexerContext);
+                    lexerContext.SafeAddScopeDepth(scopeDepthIncrease);
+                    lexerContext.SafeAddParenthesisDepth(parenthesisDepthIncrease);
+                    lexerContext.Advance(1);
+                    continue;
+				}                
 
                 if (CanCharBeStartOfWord(currentCharacter))
                 {
-                    entryStartPosition = scanPosition;
-                    entryStartLine = lineNumber;
-                    currentState = LexerStates::InWord;
-                    scanPosition--;                    
-                }
-                else // If all else failed, this character is unknown to us.
-                {
-                    lexedContent.emplace_back(RawEntryType::Unknown, lineNumber, scanPosition, 1, parenthesisDepth, scopeDepth);
+                    blockStartPosition = lexerContext;
+                    lexerContext.Advance(1, LexerStates::InWord);
+                    continue;
                 }
 
+            	// If all else failed, this character is unknown to us.
+                AddLexerContent(lexerContent, RawEntryType::Unknown, lexerContext);
+                lexerContext.Advance(1, LexerStates::InWord);
                 break;
             }
 
             case LexerStates::InComment:
             {
-                if (!SafeTestPatternInString(rawContent, scanPosition, { '*', '/' }) && !endOfStreamReached)
-                {
-                    break;
-                }
+                auto commentClosureDetected = previousCharacter == '*' && currentCharacter == '/';
+                auto endCommentPosition = lexerContext.Clone(endOfStreamReached ? -1 : 0);
+                             
+				if (endOfStreamReached || commentClosureDetected)
+				{
+                    AddLexerContent(lexerContent, RawEntryType::Comment, blockStartPosition, endCommentPosition);
+				}
 
-                lexedContent.emplace_back(RawEntryType::Comment, entryStartLine, lineNumber, entryStartPosition, (scanPosition + 1 - entryStartPosition) + 1, parenthesisDepth, scopeDepth);
-                SwitchToState(currentState, scanPosition, ParserLoopActionType::StartFromTwoCharactersAfter);
-                commentLinePrefixing = false;
+                auto updatedMachineState = commentClosureDetected ? LexerStates::Default : LexerStates::InComment;
+
+                if (isLineFeed)
+                {
+                    lexerContext.AdvanceByLineFeed(updatedMachineState);
+                }
+                else
+                {
+                    lexerContext.Advance(1, updatedMachineState);
+                }
                 break;
             }
 
             case LexerStates::InString:
-            {   
-                // Note: We accept the current character in the event that
-                //       1 - It is not Double-Quotation (unless preceded by a back-slash)
-                //       2 - End of file has not been reached
-                //       3 - The character is not 'Line-Feed' as strings are not allowed to stretch across multiple lines
-                if ((!IsDoubleQuotation(currentCharacter) || backslashArmed) && !endOfStreamReached && !IsLineFeed(currentCharacter))
-                {
-                    break;
-                }
-
-                // If 'Backslash', the next character should be taken at face-value.
-                backslashArmed = (backslashArmed) ? false : (currentCharacter == '\\');
-
-                // Note: Strings are always placed on the same line. A word cannot be split across two lines.
-                lexedContent.emplace_back(RawEntryType::String, entryStartLine, entryStartLine, entryStartPosition, (scanPosition - entryStartPosition) + 1, parenthesisDepth, scopeDepth);
-                SwitchToState(currentState, scanPosition, ParserLoopActionType::StartFromOneCharacterAfter);
-                break;
-            }
-
-            case LexerStates::InWord:
             {
-                if (CanCharBeWithinWord(currentCharacter) && !endOfStreamReached) 
-                {
-                    break;
-                }
+                auto stringClosureDetected = IsDoubleQuotation(currentCharacter) && previousCharacter != '\\';                                
+				auto newLineBreaksString = isLineFeed && previousCharacter != '\\';
+                auto endOfStringPosition = lexerContext.Clone(endOfStreamReached || newLineBreaksString ? -1 : 0);
 
-                // Check for special case when a character is being quoted by '\'
-                if (previousCharacterExists && previousCharacter == '\\')
-                {
-                    break;
-                }
+				if (endOfStreamReached || stringClosureDetected || newLineBreaksString)
+				{                    
+                    AddLexerContent(lexerContent, RawEntryType::String, blockStartPosition, endOfStringPosition);
+				}
 
-                // Note: Words are always placed on the same line. A word cannot be split across two lines.
-                lexedContent.emplace_back(RawEntryType::Word, entryStartLine, entryStartLine, entryStartPosition, (scanPosition - 1 - entryStartPosition) + 1, parenthesisDepth, scopeDepth);
-                SwitchToState(currentState, scanPosition, ParserLoopActionType::StartFromSamePosition);
-                suppressLineAndScopeUpdate = true;
+                auto updatedMachineState = newLineBreaksString || stringClosureDetected ? LexerStates::Default : LexerStates::InString;
+                if (isLineFeed)
+                {
+                    lexerContext.AdvanceByLineFeed(updatedMachineState);
+                }
+                else
+                {
+                    lexerContext.Advance(1, updatedMachineState);
+                }
                 break;
             }
 
             case LexerStates::InNumber:
+            case LexerStates::InWord:
             {
-                if ((IsNumberPostfix(currentCharacter) || IsNumberPrefix(currentCharacter) || IsNumberOrHex(currentCharacter)) && !endOfStreamReached)
-                {
-                    break;
-                }
+                bool continueLexing = false;
+                auto typeOfRawEntry = (lexerContext.State == LexerStates::InNumber) ? RawEntryType::Number : RawEntryType::String;
 
-                // Note: Numbers are always placed on the same line. A word cannot be split across two lines.
-                lexedContent.emplace_back(RawEntryType::Number, entryStartLine, entryStartLine, entryStartPosition, (scanPosition - 1 - entryStartPosition) + 1, parenthesisDepth, scopeDepth);
-                SwitchToState(currentState, scanPosition, ParserLoopActionType::StartFromSamePosition);
-                suppressLineAndScopeUpdate = true;
+				if (typeOfRawEntry == RawEntryType::Number)
+				{
+                    continueLexing = IsNumberPostfix(currentCharacter) || IsNumberPrefix(currentCharacter) || IsNumberOrHex(currentCharacter);
+				}
+                else
+                {
+                    auto continueAsCharacterIsOK = !endOfStreamReached && CanCharBeWithinWord(currentCharacter);
+                    auto continueAsCharacterIsEscaped = (previousCharacter == '\\') && !endOfStreamReached && (!IsWhitespace(currentCharacter));
+                    continueLexing = continueAsCharacterIsOK || continueAsCharacterIsEscaped;                
+                }
+	
+                if (continueLexing)
+                {
+                    lexerContext.Advance(1);
+                    continue;
+                }
+                                
+                auto endOfWordPosition = lexerContext.Clone(-1); // Word has already ended in the previous position.
+                AddLexerContent(lexerContent, typeOfRawEntry, blockStartPosition, endOfWordPosition);
+
+                // Note: this character needs to be reprocessed, hence do not advance our position.
+                // Note: Since this character will be reprocessed, we do not need to worry about LineFeed either.
+                lexerContext.UpdatedState(LexerStates::Default); 
                 break;
             }
 
             default:
-            {
-                throw CLexerException(PreliminaryParsingExceptionType::InternalParserError, "ParserState was not recognized.");
-            }
+                throw CLexerException(PreliminaryParsingExceptionType::InternalParserError, "Lexer state was not recognized.");            
         }
 
-        if (!suppressLineAndScopeUpdate)
-        {
-            auto indentationType = currentState == LexerStates::InComment ?
-                EIndentationLineType::MultiLineCommentStar :
-                EIndentationLineType::RegularSpace;
-
-	        if (ProcessLineAndScopeIncrement(currentCharacter, lineNumber, parenthesisDepth, scopeDepth))                
-            {
-                // Note: The map is zero-based, yet our line number starts from 1.
-                if (previousLineScopeDepth < scopeDepth) // Meaning bracket-closure
-                {
-                    indentationMap[lineNumber - 1] = CIndentationInfo(scopeDepth, indentationType, commentLinePrefixing);                    
-                }
-
-                // The new line itself is always affected
-	        	indentationMap[lineNumber] = CIndentationInfo(scopeDepth, indentationType, commentLinePrefixing);
-                previousLineScopeDepth = scopeDepth;
-            }
-            else if (endOfStreamReached)
-            {
-                indentationMap[lineNumber] = CIndentationInfo(scopeDepth, indentationType, commentLinePrefixing);
-            }
-            
-        }
-
-        suppressLineAndScopeUpdate = false;
-        if (endOfStreamReached)
-        {
-            break;
-        }
-
-        previousCharacterExists = true;
-        previousCharacter = currentCharacter;
-    }
+    } while (!endOfStreamReached);
 
     std::string extractedFileName;
-    std::vector<std::string> splittedString;
+    std::vector<std::string> splitString;
 
 #ifdef COMPILING_FOR_WINDOWS
-    splittedString = VisualLinkerScript::StringSplit(absoluteFilePath, '\\');
+    splitString = VisualLinkerScript::StringSplit(absoluteFilePath, '\\');
 #elif COMPILING_FOR_UNIX_BASED
-    auto splittedString = VisualLinkerScript::StringSplit(absoluteFilePath, '/');
+    auto splitString = VisualLinkerScript::StringSplit(absoluteFilePath, '/');
 #else
 #error Either 'COMPILING_FOR_WINDOWS' need to be set or 'COMPILING_FOR_UNIX_BASED'
 #endif
 
-    extractedFileName = splittedString.back();
 
+    // Generate result
+    QString qRawContent = QString::fromStdString(rawContent);
+    QString debugOutput = "";
+    for (auto entry : lexerContent)
+    {
+        QString translatedType;
+
+        switch (entry.EntryType())
+        {
+        case RawEntryType::Word:
+            translatedType = "Word";
+            break;
+
+        case RawEntryType::ArithmeticOperator:
+            translatedType = "ArithmeticOperator";
+            break;
+
+        case RawEntryType::Semicolon:
+            translatedType = "Semicolon";
+            break;
+
+        case RawEntryType::Comma:
+            translatedType = "Comma";
+            break;
+
+        case RawEntryType::AssignmentOperator:
+            translatedType = "Assignment";
+            break;
+
+        case RawEntryType::Number:
+            translatedType = "Number";
+            break;
+
+        case RawEntryType::String:
+            translatedType = "String";
+            break;
+
+        case RawEntryType::Comment:
+            translatedType = "Comment";
+            break;
+
+        case RawEntryType::ParenthesisOpen:
+            translatedType = "ParenthesisOpen";
+            break;
+
+        case RawEntryType::ParenthesisClose:
+            translatedType = "ParenthesisClose";
+            break;
+
+        case RawEntryType::BracketOpen:
+            translatedType = "BracketOpen";
+            break;
+
+        case RawEntryType::BracketClose:
+            translatedType = "BracketClose";
+            break;
+
+        case RawEntryType::Unknown:
+            translatedType = "Unknown";
+            break;
+
+		case RawEntryType::NotPresent:
+            translatedType = "NotPresent";
+			break;
+		case RawEntryType::EvaluativeOperators:
+            translatedType = "EvaluativeOperators";
+			break;
+
+		case RawEntryType::Wildcard:
+            translatedType = "Wildcard";
+			break;
+
+		case RawEntryType::Colon:
+            translatedType = "Colon";
+			break;
+
+		case RawEntryType::QuestionMark:
+            translatedType = "QuestionMark";
+			break;
+
+        default:
+            translatedType = "ERROR";
+            break;
+        }
+                
+        auto formattedOutput = QString("Type: %1\t\t, From line %2\t index %3\t to %4\t index %5\t, BytePos: %6\t (%7\t bytes). P-Depth: %8\t, S-Depth: %9\t Content: '%10'")
+            .arg(translatedType)
+            .arg(entry.StartLineNumber())
+            .arg(entry.StartIndexInLine())
+            .arg(entry.EndLineNumber())
+            .arg(entry.EndIndexInLine())
+            .arg(entry.StartPosition())
+            .arg(entry.Length())
+            .arg(entry.ParenthesisDepth())
+            .arg(entry.ScopeDepth())
+            .arg(qRawContent.mid(entry.StartPosition(), entry.Length()));
+
+        qDebug() << formattedOutput;
+    }
+
+    extractedFileName = splitString.back();
     return std::make_shared<CRawFile>(std::move(rawContent),
                                       extractedFileName,
                                       absoluteFilePath,
-                                      std::move(indentationMap),
-                                      std::move(lexedContent));
+                                      std::move(lineIndentationMap),
+                                      std::move(lexerContent));
 }

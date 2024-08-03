@@ -2002,6 +2002,12 @@ public slots:
     //! \sa text()
     virtual void setText(const QString &text);
 
+    //! Sets the text of the given \a line with \a text.
+    //!
+    //! \sa text()
+    //! \sa line()
+    virtual void setLineText(const QString& text, int line);
+
     //! Sets the current text encoding.  If \a cp is true then UTF8 is used,
     //! otherwise Latin1 is used.
     //!
@@ -2237,7 +2243,7 @@ private:
     bool isStartChar(char ch) const;
 
     bool ensureRW();
-    void insertAtPos(const QString &text, int pos);
+    void insertAtPos(const QString &text, int pos);    
     static int mapModifiers(int modifiers);
 
     QString wordAtPosition(int position) const;

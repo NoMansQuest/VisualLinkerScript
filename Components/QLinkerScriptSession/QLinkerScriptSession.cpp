@@ -12,8 +12,6 @@ using namespace VisualLinkerScript::ParsingEngine;
 using namespace VisualLinkerScript::DrcEngine;
 
 bool HasNonWhitespaceBeforeCurlyBracket(const std::string& str, uint32_t backwardStartingIndex);
-void ReplaceLineText(const QsciScintilla* scintillaEditor, int lineNumber, const QString& newText);
-
 
 CRawEntry PositionDropTest(const std::shared_ptr<CRawFile>& rawFile, const uint32_t absoluteCharacterPosition);
 CRawEntry PrecedingBracketOpenOnLine(const std::shared_ptr<CRawFile>& rawFile, const uint32_t line, const uint32_t absoluteCharacterPosition);
@@ -155,6 +153,16 @@ void QLinkerScriptSession::OnCharAddedToEditor(const int charAdded) const
             this->m_scintilla->insertAt(QString::fromStdString(newLineContent), lineNumber, 0);
             this->m_scintilla->setCursorPosition(lineNumber, newLineContent.length());
         }
+        else if (encapsulatingEntry.EntryType() == RawEntryType::String)
+        {
+            auto newLineContent = std::string(4 * indentationData.IndentationDepth(), ' ');
+            if (indentationData.CommentLinePrefixing())
+            {
+                newLineContent += " *";
+            }
+            this->m_scintilla->insertAt(QString::fromStdString(newLineContent), lineNumber, 0);
+            this->m_scintilla->setCursorPosition(lineNumber, newLineContent.length());
+        }
         else if (encapsulatingEntry.EntryType() == RawEntryType::NotPresent)
         {
             // NOTE: When we receive the next-line character, the text is already going to be broken between two lines.
@@ -163,47 +171,56 @@ void QLinkerScriptSession::OnCharAddedToEditor(const int charAdded) const
             const auto bracketOpen = PrecedingBracketOpenOnLine(this->m_lexedLinkerScript, lineNumber - 1, absoluteCharPosition);
             const auto bracketClose = SupersedingBracketCloseOnLine(this->m_lexedLinkerScript, lineNumber, absoluteCharPosition);
 
-            if ((bracketOpen.EntryType() != RawEntryType::NotPresent) && 
-                (bracketClose.EntryType() != RawEntryType::NotPresent))
+            if ((bracketOpen.EntryType() != RawEntryType::NotPresent) && (bracketClose.EntryType() != RawEntryType::NotPresent))
             {
                 // Extract text in between
+                int bracketOpenLineNumber, bracketOpenIndex;
+                this->m_scintilla->lineIndexFromPosition(bracketOpen.StartPosition(), &bracketOpenLineNumber, &bracketOpenIndex);
+
                 const auto contentLength = bracketClose.StartPosition() - bracketOpen.StartPosition() - 1;
-                const auto contentBetweenBracketOpenAndCaretLength = absoluteCharPosition - bracketOpen.StartPosition() - 1;
-                const auto contentBetweenCaretAndBracketCloseLength = bracketClose.StartPosition() - absoluteCharPosition;
+                const auto bracketOpenToCaretTextLength = absoluteCharPosition - bracketOpen.StartPosition() - 1;
+                const auto caretToBracketCloseTextLength = bracketClose.StartPosition() - absoluteCharPosition;
                 const auto encapsulatingText = this->m_scintilla->text().mid(bracketOpen.StartPosition() + 1, contentLength);
-                const auto textBetweenBracketOpenAndCaret = this->m_scintilla->text().mid(bracketOpen.StartPosition() + 1, contentBetweenBracketOpenAndCaretLength);
-                const auto textBetweenCaretAndBracketClose = this->m_scintilla->text().mid(absoluteCharPosition, contentBetweenCaretAndBracketCloseLength);
+                const auto bracketOpenToCaretText = this->m_scintilla->text().mid(bracketOpen.StartPosition() + 1, bracketOpenToCaretTextLength).toStdString();
+                const auto caretToBracketCloseText = this->m_scintilla->text().mid(absoluteCharPosition, caretToBracketCloseTextLength).toStdString();
 
+                const auto bracketClosePadding = std::string(4 * indentationData.IndentationDepth(), ' ');
+                const auto newLinePadding = std::string(4 * (indentationData.IndentationDepth() + 1), ' ');
+                const auto bracketOpenLineText = this->m_scintilla->text(bracketOpenLineNumber).mid(0, bracketOpenIndex + 1).toStdString();
+                const auto newLineText = newLinePadding + bracketOpenToCaretText + caretToBracketCloseText;
+            	const auto bracketCloseText = bracketClosePadding + this->m_scintilla->text(lineNumber).toStdString();
 
-                /* NOTE: +1 for the depth because the indentation-data contains wrong depth for the current line, as the
-                 *       'bracket-close' is the line as well, reducing the depth by one point (we'll be moving it to the following line though).
-                 */
-                auto whiteSpacesToAdd = (4 * (indentationData.IndentationDepth() + 1)) - LeadingWhiteSpaces(textAtLine.toStdString());
-                auto newLinePadding = std::string(whiteSpacesToAdd > 0 ? whiteSpacesToAdd : 0, ' ');
-                auto bracketClosurePadding = std::string("\n") + std::string(4 * indentationData.IndentationDepth(), ' ');						
-                this->m_scintilla->insertAt(QString::fromStdString(bracketClosurePadding), lineNumber, textBetweenCaretAndBracketClose.length());
-                this->m_scintilla->insertAt(QString::fromStdString(newLinePadding), lineNumber, 0);
-                this->m_scintilla->setCursorPosition(lineNumber, newLinePadding.length());
+            	this->m_scintilla->insertAt(QString("\n"), lineNumber, index);
+                this->m_scintilla->setLineText(QString::fromStdString(newLineText), lineNumber);
+                this->m_scintilla->setLineText(QString::fromStdString(bracketOpenLineText), lineNumber - 1);
+                this->m_scintilla->setLineText(QString::fromStdString(bracketCloseText), lineNumber + 1);
+                this->m_scintilla->setCursorPosition(lineNumber, newLineText.length() - 1);
+
             }
             else if (bracketOpen.EntryType() != RawEntryType::NotPresent)
             {
-                auto whiteSpacesToAdd = (4 * indentationData.IndentationDepth()) - LeadingWhiteSpaces(textAtLine.toStdString());
+                auto leadingWhiteSpaceCount = LeadingWhiteSpaces(textAtLine.toStdString());
+                auto minimumWhiteSpaceCount = (4 * (indentationData.IndentationDepth()));
+                auto whiteSpacesToAdd = leadingWhiteSpaceCount > minimumWhiteSpaceCount ? 0 : minimumWhiteSpaceCount - leadingWhiteSpaceCount;
                 auto newLinePadding = std::string(whiteSpacesToAdd > 0 ? whiteSpacesToAdd : 0, ' ');
                 this->m_scintilla->insertAt(QString::fromStdString(newLinePadding), lineNumber, 0);
                 this->m_scintilla->setCursorPosition(lineNumber, newLinePadding.length());
             }
             else if (bracketClose.EntryType() != RawEntryType::NotPresent)
-            {                 
-                auto whiteSpacesToAdd = (4 * indentationData.IndentationDepth()) - LeadingWhiteSpaces(textAtLine.toStdString());
+            {
+                auto leadingWhiteSpaceCount = LeadingWhiteSpaces(textAtLine.toStdString());
+                auto minimumWhiteSpaceCount = (4 * (indentationData.IndentationDepth()));
+                auto whiteSpacesToAdd = leadingWhiteSpaceCount > minimumWhiteSpaceCount ? 0 : minimumWhiteSpaceCount - leadingWhiteSpaceCount;
 	            auto newLinePadding = std::string(whiteSpacesToAdd > 0 ? whiteSpacesToAdd : 0, ' ');
                 this->m_scintilla->insertAt(QString::fromStdString(newLinePadding), lineNumber, 0);
                 this->m_scintilla->setCursorPosition(lineNumber, newLinePadding.length());
             }
             else
-            {
-                auto whiteSpacesToAdd = (4 * indentationData.IndentationDepth()) - LeadingWhiteSpaces(textAtLine.toStdString());
-                auto newLinePadding = std::string(whiteSpacesToAdd > 0 ? whiteSpacesToAdd : 0, ' ');
-                this->m_scintilla->insertAt(QString::fromStdString(newLinePadding), lineNumber, 0);
+            {                
+                auto linePadCount = (4 * (indentationData.IndentationDepth()));
+                auto newLinePadding = std::string(linePadCount, ' ');
+                auto newText = newLinePadding + textAtLine.trimmed().toStdString();
+                this->m_scintilla->setLineText(QString::fromStdString(newText), lineNumber);
                 this->m_scintilla->setCursorPosition(lineNumber, newLinePadding.length());
             }
         }        
@@ -237,7 +254,7 @@ void QLinkerScriptSession::OnCharAddedToEditor(const int charAdded) const
             return; // No action is taken.
         }
         const auto newLineContent = std::string(4 * indentationData.IndentationDepth(), ' ') + "}";
-        ReplaceLineText(this->m_scintilla, lineNumber,QString::fromStdString(newLineContent));
+        this->m_scintilla->setLineText(QString::fromStdString(newLineContent), lineNumber);
         this->m_scintilla->setCursorPosition(lineNumber, newLineContent.length());
     }
     
@@ -245,21 +262,6 @@ void QLinkerScriptSession::OnCharAddedToEditor(const int charAdded) const
     this->m_scintilla->endUndoAction();
 }
 
-
-
-
-
-void ReplaceLineText(const QsciScintilla* scintillaEditor, const int lineNumber, const QString& newText)
-{
-    // Get the start and end positions of the line
-    const int start = scintillaEditor->SendScintilla(QsciScintilla::SCI_POSITIONFROMLINE, lineNumber);
-    const int end = scintillaEditor->SendScintilla(QsciScintilla::SCI_GETLINEENDPOSITION, lineNumber);
-
-    // Replace the text within that range
-    scintillaEditor->SendScintilla(QsciScintilla::SCI_SETTARGETSTART, start);
-    scintillaEditor->SendScintilla(QsciScintilla::SCI_SETTARGETEND, end);
-    scintillaEditor->SendScintilla(QsciScintilla::SCI_REPLACETARGET, newText.length(), newText.toUtf8().constData());
-}
 
 bool HasNonWhitespaceBeforeCurlyBracket(const std::string& str, uint32_t backwardStartingIndex)
 {
