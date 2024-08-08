@@ -640,6 +640,7 @@ void QsciScintillaBase::paintEvent(QPaintEvent *e)
 void QsciScintillaBase::resizeEvent(QResizeEvent *)
 {
     sci->ChangeSize();
+    emit this->resized();
 }
 
 

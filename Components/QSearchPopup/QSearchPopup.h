@@ -7,6 +7,7 @@
 #include "SearchPerimeterTypeEnum.h"
 
 class QFlatCheckBox;
+class QManualSizeGrip;
 
 /// @brief QSeachPopup
 class QSearchPopup : public QFrame
@@ -35,7 +36,7 @@ private:
     QFlatCheckBox* m_matchWholeWordCheckButton;
     QFlatCheckBox* m_matchRegularExpressionButton;
     QComboBox* m_searchPerimeterComboBox;
-    QSizeGrip* m_sizeGrip;
+    QManualSizeGrip* m_sizeGrip;
 
     void PopulateDynamicFields();
     void PopulateStaticFields();
@@ -43,8 +44,7 @@ private:
     void PopulateReplaceHistory(const QSettings& settings);
     void RegisterNewSearchEntry(QSettings& settings, QString newEntry);
     void RegisterNewReplaceEntry(QSettings& settings, QString newEntry);
-
-    bool m_textBlockSelected = false;
+    
     bool m_noMatchDetected = false;
     bool m_matchDetected = false;
     bool m_hasFocus = false;
@@ -53,10 +53,9 @@ private:
 
 public:
 	/// @brief Default constructor
-	QSearchPopup(bool textBlockSelected, QWidget* parent = 0)
+	QSearchPopup(QWidget* parent = 0)
 		: QFrame(parent)
-	{
-        this->m_textBlockSelected = textBlockSelected;
+	{        
 		this->BuildUserInterface();
 	}
 
@@ -66,6 +65,10 @@ public:
         
     /// @brief Sets the default text shown when popup is opened.
     void SetText(QString defaultText);
+
+
+    /// @brief shows the popup.
+    void ShowPopup(bool textBlockSelection = false);
 
 
     /// @brief Reports back if no match was detected for the provided text value.
@@ -92,9 +95,8 @@ protected:
     void BuildUserInterface();  
     void Repolish();
     SearchPerimeterType CurrentSearchPerimeter();
-
-public:
     bool eventFilter(QObject* obj, QEvent* event) override;
+    void keyPressEvent(QKeyEvent* event) override;
 
 signals:
     /// @brief Notifies the QT subsystem that the focus has changed.
@@ -114,7 +116,8 @@ public slots:
     void OnTextNotFound();
     void OnTextFound();
 
-private slots:;
+private slots:
+    void OnSizeGripResized(int dx, int dy);
     void OnToggleSearchReplace();
     void OnSearchActionSelectorClicked();
     void OnClosePopupPressed();

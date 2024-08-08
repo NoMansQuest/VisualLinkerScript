@@ -214,8 +214,14 @@ void MainWindow::MenuActionRedo()
 
 void MainWindow::MenuActionFindReplace()
 {
-    //SearchDialog* searchDialog = new SearchDialog();
-    //searchDialog->show();
+    if (!this->m_contentTabRegion->CurrentTab().has_value())
+    {
+        return; // We should not have been activated anyway;
+    }
+
+    auto currentTabId = this->m_contentTabRegion->CurrentTab().value();
+    auto session = std::dynamic_pointer_cast<QLinkerScriptSession>(this->m_contentTabRegion->GetTabContent(currentTabId));
+    session->ShowSearchPopup();
 }
 
 void MainWindow::MenuActionSelectAll()

@@ -89,12 +89,6 @@ namespace
             this->IndexInLine += movement;
         }
 
-        void Retreat(const uint32_t movement)
-        {
-            this->AbsolutePosition -= movement;
-            this->IndexInLine -= movement;
-        }
-
         void Advance(const uint32_t movement, const LexerStates newLexerState)
         {
             this->AbsolutePosition += movement;
@@ -302,7 +296,7 @@ namespace
         {
 	        return (!SafeTestCharacterInString(input, position + 1, '=')) ?
 		               AssignmentSymbolTypes::NotAnAssignmentSymbol :
-		               AssignmentSymbolTypes::SingleCharacter;
+		               AssignmentSymbolTypes::DoubleCharacter;
         }
 
         if ((charAtPosition == '>') || (charAtPosition == '<'))

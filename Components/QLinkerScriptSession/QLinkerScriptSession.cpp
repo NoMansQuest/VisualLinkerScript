@@ -6,6 +6,7 @@
 #include "../../ParsingEngine/CLexer.h"
 #include "../../ParsingEngine/CMasterParser.h"
 #include "../../DrcEngine/CDrcManager.h"
+#include "Components/QSearchPopup/QSearchPopup.h"
 
 using namespace VisualLinkerScript::Components;
 using namespace VisualLinkerScript::ParsingEngine;
@@ -26,7 +27,9 @@ void QLinkerScriptSession::BuildUserInterface()
     this->m_scintilla = new QsciScintilla(this);
     this->m_horizontalSplitter = new QSplitter(Qt::Horizontal, this);    
     this->m_verticalSplitter = new QSplitter(Qt::Vertical, this);
-    this->m_centralLayout = new QVBoxLayout(this);    
+    this->m_centralLayout = new QVBoxLayout(this);
+    this->m_searchPopup = new QSearchPopup(this->m_scintilla);
+    this->m_searchPopup->hide();
 
     this->m_horizontalSplitter->addWidget(this->m_scintilla);
     this->m_horizontalSplitter->addWidget(this->m_memoryVisualizer);
@@ -50,6 +53,7 @@ void QLinkerScriptSession::BuildUserInterface()
     this->m_scintilla->setIndentationGuidesForegroundColor(QColor::fromRgb(0xff909090));    
     this->m_scintilla->setIndentationsUseTabs(true);
 	this->m_scintilla->setBackspaceUnindents(true);
+    this->m_scintilla->installEventFilter(this);
 
     this->setLayout(this->m_centralLayout);
 
@@ -61,13 +65,39 @@ void QLinkerScriptSession::BuildUserInterface()
     QObject::connect(&this->m_deferredProcedureCaller, &QTimer::timeout, this, &QLinkerScriptSession::DeferredContentProcessingAction);
     QObject::connect(this->m_scintilla, &QsciScintilla::textChanged, this, &QLinkerScriptSession::EditorContentUpdated);
     QObject::connect(this->m_scintilla, &QsciScintilla::SCN_CHARADDED, this, &QLinkerScriptSession::OnCharAddedToEditor);
+    QObject::connect(this->m_scintilla, &QsciScintilla::resized, this, &QLinkerScriptSession::OnEditorResize);
     //QObject::connect(this->m_scintilla, &QsciScintilla::handleCharAdded, )
     this->m_deferredProcedureCaller.setSingleShot(true);
+
+    // Make final calls...    
+    this->PositionSearchPopup();
+}
+
+void QLinkerScriptSession::OnEditorResize() const
+{
+    this->PositionSearchPopup();
 }
 
 std::string QLinkerScriptSession::LinkerScriptContent() const
 {
     return this->m_scintilla->text().toStdString();
+}
+
+void QLinkerScriptSession::PositionSearchPopup() const
+{    
+    QSize parentSize = this->m_scintilla->size();
+    this->m_searchPopup->updateGeometry();
+    int popupWidth = this->m_searchPopup->width();
+    int popupHeight = this->m_searchPopup->sizeHint().height();
+    int xPos = parentSize.width() - popupWidth;
+    int yPos = 0;  // Align to top
+    this->m_searchPopup->setGeometry(xPos, yPos, popupWidth, popupHeight);
+    
+}
+
+void QLinkerScriptSession::ShowSearchPopup() const
+{
+    this->m_searchPopup->ShowPopup(this->m_scintilla->hasSelectedText());    
 }
 
 void QLinkerScriptSession::OnFindRequest(std::string searchFor, bool isRegExt, bool isCaseSensitive)
@@ -121,6 +151,19 @@ void QLinkerScriptSession::DeferredContentProcessingAction() const
 void QLinkerScriptSession::InitiateDeferredProcessing()
 {
     this->m_deferredProcedureCaller.start(500);
+}
+
+bool QLinkerScriptSession::eventFilter(QObject* obj, QEvent* event)
+{
+    if (event->type() == QEvent::KeyPress) 
+    {
+        const auto keyEvent = static_cast<QKeyEvent*>(event);        
+        if (keyEvent->key() == Qt::Key_Escape) 
+        {
+            this->m_searchPopup->hide();
+        }
+    }    
+    return QWidget::eventFilter(obj, event);
 }
 
 void QLinkerScriptSession::OnCharAddedToEditor(const int charAdded) const
@@ -224,6 +267,13 @@ void QLinkerScriptSession::OnCharAddedToEditor(const int charAdded) const
                 this->m_scintilla->setCursorPosition(lineNumber, newLinePadding.length());
             }
         }        
+    }
+
+    if (charAdded == '(')
+    {
+        const auto contentToInsert = std::string(")");
+        this->m_scintilla->insertAt(QString::fromStdString(contentToInsert), lineNumber, index);
+        this->m_scintilla->setCursorPosition(lineNumber, index);
     }
 
     if (charAdded == '(')

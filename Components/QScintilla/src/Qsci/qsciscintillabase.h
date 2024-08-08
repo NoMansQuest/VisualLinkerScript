@@ -3543,6 +3543,9 @@ public:
     static int commandKey(int qt_key, int &modifiers);
 
 signals:
+    //! This signal is emitted when the control is resized.
+    void resized();
+
     //! This signal is emitted when text is selected or de-selected.
     //! \a yes is true if text has been selected and false if text has been
     //! deselected.

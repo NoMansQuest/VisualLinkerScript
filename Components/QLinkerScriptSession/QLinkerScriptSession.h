@@ -13,6 +13,7 @@
 class QsciScintilla;
 class QMemoryVisualizer;
 class CLinkerScriptSessionFileInfo;
+class QSearchPopup;
 
 /// @brief Object representing the full context of a loaded/created linker script file.
 class QLinkerScriptSession : public QWidget
@@ -29,7 +30,7 @@ public:
     QLinkerScriptSession(const uint32_t sessionId, CLinkerScriptSessionFileInfo sessionFileInfo, QWidget *parent = nullptr)
         : QWidget(parent),
           m_sessionId(sessionId),
-          m_sessionsTabIndex(0),
+          m_sessionsTabIndex(0),		  
           m_sessionFileInfo(std::move(sessionFileInfo))
     {
         this->BuildUserInterface();
@@ -47,6 +48,7 @@ private:
     QSplitter* m_verticalSplitter;  
     CLinkerScriptSessionFileInfo m_sessionFileInfo;
     QTimer m_deferredProcedureCaller;
+    QSearchPopup* m_searchPopup;
 
     std::unique_ptr<VisualLinkerScript::ParsingEngine::CMasterParser> m_masterParser;
     std::unique_ptr<VisualLinkerScript::ParsingEngine::CLexer> m_linkerScriptLexer;
@@ -57,6 +59,7 @@ private:
     void EditorContentUpdated();
 
 protected:
+    bool eventFilter(QObject* obj, QEvent* event) override;
     void BuildUserInterface();
 
 public:
@@ -90,6 +93,12 @@ public:
     /// @brief Returns back the issues tree-view. 
     QTreeView* IssuesTreeView() const { return this->m_issuesTreeView; }
 
+    /// @breif Make the search dialog appear.
+    void ShowSearchPopup() const;
+
+    /// @brief Positions the search popup.
+    void PositionSearchPopup() const;
+
 signals:
     void evIssueSelected(uint32_t sessionId, uint32_t issueId);
     void evLinkerScriptContentChanged(uint32_t sessionId);
@@ -112,11 +121,12 @@ signals:
     void evSelectionChanged(uint32_t sessionId);
     void evUserListActivated(uint32_t sessionId, int id, std::string activatorString);
 
-public slots:
+public slots:    
     void OnFindRequest(std::string searchFor, bool isRegExt, bool isCaseSensitive);
-    void OnFindNext();
+    void OnFindNext(void);
     void OnFindReplace(std::string replaceWith);
     void OnCharAddedToEditor(int charAdded) const;
+    void OnEditorResize(void) const;
 };
 
 #endif // end of QLINKERSCRIPTSESSION_H__
