@@ -13,7 +13,13 @@ public:
 
 signals:
     /// @brief Triggered when a resize is expected to take place.
-    void resized(int dx, int dy);
+    void resized(QPointF globalPosition, int dx, int dy);
+
+    /// @brief Triggered when resize is about to start  (i.e. mouse button pressed and held).
+    void resizeStarted(QPointF globalPosition);
+
+    /// @brief Triggered when resize is finished (i.e. mouse press was release).
+    void resizeFinished();
 
 protected:
     void paintEvent(QPaintEvent* event) override;

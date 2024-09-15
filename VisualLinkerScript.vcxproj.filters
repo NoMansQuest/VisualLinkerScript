@@ -473,6 +473,15 @@
     <ClCompile Include="Components\QManualSizeGrip\QManualSizeGrip.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="Components\QLinkerScriptSession\ViolationsModel\QViolationsModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\QLinkerScriptSession\ViolationsModel\CDrcViolationEntry.h">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\QLinkerScriptSession\ViolationsModel\CViolationEntryBase.h">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Components\QScintilla\scintilla\lexlib\Accessor.h">
@@ -1226,6 +1235,12 @@
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="Models\CIndentationInfo.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\QLinkerScriptSession\ViolationsModel\QViolationsModel.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\QLinkerScriptSession\ViolationsModel\CParserViolationEntry.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>

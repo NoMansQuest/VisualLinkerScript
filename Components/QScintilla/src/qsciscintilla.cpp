@@ -1711,7 +1711,7 @@ void QsciScintilla::zoomTo(int size)
 
 
 // Find the first occurrence of a string.
-bool QsciScintilla::findFirst(const QString &expr, bool re, bool cs, bool wo,
+bool QsciScintilla::findFirst(const QString &expr, bool regex, bool caseSensitive, bool wholeWord,
         bool wrap, bool forward, int line, int index, bool show, bool posix,
         bool cxx11)
 {
@@ -1727,9 +1727,9 @@ bool QsciScintilla::findFirst(const QString &expr, bool re, bool cs, bool wo,
     findState.forward = forward;
 
     findState.flags =
-        (cs ? SCFIND_MATCHCASE : 0) |
-        (wo ? SCFIND_WHOLEWORD : 0) |
-        (re ? SCFIND_REGEXP : 0) |
+        (caseSensitive ? SCFIND_MATCHCASE : 0) |
+        (wholeWord ? SCFIND_WHOLEWORD : 0) |
+        (regex ? SCFIND_REGEXP : 0) |
         (posix ? SCFIND_POSIX : 0) |
         (cxx11 ? SCFIND_CXX11REGEX : 0);
 
@@ -3008,6 +3008,29 @@ void QsciScintilla::fillIndicatorRange(int lineFrom, int indexFrom,
     }
 }
 
+
+// Clear a range with an indicator.
+void QsciScintilla::clearIndicatorRange(int positionFrom, int positionTo, int indicatorNumber)
+{
+    if (indicatorNumber < INDIC_IME)
+    {
+        // We ignore allocatedIndicators to allow any indicators defined
+        // elsewhere (e.g. in lexers) to be set.
+        if (indicatorNumber < 0)
+        {
+            for (int i = 0; i < INDIC_IME; ++i)
+            {
+                SendScintilla(SCI_SETINDICATORCURRENT, i);
+                SendScintilla(SCI_INDICATORCLEARRANGE, positionFrom, positionTo - positionFrom);
+            }
+        }
+        else
+        {
+            SendScintilla(SCI_SETINDICATORCURRENT, indicatorNumber);
+            SendScintilla(SCI_INDICATORCLEARRANGE, positionFrom, positionTo - positionFrom);
+        }
+    }
+}
 
 // Clear a range with an indicator.
 void QsciScintilla::clearIndicatorRange(int lineFrom, int indexFrom,

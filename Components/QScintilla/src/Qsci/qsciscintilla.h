@@ -670,12 +670,19 @@ public:
     void clearFolds();
 
     //! Clears the range of text with indicator \a indicatorNumber starting at
+    //! position \a positionFrom and finishing at position
+    //! \a indicatorNumber.
+    //!
+    //! \sa fillIndicatorRange()
+    void clearIndicatorRange(int positionFrom, int positionTo, int indicatorNumber);  
+
+    //! Clears the range of text with indicator \a indicatorNumber starting at
     //! position \a indexFrom in line \a lineFrom and finishing at position
     //! \a indexTo in line \a lineTo.
     //!
     //! \sa fillIndicatorRange()
     void clearIndicatorRange(int lineFrom, int indexFrom, int lineTo,
-            int indexTo, int indicatorNumber);
+            int indexTo, int indicatorNumber);    
 
     //! Clear all registered images.
     //!
@@ -799,7 +806,7 @@ public:
     //! regular expression.
     //!
     //! \sa cancelFind(), findFirstInSelection(), findNext(), replace()
-    virtual bool findFirst(const QString &expr, bool re, bool cs, bool wo,
+    virtual bool findFirst(const QString &expr, bool regex, bool caseSensitive, bool wholeWord,
             bool wrap, bool forward = true, int line = -1, int index = -1,
             bool show = true, bool posix = false, bool cxx11 = false);
 

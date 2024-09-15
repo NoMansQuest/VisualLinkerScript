@@ -212,6 +212,9 @@
     <ClCompile Include="Components\InputDialogs\QListAssistedInput.cpp" />
     <ClCompile Include="Components\QFlatCheckBox\QFlatCheckBox.cpp" />
     <ClCompile Include="Components\QLinkerScriptSession\CLinkerScriptSessionFileInfo.h" />
+    <ClCompile Include="Components\QLinkerScriptSession\ViolationsModel\CDrcViolationEntry.h" />
+    <ClCompile Include="Components\QLinkerScriptSession\ViolationsModel\CViolationEntryBase.h" />
+    <ClCompile Include="Components\QLinkerScriptSession\ViolationsModel\QViolationsModel.cpp" />
     <ClCompile Include="Components\QManualSizeGrip\QManualSizeGrip.cpp" />
     <ClCompile Include="Components\QScintilla\scintilla\lexlib\Accessor.cpp" />
     <ClCompile Include="Components\QScintilla\scintilla\src\AutoComplete.cpp" />
@@ -356,6 +359,8 @@
     <QtMoc Include="Components\InputDialogs\QLabelAssistedInput.h" />
     <ClInclude Include="Components\InputDialogs\QListAssistedInput.h" />
     <QtMoc Include="Components\QManualSizeGrip\QManualSizeGrip.h" />
+    <ClInclude Include="Components\QLinkerScriptSession\ViolationsModel\CParserViolationEntry.h" />
+    <ClInclude Include="Components\QLinkerScriptSession\ViolationsModel\QViolationsModel.h" />
     <ClInclude Include="Components\QScintilla\scintilla\lexlib\Accessor.h" />
     <ClInclude Include="Compiler\ExpressionEvaluation\ArithmeticOperationType.h" />
     <ClInclude Include="Components\QScintilla\scintilla\src\AutoComplete.h" />

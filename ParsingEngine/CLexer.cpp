@@ -751,7 +751,8 @@ std::shared_ptr<CRawFile> CLexer::LexLinkerScript(const std::string& absoluteFil
             translatedType = "ERROR";
             break;
         }
-                
+
+        /*
         auto formattedOutput = QString("Type: %1\t\t, From line %2\t index %3\t to %4\t index %5\t, BytePos: %6\t (%7\t bytes). P-Depth: %8\t, S-Depth: %9\t Content: '%10'")
             .arg(translatedType)
             .arg(entry.StartLineNumber())
@@ -765,6 +766,7 @@ std::shared_ptr<CRawFile> CLexer::LexLinkerScript(const std::string& absoluteFil
             .arg(qRawContent.mid(entry.StartPosition(), entry.Length()));
 
         qDebug() << formattedOutput;
+        */
     }
 
     extractedFileName = splitString.back();

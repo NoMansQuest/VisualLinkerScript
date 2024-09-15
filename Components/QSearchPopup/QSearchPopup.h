@@ -38,23 +38,28 @@ private:
     QComboBox* m_searchPerimeterComboBox;
     QManualSizeGrip* m_sizeGrip;
 
+    bool m_replaceMode;
+
     void PopulateDynamicFields();
-    void PopulateStaticFields();
-    void PopulateSearchHistory(const QSettings& settings);
-    void PopulateReplaceHistory(const QSettings& settings);
+    void PopulateStaticFields() const;
+    void PopulateSearchHistory(const QSettings& settings) const;
+    void PopulateReplaceHistory(const QSettings& settings) const;
     void RegisterNewSearchEntry(QSettings& settings, QString newEntry);
     void RegisterNewReplaceEntry(QSettings& settings, QString newEntry);
     
     bool m_noMatchDetected = false;
     bool m_matchDetected = false;
     bool m_hasFocus = false;
+    QPointF m_globalPosAtResizeStart;
+    QRectF m_rectAtResizeStart;
 
     SearchReplaceRequestType m_currentSearchRequestType = SearchReplaceRequestType::FindNext;    
 
 public:
 	/// @brief Default constructor
 	QSearchPopup(QWidget* parent = 0)
-		: QFrame(parent)
+		: QFrame(parent),
+		  m_replaceMode(false)
 	{        
 		this->BuildUserInterface();
 	}
@@ -64,7 +69,7 @@ public:
 	{}
         
     /// @brief Sets the default text shown when popup is opened.
-    void SetText(QString defaultText);
+    void SetText(const QString& defaultText) const;
 
 
     /// @brief shows the popup.
@@ -91,10 +96,13 @@ public:
                this->m_searchPerimeterComboBox->hasFocus();
     }
 
+    /// @brief Sets the search texbox to focus with the provides string
+    void FocusOnSearch(const std::string& stringToSearchFor) const;
+
 protected:
     void BuildUserInterface();  
-    void Repolish();
-    SearchPerimeterType CurrentSearchPerimeter();
+    void Repolish();    
+    SearchPerimeterType CurrentSearchPerimeter() const;
     bool eventFilter(QObject* obj, QEvent* event) override;
     void keyPressEvent(QKeyEvent* event) override;
 
@@ -103,7 +111,7 @@ signals:
     void evFocusChanged();
 
     /// @brief Notifies the recipients that a search or replace action was requested by the user.
-    void evSearchReaplceRequested(
+    void evSearchReplaceRequested(
         QString searchText,
         QString replaceWith,
         bool caseMatch,
@@ -117,7 +125,8 @@ public slots:
     void OnTextFound();
 
 private slots:
-    void OnSizeGripResized(int dx, int dy);
+    void OnSizeGripResized(QPointF globalPosition, int dx, int dy);
+    void OnSizeGripResizeStarted(QPointF globalPosition);
     void OnToggleSearchReplace();
     void OnSearchActionSelectorClicked();
     void OnClosePopupPressed();

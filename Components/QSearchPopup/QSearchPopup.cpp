@@ -84,15 +84,14 @@ void QSearchPopup::BuildUserInterface()
 	this->m_searchFieldComboBox->setFixedHeight(24);
 	this->m_searchFieldComboBox->installEventFilter(this);
 	this->m_searchFieldComboBox->setProperty("inError", false);
-	this->m_searchFieldComboBox->installEventFilter(this);
+	this->m_searchFieldComboBox->installEventFilter(this);	
 
 	this->m_replaceFieldComboBox = new QComboBox(this);
 	this->m_replaceFieldComboBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 	this->m_replaceFieldComboBox->setEditable(true);
 	this->m_replaceFieldComboBox->setFixedHeight(24);
 	this->m_replaceFieldComboBox->installEventFilter(this);
-	this->m_replaceFieldComboBox->installEventFilter(this);
-
+	
 	this->m_searchPerimeterComboBox = new QComboBox(this);
 	this->m_searchPerimeterComboBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 	this->m_searchPerimeterComboBox->setFixedHeight(24);	
@@ -115,6 +114,7 @@ void QSearchPopup::BuildUserInterface()
 	
 	this->m_sizeGrip = new QManualSizeGrip(this);
 	this->connect(this->m_sizeGrip, &QManualSizeGrip::resized, this, &QSearchPopup::OnSizeGripResized);
+	this->connect(this->m_sizeGrip, &QManualSizeGrip::resizeStarted, this, &QSearchPopup::OnSizeGripResizeStarted);
 
 	this->m_row2HBox->setSpacing(0);
 	this->m_row2HBox->addWidget(this->m_sizeGrip, 0, Qt::AlignBottom | Qt::AlignLeft);
@@ -133,32 +133,50 @@ void QSearchPopup::BuildUserInterface()
 	this->m_vbox->addSpacing(3);
 	this->m_vbox->setContentsMargins(3, 5, 5, 5);
 	this->setLayout(this->m_vbox);
-	this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::MinimumExpanding);
+	this->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
 	this->setContentsMargins(0, 0, 0, 0);	
 
 	// Populate our fields with historical data (if available)
 	PopulateDynamicFields();
-	PopulateStaticFields();
+	PopulateStaticFields();	
 
 	// We need to hide the following entries, as we launch in 'Search' mode, and not 
 	// in 'Replace' mode.
 	this->m_replaceFieldComboBox->setVisible(false);
 	this->m_replaceNextButton->setVisible(false);
-	this->m_replaceAllButton->setVisible(false);	
+	this->m_replaceAllButton->setVisible(false);
+
+	this->setMinimumWidth(300);
 }
 
-void QSearchPopup::OnSizeGripResized(int dx, int dy)
+void QSearchPopup::OnSizeGripResized(QPointF globalPosition, int dx, int dy)
 {
-	if ((this->width() - dx < 300) && (dx > 0))
+	auto xDiff = globalPosition.x() - this->m_globalPosAtResizeStart.x();
+	auto newLeft = xDiff + this->m_rectAtResizeStart.x();
+	auto newWidth = this->m_rectAtResizeStart.width() + (-1 * xDiff);
+
+	if (newWidth < this->minimumWidth())
 	{
-		return; // We have a minimum si
+		return;
 	}
 
 	this->setGeometry(
-		this->geometry().left() + dx,
-		this->geometry().top(), 
-		this->geometry().width() - dx, 
-		this->geometry().height());
+		newLeft,
+		this->m_rectAtResizeStart.top(), 
+		newWidth,
+		this->m_rectAtResizeStart.height());
+}
+
+void QSearchPopup::OnSizeGripResizeStarted(QPointF globalPosition)
+{
+	this->m_globalPosAtResizeStart = globalPosition;
+	this->m_rectAtResizeStart = QRectF(this->geometry().topLeft(), this->geometry().bottomRight());
+}
+
+void QSearchPopup::FocusOnSearch(const std::string& stringToSearchFor) const
+{
+	this->m_searchFieldComboBox->setCurrentText(QString::fromStdString(stringToSearchFor));
+	this->m_searchFieldComboBox->setFocus();
 }
 
 void QSearchPopup::ShowPopup(bool textBlockSelection)
@@ -227,7 +245,7 @@ void QSearchPopup::OnSearchActionSelectorClicked()
 	searchActionSelectorMenu.exec(QCursor::pos());
 }
 
-SearchPerimeterType ConvertIndexToSearchPerimeter(int comboBoxIndex)
+SearchPerimeterType ConvertIndexToSearchPerimeter(const int comboBoxIndex)
 {
 	switch (comboBoxIndex)
 	{
@@ -239,7 +257,7 @@ SearchPerimeterType ConvertIndexToSearchPerimeter(int comboBoxIndex)
 	}
 }
 
-void QSearchPopup::PopulateStaticFields()
+void QSearchPopup::PopulateStaticFields() const
 {
 	this->m_searchPerimeterComboBox->addItem("Current document");
 	this->m_searchPerimeterComboBox->addItem("All open documents");
@@ -252,7 +270,7 @@ void QSearchPopup::PopulateDynamicFields()
 	this->PopulateSearchHistory(settings);
 }
 
-void QSearchPopup::PopulateSearchHistory(const QSettings& settings)
+void QSearchPopup::PopulateSearchHistory(const QSettings& settings) const
 {
 	auto listOfEntries = settings.value("searchHistory").toStringList();
 	this->m_searchFieldComboBox->clear();
@@ -264,7 +282,7 @@ void QSearchPopup::PopulateSearchHistory(const QSettings& settings)
 	}
 }
 
-void QSearchPopup::PopulateReplaceHistory(const QSettings& settings)
+void QSearchPopup::PopulateReplaceHistory(const QSettings& settings) const
 {
 	auto listOfEntries = settings.value("replaceHistory").toStringList();
 	this->m_replaceFieldComboBox->clear();
@@ -307,13 +325,15 @@ void QSearchPopup::OnToggleSearchReplace()
 	this->m_replaceAllButton->setVisible(valueToSet);
 	this->m_findOrReplaceSelectorButton->setIcon(QIcon(iconToSetPath).pixmap(QSize(20, 22)));
 	this->m_vbox->invalidate();
+	auto currentWidth = this->width();
 	this->updateGeometry(); // Inform the layout system to update geometry	
 	this->adjustSize();
 	this->setFixedHeight(this->sizeHint().height());
+	this->setGeometry(this->geometry().left(), this->geometry().top(), currentWidth, this->geometry().height());
 }
 
 /// @param Sets the default text shown when popup is opened.
-void QSearchPopup::SetText(QString defaultText)
+void QSearchPopup::SetText(const QString& defaultText) const
 {
 	auto foundIndex = this->m_searchFieldComboBox->findText(defaultText);
 	if (foundIndex != -1)
@@ -335,7 +355,7 @@ void QSearchPopup::keyPressEvent(QKeyEvent* event)
 	}
 }
 
-SearchPerimeterType QSearchPopup::CurrentSearchPerimeter()
+SearchPerimeterType QSearchPopup::CurrentSearchPerimeter() const
 {
 	return ConvertIndexToSearchPerimeter(this->m_searchPerimeterComboBox->currentIndex());
 }
@@ -363,7 +383,7 @@ void QSearchPopup::OnClosePopupPressed()
 
 void QSearchPopup::OnSearchActionButtonPressed()
 {
-	emit this->evSearchReaplceRequested(
+	emit this->evSearchReplaceRequested(
 		this->m_searchFieldComboBox->currentText(),
 		this->m_replaceFieldComboBox->currentText(),
 		this->m_matchCaseCheckButton->IsChecked(),
@@ -375,7 +395,7 @@ void QSearchPopup::OnSearchActionButtonPressed()
 
 void QSearchPopup::OnReplaceNextButtonPressed()
 {
-	emit this->evSearchReaplceRequested(
+	emit this->evSearchReplaceRequested(
 		this->m_searchFieldComboBox->currentText(),
 		this->m_replaceFieldComboBox->currentText(),
 		this->m_matchCaseCheckButton->IsChecked(),
@@ -387,7 +407,7 @@ void QSearchPopup::OnReplaceNextButtonPressed()
 
 void QSearchPopup::OnReplaceAllButtonPressed()
 {
-	emit this->evSearchReaplceRequested(
+	emit this->evSearchReplaceRequested(
 		this->m_searchFieldComboBox->currentText(),
 		this->m_replaceFieldComboBox->currentText(),
 		this->m_matchCaseCheckButton->IsChecked(),
@@ -399,18 +419,34 @@ void QSearchPopup::OnReplaceAllButtonPressed()
 
 bool QSearchPopup::eventFilter(QObject* obj, QEvent* event) 
 {
-	if ((obj == this->m_searchFieldComboBox) || (obj == this->m_replaceFieldComboBox) || (obj == this->m_searchPerimeterComboBox))
-	{
-		if ((event->type() == QEvent::FocusIn) || (event->type() == QEvent::FocusOut)) 
-		{
-			emit this->evFocusChanged();
-			this->Repolish();
-		}
-	}
+	bool isOneOfTheComboBoxes = 
+		(obj == this->m_searchFieldComboBox) ||
+		(obj == this->m_replaceFieldComboBox) ||
+		(obj == this->m_searchPerimeterComboBox);
 
+	if (isOneOfTheComboBoxes && ((event->type() == QEvent::FocusIn) || (event->type() == QEvent::FocusOut)))
+	{
+		emit this->evFocusChanged();
+		this->Repolish();
+	}
+	
 	if (event->type() == QEvent::KeyPress)
 	{
-		const auto keyEvent = static_cast<QKeyEvent*>(event);
+		const auto keyEvent = static_cast<QKeyEvent*>(event);		
+		const auto sendingComboBox = qobject_cast<QComboBox*>(obj);
+
+		if (sendingComboBox == this->m_searchFieldComboBox && (keyEvent->key() == Qt::Key_Return || keyEvent->key() == Qt::Key_Enter))
+		{			
+			emit this->evSearchReplaceRequested(
+				this->m_searchFieldComboBox->currentText(),
+				"",
+				this->m_matchCaseCheckButton->IsChecked(),
+				this->m_matchWholeWordCheckButton->IsChecked(),
+				this->m_matchRegularExpressionButton->IsChecked(),
+				SearchReplaceRequestType::FindNext,
+				CurrentSearchPerimeter());
+		}
+		
 		if (keyEvent->key() == Qt::Key_Escape)
 		{
 			this->hide();
@@ -419,6 +455,8 @@ bool QSearchPopup::eventFilter(QObject* obj, QEvent* event)
 
 	return QObject::eventFilter(obj, event);
 }
+
+
 
 void QSearchPopup::Repolish()
 {

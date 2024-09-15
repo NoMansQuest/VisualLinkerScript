@@ -9,7 +9,10 @@
 #include "ParsingEngine/CLexer.h"
 #include "ParsingEngine/CMasterParser.h"
 
-
+class QChromeTabWidget;
+enum class Indicators;
+enum class SearchReplaceRequestType;
+enum class SearchPerimeterType;
 class QsciScintilla;
 class QMemoryVisualizer;
 class CLinkerScriptSessionFileInfo;
@@ -43,6 +46,7 @@ private:
     QMemoryVisualizer* m_memoryVisualizer;
     QsciScintilla* m_scintilla;
     QTreeView* m_issuesTreeView;
+    QChromeTabWidget* m_panelsTab;
     QVBoxLayout* m_centralLayout;
     QSplitter* m_horizontalSplitter;
     QSplitter* m_verticalSplitter;  
@@ -57,6 +61,12 @@ private:
     void InitiateDeferredProcessing();
     void DeferredContentProcessingAction() const;
     void EditorContentUpdated();
+    void SetupViolationsView() const;
+
+    // Find related
+    uint32_t m_searchSessionActive = false;
+    uint32_t m_searchSessionCurrentFocusedEntryStartPosition = 0;
+    void ResetFindIndicators(Indicators indicatorToReset) const;
 
 protected:
     bool eventFilter(QObject* obj, QEvent* event) override;
@@ -121,7 +131,17 @@ signals:
     void evSelectionChanged(uint32_t sessionId);
     void evUserListActivated(uint32_t sessionId, int id, std::string activatorString);
 
-public slots:    
+public slots:
+
+    void OnSearchReplaceRequested(
+        const QString& searchText,
+        const QString& replaceWith,
+        bool caseMatch,
+        bool wordMatch,
+        bool regEx,
+        SearchReplaceRequestType searchReplaceType,
+        SearchPerimeterType searchPerimeter);
+
     void OnFindRequest(std::string searchFor, bool isRegExt, bool isCaseSensitive);
     void OnFindNext(void);
     void OnFindReplace(std::string replaceWith);

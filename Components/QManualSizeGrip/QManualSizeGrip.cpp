@@ -16,12 +16,14 @@ void QManualSizeGrip::paintEvent(QPaintEvent* event) {
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
 
-    auto squareSize = 2;
-    auto spacing = 1; // 1 pixel separation
-    auto squareColor = QColor(215, 215, 215, 255); 
+    const auto squareSize = 2;
+    const auto spacing = 1; // 1 pixel separation
+    const auto squareColor = QColor(215, 215, 215, 255); 
     
-    for (int i = 0; i < 3; ++i) {
-        for (int j = 0; j <= i; ++j) {
+    for (int i = 0; i < 3; ++i) 
+    {
+        for (int j = 0; j <= i; ++j) 
+        {
             int x = width() - ((squareSize + spacing) * (i + 1));
             int y = height() - ((squareSize + spacing) * (j + 1));
             painter.fillRect(x, y, squareSize, squareSize, squareColor);
@@ -35,6 +37,7 @@ void QManualSizeGrip::mousePressEvent(QMouseEvent* event)
     {
         this->m_resizing = true;
         this->m_mouseHoldStartPosition = event->globalPosition();
+        emit this->resizeStarted(event->globalPosition());
         event->accept();
     }
 }
@@ -48,7 +51,9 @@ void QManualSizeGrip::mouseMoveEvent(QMouseEvent* event)
         const auto dy = currentPos.y() - this->m_mouseHoldStartPosition.y();
 
         if (std::abs(dx) >= 1.0f || std::abs(dy) >= 1.0f) {
+            qDebug() << "Size diff reported, dx: " << dx << " ,dy: " << dy << "\n";
             emit resized(
+                currentPos,
                 static_cast<int>(dx),
                 static_cast<int>(dy));
         }        
@@ -61,6 +66,7 @@ void QManualSizeGrip::mouseReleaseEvent(QMouseEvent* event)
     if (event->button() == Qt::LeftButton) 
     {
         this->m_resizing = false;
+        emit this->resizeFinished();
         event->accept();
     }
 }

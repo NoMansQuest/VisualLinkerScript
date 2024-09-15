@@ -6,13 +6,38 @@
 #include "../../ParsingEngine/CLexer.h"
 #include "../../ParsingEngine/CMasterParser.h"
 #include "../../DrcEngine/CDrcManager.h"
+#include "Components/QChromeTab/QChromeTabWidget.h"
 #include "Components/QSearchPopup/QSearchPopup.h"
+
+
+/// @brief Enum contains all defined indicators.
+enum class Indicators : int
+{
+    IndicatorFind = 0,
+	IndicatorLexerViolation,
+    IndicatorDrcViolation,
+    IndicatorParserViolation,
+};
+
+
+/// @brief Represents matched result when 'find' is performed on the text
+struct SearchMatchResult {
+    uint32_t start;
+    uint32_t length;
+};
 
 using namespace VisualLinkerScript::Components;
 using namespace VisualLinkerScript::ParsingEngine;
 using namespace VisualLinkerScript::DrcEngine;
 
 bool HasNonWhitespaceBeforeCurlyBracket(const std::string& str, uint32_t backwardStartingIndex);
+
+std::vector<SearchMatchResult> SearchForContent(
+     const QString& contentToSearchIn, 
+     const QString& whatToSearchFor,
+     bool caseMatch,
+     bool regEx,
+     bool wordMatch);
 
 CRawEntry PositionDropTest(const std::shared_ptr<CRawFile>& rawFile, const uint32_t absoluteCharacterPosition);
 CRawEntry PrecedingBracketOpenOnLine(const std::shared_ptr<CRawFile>& rawFile, const uint32_t line, const uint32_t absoluteCharacterPosition);
@@ -29,6 +54,7 @@ void QLinkerScriptSession::BuildUserInterface()
     this->m_verticalSplitter = new QSplitter(Qt::Vertical, this);
     this->m_centralLayout = new QVBoxLayout(this);
     this->m_searchPopup = new QSearchPopup(this->m_scintilla);
+    this->m_panelsTab = new QChromeTabWidget(this);    
     this->m_searchPopup->hide();
 
     this->m_horizontalSplitter->addWidget(this->m_scintilla);
@@ -36,12 +62,23 @@ void QLinkerScriptSession::BuildUserInterface()
     this->m_horizontalSplitter->setStretchFactor(0, 2);
     this->m_horizontalSplitter->setStretchFactor(1, 1);
     this->m_verticalSplitter->addWidget(this->m_horizontalSplitter);
-    this->m_verticalSplitter->addWidget(this->m_issuesTreeView);
+    this->m_verticalSplitter->addWidget(this->m_panelsTab);
     this->m_verticalSplitter->setStretchFactor(0, 5);
     this->m_verticalSplitter->setStretchFactor(1, 1);
     this->m_centralLayout->addWidget(this->m_verticalSplitter);
 	this->m_centralLayout->setSpacing(0);
 	this->m_centralLayout->setContentsMargins(0, 0, 0, 0);
+
+    // Panels tab
+    auto issuesTab = this->m_panelsTab->AddTab(std::shared_ptr<QWidget>(this->m_issuesTreeView), true);
+    this->m_panelsTab->SetTabTitle(issuesTab, "Violations");
+
+
+    this->setLayout(this->m_centralLayout);
+
+    this->m_masterParser = std::make_unique<CMasterParser>();
+    this->m_linkerScriptLexer = std::make_unique<CLexer>();
+    this->m_drcManager = std::make_unique<CDrcManager>();
 
     // Setup Scintilla Text Editor
 	this->m_scintilla->setLexer(new QsciLexerLinkerScript);
@@ -55,22 +92,68 @@ void QLinkerScriptSession::BuildUserInterface()
 	this->m_scintilla->setBackspaceUnindents(true);
     this->m_scintilla->installEventFilter(this);
 
-    this->setLayout(this->m_centralLayout);
+    this->m_scintilla->indicatorDefine(QsciScintilla::RoundBoxIndicator, static_cast<int>(Indicators::IndicatorFind));
+    this->m_scintilla->setIndicatorOutlineColor(QColor::fromRgb(0, 0, 0, 0), static_cast<int>(Indicators::IndicatorFind));
+    this->m_scintilla->setIndicatorForegroundColor(QColor::fromRgb(0xff, 0xff, 0xff, 0x1F), static_cast<int>(Indicators::IndicatorFind));
+    this->m_scintilla->setSelectionBackgroundColor(QColor::fromRgb(00, 00, 0xff, 0x5F));
 
-    this->m_masterParser = std::make_unique<CMasterParser>();
-    this->m_linkerScriptLexer = std::make_unique<CLexer>();
-    this->m_drcManager = std::make_unique<CDrcManager>();    
 
     // Setup deferred procedure call system
     QObject::connect(&this->m_deferredProcedureCaller, &QTimer::timeout, this, &QLinkerScriptSession::DeferredContentProcessingAction);
+    this->m_deferredProcedureCaller.setSingleShot(true);
+
+    // Connect Scintilla editor signals
     QObject::connect(this->m_scintilla, &QsciScintilla::textChanged, this, &QLinkerScriptSession::EditorContentUpdated);
     QObject::connect(this->m_scintilla, &QsciScintilla::SCN_CHARADDED, this, &QLinkerScriptSession::OnCharAddedToEditor);
     QObject::connect(this->m_scintilla, &QsciScintilla::resized, this, &QLinkerScriptSession::OnEditorResize);
     //QObject::connect(this->m_scintilla, &QsciScintilla::handleCharAdded, )
-    this->m_deferredProcedureCaller.setSingleShot(true);
+
+    // Connect search popup signals
+    QObject::connect(this->m_searchPopup, &QSearchPopup::evSearchReplaceRequested, this, &QLinkerScriptSession::OnSearchReplaceRequested);
 
     // Make final calls...    
     this->PositionSearchPopup();
+    this->SetupViolationsView();
+}
+
+void QLinkerScriptSession::SetupViolationsView() const
+{    
+    // Create the QStandardItemModel with 4 columns (1 for item and 3 for additional data)    
+    QStandardItemModel* model = new QStandardItemModel();
+    model->setHorizontalHeaderLabels({ "Violation", "Code", "Description", "Line", "File"});
+
+    // Populate the model with some hierarchical data
+    QStandardItem* parentItem = model->invisibleRootItem();
+
+    // First root item with 3 columns of data
+    QStandardItem* item1 = new QStandardItem("Root Item 1");
+    QStandardItem* item1_col1 = new QStandardItem("Data 1-1");
+    QStandardItem* item1_col2 = new QStandardItem("Data 1-2");
+    item1->setEditable(false);
+
+    parentItem->appendRow({ item1, item1_col1, item1_col2 });
+
+    // Adding a child to the first root item
+    QStandardItem* child1 = new QStandardItem("Child Item 1.1");
+    QStandardItem* child1_col1 = new QStandardItem("Data 1.1-1");
+    QStandardItem* child1_col2 = new QStandardItem("Data 1.1-2");
+    child1->setEditable(false);
+
+    item1->appendRow({ child1, child1_col1, child1_col2 });
+
+    // Second root item with 3 columns of data
+    QStandardItem* item2 = new QStandardItem("Root Item 2");
+    QStandardItem* item2_col1 = new QStandardItem("Data 2-1");
+    QStandardItem* item2_col2 = new QStandardItem("Data 2-2");
+    item2->setEditable(false);
+
+    parentItem->appendRow({ item2, item2_col1, item2_col2 });
+
+    // Set the model to the QTreeView
+    this->m_issuesTreeView->setModel(model);
+
+    // Enable alternating row colors
+    this->m_issuesTreeView->setAlternatingRowColors(true);
 }
 
 void QLinkerScriptSession::OnEditorResize() const
@@ -88,16 +171,123 @@ void QLinkerScriptSession::PositionSearchPopup() const
     QSize parentSize = this->m_scintilla->size();
     this->m_searchPopup->updateGeometry();
     int popupWidth = this->m_searchPopup->width();
-    int popupHeight = this->m_searchPopup->sizeHint().height();
-    int xPos = parentSize.width() - popupWidth;
-    int yPos = 0;  // Align to top
-    this->m_searchPopup->setGeometry(xPos, yPos, popupWidth, popupHeight);
-    
+    int popupHeight = this->m_searchPopup->sizeHint().height();    
+    int xPos = parentSize.width() - popupWidth - (this->m_scintilla->verticalScrollBar()->isVisible() ? this->m_scintilla->verticalScrollBar()->width() : 0);
+    int yPos = 0;  // Align to top    
+    this->m_searchPopup->setGeometry(xPos, yPos, popupWidth, popupHeight);    
 }
 
 void QLinkerScriptSession::ShowSearchPopup() const
 {
     this->m_searchPopup->ShowPopup(this->m_scintilla->hasSelectedText());    
+    this->PositionSearchPopup();
+    this->m_searchPopup->FocusOnSearch(this->m_scintilla->selectedText().toStdString());
+}
+
+void QLinkerScriptSession::OnSearchReplaceRequested(
+	const QString& searchText, 
+    const QString& replaceWith,
+    bool caseMatch,
+	bool wordMatch,
+    bool regEx, 
+    SearchReplaceRequestType searchReplaceType, 
+    SearchPerimeterType searchPerimeter)
+{
+    switch (searchReplaceType)
+    {
+	    case SearchReplaceRequestType::FindNext:
+	    {
+            /*
+            auto found = this->m_scintilla->findFirst(searchText, regEx, caseMatch, wordMatch, true, true);
+            if (!found)
+            {
+                break;
+            }
+            */
+
+            this->ResetFindIndicators(Indicators::IndicatorFind);
+            auto foundEntries = SearchForContent(this->m_scintilla->text(), searchText, caseMatch, regEx, wordMatch);
+            auto focusedFoundEntryPositionSet = false;
+            SearchMatchResult resultToFocusOn;
+
+            for (const auto entry: foundEntries)
+            {
+                int lineNumber;
+                int columnPosition;
+                this->m_scintilla->lineIndexFromPosition(entry.start, &lineNumber, &columnPosition);
+
+                this->m_scintilla->fillIndicatorRange(
+                    lineNumber,
+                    columnPosition,
+                    lineNumber,
+                    columnPosition + searchText.length(),
+                    (int)Indicators::IndicatorFind);
+
+                if (!focusedFoundEntryPositionSet)
+                {
+                    if ((!this->m_searchSessionActive) || (this->m_searchSessionCurrentFocusedEntryStartPosition == foundEntries.back().start))
+                    {
+                        focusedFoundEntryPositionSet = entry.start;
+                        resultToFocusOn = entry;
+                        this->m_searchSessionActive = true;
+                        this->m_searchSessionCurrentFocusedEntryStartPosition = entry.start;
+                        focusedFoundEntryPositionSet = true;
+                    }
+                    else
+                    {
+                        if (entry.start > this->m_searchSessionCurrentFocusedEntryStartPosition)
+                        {
+                            this->m_searchSessionCurrentFocusedEntryStartPosition = entry.start;
+                            resultToFocusOn = entry;
+                            focusedFoundEntryPositionSet = true;
+                        }
+                    }
+                    
+                }             
+            }
+
+            if (focusedFoundEntryPositionSet) // This means we have a result to focus on
+            {
+                int startLine, startColumn, endLine, endColumn;
+                this->m_scintilla->lineIndexFromPosition(resultToFocusOn.start, &startLine, &startColumn);
+                this->m_scintilla->lineIndexFromPosition(resultToFocusOn.start + resultToFocusOn.length, &endLine, &endColumn);
+                this->m_scintilla->setSelection(startLine, startColumn, endLine, endColumn);
+                this->m_scintilla->ensureLineVisible(startLine);
+            }
+
+	        break;
+	    }
+
+	    case SearchReplaceRequestType::FindPrevious:
+		{
+            this->m_scintilla->findFirst(searchText, regEx, caseMatch, wordMatch, true, false);
+			break;
+		}
+
+	    case SearchReplaceRequestType::FindAll:
+	    {
+            // This is a completely different topic (needs a tree-view explorer below)
+		    break;
+	    }
+
+	    case SearchReplaceRequestType::ReplaceNext:
+		{
+
+		    break;
+		}
+	    case SearchReplaceRequestType::ReplaceAll:
+	    {
+            // This is a completely different topic, needs replacing the entire text.
+	        break;
+	    }
+
+	    default:
+	    {
+	        throw std::exception("Unsupported enum value detected.");
+	    }
+    }
+
+
 }
 
 void QLinkerScriptSession::OnFindRequest(std::string searchFor, bool isRegExt, bool isCaseSensitive)
@@ -157,13 +347,25 @@ bool QLinkerScriptSession::eventFilter(QObject* obj, QEvent* event)
 {
     if (event->type() == QEvent::KeyPress) 
     {
-        const auto keyEvent = static_cast<QKeyEvent*>(event);        
-        if (keyEvent->key() == Qt::Key_Escape) 
+        const auto keyEvent = dynamic_cast<QKeyEvent*>(event);
+	    if (keyEvent->key() == Qt::Key_Escape) 
         {
             this->m_searchPopup->hide();
+            this->ResetFindIndicators(Indicators::IndicatorFind);
+            this->m_scintilla->setSelection(0, 0, 0, 0);
+            this->m_searchSessionActive = false;
+            this->m_searchSessionCurrentFocusedEntryStartPosition = false;
         }
     }    
     return QWidget::eventFilter(obj, event);
+}
+
+void QLinkerScriptSession::ResetFindIndicators(Indicators indicatorToReset) const
+{
+    this->m_scintilla->clearIndicatorRange(
+        0, 
+        this->m_scintilla->length() > 0 ? this->m_scintilla->length() - 1 : 0,
+        (int)indicatorToReset);
 }
 
 void QLinkerScriptSession::OnCharAddedToEditor(const int charAdded) const
@@ -312,6 +514,88 @@ void QLinkerScriptSession::OnCharAddedToEditor(const int charAdded) const
     this->m_scintilla->endUndoAction();
 }
 
+
+std::vector<SearchMatchResult> SearchForContent(
+    const QString& contentToSearchIn, 
+    const QString& whatToSearchFor, 
+    const bool caseMatch, 
+    const bool regEx, 
+    const bool wordMatch)
+{
+    std::vector<SearchMatchResult> results;
+
+    // Case sensitivity setting
+    Qt::CaseSensitivity caseSensitivity = caseMatch ? Qt::CaseSensitive : Qt::CaseInsensitive;
+
+    if (regEx) {
+        // Regular expression mode
+        QString pattern = whatToSearchFor;
+
+        if (wordMatch) {
+            pattern = "\\b" + QRegularExpression::escape(whatToSearchFor) + "\\b";
+        }
+
+        QRegularExpression::PatternOptions options = QRegularExpression::NoPatternOption;
+        if (!caseMatch) {
+            options |= QRegularExpression::CaseInsensitiveOption;
+        }
+
+        QRegularExpression regex(pattern, options);
+        QRegularExpressionMatchIterator it = regex.globalMatch(contentToSearchIn);
+
+        while (it.hasNext()) {
+            QRegularExpressionMatch match = it.next();
+            if (match.hasMatch()) {
+                SearchMatchResult result;
+                result.start = static_cast<uint32_t>(match.capturedStart());
+                result.length = static_cast<uint32_t>(match.capturedLength());
+                results.emplace_back(result);
+            }
+        }
+    }
+    else {
+        // Simple string search mode
+        int startPos = 0;
+
+        while ((startPos = contentToSearchIn.indexOf(whatToSearchFor, startPos, caseSensitivity)) != -1) {
+            if (wordMatch) {
+                // Check if the match is a whole word
+                bool isWholeWord = true;
+
+                // Check preceding character
+                if (startPos > 0) {
+                    QChar precedingChar = contentToSearchIn[startPos - 1];
+                    if (precedingChar.isLetterOrNumber() || precedingChar == '_') {
+                        isWholeWord = false;
+                    }
+                }
+
+                // Check following character
+                int endPos = startPos + whatToSearchFor.length();
+                if (endPos < contentToSearchIn.length()) {
+                    QChar followingChar = contentToSearchIn[endPos];
+                    if (followingChar.isLetterOrNumber() || followingChar == '_') {
+                        isWholeWord = false;
+                    }
+                }
+
+                if (!isWholeWord) {
+                    startPos += whatToSearchFor.length();
+                    continue;
+                }
+            }
+
+            SearchMatchResult result;
+            result.start = static_cast<uint32_t>(startPos);
+            result.length = static_cast<uint32_t>(whatToSearchFor.length());
+            results.emplace_back(result);
+
+            startPos += whatToSearchFor.length();
+        }
+    }
+
+    return results;
+}
 
 bool HasNonWhitespaceBeforeCurlyBracket(const std::string& str, uint32_t backwardStartingIndex)
 {
