@@ -425,7 +425,7 @@ QTreeView::item:hover {
 }
 
 QTreeView::item:selected {
-    background-color: #ff797979; /* Selected item background */
+    background-color: #ff505050; /* Selected item background */
     color: #e0e0e0; /* Selected item text color */
 }
 

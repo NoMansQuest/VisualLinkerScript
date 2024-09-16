@@ -1237,9 +1237,6 @@
     <ClInclude Include="Models\CIndentationInfo.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
-    <ClInclude Include="Components\QLinkerScriptSession\ViolationsModel\QViolationsModel.h">
-      <Filter>Generated Files</Filter>
-    </ClInclude>
     <ClInclude Include="Components\QLinkerScriptSession\ViolationsModel\CParserViolationEntry.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
@@ -1282,6 +1279,9 @@
       <Filter>Generated Files</Filter>
     </QtMoc>
     <QtMoc Include="Components\QManualSizeGrip\QManualSizeGrip.h">
+      <Filter>Generated Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Components\QLinkerScriptSession\ViolationsModel\QViolationsModel.h">
       <Filter>Generated Files</Filter>
     </QtMoc>
   </ItemGroup>

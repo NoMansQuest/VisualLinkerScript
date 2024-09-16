@@ -23,7 +23,7 @@ public:
         std::string affectedFile,
         const uint32_t lineNumber,
         const uint32_t columnNumber,
-        std::shared_ptr<CViolationEntryBase> parent = nullptr)
+        CViolationEntryBase* parent = nullptr)
         : CViolationEntryBase(
             uuid,
             std::move(violationCode),

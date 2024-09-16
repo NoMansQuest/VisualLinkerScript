@@ -19,23 +19,26 @@ public:
         std::string affectedFile,
         const uint32_t lineNumber,
         const uint32_t columnNumber,
-        std::shared_ptr<CViolationEntryBase> parent = nullptr)     
+        CViolationEntryBase* parent = nullptr)     
         : m_uuid(uuid),
 	      m_violationCode(std::move(violationCode)),
           m_description(std::move(description)),
           m_affectedFile(std::move(affectedFile)),
           m_lineNumber(lineNumber),
           m_columnNumber(columnNumber),
-		  parentItem(std::move(parent))
+          m_parentItem(std::move(parent))
 	{}
 
     /// @breif Default destructor.
-    ~CViolationEntryBase() = default;
+    ~CViolationEntryBase()
+    {
+        qDeleteAll(this->m_childItems);
+    }
 
     /// @brief Adds a child in form of a shared pointer.
-    void AppendChild(std::shared_ptr<CViolationEntryBase> child)
+    void AppendChild(CViolationEntryBase* child)
     {
-	    childItems.append(child);
+        m_childItems.append(child);
     }
 
     /// @brief Returns the unique identifier of this entry.
@@ -47,15 +50,15 @@ public:
     /// @brief Returns child based on the given index.
     /// @param row Row index of the child.
     /// @return The child at the given index.
-    [[nodiscard]] std::shared_ptr<CViolationEntryBase> Child(uint32_t row)
+    [[nodiscard]] CViolationEntryBase* Child(uint32_t row)
     {
-	    return childItems.value(row);
+	    return this->m_childItems.value(row);
     }
 
     /// @brief Reports back the number of children this entry contains.
     [[nodiscard]] uint32_t ChildCount() const noexcept
     {
-	    return childItems.count();
+	    return this->m_childItems.count();
     }
 
     /// @breif Reports back the number of columns this object has.
@@ -84,14 +87,14 @@ public:
     /// @brief Reports back the row index of this entry in parent.
     [[nodiscard]] uint32_t Row() const
 	{
-        if (this->parentItem == nullptr)
+        if (this->m_parentItem == nullptr)
         {
             return 0;
         }
 
-        for (uint32_t index = 0; index < this->parentItem->childItems.count(); index++)
+        for (uint32_t index = 0; index < this->m_parentItem->m_childItems.count(); index++)
         {
-	        if (this->parentItem->childItems[index]->Uuid() == this->m_uuid)
+	        if (this->m_parentItem->m_childItems[index]->Uuid() == this->m_uuid)
 	        {
                 return index;
 	        }
@@ -100,9 +103,9 @@ public:
     }
 
     /// @brief Reports back the parent of this node.
-    [[nodiscard]] std::shared_ptr<CViolationEntryBase> Parent()
+    [[nodiscard]] CViolationEntryBase* Parent()
     {
-	    return this->parentItem;
+	    return this->m_parentItem;
     }
 
 private:
@@ -113,8 +116,8 @@ private:
     uint32_t m_lineNumber;
     uint32_t m_columnNumber;
 
-    QList<std::shared_ptr<CViolationEntryBase>> childItems;    
-    std::shared_ptr<CViolationEntryBase> parentItem;
+    QList<CViolationEntryBase*> m_childItems;    
+    CViolationEntryBase* m_parentItem;
 };
 
 #endif

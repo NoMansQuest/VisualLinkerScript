@@ -360,7 +360,7 @@
     <ClInclude Include="Components\InputDialogs\QListAssistedInput.h" />
     <QtMoc Include="Components\QManualSizeGrip\QManualSizeGrip.h" />
     <ClInclude Include="Components\QLinkerScriptSession\ViolationsModel\CParserViolationEntry.h" />
-    <ClInclude Include="Components\QLinkerScriptSession\ViolationsModel\QViolationsModel.h" />
+    <QtMoc Include="Components\QLinkerScriptSession\ViolationsModel\QViolationsModel.h" />
     <ClInclude Include="Components\QScintilla\scintilla\lexlib\Accessor.h" />
     <ClInclude Include="Compiler\ExpressionEvaluation\ArithmeticOperationType.h" />
     <ClInclude Include="Components\QScintilla\scintilla\src\AutoComplete.h" />
