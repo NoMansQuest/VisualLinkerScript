@@ -14,11 +14,12 @@ REGISTER_DRC_RULE(CInputFilesAreFoundRule)
 
 using namespace VisualLinkerScript::DrcEngine::Rules;
 
-SharedPtrVector<CViolationBase> CInputFilesAreFoundRule::PerformCheck(const SharedPtrVector<CLinkerScriptFile>& linkerScriptFiles) {
+SharedPtrVector<CViolationBase> CInputFilesAreFoundRule::PerformCheck(const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile)
+{
     SharedPtrVector<CViolationBase> violations;
 
-    const auto foundIncludeCommands = QueryObject<CIncludeCommand>(linkerScriptFiles);
-
+    /*
+    const auto foundIncludeCommands = QueryObject<CIncludeCommand>(linkerScriptFile);
     for (const auto includeCommandResult: foundIncludeCommands) {
         // Check if file exists        
         auto targetFile = includeCommandResult->LinkerScriptFile()->ResolveEntryText(includeCommandResult->Result()->IncludeFileEntry());
@@ -51,6 +52,9 @@ SharedPtrVector<CViolationBase> CInputFilesAreFoundRule::PerformCheck(const Shar
 	        EDrcViolationCode::IncludedFilesArePresentRule,
 	        EDrcViolationSeverity::Error))));
     }
+    */
+
+    // TODO: Re-enable rule when possible.
 
     return violations;
 }

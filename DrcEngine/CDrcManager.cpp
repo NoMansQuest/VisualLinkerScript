@@ -1,4 +1,6 @@
 #include "CDrcManager.h"
+
+#include "IDrcRuleBase.h"
 #include "../Models/CViolationBase.h"
 
 using namespace VisualLinkerScript;
@@ -14,6 +16,22 @@ bool CDrcManager::RegisterRule(const std::shared_ptr<IDrcRuleBase>& drcRule) {
 }
 
 /// @copydoc
-SharedPtrVector<CViolationBase> CDrcManager::Violations(){
-    return this->m_violations;
+void CDrcManager::PerformAnalysis(std::shared_ptr<CLinkerScriptFile> linkerScriptFile)
+{
+	SharedPtrVector<CViolationBase> discoveredViolations;
+	for (auto rule : this->m_drcRules)
+	{
+		if (!rule->IsEnabled())
+		{
+			continue;
+		}
+
+		auto violations = rule->PerformCheck(linkerScriptFile);
+		if (violations.empty())
+		{
+			continue;
+		}
+
+		discoveredViolations.insert(discoveredViolations.end(), violations.begin(), violations.end());
+	}	
 }

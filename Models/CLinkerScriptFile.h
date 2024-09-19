@@ -8,66 +8,97 @@
 #include "CLinkerScriptContentBase.h"
 #include "Raw/CRawFile.h"
 
-using namespace VisualLinkerScript::Models::Raw;
-
 namespace VisualLinkerScript::Models 
 {
+    using namespace VisualLinkerScript::Models::Raw;
+
     /// @brief Object representing a parsed Linker-Script
     class CLinkerScriptFile
     {
     private:
-        SharedPtrVector<CViolationBase> m_violations;
-        std::vector<std::shared_ptr<CLinkerScriptContentBase>> m_content;        
+        SharedPtrVector<CViolationBase> m_drcViolations;
+        SharedPtrVector<CViolationBase> m_parserViolations;
+        SharedPtrVector<CViolationBase> m_lexerViolations;
+        SharedPtrVector<CLinkerScriptContentBase> m_parsedContent;
         std::shared_ptr<CRawFile> m_rawFile;
 
     public:
         /// @brief Default constructor
-        explicit CLinkerScriptFile(std::shared_ptr<CRawFile> rawFile,
-                                   SharedPtrVector<CLinkerScriptContentBase>&& content,
-                                   SharedPtrVector<CViolationBase>&& violations)
-            : m_violations(std::move(violations)),
-              m_content(std::move(content)),              
-              m_rawFile(rawFile)
+        explicit CLinkerScriptFile(std::shared_ptr<CRawFile> rawFile)
+            : m_rawFile(std::move(rawFile))
         {}
 
-    public:
         /// @brief Returns the content of the file
-        const SharedPtrVector<CLinkerScriptContentBase>& Content() const {
-            return this->m_content;
+        [[nodiscard]] const SharedPtrVector<CLinkerScriptContentBase>& ParsedContent() const {
+            return this->m_parsedContent;
         }
 
-        /// @brief Reports back violations detected at root level of the linker-script file
-        const SharedPtrVector<CViolationBase>& Violations() const {
-            return this->m_violations;
+        /// @brief Reports back lexer violations detected at root level of the linker-script file
+        [[nodiscard]] const SharedPtrVector<CViolationBase>& LexerViolations() const {
+            return this->m_lexerViolations;
+        }
+
+        /// @brief Reports back parser violations detected at root level of the linker-script file
+        [[nodiscard]] const SharedPtrVector<CViolationBase>& ParserViolations() const {
+            return this->m_parserViolations;
+        }
+
+        /// @brief Reports back DRC violations detected at root level of the linker-script file
+        [[nodiscard]] const SharedPtrVector<CViolationBase>& DrcViolations() const {
+            return this->m_drcViolations;
         }
 
         /// @brief Returns the raw linker-script file
-        std::shared_ptr<CRawFile> RawFile() const {
+        [[nodiscard]] std::shared_ptr<CRawFile> RawFile() const {
             return this->m_rawFile;
         }
 
-        /// @brief Returns the name of he file without the path
-        std::string FileName() const {
+        /// @brief Returns the name of the file without the path
+        [[nodiscard]] std::string FileName() const {
             return this->m_rawFile->FileName();
         }
 
         /// @brief Returns the absolute file path
-        std::string AbsoluteFilePath() const {
+        [[nodiscard]] std::string AbsoluteFilePath() const {
             return this->m_rawFile->AbsoluteFilePath();
         }
 
         /// @brief Returns the full text the input component is composed of.
-        /// @param entryToResolve Component to process
+        /// @param contentToResolve Component to process
         /// @return The full text that constitutes the component.
-        std::string ResolveEntryText(const CLinkerScriptContentBase& contentToResolve) const;
+        [[nodiscard]] std::string ResolveEntryText(const CLinkerScriptContentBase& contentToResolve) const;
 
         /// @brief Returns the full text the input component is composed of.
-        /// @param entryToResolve Component to process
+        /// @param rawEntryToResolve Component to process
         /// @return The full text that constitutes the component.
-        std::string ResolveEntryText(const CRawEntry& rawEntryToResolve) const;
+        [[nodiscard]] std::string ResolveEntryText(const CRawEntry& rawEntryToResolve) const;
 
         /// @brief Produces debug information on what this object represents.
-        const virtual std::string ToDebugInfo(uint32_t depth) const;
+        [[nodiscard]] const virtual std::string ToDebugInfo(uint32_t depth) const;
+
+        /// @brief Update parsed content
+        void UpdateParsedContent(SharedPtrVector<CLinkerScriptContentBase> parsedContent)
+        {
+            this->m_parsedContent = std::move(parsedContent);
+        }
+
+        /// @brief Updates parser violations associated with this linker-script file
+        void UpdateParserViolations(SharedPtrVector<CViolationBase> parserViolations)
+        {
+            this->m_parserViolations = std::move(parserViolations);
+        }
+
+        /// @brief Updates DRC violations associated with this linker-script file
+        void UpdateDrcViolations(SharedPtrVector<CViolationBase> drcViolations)
+        {
+            this->m_drcViolations = std::move(drcViolations);
+        }
+
+        /// @brief Updates lexer violations associated with this linker-script file
+        void UpdateLexerViolations(SharedPtrVector<CViolationBase> lexerViolations)
+        {
+            this->m_lexerViolations = std::move(lexerViolations);
+        }
     };
 }
 

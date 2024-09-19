@@ -18,7 +18,7 @@ using namespace VisualLinkerScript::DrcEngine::Rules;
 using namespace VisualLinkerScript::QueryEngine;
 using namespace VisualLinkerScript::Models;
 
-SharedPtrVector<CViolationBase> CDirectivesDeclaredOnlyOnceRule::PerformCheck(const SharedPtrVector<CLinkerScriptFile>& linkerScriptFiles) {
+SharedPtrVector<CViolationBase> CDirectivesDeclaredOnlyOnceRule::PerformCheck(const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile) {
     SharedPtrVector<CViolationBase> violations;
 
     std::vector<std::string> directives {
@@ -28,15 +28,14 @@ SharedPtrVector<CViolationBase> CDirectivesDeclaredOnlyOnceRule::PerformCheck(co
         "OUTPUT_FORMAT",
         "TARGET",
         "STARTUP",
-        "SEARCH_DIR",
     };
 
     for (auto directive : directives) 
     {
 	    if (auto foundDirectives = QueryObject<CFunctionCall>(
-		    linkerScriptFiles,
-		    [&](const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile, const std::shared_ptr<CFunctionCall>& ResolveEntryText) {
-			    return StringEquals(linkerScriptFile->ResolveEntryText(ResolveEntryText->FunctionName()), directive, true);
+            linkerScriptFile,
+		    [&](const std::shared_ptr<CLinkerScriptFile>& localLinkerScriptFile, const std::shared_ptr<CFunctionCall>& ResolveEntryText) {
+			    return StringEquals(localLinkerScriptFile->ResolveEntryText(ResolveEntryText->FunctionName()), directive, true);
 		    }); 
             foundDirectives.size() > 1) 
         {

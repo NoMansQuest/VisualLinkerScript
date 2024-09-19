@@ -19,7 +19,7 @@ namespace VisualLinkerScript::DrcEngine::Rules
         }
 
         /// @copydoc
-        SharedPtrVector<CViolationBase> PerformCheck(const SharedPtrVector<CLinkerScriptFile>& linkerScriptFiles) override;
+        SharedPtrVector<CViolationBase> PerformCheck(const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile) override;
 
         /// @brief Default destructor
         ~CNoDuplicateMemoryRegionNameRule() override = default;

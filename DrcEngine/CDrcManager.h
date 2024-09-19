@@ -8,7 +8,8 @@ namespace VisualLinkerScript
 {
     namespace Models
     {
-        class CViolationBase;
+	    class CLinkerScriptFile;
+	    class CViolationBase;
     }
 
     namespace DrcEngine
@@ -20,7 +21,6 @@ namespace VisualLinkerScript
         {
             typedef SharedPtrVector<IDrcRuleBase> DrcRulesType;
             static DrcRulesType m_drcRules;
-            SharedPtrVector<Models::CViolationBase> m_violations;
 
         public:
             /// @brief Default constructor;
@@ -30,7 +30,7 @@ namespace VisualLinkerScript
             static bool RegisterRule(const std::shared_ptr<IDrcRuleBase>& drcRule);
 
             /// @brief Reports back a list of currently identified violations
-            SharedPtrVector<Models::CViolationBase> Violations();
+            void PerformAnalysis(std::shared_ptr<Models::CLinkerScriptFile> linkerScriptFile);
         };
     }
 }

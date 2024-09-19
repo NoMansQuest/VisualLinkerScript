@@ -381,6 +381,7 @@ QSearchPopup[HasFocus="false"] {
  * QListView
  */
 QTreeView {
+    cursor: pointer;
     background-color: @paperBackground; /* General background color */
     alternate-background-color: #ff4e4e4e; /* Alternate row color */
     color: #ffd0d0d0; /* Default text (foreground) color */
@@ -411,8 +412,12 @@ QTreeView::item {
     background-color: @paperBackground; /* Default item background */
     color: #ffd0d0d0; /* Item text color */
     border: none;
-    padding: 5px;
-    height: 10px;
+    padding: 1px;
+    height: 20px;
+}
+
+QTreeView::item:focus {
+    border: none; /* Remove the focus border */
 }
 
 QTreeView::item:alternate {
@@ -420,11 +425,13 @@ QTreeView::item:alternate {
 }
 
 QTreeView::item:hover {
+    cursor: pointer;
     background-color: #ff3a3a3a; /* Darker hover effect */
     color: #d0d0d0; /* Keep text color the same on hover */
 }
 
 QTreeView::item:selected {
+    outline: none; /* Remove the selection outline */
     background-color: #ff505050; /* Selected item background */
     color: #e0e0e0; /* Selected item text color */
 }

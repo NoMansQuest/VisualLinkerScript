@@ -60,17 +60,17 @@ bool TryParseAssignments(
         const std::vector<CRawEntry>::const_iterator& endOfVectorIterator,
         std::shared_ptr<CRawFile> rawFile);
 
-std::shared_ptr<CLinkerScriptFile> CMasterParser::ProcessLinkerScriptFile(std::shared_ptr<CRawFile> rawFile)
+void CMasterParser::ParseLinkerScriptFile(std::shared_ptr<CLinkerScriptFile> linkerScriptFile)
 {
-    std::vector<CRawEntry>::const_iterator localIterator =  rawFile->Content().cbegin();
-    std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition =  rawFile->Content().cbegin();
-    std::vector<CRawEntry>::const_iterator endOfVectorIterator = rawFile->Content().cend();
+    std::vector<CRawEntry>::const_iterator localIterator = linkerScriptFile->RawFile()->Content().cbegin();
+    std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = linkerScriptFile->RawFile()->Content().cbegin();
+    std::vector<CRawEntry>::const_iterator endOfVectorIterator = linkerScriptFile->RawFile()->Content().cend();
     SharedPtrVector<CLinkerScriptContentBase> parsedContent;
     SharedPtrVector<CViolationBase> violations;
 
     while (localIterator != endOfVectorIterator)
     {
-        auto resolvedContent = rawFile->ResolveRawEntry(*localIterator);       
+        auto resolvedContent = linkerScriptFile->ResolveEntryText(*localIterator);
         switch (localIterator->EntryType())
         {
             case RawEntryType::Comment:
@@ -81,15 +81,15 @@ std::shared_ptr<CLinkerScriptFile> CMasterParser::ProcessLinkerScriptFile(std::s
 
             case RawEntryType::Word:
             {
-                if (TryParseLinkerScriptMasterBlocks(resolvedContent, violations, parsedContent, localIterator, endOfVectorIterator, rawFile))
+                if (TryParseLinkerScriptMasterBlocks(resolvedContent, violations, parsedContent, localIterator, endOfVectorIterator, linkerScriptFile->RawFile()))
                 {
                     break;
                 }
-                else if (TryParseFunctionAndAssignmentProcedureCalls(resolvedContent, violations, parsedContent, localIterator, endOfVectorIterator, rawFile))
+                else if (TryParseFunctionAndAssignmentProcedureCalls(resolvedContent, violations, parsedContent, localIterator, endOfVectorIterator, linkerScriptFile->RawFile()))
                 {
                     break;
                 }
-                else if (TryParseAssignments(resolvedContent, violations, parsedContent, localIterator, endOfVectorIterator, rawFile))
+                else if (TryParseAssignments(resolvedContent, violations, parsedContent, localIterator, endOfVectorIterator, linkerScriptFile->RawFile()))
                 {
                     break;
                 }
@@ -137,8 +137,9 @@ std::shared_ptr<CLinkerScriptFile> CMasterParser::ProcessLinkerScriptFile(std::s
         }
     }
 
-    auto returnedLinkerScriptFile = std::make_shared<CLinkerScriptFile>(rawFile, std::move(parsedContent), std::move(violations));
-    return returnedLinkerScriptFile;
+    // And finally record our output...
+    linkerScriptFile->UpdateParsedContent(parsedContent);
+    linkerScriptFile->UpdateParserViolations(violations);
 }
 
 bool TryParseLinkerScriptMasterBlocks(

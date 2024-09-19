@@ -208,19 +208,21 @@
     </QtUic>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Components\QLinkerScriptSession\AutoStyling\CAutoStyler.cpp" />
+    <ClCompile Include="Components\QLinkerScriptSession\AutoStyling\SStylerRemoveLine.h" />
+    <ClCompile Include="Components\QLinkerScriptSession\AutoStyling\SStylerReplaceLine.h" />
+    <ClCompile Include="Components\QLinkerScriptSession\AutoStyling\SStylerSelectText.h" />
     <ClCompile Include="Components\InputDialogs\QLabelAssistedInput.cpp" />
     <ClCompile Include="Components\InputDialogs\QListAssistedInput.cpp" />
     <ClCompile Include="Components\QFlatCheckBox\QFlatCheckBox.cpp" />
     <ClCompile Include="Components\QLinkerScriptSession\CLinkerScriptSessionFileInfo.h" />
-    <ClCompile Include="Components\QLinkerScriptSession\ViolationsModel\CDrcViolationEntry.h" />
-    <ClCompile Include="Components\QLinkerScriptSession\ViolationsModel\CViolationEntryBase.h" />
-    <ClCompile Include="Components\QLinkerScriptSession\ViolationsModel\QViolationsModel.cpp" />
     <ClCompile Include="Components\QManualSizeGrip\QManualSizeGrip.cpp" />
     <ClCompile Include="Components\QScintilla\scintilla\lexlib\Accessor.cpp" />
     <ClCompile Include="Components\QScintilla\scintilla\src\AutoComplete.cpp" />
     <ClCompile Include="Components\MemoryVisualizer\Rendering\CArrowsRenderer.cpp" />
     <ClCompile Include="Components\QScintilla\VlsScintilla.cpp" />
     <ClCompile Include="MD5\MD5.cpp" />
+    <ClCompile Include="ParsingEngine\ELexerViolationCode.cpp" />
     <ClCompile Include="ParsingEngine\SubParsers\CAssignmentParser.cpp" />
     <ClCompile Include="ParsingEngine\SubParsers\CAssignmentProcedureParser.cpp" />
     <ClCompile Include="Models\CAssignmentProcedureStatement.cpp" />
@@ -357,10 +359,12 @@
   <ItemGroup>
     <QtMoc Include="Components\QFlatCheckBox\QFlatCheckBox.h" />
     <QtMoc Include="Components\InputDialogs\QLabelAssistedInput.h" />
+    <ClInclude Include="Components\QLinkerScriptSession\AutoStyling\CAutoStyler.h" />
+    <ClInclude Include="Components\QLinkerScriptSession\AutoStyling\SStylerActionBase.h" />
+    <ClInclude Include="Components\QLinkerScriptSession\AutoStyling\SStylerAddContent.h" />
+    <ClInclude Include="Components\QLinkerScriptSession\AutoStyling\SStylerRemoveContent.h" />
     <ClInclude Include="Components\InputDialogs\QListAssistedInput.h" />
     <QtMoc Include="Components\QManualSizeGrip\QManualSizeGrip.h" />
-    <ClInclude Include="Components\QLinkerScriptSession\ViolationsModel\CParserViolationEntry.h" />
-    <QtMoc Include="Components\QLinkerScriptSession\ViolationsModel\QViolationsModel.h" />
     <ClInclude Include="Components\QScintilla\scintilla\lexlib\Accessor.h" />
     <ClInclude Include="Compiler\ExpressionEvaluation\ArithmeticOperationType.h" />
     <ClInclude Include="Components\QScintilla\scintilla\src\AutoComplete.h" />
@@ -375,6 +379,8 @@
     <ClInclude Include="Components\MemoryVisualizer\Models\CArrowObject.h" />
     <ClInclude Include="Components\MemoryVisualizer\Rendering\CArrowsRenderer.h" />
     <ClInclude Include="Models\CIndentationInfo.h" />
+    <ClInclude Include="ParsingEngine\CLexerViolation.h" />
+    <ClInclude Include="ParsingEngine\ELexerViolationCode.h" />
     <ClInclude Include="ParsingEngine\SubParsers\CAssignmentParser.h" />
     <ClInclude Include="ParsingEngine\SubParsers\CAssignmentProcedureParser.h" />
     <ClInclude Include="Models\CAssignmentProcedureStatement.h" />

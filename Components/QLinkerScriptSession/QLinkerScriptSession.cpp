@@ -1,6 +1,5 @@
 #include "QLinkerScriptSession.h"
 #include "../MemoryVisualizer/QMemoryVisualizer.h"
-#include "../QScintilla/src/Qsci/qscilexerlinkerscript.h"
 #include "../QScintilla/src/Qsci/qsciscintilla.h"
 #include "../QScintilla/ComponentHelpers.h"
 #include "../../ParsingEngine/CLexer.h"
@@ -8,7 +7,10 @@
 #include "../../DrcEngine/CDrcManager.h"
 #include "Components/QChromeTab/QChromeTabWidget.h"
 #include "Components/QSearchPopup/QSearchPopup.h"
-
+#include "DrcEngine/CDrcViolation.h"
+#include "ParsingEngine/CLexerViolation.h"
+#include "ParsingEngine/CParserViolation.h"
+#include "ParsingEngine/EParserViolationCode.h"
 
 /// @brief Enum contains all defined indicators.
 enum class Indicators : int
@@ -18,7 +20,6 @@ enum class Indicators : int
     IndicatorDrcViolation,
     IndicatorParserViolation,
 };
-
 
 /// @brief Represents matched result when 'find' is performed on the text
 struct SearchMatchResult {
@@ -73,87 +74,58 @@ void QLinkerScriptSession::BuildUserInterface()
     auto issuesTab = this->m_panelsTab->AddTab(std::shared_ptr<QWidget>(this->m_issuesTreeView), true);
     this->m_panelsTab->SetTabTitle(issuesTab, "Violations");
 
-
     this->setLayout(this->m_centralLayout);
-
-    this->m_masterParser = std::make_unique<CMasterParser>();
-    this->m_linkerScriptLexer = std::make_unique<CLexer>();
     this->m_drcManager = std::make_unique<CDrcManager>();
-
-    // Setup Scintilla Text Editor
-	this->m_scintilla->setLexer(new QsciLexerLinkerScript);
-    QScintilla::SetComponentStyles(*this->m_scintilla);
-    this->m_scintilla->setAutoIndent(false);
-    this->m_scintilla->setTabWidth(4);
-    this->m_scintilla->setIndentationGuides(false);
-    this->m_scintilla->setIndentationGuidesBackgroundColor(QColor::fromRgb(0xff505050));
-    this->m_scintilla->setIndentationGuidesForegroundColor(QColor::fromRgb(0xff909090));    
-    this->m_scintilla->setIndentationsUseTabs(true);
-	this->m_scintilla->setBackspaceUnindents(true);
-    this->m_scintilla->installEventFilter(this);
-
-    this->m_scintilla->indicatorDefine(QsciScintilla::RoundBoxIndicator, static_cast<int>(Indicators::IndicatorFind));
-    this->m_scintilla->setIndicatorOutlineColor(QColor::fromRgb(0, 0, 0, 0), static_cast<int>(Indicators::IndicatorFind));
-    this->m_scintilla->setIndicatorForegroundColor(QColor::fromRgb(0xff, 0xff, 0xff, 0x1F), static_cast<int>(Indicators::IndicatorFind));
-    this->m_scintilla->setSelectionBackgroundColor(QColor::fromRgb(00, 00, 0xff, 0x5F));
-
 
     // Setup deferred procedure call system
     QObject::connect(&this->m_deferredProcedureCaller, &QTimer::timeout, this, &QLinkerScriptSession::DeferredContentProcessingAction);
     this->m_deferredProcedureCaller.setSingleShot(true);
 
-    // Connect Scintilla editor signals
+    // Connect Scintilla editor signals and activate event filters and setup indicators.
+    this->m_scintilla->installEventFilter(this);
+    this->m_scintilla->indicatorDefine(QsciScintilla::RoundBoxIndicator, static_cast<int>(Indicators::IndicatorFind));
+    this->m_scintilla->setIndicatorOutlineColor(QColor::fromRgb(0, 0, 0, 0), static_cast<int>(Indicators::IndicatorFind));
+    this->m_scintilla->setIndicatorForegroundColor(QColor::fromRgb(0xff, 0xff, 0xff, 0x1F), static_cast<int>(Indicators::IndicatorFind));
     QObject::connect(this->m_scintilla, &QsciScintilla::textChanged, this, &QLinkerScriptSession::EditorContentUpdated);
     QObject::connect(this->m_scintilla, &QsciScintilla::SCN_CHARADDED, this, &QLinkerScriptSession::OnCharAddedToEditor);
     QObject::connect(this->m_scintilla, &QsciScintilla::resized, this, &QLinkerScriptSession::OnEditorResize);
-    //QObject::connect(this->m_scintilla, &QsciScintilla::handleCharAdded, )
+
+    // QObject::connect(this->m_scintilla, &QsciScintilla::handleCharAdded, )
 
     // Connect search popup signals
     QObject::connect(this->m_searchPopup, &QSearchPopup::evSearchReplaceRequested, this, &QLinkerScriptSession::OnSearchReplaceRequested);
 
-    // Make final calls...    
+    // Make final calls...
+    QScintilla::SetComponentStyles(*this->m_scintilla);
     this->PositionSearchPopup();
     this->SetupViolationsView();
 }
 
-void QLinkerScriptSession::SetupViolationsView() const
+void QLinkerScriptSession::SetupViolationsView()
 {    
     // Create the QStandardItemModel with 4 columns (1 for item and 3 for additional data)    
-    QStandardItemModel* model = new QStandardItemModel();
-    model->setHorizontalHeaderLabels({ "Violation", "Code", "Description", "Line", "File"});
-
-    // Populate the model with some hierarchical data
-    QStandardItem* parentItem = model->invisibleRootItem();
-
-    // First root item with 3 columns of data
-    QStandardItem* item1 = new QStandardItem("Root Item 1");
-    QStandardItem* item1_col1 = new QStandardItem("Data 1-1");
-    QStandardItem* item1_col2 = new QStandardItem("Data 1-2");
-    item1->setEditable(false);
-
-    parentItem->appendRow({ item1, item1_col1, item1_col2 });
-
-    // Adding a child to the first root item
-    QStandardItem* child1 = new QStandardItem("Child Item 1.1");
-    QStandardItem* child1_col1 = new QStandardItem("Data 1.1-1");
-    QStandardItem* child1_col2 = new QStandardItem("Data 1.1-2");
-    child1->setEditable(false);
-
-    item1->appendRow({ child1, child1_col1, child1_col2 });
-
-    // Second root item with 3 columns of data
-    QStandardItem* item2 = new QStandardItem("Root Item 2");
-    QStandardItem* item2_col1 = new QStandardItem("Data 2-1");
-    QStandardItem* item2_col2 = new QStandardItem("Data 2-2");
-    item2->setEditable(false);
-
-    parentItem->appendRow({ item2, item2_col1, item2_col2 });
-
-    // Set the model to the QTreeView
-    this->m_issuesTreeView->setModel(model);
-
-    // Enable alternating row colors
+    this->m_violationsItemModel.reset(new QStandardItemModel());
+    this->m_violationsItemModel->setHorizontalHeaderLabels({ "Code", "Description", "Line", "Column"});    
+    this->m_issuesTreeView->setModel(this->m_violationsItemModel.get());
     this->m_issuesTreeView->setAlternatingRowColors(true);
+    this->m_issuesTreeView->setColumnWidth(0, 200);
+    this->m_issuesTreeView->setColumnWidth(1, 540);
+    this->m_issuesTreeView->setColumnWidth(2, 120);
+    this->m_issuesTreeView->setColumnWidth(3, 120);
+
+    this->m_lexerViolationsItem = std::make_shared<QStandardItem>("Lexer Violations");
+    this->m_lexerViolationsItem->setSelectable(true);
+    this->m_lexerViolationsItem->setEditable(false);
+    this->m_parserViolationsItem = std::make_shared<QStandardItem>("Parser Violations");
+    this->m_parserViolationsItem->setSelectable(true);
+    this->m_parserViolationsItem->setEditable(false);
+    this->m_drcViolationsItem = std::make_shared<QStandardItem>("DRC Violations");
+    this->m_drcViolationsItem->setSelectable(true);
+    this->m_drcViolationsItem->setEditable(false);
+
+    this->m_violationsItemModel->appendRow({ this->m_lexerViolationsItem.get() });
+    this->m_violationsItemModel->appendRow({ this->m_parserViolationsItem.get() });
+    this->m_violationsItemModel->appendRow({ this->m_drcViolationsItem.get() });
 }
 
 void QLinkerScriptSession::OnEditorResize() const
@@ -197,14 +169,6 @@ void QLinkerScriptSession::OnSearchReplaceRequested(
     {
 	    case SearchReplaceRequestType::FindNext:
 	    {
-            /*
-            auto found = this->m_scintilla->findFirst(searchText, regEx, caseMatch, wordMatch, true, true);
-            if (!found)
-            {
-                break;
-            }
-            */
-
             this->ResetFindIndicators(Indicators::IndicatorFind);
             auto foundEntries = SearchForContent(this->m_scintilla->text(), searchText, caseMatch, regEx, wordMatch);
             auto focusedFoundEntryPositionSet = false;
@@ -241,8 +205,7 @@ void QLinkerScriptSession::OnSearchReplaceRequested(
                             resultToFocusOn = entry;
                             focusedFoundEntryPositionSet = true;
                         }
-                    }
-                    
+                    }                    
                 }             
             }
 
@@ -320,22 +283,49 @@ void QLinkerScriptSession::EditorContentUpdated()
     // The lexer is always run
     auto absoluteFilePath = this->m_sessionFileInfo.AbsoluteFilePath();
     auto textToLex = this->m_scintilla->text().toStdString();
-    this->m_lexedLinkerScript = this->m_linkerScriptLexer->LexLinkerScript(absoluteFilePath, textToLex);
+    this->m_linkerScriptFile = CLexer::LexLinkerScript(absoluteFilePath, textToLex);
     this->InitiateDeferredProcessing();
 }
 
 void QLinkerScriptSession::DeferredContentProcessingAction() const
 {
-	QElapsedTimer timer;
-    timer.start();
-    const auto contentToAnalyze = this->m_lexedLinkerScript->Content();
-    const auto parsedLinkerScriptFile = this->m_masterParser->ProcessLinkerScriptFile(this->m_lexedLinkerScript);
-    const auto parsingTime = timer.nsecsElapsed();
-    const auto lexingAndParsingTime = (timer.nsecsElapsed() - parsingTime);    
-    qDebug() << "Time consumed for parsing: " << lexingAndParsingTime << " nanoseconds" << Qt::endl;
+	CMasterParser::ParseLinkerScriptFile(this->m_linkerScriptFile);    
+    this->m_drcManager->PerformAnalysis(this->m_linkerScriptFile);
 
-    //this->m_drcManager->
-    const auto designRuleCheckTime = (timer.nsecsElapsed() - lexingAndParsingTime);
+    // OK, we have all the violations we need, now update the standard model item
+    this->m_lexerViolationsItem->removeRows(0, this->m_lexerViolationsItem->rowCount());
+    this->m_drcViolationsItem->removeRows(0, this->m_lexerViolationsItem->rowCount());
+    this->m_parserViolationsItem->removeRows(0, this->m_lexerViolationsItem->rowCount());
+
+    for (const auto lexerViolation : this->m_linkerScriptFile->LexerViolations())
+    {
+        auto castLexerViolation = std::dynamic_pointer_cast<CLexerViolation>(lexerViolation);        
+        auto code = new QStandardItem(QString::fromStdString(MapLexerViolationToCode(castLexerViolation->Code())));
+        auto description = new QStandardItem(QString::fromStdString(MapLexerViolationToDescription(castLexerViolation->Code())));
+        auto lineNumber = new QStandardItem(QString::number(castLexerViolation->ViolationLocation().StartLineNumber()));
+        auto columnIndex = new QStandardItem(QString::number(castLexerViolation->ViolationLocation().StartIndexInLine()));
+        this->m_lexerViolationsItem->appendRow({ code, description, lineNumber, columnIndex });
+    }
+
+    for (const auto parserViolation    : this->m_linkerScriptFile->ParserViolations())
+    {
+        auto castParserViolation = std::dynamic_pointer_cast<CParserViolation>(parserViolation);
+        auto code = new QStandardItem(QString::fromStdString(MapParserViolationToCode(castParserViolation->Code())));
+        auto description = new QStandardItem(QString::fromStdString(MapLexerViolationToDescription(castParserViolation->Code())));
+        auto lineNumber = new QStandardItem(QString::number(castParserViolation->ViolationLocation().StartLineNumber()));
+        auto columnIndex = new QStandardItem(QString::number(castParserViolation->ViolationLocation().StartIndexInLine()));
+        this->m_lexerViolationsItem->appendRow({ code, description, lineNumber, columnIndex });
+    }
+
+    for (const auto drcViolation : this->m_linkerScriptFile->DrcViolations())
+    {
+        auto castDrcViolation = std::dynamic_pointer_cast<CDrcViolation>(drcViolation);
+        auto code = new QStandardItem(QString::fromStdString(MapLexerViolationToCode(castDrcViolation->Code())));
+        auto description = new QStandardItem(QString::fromStdString(MapLexerViolationToDescription(castDrcViolation->Code())));
+        auto lineNumber = new QStandardItem(QString::number(castDrcViolation->ViolationLocation().StartLineNumber()));
+        auto columnIndex = new QStandardItem(QString::number(castDrcViolation->ViolationLocation().StartIndexInLine()));
+        this->m_lexerViolationsItem->appendRow({ code, description, lineNumber, columnIndex });
+    }
 }
 
 void QLinkerScriptSession::InitiateDeferredProcessing()
@@ -374,144 +364,7 @@ void QLinkerScriptSession::OnCharAddedToEditor(const int charAdded) const
     int index;
     this->m_scintilla->getCursorPosition(&lineNumber, &index);    
 
-    const auto absoluteCharPosition = this->m_scintilla->positionFromLineIndex(lineNumber, index);
-    const auto entryContainingCharacter = PositionDropTest(this->m_lexedLinkerScript, absoluteCharPosition);
-
-    qDebug() << "Character '" << charAdded << "' added on line " << lineNumber << " index " << index << " - Absolute Position: " << absoluteCharPosition << Qt::endl;
-    qDebug() << "RawEntry encapsulating the position: '" << static_cast<int>(entryContainingCharacter.EntryType()) << Qt::endl;
-    const auto indentationData = this->m_lexedLinkerScript->IndentationData().at(lineNumber);
-    const auto textAtLine = this->m_scintilla->text(lineNumber);
-
-    // All actions performed by this module are atomic and should be undone with a single call.
-    this->m_scintilla->beginUndoAction(); 
-
-    if (charAdded == '\n')
-    {
-        const auto encapsulatingEntry = PositionDropTest(this->m_lexedLinkerScript, absoluteCharPosition);
-        if (encapsulatingEntry.EntryType() == RawEntryType::Comment)
-        {
-            auto newLineContent = std::string(4 * indentationData.IndentationDepth(), ' ');
-            if (indentationData.CommentLinePrefixing())
-            {
-                newLineContent += " *";
-            }
-            this->m_scintilla->insertAt(QString::fromStdString(newLineContent), lineNumber, 0);
-            this->m_scintilla->setCursorPosition(lineNumber, newLineContent.length());
-        }
-        else if (encapsulatingEntry.EntryType() == RawEntryType::String)
-        {
-            auto newLineContent = std::string(4 * indentationData.IndentationDepth(), ' ');
-            if (indentationData.CommentLinePrefixing())
-            {
-                newLineContent += " *";
-            }
-            this->m_scintilla->insertAt(QString::fromStdString(newLineContent), lineNumber, 0);
-            this->m_scintilla->setCursorPosition(lineNumber, newLineContent.length());
-        }
-        else if (encapsulatingEntry.EntryType() == RawEntryType::NotPresent)
-        {
-            // NOTE: When we receive the next-line character, the text is already going to be broken between two lines.
-            //       That has to be considered.
-            // Note: The current line is the line post new-line character insertion.
-            const auto bracketOpen = PrecedingBracketOpenOnLine(this->m_lexedLinkerScript, lineNumber - 1, absoluteCharPosition);
-            const auto bracketClose = SupersedingBracketCloseOnLine(this->m_lexedLinkerScript, lineNumber, absoluteCharPosition);
-
-            if ((bracketOpen.EntryType() != RawEntryType::NotPresent) && (bracketClose.EntryType() != RawEntryType::NotPresent))
-            {
-                // Extract text in between
-                int bracketOpenLineNumber, bracketOpenIndex;
-                this->m_scintilla->lineIndexFromPosition(bracketOpen.StartPosition(), &bracketOpenLineNumber, &bracketOpenIndex);
-
-                const auto contentLength = bracketClose.StartPosition() - bracketOpen.StartPosition() - 1;
-                const auto bracketOpenToCaretTextLength = absoluteCharPosition - bracketOpen.StartPosition() - 1;
-                const auto caretToBracketCloseTextLength = bracketClose.StartPosition() - absoluteCharPosition;
-                const auto encapsulatingText = this->m_scintilla->text().mid(bracketOpen.StartPosition() + 1, contentLength);
-                const auto bracketOpenToCaretText = this->m_scintilla->text().mid(bracketOpen.StartPosition() + 1, bracketOpenToCaretTextLength).toStdString();
-                const auto caretToBracketCloseText = this->m_scintilla->text().mid(absoluteCharPosition, caretToBracketCloseTextLength).toStdString();
-
-                const auto bracketClosePadding = std::string(4 * indentationData.IndentationDepth(), ' ');
-                const auto newLinePadding = std::string(4 * (indentationData.IndentationDepth() + 1), ' ');
-                const auto bracketOpenLineText = this->m_scintilla->text(bracketOpenLineNumber).mid(0, bracketOpenIndex + 1).toStdString();
-                const auto newLineText = newLinePadding + bracketOpenToCaretText + caretToBracketCloseText;
-            	const auto bracketCloseText = bracketClosePadding + this->m_scintilla->text(lineNumber).toStdString();
-
-            	this->m_scintilla->insertAt(QString("\n"), lineNumber, index);
-                this->m_scintilla->setLineText(QString::fromStdString(newLineText), lineNumber);
-                this->m_scintilla->setLineText(QString::fromStdString(bracketOpenLineText), lineNumber - 1);
-                this->m_scintilla->setLineText(QString::fromStdString(bracketCloseText), lineNumber + 1);
-                this->m_scintilla->setCursorPosition(lineNumber, newLineText.length() - 1);
-
-            }
-            else if (bracketOpen.EntryType() != RawEntryType::NotPresent)
-            {
-                auto leadingWhiteSpaceCount = LeadingWhiteSpaces(textAtLine.toStdString());
-                auto minimumWhiteSpaceCount = (4 * (indentationData.IndentationDepth()));
-                auto whiteSpacesToAdd = leadingWhiteSpaceCount > minimumWhiteSpaceCount ? 0 : minimumWhiteSpaceCount - leadingWhiteSpaceCount;
-                auto newLinePadding = std::string(whiteSpacesToAdd > 0 ? whiteSpacesToAdd : 0, ' ');
-                this->m_scintilla->insertAt(QString::fromStdString(newLinePadding), lineNumber, 0);
-                this->m_scintilla->setCursorPosition(lineNumber, newLinePadding.length());
-            }
-            else if (bracketClose.EntryType() != RawEntryType::NotPresent)
-            {
-                auto leadingWhiteSpaceCount = LeadingWhiteSpaces(textAtLine.toStdString());
-                auto minimumWhiteSpaceCount = (4 * (indentationData.IndentationDepth()));
-                auto whiteSpacesToAdd = leadingWhiteSpaceCount > minimumWhiteSpaceCount ? 0 : minimumWhiteSpaceCount - leadingWhiteSpaceCount;
-	            auto newLinePadding = std::string(whiteSpacesToAdd > 0 ? whiteSpacesToAdd : 0, ' ');
-                this->m_scintilla->insertAt(QString::fromStdString(newLinePadding), lineNumber, 0);
-                this->m_scintilla->setCursorPosition(lineNumber, newLinePadding.length());
-            }
-            else
-            {                
-                auto linePadCount = (4 * (indentationData.IndentationDepth()));
-                auto newLinePadding = std::string(linePadCount, ' ');
-                auto newText = newLinePadding + textAtLine.trimmed().toStdString();
-                this->m_scintilla->setLineText(QString::fromStdString(newText), lineNumber);
-                this->m_scintilla->setCursorPosition(lineNumber, newLinePadding.length());
-            }
-        }        
-    }
-
-    if (charAdded == '(')
-    {
-        const auto contentToInsert = std::string(")");
-        this->m_scintilla->insertAt(QString::fromStdString(contentToInsert), lineNumber, index);
-        this->m_scintilla->setCursorPosition(lineNumber, index);
-    }
-
-    if (charAdded == '(')
-    {
-        const auto contentToInsert = std::string(")");
-        this->m_scintilla->insertAt(QString::fromStdString(contentToInsert), lineNumber, index);
-        this->m_scintilla->setCursorPosition(lineNumber, index);
-    }
-
-    if (charAdded == '\"')
-    {
-        const auto contentToInsert = std::string("\"");
-        this->m_scintilla->insertAt(QString::fromStdString(contentToInsert), lineNumber, index);
-        this->m_scintilla->setCursorPosition(lineNumber, index);
-    }
-
-    if (charAdded == '{')
-    {        
-        const auto contentToInsert = std::string("}");
-        this->m_scintilla->insertAt(QString::fromStdString(contentToInsert), lineNumber, index);
-        this->m_scintilla->setCursorPosition(lineNumber, index);
-    }
-
-    if (charAdded == '}')
-    {
-        if (HasNonWhitespaceBeforeCurlyBracket(textAtLine.toStdString(), index - 1))
-        {
-            return; // No action is taken.
-        }
-        const auto newLineContent = std::string(4 * indentationData.IndentationDepth(), ' ') + "}";
-        this->m_scintilla->setLineText(QString::fromStdString(newLineContent), lineNumber);
-        this->m_scintilla->setCursorPosition(lineNumber, newLineContent.length());
-    }
-    
-    //auto lineType = this->m_scintilla->line
-    this->m_scintilla->endUndoAction();
+    // TODO: To be implemented in full.
 }
 
 

@@ -473,13 +473,19 @@
     <ClCompile Include="Components\QManualSizeGrip\QManualSizeGrip.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="Components\QLinkerScriptSession\ViolationsModel\QViolationsModel.cpp">
+    <ClCompile Include="Components\QLinkerScriptSession\AutoStyling\CAutoStyler.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="Components\QLinkerScriptSession\ViolationsModel\CDrcViolationEntry.h">
+    <ClCompile Include="Components\QLinkerScriptSession\AutoStyling\SStylerReplaceLine.h">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="Components\QLinkerScriptSession\ViolationsModel\CViolationEntryBase.h">
+    <ClCompile Include="Components\QLinkerScriptSession\AutoStyling\SStylerRemoveLine.h">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\QLinkerScriptSession\AutoStyling\SStylerSelectText.h">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ParsingEngine\ELexerViolationCode.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1237,7 +1243,22 @@
     <ClInclude Include="Models\CIndentationInfo.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
-    <ClInclude Include="Components\QLinkerScriptSession\ViolationsModel\CParserViolationEntry.h">
+    <ClInclude Include="Components\QLinkerScriptSession\AutoStyling\CAutoStyler.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\QLinkerScriptSession\AutoStyling\SStylerActionBase.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\QLinkerScriptSession\AutoStyling\SStylerAddContent.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\QLinkerScriptSession\AutoStyling\SStylerRemoveContent.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ParsingEngine\CLexerViolation.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ParsingEngine\ELexerViolationCode.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1279,9 +1300,6 @@
       <Filter>Generated Files</Filter>
     </QtMoc>
     <QtMoc Include="Components\QManualSizeGrip\QManualSizeGrip.h">
-      <Filter>Generated Files</Filter>
-    </QtMoc>
-    <QtMoc Include="Components\QLinkerScriptSession\ViolationsModel\QViolationsModel.h">
       <Filter>Generated Files</Filter>
     </QtMoc>
   </ItemGroup>

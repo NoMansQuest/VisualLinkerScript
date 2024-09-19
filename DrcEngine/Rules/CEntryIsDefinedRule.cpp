@@ -16,23 +16,30 @@ using namespace VisualLinkerScript::DrcEngine::Rules;
 using namespace VisualLinkerScript::QueryEngine;
 using namespace VisualLinkerScript::Models;
 
-SharedPtrVector<CViolationBase> CEntryIsDefinedRule::PerformCheck(const SharedPtrVector<CLinkerScriptFile>& linkerScriptFiles) {
+SharedPtrVector<CViolationBase> CEntryIsDefinedRule::PerformCheck(const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile)
+{
     SharedPtrVector<CViolationBase> violations;
 
-    if (auto foundDirectives = QueryObject<CFunctionCall>(
-	    linkerScriptFiles,
-	    [&](const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile, const std::shared_ptr<CFunctionCall>& resolveEntryText) {
-		    return StringEquals(linkerScriptFile->ResolveEntryText(resolveEntryText->FunctionName()), "ENTRY", true);
-	    }); 
-		foundDirectives.size() == 0) 
+	/*
+    auto foundDirectives = QueryObject<CFunctionCall>(
+		linkerScriptFile,
+	    [&](const std::shared_ptr<CLinkerScriptFile>& localLinkerScriptFile, const std::shared_ptr<CFunctionCall>& resolveEntryText) {
+		    return StringEquals(localLinkerScriptFile->ResolveEntryText(resolveEntryText->FunctionName()), "ENTRY", true);
+	    });
+
+	if (foundDirectives.size() > 1)
 	{
-         violations.emplace_back(std::static_pointer_cast<CViolationBase>(std::shared_ptr<CDrcViolation>(new CDrcViolation(
-	         std::vector<std::shared_ptr<CLinkerScriptContentBase>>(),
-	         this->DrcRuleTitle(),
-	         "Directive is defined more than once.",
-	         EDrcViolationCode::EntryDirectiveDefinedMoreThanOnce,
-	         EDrcViolationSeverity::Error))));
-    }
+		for (const auto foundDirective : foundDirectives)
+		{
+			violations.emplace_back(std::static_pointer_cast<CViolationBase>(std::shared_ptr<CDrcViolation>(new CDrcViolation(
+				foundDirective,
+				this->DrcRuleTitle(),
+				"Directive is defined more than once.",
+				EDrcViolationCode::EntryDirectiveDefinedMoreThanOnce,
+				EDrcViolationSeverity::Error))));
+		}		
+	}
+	*/
 
     return violations;
 }

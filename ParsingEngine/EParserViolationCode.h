@@ -136,8 +136,12 @@ namespace VisualLinkerScript::ParsingEngine
         DesignRuleCheckError // All DRC-Errors have this violation code.
     };
 
-    /// @brief Maps parser violation code to string (one of the reasons why I miss C#)
-    std::string MapParserViolationCodeToString(EParserViolationCode code);
+    /// @brief Maps parser violation code to string.
+    std::string MapParserViolationToDescription(EParserViolationCode code);
+
+    /// @brief Maps parser violation to a unique ID code.
+    std::string MapParserViolationToCode(EParserViolationCode code);
+
 };
 
 #endif //

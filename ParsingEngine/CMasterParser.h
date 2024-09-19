@@ -15,12 +15,8 @@ namespace VisualLinkerScript::ParsingEngine
     class CMasterParser
     {
     public:
-        /// @brief Default constructor
-        explicit CMasterParser()
-        {}
-
-        /// @brief Processes a @see {CRawFile} and produces a @see {CLinkerScriptFile}
-        std::shared_ptr<CLinkerScriptFile> ProcessLinkerScriptFile(std::shared_ptr<CRawFile> rawFile);
+        /// @brief Processes a @see {CRawFile} and produces a @see {CLinkerScriptFile} parsed content and violations.
+        static void ParseLinkerScriptFile(std::shared_ptr<CLinkerScriptFile> linkerScriptFile);
     };
 }
 

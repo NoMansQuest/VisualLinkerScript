@@ -29,7 +29,7 @@ const std::string CLinkerScriptFile::ToDebugInfo(uint32_t depth) const
     std::string content = " LinkerScriptFile: " + this->FileName() + "\n";
     content += std::string(depth, ' ') + " -- content : \n";
 
-    for (auto subContent : this->Content())
+    for (auto subContent : this->ParsedContent())
     {
         content += subContent->ToDebugInfo(depth + 4, *this) + "\n";
     }

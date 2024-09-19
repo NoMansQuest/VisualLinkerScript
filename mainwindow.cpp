@@ -333,7 +333,7 @@ fileToRead.open(QFile::ReadOnly | QFile::Text);
 QTextStream in(&fileToRead);
 auto fileContent = in.readAll();
 auto preliminaryParseResult = linkerScriptLexer.LexLinkerScript(fileName.toStdString(), fileContent.toStdString());
-auto contentToAnalyze = preliminaryParseResult->Content();
+auto contentToAnalyze = preliminaryParseResult->ParsedContent();
 
 // Generate result
 QString debugOutput = "";
@@ -421,7 +421,7 @@ CMasterParser masterParser;
 
 QElapsedTimer timer;
 timer.start();
-auto parsedLinkerScriptFile = masterParser.ProcessLinkerScriptFile(preliminaryParseResult);
+auto parsedLinkerScriptFile = masterParser.ParseLinkerScriptFile(preliminaryParseResult);
 auto parsingTime = timer.nsecsElapsed();
 auto parsedContentDebugInfo = parsedLinkerScriptFile->ToDebugInfo(0);
 auto toDebugInfoTime = timer.nsecsElapsed() - parsingTime;

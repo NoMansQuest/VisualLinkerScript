@@ -29,7 +29,7 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
         virtual SubParserType Type() = 0;
 
         /// @brief Try to parse the content. If succesful, parsed content can be recovered via @see {GetParsedContent}.
-        /// @param fileContent Content of the linker-script file
+        /// @param fileContent ParsedContent of the linker-script file
         /// @param iterator Iterator pointing out to the location to start parsing
         /// @param endOfVectorIterator Iterator value pointing to the end of the vector (hence end of parsing)
         /// @return Parsed content (if successful), under which case the @see {iterator} is also updated, otherwise an empty vectoro in case

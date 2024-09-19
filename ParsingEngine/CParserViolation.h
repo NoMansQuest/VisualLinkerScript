@@ -1,16 +1,14 @@
 #ifndef CPARSERVIOLATION_H__
 #define CPARSERVIOLATION_H__
 
-#include <string>
 #include <vector>
-#include <memory>
 #include "EParserViolationCode.h"
 #include "../Models/CViolationBase.h"
 
-using namespace VisualLinkerScript::Models;
-
 namespace VisualLinkerScript::ParsingEngine 
 {
+    using namespace VisualLinkerScript::Models;
+
     /// @brief This object contains information about a detected violation in the Linker Script
     class CParserViolation : public CViolationBase
     {

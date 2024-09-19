@@ -13,6 +13,7 @@ namespace VisualLinkerScript::Models
     /// @brief Type of violation.
     enum class EViolationType
     {
+        LexerViolation,
         DrcViolation,
         ParserViolation
     };

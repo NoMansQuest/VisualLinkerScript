@@ -15,6 +15,7 @@
 #include "../Models/Raw/CRawFile.h"
 #include "../Models/Raw/RawEntryType.h"
 #include "../Helpers.h"
+#include "Models/CLinkerScriptFile.h"
 
 using namespace VisualLinkerScript::Models;
 using namespace VisualLinkerScript::Models::Raw;
@@ -435,21 +436,21 @@ namespace
 
 }
 
-std::shared_ptr<CRawFile> CLexer::LexLinkerScript(const std::string& absoluteFilePath, std::string rawContent)
+std::shared_ptr<CLinkerScriptFile> CLexer::LexLinkerScript(const std::string& filePath, std::string fileContent)
 {    
     // TODO: Revise code in event of available capacity to reduce cyclomatic complexity
     std::vector<CRawEntry> lexerContent;
-    std::unordered_map<uint32_t, CIndentationInfo> lineIndentationMap;
+    std::unordered_map<uint32_t, CIndentationInfo> indentationData;
     LexerPosition lexerContext { 0, 0, 0, LexerStates::Default, 0, 0, 0};
     LexerPosition blockStartPosition;
     auto endOfStreamReached = false;
 
     do
     {
-        endOfStreamReached = lexerContext.AbsolutePosition + 1 > rawContent.length();
-        auto nextCharacter = (lexerContext.AbsolutePosition + 1 < rawContent.length()) ? rawContent[lexerContext.AbsolutePosition + 1] : ' ';
-        auto previousCharacter = lexerContext.AbsolutePosition > 0 ? rawContent[lexerContext.AbsolutePosition - 1] : ' ';
-        auto currentCharacter = !endOfStreamReached ? rawContent[lexerContext.AbsolutePosition] : ' ';
+        endOfStreamReached = lexerContext.AbsolutePosition + 1 > fileContent.length();
+        auto nextCharacter = (lexerContext.AbsolutePosition + 1 < fileContent.length()) ? fileContent[lexerContext.AbsolutePosition + 1] : ' ';
+        auto previousCharacter = lexerContext.AbsolutePosition > 0 ? fileContent[lexerContext.AbsolutePosition - 1] : ' ';
+        auto currentCharacter = !endOfStreamReached ? fileContent[lexerContext.AbsolutePosition] : ' ';
         auto isLineFeed = IsLineFeed(currentCharacter);
 
         // We assign the ScopeDepth to a line under two scenarios: End-Of-Stream and New-Line
@@ -458,7 +459,7 @@ std::shared_ptr<CRawFile> CLexer::LexLinkerScript(const std::string& absoluteFil
             auto scopeDepthToAssign = std::min(lexerContext.ScopeDepth, lexerContext.LineStartScopeDepth);
             auto commentLinePrefixingNeeded = (lexerContext.State == LexerStates::InComment) && (blockStartPosition.LineNumber != lexerContext.LineNumber);
             auto indentationType = (lexerContext.State == LexerStates::InComment) ? EIndentationLineType::MultiLineCommentStar : EIndentationLineType::RegularSpace;
-            lineIndentationMap.emplace(lexerContext.LineNumber, CIndentationInfo(scopeDepthToAssign, indentationType, commentLinePrefixingNeeded));
+            indentationData.emplace(lexerContext.LineNumber, CIndentationInfo(scopeDepthToAssign, indentationType, commentLinePrefixingNeeded));
         }
 
         // Process the current character
@@ -486,14 +487,14 @@ std::shared_ptr<CRawFile> CLexer::LexLinkerScript(const std::string& absoluteFil
                     continue;
                 }
 
-                if (SafeTestPatternInString(rawContent, lexerContext.AbsolutePosition, { '/', '*' }))
+                if (SafeTestPatternInString(fileContent, lexerContext.AbsolutePosition, { '/', '*' }))
                 {
                     blockStartPosition = lexerContext; // Save this position                    
                     lexerContext.Advance(1, LexerStates::InComment);
                     continue;
                 }
 
-                if (SafeTestPatternInString(rawContent, lexerContext.AbsolutePosition, { '/', 'D', 'I', 'S', 'C', 'A', 'R', 'D', '/' }))
+                if (SafeTestPatternInString(fileContent, lexerContext.AbsolutePosition, { '/', 'D', 'I', 'S', 'C', 'A', 'R', 'D', '/' }))
                 {
                     auto wordLength = 9;
                     auto endWordPosition = lexerContext.Clone(wordLength - 1);
@@ -509,7 +510,7 @@ std::shared_ptr<CRawFile> CLexer::LexLinkerScript(const std::string& absoluteFil
                     continue;
                 }
 
-                auto assignmentSymbolType = TestForAssignmentSymbol(rawContent, lexerContext.AbsolutePosition);
+                auto assignmentSymbolType = TestForAssignmentSymbol(fileContent, lexerContext.AbsolutePosition);
                 if (assignmentSymbolType != AssignmentSymbolTypes::NotAnAssignmentSymbol)
                 {
                     auto assignmentOperatorLength = static_cast<int32_t>(assignmentSymbolType);
@@ -519,7 +520,7 @@ std::shared_ptr<CRawFile> CLexer::LexLinkerScript(const std::string& absoluteFil
                     continue;
                 }
 
-                auto evaluatingSymbolType = TestForEvaluativeSymbol(rawContent, lexerContext.AbsolutePosition);
+                auto evaluatingSymbolType = TestForEvaluativeSymbol(fileContent, lexerContext.AbsolutePosition);
                 if (evaluatingSymbolType != EvaluativeSymbolTypes::NotAnEvaluativeSymbol)
                 {
                     auto symbolTypeLength = static_cast<int32_t>(evaluatingSymbolType);
@@ -655,20 +656,20 @@ std::shared_ptr<CRawFile> CLexer::LexLinkerScript(const std::string& absoluteFil
 
     } while (!endOfStreamReached);
 
-    std::string extractedFileName;
+    std::string fileName;
     std::vector<std::string> splitString;
 
 #ifdef COMPILING_FOR_WINDOWS
-    splitString = VisualLinkerScript::StringSplit(absoluteFilePath, '\\');
+    splitString = VisualLinkerScript::StringSplit(filePath, '\\');
 #elif COMPILING_FOR_UNIX_BASED
-    auto splitString = VisualLinkerScript::StringSplit(absoluteFilePath, '/');
+    auto splitString = VisualLinkerScript::StringSplit(filePath, '/');
 #else
 #error Either 'COMPILING_FOR_WINDOWS' need to be set or 'COMPILING_FOR_UNIX_BASED'
 #endif
 
 
     // Generate result
-    QString qRawContent = QString::fromStdString(rawContent);
+    QString qRawContent = QString::fromStdString(fileContent);
     QString debugOutput = "";
     for (auto entry : lexerContent)
     {
@@ -769,10 +770,7 @@ std::shared_ptr<CRawFile> CLexer::LexLinkerScript(const std::string& absoluteFil
         */
     }
 
-    extractedFileName = splitString.back();
-    return std::make_shared<CRawFile>(std::move(rawContent),
-                                      extractedFileName,
-                                      absoluteFilePath,
-                                      std::move(lineIndentationMap),
-                                      std::move(lexerContent));
+    fileName = splitString.back();
+	const auto rawFile = std::make_shared<CRawFile>(std::move(fileContent), fileName, filePath, std::move(indentationData), std::move(lexerContent));
+    return std::make_shared<CLinkerScriptFile>(rawFile);
 }

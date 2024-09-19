@@ -16,10 +16,10 @@ using namespace VisualLinkerScript::DrcEngine::Rules;
 using namespace VisualLinkerScript::Models;
 using namespace VisualLinkerScript::QueryEngine;
 
-SharedPtrVector<CViolationBase> CNoDuplicateMemoryRegionNameRule::PerformCheck(const SharedPtrVector<CLinkerScriptFile>& linkerScriptFiles) {
+SharedPtrVector<CViolationBase> CNoDuplicateMemoryRegionNameRule::PerformCheck(const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile) {
     SharedPtrVector<CViolationBase> violations;
 
-    const auto foundMemoryStatements = QueryObject<CMemoryStatement>(linkerScriptFiles, nullptr, true);
+    const auto foundMemoryStatements = QueryObject<CMemoryStatement>(linkerScriptFile, nullptr, true);
 
     for (const auto memoryStatementToInspect: foundMemoryStatements) {
         // Check if any other file has the name described

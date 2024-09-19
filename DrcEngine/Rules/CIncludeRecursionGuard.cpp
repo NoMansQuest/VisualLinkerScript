@@ -37,10 +37,12 @@ bool RecursiveCheck(const SharedPtrVector<CLinkerScriptFile>& scope,
                     std::shared_ptr<CLinkerScriptFile> subjectOfInterest,
                     RecursionMap& recursionMap);
 
-SharedPtrVector<CViolationBase> CIncludeRecursionGuard::PerformCheck(const SharedPtrVector<CLinkerScriptFile>& linkerScriptFiles) {
+SharedPtrVector<CViolationBase> CIncludeRecursionGuard::PerformCheck(const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile)
+{
     SharedPtrVector<CViolationBase> violations;
-    auto foundIncludeCommands = QueryObject<CIncludeCommand>(linkerScriptFiles);
+    auto foundIncludeCommands = QueryObject<CIncludeCommand>(linkerScriptFile);
 
+    /*
     for (auto file: linkerScriptFiles) {
         // Recursion list
         std::vector<std::string> visitedFile { file->AbsoluteFilePath() };
@@ -107,6 +109,9 @@ SharedPtrVector<CViolationBase> CIncludeRecursionGuard::PerformCheck(const Share
 	            EDrcViolationSeverity::Error))));
         }
     }
+    */
+
+    // TODO: Re-enable when concept in place.
 
     return violations;
 }

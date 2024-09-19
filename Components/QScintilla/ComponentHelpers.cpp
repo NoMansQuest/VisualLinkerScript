@@ -2,6 +2,7 @@
 #include <QScrollBar>
 #include <QStyle>
 #include "src/Qsci/qsciscintilla.h"
+#include "../QScintilla/src/Qsci/qscilexerlinkerscript.h"
 #include <QOperatingSystemVersion>
 
 #include "Scintilla.h"
@@ -10,6 +11,17 @@ using namespace VisualLinkerScript::Components;
 
 void QScintilla::SetComponentStyles(QsciScintilla& target)
 {
+    // Setup Scintilla Text Editor
+    target.setLexer(new QsciLexerLinkerScript);
+    target.setAutoIndent(false);
+    target.setTabWidth(4);
+    target.setBackspaceUnindents(true);    
+    target.setIndentationGuides(false);
+    target.setIndentationGuidesBackgroundColor(QColor::fromRgb(0xff505050));
+    target.setIndentationGuidesForegroundColor(QColor::fromRgb(0xff909090));
+    target.setIndentationsUseTabs(true);    
+    target.setSelectionBackgroundColor(QColor::fromRgb(00, 00, 0xff, 0x3F));
+
     target.setColor(QColor::fromRgba(0xffffffff));
     target.setCaretForegroundColor(QColor::fromRgba(0xfff0f0f0));
     target.setCaretLineVisible(true);

@@ -9,6 +9,11 @@
 #include "ParsingEngine/CLexer.h"
 #include "ParsingEngine/CMasterParser.h"
 
+namespace VisualLinkerScript::ParsingEngine
+{
+	class CAutoStyler;
+}
+
 class QChromeTabWidget;
 enum class Indicators;
 enum class SearchReplaceRequestType;
@@ -26,7 +31,7 @@ class QLinkerScriptSession : public QWidget
 private:
     uint32_t m_sessionId;
     uint32_t m_sessionsTabIndex;
-    std::shared_ptr<CRawFile> m_lexedLinkerScript;
+    std::shared_ptr<VisualLinkerScript::Models::CLinkerScriptFile> m_linkerScriptFile;
 
 public:
     /// @brief Default constructor
@@ -54,14 +59,18 @@ private:
     QTimer m_deferredProcedureCaller;
     QSearchPopup* m_searchPopup;
 
-    std::unique_ptr<VisualLinkerScript::ParsingEngine::CMasterParser> m_masterParser;
-    std::unique_ptr<VisualLinkerScript::ParsingEngine::CLexer> m_linkerScriptLexer;
+    std::shared_ptr<VisualLinkerScript::ParsingEngine::CAutoStyler> m_autoStyler;
     std::unique_ptr<VisualLinkerScript::DrcEngine::CDrcManager> m_drcManager;
+
+    std::shared_ptr<QStandardItemModel> m_violationsItemModel;
+    std::shared_ptr<QStandardItem> m_lexerViolationsItem;
+    std::shared_ptr<QStandardItem> m_parserViolationsItem;
+    std::shared_ptr<QStandardItem> m_drcViolationsItem;
 
     void InitiateDeferredProcessing();
     void DeferredContentProcessingAction() const;
     void EditorContentUpdated();
-    void SetupViolationsView() const;
+    void SetupViolationsView();
 
     // Find related
     uint32_t m_searchSessionActive = false;
