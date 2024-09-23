@@ -1,9 +1,7 @@
 #ifndef CVIOLATIONBASE_H__
 #define CVIOLATIONBASE_H__
 
-#include <string>
-#include <vector>
-#include <memory>
+#include "ESeverityCode.h"
 #include "Raw/CRawEntry.h"
 
 namespace VisualLinkerScript::Models 
@@ -18,11 +16,23 @@ namespace VisualLinkerScript::Models
         ParserViolation
     };
 
-    /// @brief This object contains base object for violations detected in the linkerscript
+    /// @brief This object contains base object for violations detected in the linker script.
     class CViolationBase
     {
-    public:
-        virtual EViolationType Type() = 0;
+		private:
+            ESeverityCode m_severity;			
+
+		public:
+			/// @brief ViolationBase constructor.
+            CViolationBase(ESeverityCode severityCode)
+	            : m_severity(severityCode)
+            {}
+
+			/// @brief Severity of the violation.
+            ESeverityCode Severity() const { return this->m_severity; }
+
+			/// @brief Type of the violation.
+		    virtual EViolationType Type() = 0;			
     };
 }
 

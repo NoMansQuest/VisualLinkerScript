@@ -5,6 +5,7 @@
 #include "../../ParsingEngine/CLexer.h"
 #include "../../ParsingEngine/CMasterParser.h"
 #include "../../DrcEngine/CDrcManager.h"
+#include "../../Models/CLinkerScriptContentBase.h"
 #include "Components/QChromeTab/QChromeTabWidget.h"
 #include "Components/QSearchPopup/QSearchPopup.h"
 #include "DrcEngine/CDrcViolation.h"
@@ -105,13 +106,17 @@ void QLinkerScriptSession::SetupViolationsView()
 {    
     // Create the QStandardItemModel with 4 columns (1 for item and 3 for additional data)    
     this->m_violationsItemModel.reset(new QStandardItemModel());
-    this->m_violationsItemModel->setHorizontalHeaderLabels({ "Code", "Description", "Line", "Column"});    
+    this->m_violationsItemModel->setHorizontalHeaderLabels({ "Code", "Severity", "Description", "Line", "Column", "Offending content"});
+
     this->m_issuesTreeView->setModel(this->m_violationsItemModel.get());
-    this->m_issuesTreeView->setAlternatingRowColors(true);
-    this->m_issuesTreeView->setColumnWidth(0, 200);
-    this->m_issuesTreeView->setColumnWidth(1, 540);
-    this->m_issuesTreeView->setColumnWidth(2, 120);
-    this->m_issuesTreeView->setColumnWidth(3, 120);
+    this->m_issuesTreeView->setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectRows);    
+    this->m_issuesTreeView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    this->m_issuesTreeView->setColumnWidth(0, 140);
+    this->m_issuesTreeView->setColumnWidth(1, 100);
+    this->m_issuesTreeView->setColumnWidth(2, 440);
+    this->m_issuesTreeView->setColumnWidth(3, 60);
+    this->m_issuesTreeView->setColumnWidth(4, 60);
+    this->m_issuesTreeView->setColumnWidth(5, 400);
 
     this->m_lexerViolationsItem = std::make_shared<QStandardItem>("Lexer Violations");
     this->m_lexerViolationsItem->setSelectable(true);
@@ -287,45 +292,143 @@ void QLinkerScriptSession::EditorContentUpdated()
     this->InitiateDeferredProcessing();
 }
 
+void QLinkerScriptSession::UpdateDrcViolationsInModel() const
+{
+    // OK, we have all the violations we need, now update the standard model item        
+    this->m_drcViolationsItem->removeRows(0, this->m_lexerViolationsItem->rowCount());
+
+	for (const auto& drcViolation : this->m_linkerScriptFile->DrcViolations())
+	{
+		auto castDrcViolation = std::dynamic_pointer_cast<CDrcViolation>(drcViolation);
+		auto code = new QStandardItem(QString::fromStdString(MapDrcViolationToCode(castDrcViolation->Code())));
+		auto description = new QStandardItem(QString::fromStdString(MapDrcViolationToDescription(castDrcViolation->Code())));
+        auto severity = new QStandardItem(QString::fromStdString(MapSeverityToString(castDrcViolation->Severity())));
+		//auto offendingContent = new QStandardItem(QString::fromStdString(castDrcViolation->OffendingContent()));
+		auto offendingContent = new QStandardItem(QString::fromStdString(""));
+
+		QStandardItem* lineNumber;
+		QStandardItem* columnIndex;
+
+		if (!castDrcViolation->InvolvedElements().empty())
+		{
+			if (!castDrcViolation->InvolvedElements().at(0)->RawEntries().empty())
+			{
+				auto firstEntry = castDrcViolation->InvolvedElements().at(0)->RawEntries().at(0);
+				lineNumber = new QStandardItem(QString::number(firstEntry.StartLineNumber()));
+				columnIndex = new QStandardItem(QString::number(firstEntry.StartIndexInLine()));
+			}
+			else
+			{
+				lineNumber = new QStandardItem(QString::number(0));
+				columnIndex = new QStandardItem(QString::number(0));
+			}
+		}
+		else
+		{
+			lineNumber = new QStandardItem(QString::number(0));
+			columnIndex = new QStandardItem(QString::number(0));
+		}
+
+		code->setSelectable(false);
+		code->setEditable(false);
+		lineNumber->setSelectable(false);
+		lineNumber->setEditable(false);
+		columnIndex->setSelectable(false);
+		columnIndex->setEditable(false);
+		offendingContent->setSelectable(false);
+		offendingContent->setEditable(false);
+		this->m_drcViolationsItem->appendRow({ code, severity, description, lineNumber, columnIndex, offendingContent });
+	}
+}
+
+void QLinkerScriptSession::UpdateParserViolationsInModel() const
+{
+    // OK, we have all the violations we need, now update the standard model item    
+    this->m_parserViolationsItem->removeRows(0, this->m_lexerViolationsItem->rowCount());
+
+	for (const auto& parserViolation : this->m_linkerScriptFile->ParserViolations())
+	{
+		auto castParserViolation = std::dynamic_pointer_cast<CParserViolation>(parserViolation);
+		auto code = new QStandardItem(QString::fromStdString(MapParserViolationToCode(castParserViolation->Code())));
+        auto severity = new QStandardItem(QString::fromStdString(MapSeverityToString(castParserViolation->Severity())));
+		auto description = new QStandardItem(QString::fromStdString(MapParserViolationToDescription(castParserViolation->Code())));
+		//auto offendingContent = new QStandardItem(QString::fromStdString(castParserViolation->OffendingContent()));
+		auto offendingContent = new QStandardItem(QString::fromStdString(castParserViolation->GetOffendingContent(this->m_linkerScriptFile->RawFile())));
+
+		QStandardItem* lineNumber;
+		QStandardItem* columnIndex;        
+
+		if (!castParserViolation->InvoledEntries().empty())
+		{
+			lineNumber = new QStandardItem(QString::number(castParserViolation->InvoledEntries().cbegin()->StartLineNumber()));
+			columnIndex = new QStandardItem(QString::number(castParserViolation->InvoledEntries().cbegin()->StartIndexInLine()));
+		}
+		else
+		{
+			if (castParserViolation->EntryBeforeViolation().EntryType() != RawEntryType::NotPresent)
+			{
+				lineNumber = new QStandardItem(QString::number(castParserViolation->EntryBeforeViolation().StartLineNumber()));
+				columnIndex = new QStandardItem(QString::number(castParserViolation->EntryBeforeViolation().StartIndexInLine()));
+			}
+			else if (castParserViolation->EntryAfterViolation().EntryType() != RawEntryType::NotPresent)
+			{
+				lineNumber = new QStandardItem(QString::number(castParserViolation->EntryAfterViolation().StartLineNumber()));
+				columnIndex = new QStandardItem(QString::number(castParserViolation->EntryAfterViolation().StartIndexInLine()));
+			}
+			else
+			{
+				lineNumber = new QStandardItem(0);
+				columnIndex = new QStandardItem(0);
+			}            
+		}
+
+		code->setSelectable(false);
+		code->setEditable(false);
+		lineNumber->setSelectable(false);
+		lineNumber->setEditable(false);
+		columnIndex->setSelectable(false);
+		columnIndex->setEditable(false);
+		offendingContent->setSelectable(false);
+		offendingContent->setEditable(false);
+		this->m_parserViolationsItem->appendRow({ code, severity, description, lineNumber, columnIndex, offendingContent });
+	}
+}
+
+void QLinkerScriptSession::UpdateLexerViolationsInModel() const
+{
+    // OK, we have all the violations we need, now update the standard model item
+    this->m_lexerViolationsItem->removeRows(0, this->m_lexerViolationsItem->rowCount());
+
+	for (const auto& lexerViolation : this->m_linkerScriptFile->LexerViolations())
+	{
+		auto castLexerViolation = std::dynamic_pointer_cast<CLexerViolation>(lexerViolation);        
+		auto code = new QStandardItem(QString::fromStdString(MapLexerViolationToCode(castLexerViolation->Code())));
+        auto severity = new QStandardItem(QString::fromStdString(MapSeverityToString(castLexerViolation->Severity())));
+		auto description = new QStandardItem(QString::fromStdString(MapLexerViolationToDescription(castLexerViolation->Code())));
+		auto lineNumber = new QStandardItem(QString::number(castLexerViolation->ViolationLocation().StartLineNumber()));
+		auto columnIndex = new QStandardItem(QString::number(castLexerViolation->ViolationLocation().StartIndexInLine()));
+		auto offendingContent = new QStandardItem(QString::fromStdString(this->m_linkerScriptFile->ResolveEntryText(castLexerViolation->ViolationLocation())));
+
+		code->setSelectable(false);
+		code->setEditable(false);
+		lineNumber->setSelectable(false);
+		lineNumber->setEditable(false);
+		columnIndex->setSelectable(false);
+		columnIndex->setEditable(false);
+		offendingContent->setSelectable(false);
+		offendingContent->setEditable(false);
+		this->m_lexerViolationsItem->appendRow({ code, severity, description, lineNumber, columnIndex, offendingContent });
+	}
+}
+
 void QLinkerScriptSession::DeferredContentProcessingAction() const
 {
 	CMasterParser::ParseLinkerScriptFile(this->m_linkerScriptFile);    
     this->m_drcManager->PerformAnalysis(this->m_linkerScriptFile);
 
-    // OK, we have all the violations we need, now update the standard model item
-    this->m_lexerViolationsItem->removeRows(0, this->m_lexerViolationsItem->rowCount());
-    this->m_drcViolationsItem->removeRows(0, this->m_lexerViolationsItem->rowCount());
-    this->m_parserViolationsItem->removeRows(0, this->m_lexerViolationsItem->rowCount());
-
-    for (const auto lexerViolation : this->m_linkerScriptFile->LexerViolations())
-    {
-        auto castLexerViolation = std::dynamic_pointer_cast<CLexerViolation>(lexerViolation);        
-        auto code = new QStandardItem(QString::fromStdString(MapLexerViolationToCode(castLexerViolation->Code())));
-        auto description = new QStandardItem(QString::fromStdString(MapLexerViolationToDescription(castLexerViolation->Code())));
-        auto lineNumber = new QStandardItem(QString::number(castLexerViolation->ViolationLocation().StartLineNumber()));
-        auto columnIndex = new QStandardItem(QString::number(castLexerViolation->ViolationLocation().StartIndexInLine()));
-        this->m_lexerViolationsItem->appendRow({ code, description, lineNumber, columnIndex });
-    }
-
-    for (const auto parserViolation    : this->m_linkerScriptFile->ParserViolations())
-    {
-        auto castParserViolation = std::dynamic_pointer_cast<CParserViolation>(parserViolation);
-        auto code = new QStandardItem(QString::fromStdString(MapParserViolationToCode(castParserViolation->Code())));
-        auto description = new QStandardItem(QString::fromStdString(MapLexerViolationToDescription(castParserViolation->Code())));
-        auto lineNumber = new QStandardItem(QString::number(castParserViolation->ViolationLocation().StartLineNumber()));
-        auto columnIndex = new QStandardItem(QString::number(castParserViolation->ViolationLocation().StartIndexInLine()));
-        this->m_lexerViolationsItem->appendRow({ code, description, lineNumber, columnIndex });
-    }
-
-    for (const auto drcViolation : this->m_linkerScriptFile->DrcViolations())
-    {
-        auto castDrcViolation = std::dynamic_pointer_cast<CDrcViolation>(drcViolation);
-        auto code = new QStandardItem(QString::fromStdString(MapLexerViolationToCode(castDrcViolation->Code())));
-        auto description = new QStandardItem(QString::fromStdString(MapLexerViolationToDescription(castDrcViolation->Code())));
-        auto lineNumber = new QStandardItem(QString::number(castDrcViolation->ViolationLocation().StartLineNumber()));
-        auto columnIndex = new QStandardItem(QString::number(castDrcViolation->ViolationLocation().StartIndexInLine()));
-        this->m_lexerViolationsItem->appendRow({ code, description, lineNumber, columnIndex });
-    }
+    UpdateLexerViolationsInModel();
+    UpdateParserViolationsInModel();
+    UpdateDrcViolationsInModel();
 }
 
 void QLinkerScriptSession::InitiateDeferredProcessing()

@@ -23,47 +23,47 @@ const std::string CSectionOutputCommand::ToDebugInfo(uint32_t depth, const CLink
 
     content += std::string(depth, ' ') + " -- Pre-colon content : \n";
 
-    for (auto subContent : this->PreColonContent())
+    for (const auto& subContent : this->PreColonContent())
     {
         content += subContent->ToDebugInfo(depth + 4, linkerScriptFile) + "\n";
     }
 
     content += std::string(depth, ' ') + " -- Post-colon content : \n";
 
-    for (auto subContent : this->PostColonContent())
+    for (const auto& subContent : this->PostColonContent())
     {
         content += subContent->ToDebugInfo(depth + 4, linkerScriptFile) + "\n";
     }
 
     content += std::string(depth, ' ') + " -- PreColon content : \n";
 
-    for (auto subContent : this->PreColonContent())
+    for (const auto& subContent : this->PreColonContent())
     {
         content += subContent->ToDebugInfo(depth + 4, linkerScriptFile) + "\n";
     }
 
     content += std::string(depth, ' ') + " -- PostColon content : \n";
 
-    for (auto subContent : this->PostColonContent())
+    for (const auto& subContent : this->PostColonContent())
     {
         content += subContent->ToDebugInfo(depth + 4, linkerScriptFile) + "\n";
     }
 
     content += std::string(depth, ' ') + " -- Inner content : \n";
 
-    for (auto subContent : this->InnerContent())
+    for (const auto& subContent : this->InnerContent())
     {
         content += subContent->ToDebugInfo(depth + 4, linkerScriptFile) + "\n";
     }
 
     content += std::string(depth, ' ') + " -- Ending content : \n";
 
-    for (auto subContent : this->EndingContent())
+    for (const auto& subContent : this->EndingContent())
     {
         content += subContent->ToDebugInfo(depth + 4, linkerScriptFile) + "\n";
     }
 
-    for (auto violation : this->Violations())
+    for (const auto& violation : this->Violations())
     {
         switch (violation->Type())
         {
@@ -72,10 +72,10 @@ const std::string CSectionOutputCommand::ToDebugInfo(uint32_t depth, const CLink
                 auto converted = std::dynamic_pointer_cast<CParserViolation>(violation);
                 content += std::string(depth, ' ') +
                         " - Violation Code: " +
-                        MapParserViolationCodeToString(converted->Code()) +
+                        MapParserViolationToCode(converted->Code()) +
                         " @line: " + std::to_string(converted->InvoledEntries()[0].StartLineNumber()) +
                         " @post: " + std::to_string(converted->InvoledEntries()[0].StartPosition()) +
-                        " content: " + ((converted->InvoledEntries().size() > 0) ? linkerScriptFile.ResolveEntryText(converted->InvoledEntries()[0]) : "<NONE>") +
+                        " content: " + ((!converted->InvoledEntries().empty()) ? linkerScriptFile.ResolveEntryText(converted->InvoledEntries()[0]) : "<NONE>") +
                         "\n";
                 break;
             }
@@ -88,7 +88,7 @@ const std::string CSectionOutputCommand::ToDebugInfo(uint32_t depth, const CLink
                         std::to_string((uint32_t)converted->Code()) +
                         " @line: " + std::to_string(converted->InvolvedElements()[0]->RawEntries()[0].StartLineNumber()) +
                         " @pos: " + std::to_string(converted->InvolvedElements()[0]->RawEntries()[0].StartLineNumber()) +
-                        " content: " + ((converted->InvolvedElements().size() > 0) ? linkerScriptFile.ResolveEntryText(*converted->InvolvedElements()[0]) : "<NONE>") +
+                        " content: " + ((!converted->InvolvedElements().empty()) ? linkerScriptFile.ResolveEntryText(*converted->InvolvedElements()[0]) : "<NONE>") +
                         "\n";
                 break;
             }

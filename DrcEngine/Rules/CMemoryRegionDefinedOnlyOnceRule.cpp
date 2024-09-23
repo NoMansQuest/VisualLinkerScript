@@ -6,7 +6,6 @@
 #include "../CDrcManager.h"
 #include "DrcEngine/CDrcViolation.h"
 #include "DrcEngine/EDrcViolationCode.h"
-#include "DrcEngine/EDrcViolationSeverity.h"
 
 REGISTER_DRC_RULE(CMemoryRegionDefinedOnlyOnceRule)
 
@@ -34,7 +33,7 @@ SharedPtrVector<CViolationBase> CMemoryRegionDefinedOnlyOnceRule::PerformCheck(c
            {},
            nullptr,
            EDrcViolationCode::MemoryRegionDefinedMultipleTimes,
-           EDrcViolationSeverity::Error));
+           ESeverityCode::Error));
 
        violations.emplace_back(std::static_pointer_cast<CViolationBase>(violation));
    }

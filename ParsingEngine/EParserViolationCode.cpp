@@ -9,7 +9,7 @@ std::string VisualLinkerScript::ParsingEngine::MapParserViolationToDescription(E
     case EParserViolationCode::NoSymbolOrKeywordAllowedAfterPhdrsHeader: return "No symbol or keyword allowed after PHDRs header";
     case EParserViolationCode::ProgramHeaderNameShouldNotBeAReservedKeyword: return "Program header name should not be a reserved keyword";
     case EParserViolationCode::ProgramHeaderTypeNotRecognized: return "Program header type not recognized";
-    case EParserViolationCode::ProgramHeaderFileHdrAlreadySet: return "Program header file hdr already set";
+    case EParserViolationCode::ProgramHeaderFileHdrAlreadySet: return "Program header file header already set";
     case EParserViolationCode::ProgramHeaderPhdrsAlreadySet: return "Program header PHDRs already set";
     case EParserViolationCode::ProgramHeaderAtAddressAlreadySet: return "Program header at address already set";
     case EParserViolationCode::ProgramHeaderFlagsAlreadySet: return "Program header flags already set";
@@ -56,7 +56,7 @@ std::string VisualLinkerScript::ParsingEngine::MapParserViolationToDescription(E
     case EParserViolationCode::SeparatorExpectedInbetweenParameters: return "Separator expected in between parameters";
     case EParserViolationCode::InputSectionFunctionSortParser: return "Input section function sort parser";
     case EParserViolationCode::FunctionDoesNotSupportMultipleParameters: return "Function does not support multiple parameters";
-    case EParserViolationCode::LValueCannotContainRValueExpression: return "L value cannot contain r value expression";
+    case EParserViolationCode::LValueCannotContainRValueExpression: return "L-value cannot contain R-value expression";
     case EParserViolationCode::MultipleAssignmentOperatorsDetected: return "Multiple assignment operators detected";
     case EParserViolationCode::RValueExpressionParsingFailed: return "R value expression parsing failed";
     case EParserViolationCode::RValueExpressionMissing: return "R value expression missing";
@@ -105,6 +105,7 @@ std::string VisualLinkerScript::ParsingEngine::MapParserViolationToDescription(E
     case EParserViolationCode::MissingOpeningParenthesis: return "Missing opening parenthesis";
     case EParserViolationCode::MissingClosingParenthesis: return "Missing closing parenthesis";
     case EParserViolationCode::EntryInvalidOrMisplaced: return "Entry invalid or misplaced";
+	case EParserViolationCode::EntryCanBeOmitted: return "Entry can be omitted";
     case EParserViolationCode::WildcardsNotAllowedHere: return "Wildcards not allowed here";
     case EParserViolationCode::DesignRuleCheckError: return "Design rule check error";
 
@@ -216,8 +217,9 @@ std::string VisualLinkerScript::ParsingEngine::MapParserViolationToCode(EParserV
     case EParserViolationCode::MissingOpeningParenthesis: return "P0097";
     case EParserViolationCode::MissingClosingParenthesis: return "P0098";
     case EParserViolationCode::EntryInvalidOrMisplaced: return "P0099";
-    case EParserViolationCode::WildcardsNotAllowedHere: return "P0100";
-    case EParserViolationCode::DesignRuleCheckError: return "P0101";
+    case EParserViolationCode::EntryCanBeOmitted: return "P0100";
+    case EParserViolationCode::WildcardsNotAllowedHere: return "P0101";
+    case EParserViolationCode::DesignRuleCheckError: return "P0102";
 
     default:
         throw std::invalid_argument(NAMEOF(code));

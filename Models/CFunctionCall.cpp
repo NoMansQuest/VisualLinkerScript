@@ -40,7 +40,7 @@ const std::string CFunctionCall::ToDebugInfo(uint32_t depth, const CLinkerScript
                 auto firstEntryInViolation = converted->InvoledEntries().size() > 0 ? converted->InvoledEntries()[0] : CRawEntry();
                 contentStream << std::string(depth, ' ')
                               << " - Violation Code: "
-                              << MapParserViolationCodeToString(converted->Code());
+                              << MapParserViolationToCode(converted->Code());
                 if (firstEntryInViolation.IsPresent())
                 {
                     contentStream << " @line: "

@@ -6,7 +6,6 @@
 #include "../CDrcManager.h"
 #include "DrcEngine/CDrcViolation.h"
 #include "DrcEngine/EDrcViolationCode.h"
-#include "DrcEngine/EDrcViolationSeverity.h"
 #include "Models/Intervention/CIntervention.h"
 
 REGISTER_DRC_RULE(CNoDuplicateMemoryRegionNameRule)
@@ -62,7 +61,7 @@ SharedPtrVector<CViolationBase> CNoDuplicateMemoryRegionNameRule::PerformCheck(c
 	            SharedPtrVector<CDrcViolation>(),
 	            std::shared_ptr<Intervention::CIntervention>(nullptr),
 	            EDrcViolationCode::DuplicateNameForMemoryStatement,
-	            EDrcViolationSeverity::Error));
+                ESeverityCode::Error));
         }
 
         SharedPtrVector<CLinkerScriptContentBase> memoryStatementsToInspect {
@@ -77,7 +76,7 @@ SharedPtrVector<CViolationBase> CNoDuplicateMemoryRegionNameRule::PerformCheck(c
             std::move(subitems),
             std::shared_ptr<Intervention::CIntervention>(nullptr),
             EDrcViolationCode::DuplicateNameForMemoryStatement,
-            EDrcViolationSeverity::Error));
+            ESeverityCode::Error));
 
         violations.emplace_back(std::static_pointer_cast<CViolationBase>(violation));
     }

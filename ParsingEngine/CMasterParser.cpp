@@ -100,6 +100,12 @@ void CMasterParser::ParseLinkerScriptFile(std::shared_ptr<CLinkerScriptFile> lin
                 break;
             }
 
+            case RawEntryType::Semicolon:
+            {
+                violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryCanBeOmitted, ESeverityCode::Information)));
+                break;
+            }
+
             case RawEntryType::ParenthesisOpen:
             case RawEntryType::ParenthesisClose:
             case RawEntryType::BracketOpen:
@@ -108,8 +114,7 @@ void CMasterParser::ParseLinkerScriptFile(std::shared_ptr<CLinkerScriptFile> lin
             case RawEntryType::AssignmentOperator:
             case RawEntryType::EvaluativeOperators:
             case RawEntryType::Colon:
-            case RawEntryType::Comma:
-            case RawEntryType::Semicolon:
+            case RawEntryType::Comma:            
             case RawEntryType::QuestionMark:
             case RawEntryType::Wildcard:
             case RawEntryType::Number:

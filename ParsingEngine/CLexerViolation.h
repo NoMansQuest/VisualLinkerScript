@@ -17,22 +17,20 @@ namespace VisualLinkerScript::ParsingEngine
 
     public:
         /// @brief Default constructor
-        explicit CLexerViolation(CRawEntry violationLocation, ELexerViolationCode violationCode)
-            : m_violationCode(violationCode),
+        explicit CLexerViolation(
+					CRawEntry violationLocation, 
+					ELexerViolationCode violationCode, 
+					ESeverityCode severity = ESeverityCode::Error)
+            : CViolationBase(severity),
+    		  m_violationCode(violationCode),
               m_violationLocation(violationLocation)
         {}
 
         /// @brief Reports back the location of the violation.
-        const CRawEntry ViolationLocation()
-        {
-            return this->m_violationLocation;
-        }
+        CRawEntry ViolationLocation() const { return this->m_violationLocation; }
 
         /// @brief Reports back the tpe of violation        
-        const ELexerViolationCode Code()
-        {
-            return m_violationCode;
-        }
+        ELexerViolationCode Code() const { return this->m_violationCode; }
 
         /// @brief Type of violation.
         virtual EViolationType Type() override {
@@ -41,4 +39,4 @@ namespace VisualLinkerScript::ParsingEngine
     };
 }
 
-#endif // CPARSERVIOLATION_H__
+#endif // CLEXER_VIOLATION_H_

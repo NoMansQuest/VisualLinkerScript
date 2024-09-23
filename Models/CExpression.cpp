@@ -40,7 +40,7 @@ const std::string CExpression::ToDebugInfo(uint32_t depth, const CLinkerScriptFi
                 auto converted = std::dynamic_pointer_cast<CParserViolation>(violation);
                 content += std::string(depth, ' ') +
                         " - Violation Code: " +
-                        MapParserViolationCodeToString(converted->Code()) +
+                        MapParserViolationToCode(converted->Code()) +
                         " @line: " + std::to_string(converted->InvoledEntries()[0].StartLineNumber()) +
                         " @post: " + std::to_string(converted->InvoledEntries()[0].StartPosition()) +
                         " content: " + ((converted->InvoledEntries().size() > 0) ? linkerScriptFile.ResolveEntryText(converted->InvoledEntries()[0]) : "<NONE>") +

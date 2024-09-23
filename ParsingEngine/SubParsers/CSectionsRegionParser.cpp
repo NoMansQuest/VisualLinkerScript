@@ -227,9 +227,15 @@ std::shared_ptr<CSectionsRegion> CSectionsRegionParser::TryParse(
             case RawEntryType::String:
             case RawEntryType::ParenthesisOpen:
             case RawEntryType::ParenthesisClose:
-            case RawEntryType::Colon:
+            case RawEntryType::Colon:            
             {
                 violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
+                break;
+            }
+
+            case RawEntryType::Semicolon:
+            {
+                violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryCanBeOmitted, ESeverityCode::Information)));
                 break;
             }
 

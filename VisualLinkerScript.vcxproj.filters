@@ -488,6 +488,9 @@
     <ClCompile Include="ParsingEngine\ELexerViolationCode.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="DrcEngine\EDrcViolationCode.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Components\QScintilla\scintilla\lexlib\Accessor.h">
@@ -964,9 +967,6 @@
     <ClInclude Include="DrcEngine\EDrcViolationCode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DrcEngine\EDrcViolationSeverity.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Components\MemoryVisualizer\EInsertObjectType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1259,6 +1259,12 @@
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="ParsingEngine\ELexerViolationCode.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Models\ESeverityCode.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Models\CComment.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>

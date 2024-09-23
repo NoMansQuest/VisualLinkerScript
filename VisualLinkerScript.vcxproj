@@ -221,6 +221,7 @@
     <ClCompile Include="Components\QScintilla\scintilla\src\AutoComplete.cpp" />
     <ClCompile Include="Components\MemoryVisualizer\Rendering\CArrowsRenderer.cpp" />
     <ClCompile Include="Components\QScintilla\VlsScintilla.cpp" />
+    <ClCompile Include="DrcEngine\EDrcViolationCode.cpp" />
     <ClCompile Include="MD5\MD5.cpp" />
     <ClCompile Include="ParsingEngine\ELexerViolationCode.cpp" />
     <ClCompile Include="ParsingEngine\SubParsers\CAssignmentParser.cpp" />
@@ -373,6 +374,8 @@
     <ClInclude Include="Components\QSearchPopup\SearchReplaceRequestTypeEnum.h" />
     <ClInclude Include="MD5\MD5.h" />
     <ClInclude Include="MD5\MD5_loc.h" />
+    <ClInclude Include="Models\CComment.h" />
+    <ClInclude Include="Models\ESeverityCode.h" />
     <ClInclude Include="Models\Intervention\CActionBase.h" />
     <ClInclude Include="Models\Intervention\CAddTextAction.h" />
     <ClInclude Include="Compiler\ExpressionEvaluation\CArithmeticResultOp.h" />
@@ -531,7 +534,6 @@
     <ClInclude Include="Components\QScintilla\scintilla\src\Document.h" />
     <ClInclude Include="DrcEngine\DrcCommons.h" />
     <ClInclude Include="DrcEngine\EDrcViolationCode.h" />
-    <ClInclude Include="DrcEngine\EDrcViolationSeverity.h" />
     <ClInclude Include="Components\MemoryVisualizer\EInsertObjectType.h" />
     <ClInclude Include="Components\MemoryVisualizer\Models\EObjectState.h" />
     <ClInclude Include="ParsingEngine\EParserViolationCode.h" />

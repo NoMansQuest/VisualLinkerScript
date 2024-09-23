@@ -70,6 +70,9 @@ private:
     void InitiateDeferredProcessing();
     void DeferredContentProcessingAction() const;
     void EditorContentUpdated();
+    void UpdateDrcViolationsInModel() const;
+    void UpdateParserViolationsInModel() const;
+    void UpdateLexerViolationsInModel() const;
     void SetupViolationsView();
 
     // Find related

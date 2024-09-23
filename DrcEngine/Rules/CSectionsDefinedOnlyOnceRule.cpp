@@ -7,7 +7,6 @@
 #include "../CDrcManager.h"
 #include "DrcEngine/CDrcViolation.h"
 #include "DrcEngine/EDrcViolationCode.h"
-#include "DrcEngine/EDrcViolationSeverity.h"
 
 REGISTER_DRC_RULE(CSectionsDefinedOnlyOnceRule)
 
@@ -35,7 +34,7 @@ SharedPtrVector<CViolationBase> CSectionsDefinedOnlyOnceRule::PerformCheck(const
                 {},
                 nullptr,
                 EDrcViolationCode::SectionsRegionDefinedMultipleTimes,
-                EDrcViolationSeverity::Error))));
+                ESeverityCode::Error))));
         }	    
     }
 

@@ -19,7 +19,7 @@ bool CDrcManager::RegisterRule(const std::shared_ptr<IDrcRuleBase>& drcRule) {
 void CDrcManager::PerformAnalysis(std::shared_ptr<CLinkerScriptFile> linkerScriptFile)
 {
 	SharedPtrVector<CViolationBase> discoveredViolations;
-	for (auto rule : this->m_drcRules)
+	for (const auto& rule : this->m_drcRules)
 	{
 		if (!rule->IsEnabled())
 		{

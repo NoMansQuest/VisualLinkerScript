@@ -622,7 +622,7 @@ std::shared_ptr<CLinkerScriptFile> CLexer::LexLinkerScript(const std::string& fi
             case LexerStates::InWord:
             {
                 bool continueLexing = false;
-                auto typeOfRawEntry = (lexerContext.State == LexerStates::InNumber) ? RawEntryType::Number : RawEntryType::String;
+                auto typeOfRawEntry = (lexerContext.State == LexerStates::InNumber) ? RawEntryType::Number : RawEntryType::Word;
 
 				if (typeOfRawEntry == RawEntryType::Number)
 				{

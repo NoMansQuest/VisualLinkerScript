@@ -3,19 +3,19 @@
 #include <string>
 #include <iterator>
 
-#include "CMemoryRegionContentParser.h"
 #include "CExpressionParser.h"
+#include "CMemoryRegionContentParser.h"
 #include "CMemoryStatementAttributeParser.h"
 #include "Constants.h"
 
-#include "../../Models/Raw/CRawEntry.h"
-#include "../../Models/Raw/RawEntryType.h"
-#include "../CMasterParserException.h"
-#include "../../Models/CComment.h"
-#include "../CParserViolation.h"
 #include "../EParserViolationCode.h"
-#include "../../Models/Raw/CRawFile.h"
+#include "../CMasterParserException.h"
+#include "../CParserViolation.h"
+#include "../../Models/CComment.h"
 #include "../../Models/CMemoryStatement.h"
+#include "../../Models/Raw/CRawEntry.h"
+#include "../../Models/Raw/CRawFile.h"
+#include "../../Models/Raw/RawEntryType.h"
 
 using namespace VisualLinkerScript::ParsingEngine;
 using namespace VisualLinkerScript::ParsingEngine::SubParsers;

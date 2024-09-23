@@ -9,7 +9,6 @@
 #include "../../QueryEngine/QueryCenter.h"
 #include "DrcEngine/CDrcViolation.h"
 #include "DrcEngine/EDrcViolationCode.h"
-#include "DrcEngine/EDrcViolationSeverity.h"
 
 REGISTER_DRC_RULE(CDirectivesDeclaredOnlyOnceRule)
 
@@ -44,7 +43,7 @@ SharedPtrVector<CViolationBase> CDirectivesDeclaredOnlyOnceRule::PerformCheck(co
 	             this->DrcRuleTitle(),
 	             "Directive is defined more than once.",
 	             EDrcViolationCode::EntryDirectiveDefinedMoreThanOnce,
-	             EDrcViolationSeverity::Error))));
+	             ESeverityCode::Error))));
         }
     }
 

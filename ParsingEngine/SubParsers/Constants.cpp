@@ -47,7 +47,7 @@ namespace
 
     std::vector<std::string> ListOfObjectRelatedCommandNames = {
         "OUTPUT_FORMAT",
-        "OUTPUT_ARCHT",
+        "OUTPUT_ARCH",
         "TARGET",
     };
 

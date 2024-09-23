@@ -1,7 +1,7 @@
 #ifndef EDRCVIOLATIONCODE_H__
 #define EDRCVIOLATIONCODE_H__
 
-#include <cstdint>
+#include <string>
 
 namespace VisualLinkerScript::DrcEngine
 {
@@ -16,6 +16,12 @@ namespace VisualLinkerScript::DrcEngine
         SectionsRegionDefinedMultipleTimes,
         MemoryRegionDefinedMultipleTimes,
     };
+
+    /// @brief Maps DRC violation code to string
+    std::string MapDrcViolationToDescription(EDrcViolationCode code);
+
+    /// @brief Maps DRC violation to code.
+    std::string MapDrcViolationToCode(EDrcViolationCode code);
 }
 
 #endif // EDRCVIOLATIONCODE_H__

@@ -7,7 +7,6 @@
 #include <Models/CLinkerScriptContentBase.h>
 #include <Models/Intervention/CIntervention.h>
 #include "EDrcViolationCode.h"
-#include "EDrcViolationSeverity.h"
 #include "../Models/CViolationBase.h"
 #include "../Helpers.h"
 
@@ -22,7 +21,6 @@ namespace VisualLinkerScript::DrcEngine
     {
     private:
         EDrcViolationCode m_violationCode;
-        EDrcViolationSeverity m_violationSeverity;
         SharedPtrVector<CLinkerScriptContentBase> m_involvedElements;
         SharedPtrVector<CDrcViolation> m_subitems;
         std::string m_violationMessage;
@@ -39,9 +37,9 @@ namespace VisualLinkerScript::DrcEngine
                                SharedPtrVector<CDrcViolation> subitems,
                                const std::shared_ptr<CIntervention>& correctiveAction,                                
                                const EDrcViolationCode violationCode,
-                               const EDrcViolationSeverity drcViolationSeverity)
-            : m_violationCode(violationCode),
-              m_violationSeverity(drcViolationSeverity),
+                               const ESeverityCode drcViolationSeverity = ESeverityCode::Error)
+            : CViolationBase(drcViolationSeverity),
+    	      m_violationCode(violationCode),
               m_involvedElements(std::move(involvedElements)),
               m_subitems(std::move(subitems)),
               m_violationMessage(std::move(violationMessage)),
@@ -57,9 +55,9 @@ namespace VisualLinkerScript::DrcEngine
                                SharedPtrVector<CDrcViolation>&& subitems,
                                const std::shared_ptr<CIntervention>& correctiveAction,
                                const EDrcViolationCode violationCode,
-                               const EDrcViolationSeverity drcViolationSeverity)
-            : m_violationCode(violationCode),
-              m_violationSeverity(drcViolationSeverity),
+							   const ESeverityCode drcViolationSeverity = ESeverityCode::Error)
+            : CViolationBase(drcViolationSeverity),
+    		  m_violationCode(violationCode),              
               m_involvedElements(std::move(involvedElements)),
               m_subitems(subitems),
               m_violationMessage(std::move(violationMessage)),
@@ -73,9 +71,9 @@ namespace VisualLinkerScript::DrcEngine
                                std::string violationMessage,
                                const std::shared_ptr<CIntervention>& correctiveAction,
                                const EDrcViolationCode violationCode,
-                               const EDrcViolationSeverity drcViolationSeverity)
-            : m_violationCode(violationCode),
-              m_violationSeverity(drcViolationSeverity),
+							   const ESeverityCode drcViolationSeverity = ESeverityCode::Error)
+            : CViolationBase(drcViolationSeverity),
+    	      m_violationCode(violationCode),              
               m_involvedElements(std::move(involvedElements)),              
               m_violationMessage(std::move(violationMessage)),
               m_title(std::move(title)),
@@ -87,9 +85,9 @@ namespace VisualLinkerScript::DrcEngine
                                std::string title,
                                std::string violationMessage,
                                const EDrcViolationCode violationCode,
-                               const EDrcViolationSeverity drcViolationSeverity)
-            : m_violationCode(violationCode),
-              m_violationSeverity(drcViolationSeverity),
+							   const ESeverityCode drcViolationSeverity = ESeverityCode::Error)
+            : CViolationBase(drcViolationSeverity),
+    	      m_violationCode(violationCode),
               m_involvedElements(std::move(involvedElements)),
               m_violationMessage(std::move(violationMessage)),
               m_title(std::move(title))
@@ -100,17 +98,18 @@ namespace VisualLinkerScript::DrcEngine
                                std::string title,
                                std::string violationMessage,
                                const EDrcViolationCode violationCode,
-					           const EDrcViolationSeverity drcViolationSeverity)
-            : m_violationCode(violationCode),
-            m_violationSeverity(drcViolationSeverity),
-            m_involvedElements({ involvedElement }),
-            m_violationMessage(std::move(violationMessage)),
-            m_title(std::move(title))
+							   const ESeverityCode drcViolationSeverity = ESeverityCode::Error)    
+            : CViolationBase(drcViolationSeverity),
+    		  m_violationCode(violationCode),            
+              m_involvedElements({ involvedElement }),
+              m_violationMessage(std::move(violationMessage)),
+              m_title(std::move(title))
         {}
 
     public:
         /// @brief Reports back a list of involved elements
-        const SharedPtrVector<CLinkerScriptContentBase> InvolvedElements() const {
+        [[nodiscard]] SharedPtrVector<CLinkerScriptContentBase> InvolvedElements() const
+        {
             return this->m_involvedElements;
         }
 
@@ -120,38 +119,33 @@ namespace VisualLinkerScript::DrcEngine
         }
 
         /// @brief Reports back the title of the violation. This can be used for visualization purposes.
-        const std::string& Title() const{
+        [[nodiscard]] const std::string& Title() const{
             return this->m_title;
         }
 
         /// @brief Reports back the content-sensitive path of the violation. This can be used for tracking purposes.
-        const std::string& ContentSensitivePath() const {
+        [[nodiscard]] const std::string& ContentSensitivePath() const {
             return this->m_contentSensitivePath;
         }
 
         /// @brief Reports back the corrective action that helps resolve this violation.
         /// @remarks If no corrective action is available, 'nullptr' will be returned.
-        const std::shared_ptr<CIntervention> CorrectiveAction(){
+        std::shared_ptr<CIntervention> CorrectiveAction(){
             return this->m_correctiveAction;
         }
 
         /// @brief Reports back the tpe of violation        
-        const EDrcViolationCode Code() const {
+        [[nodiscard]] EDrcViolationCode Code() const {
             return this->m_violationCode;
         }
 
-        /// @brief Reports back the severity of the violation
-        EDrcViolationSeverity Severity() const {
-            return m_violationSeverity;
-        }
-
         /// @brief Reports back sub items (if any) belonging to this violation
-        SharedPtrVector<CDrcViolation> Subitems() const{
+        [[nodiscard]] SharedPtrVector<CDrcViolation> Subitems() const{
             return this->m_subitems;
         }
 
         /// @brief Type of violation.
-        virtual EViolationType Type() override {
+        EViolationType Type() override {
             return EViolationType::DrcViolation;
         }
     };
