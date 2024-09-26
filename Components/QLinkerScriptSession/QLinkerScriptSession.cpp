@@ -96,10 +96,24 @@ void QLinkerScriptSession::BuildUserInterface()
     // Connect search popup signals
     QObject::connect(this->m_searchPopup, &QSearchPopup::evSearchReplaceRequested, this, &QLinkerScriptSession::OnSearchReplaceRequested);
 
-    // Make final calls...
-    QScintilla::SetComponentStyles(*this->m_scintilla);
+    // Make final calls...    
     this->PositionSearchPopup();
     this->SetupViolationsView();
+    this->SetupEditor();
+}
+
+void QLinkerScriptSession::SetupEditor()
+{
+    QScintilla::SetComponentStyles(*this->m_scintilla);
+
+    // Setup indicators
+    this->m_scintilla->indicatorDefine(QsciScintilla::SquiggleLowIndicator, static_cast<int>(Indicators::IndicatorParserViolation));
+    this->m_scintilla->indicatorDefine(QsciScintilla::SquiggleLowIndicator, static_cast<int>(Indicators::IndicatorDrcViolation));
+    this->m_scintilla->indicatorDefine(QsciScintilla::SquiggleLowIndicator, static_cast<int>(Indicators::IndicatorLexerViolation));
+
+    this->m_scintilla->setIndicatorForegroundColor(QColor::fromRgb(255, 0, 0), static_cast<int>(Indicators::IndicatorParserViolation));
+    this->m_scintilla->setIndicatorForegroundColor(QColor::fromRgb(255, 102, 255), static_cast<int>(Indicators::IndicatorLexerViolation));
+    this->m_scintilla->setIndicatorForegroundColor(QColor::fromRgb(255, 153, 51), static_cast<int>(Indicators::IndicatorParserViolation));
 }
 
 void QLinkerScriptSession::SetupViolationsView()
@@ -254,8 +268,6 @@ void QLinkerScriptSession::OnSearchReplaceRequested(
 	        throw std::exception("Unsupported enum value detected.");
 	    }
     }
-
-
 }
 
 void QLinkerScriptSession::OnFindRequest(std::string searchFor, bool isRegExt, bool isCaseSensitive)
@@ -295,7 +307,8 @@ void QLinkerScriptSession::EditorContentUpdated()
 void QLinkerScriptSession::UpdateDrcViolationsInModel() const
 {
     // OK, we have all the violations we need, now update the standard model item        
-    this->m_drcViolationsItem->removeRows(0, this->m_lexerViolationsItem->rowCount());
+    this->m_drcViolationsItem->removeRows(0, this->m_drcViolationsItem->rowCount());
+    this->m_scintilla->clearIndicatorRange(0, this->m_scintilla->length() - 1, static_cast<int>(Indicators::IndicatorDrcViolation));
 
 	for (const auto& drcViolation : this->m_linkerScriptFile->DrcViolations())
 	{
@@ -344,7 +357,8 @@ void QLinkerScriptSession::UpdateDrcViolationsInModel() const
 void QLinkerScriptSession::UpdateParserViolationsInModel() const
 {
     // OK, we have all the violations we need, now update the standard model item    
-    this->m_parserViolationsItem->removeRows(0, this->m_lexerViolationsItem->rowCount());
+    this->m_parserViolationsItem->removeRows(0, this->m_parserViolationsItem->rowCount());
+    this->m_scintilla->clearIndicatorRange(0, this->m_scintilla->length() - 1, static_cast<int>(Indicators::IndicatorParserViolation));
 
 	for (const auto& parserViolation : this->m_linkerScriptFile->ParserViolations())
 	{
@@ -391,6 +405,44 @@ void QLinkerScriptSession::UpdateParserViolationsInModel() const
 		offendingContent->setSelectable(false);
 		offendingContent->setEditable(false);
 		this->m_parserViolationsItem->appendRow({ code, severity, description, lineNumber, columnIndex, offendingContent });
+
+
+        if (!castParserViolation->InvoledEntries().empty())
+        {
+            for (const auto entryToHighlight: castParserViolation->InvoledEntries())
+            {
+                this->m_scintilla->fillIndicatorRange(
+                    entryToHighlight.StartLineNumber(),
+                    entryToHighlight.StartIndexInLine(),
+                    entryToHighlight.EndLineNumber(),
+                    entryToHighlight.EndIndexInLine(),
+                    static_cast<int>(Indicators::IndicatorParserViolation));
+            }
+        }
+        else
+        {
+			if (castParserViolation->EntryBeforeViolation().IsPresent())
+			{
+                const auto entryToStyle = castParserViolation->EntryBeforeViolation();
+                this->m_scintilla->fillIndicatorRange(
+                    entryToStyle.StartLineNumber(),
+                    entryToStyle.StartIndexInLine(),
+                    entryToStyle.EndLineNumber(),
+                    entryToStyle.EndIndexInLine(),
+                    static_cast<int>(Indicators::IndicatorParserViolation));
+			}
+            else if (castParserViolation->EntryAfterViolation().IsPresent())
+            {
+                const auto entryToStyle = castParserViolation->EntryBeforeViolation();
+                this->m_scintilla->fillIndicatorRange(
+                    entryToStyle.StartLineNumber(),
+                    entryToStyle.StartIndexInLine(),
+                    entryToStyle.EndLineNumber(),
+                    entryToStyle.EndIndexInLine(),
+                    static_cast<int>(Indicators::IndicatorParserViolation));
+            }
+        }
+
 	}
 }
 
@@ -398,9 +450,11 @@ void QLinkerScriptSession::UpdateLexerViolationsInModel() const
 {
     // OK, we have all the violations we need, now update the standard model item
     this->m_lexerViolationsItem->removeRows(0, this->m_lexerViolationsItem->rowCount());
+    this->m_scintilla->clearIndicatorRange(0, this->m_scintilla->length() - 1, static_cast<int>(Indicators::IndicatorLexerViolation));
 
 	for (const auto& lexerViolation : this->m_linkerScriptFile->LexerViolations())
 	{
+        // Set indicators in the editor        
 		auto castLexerViolation = std::dynamic_pointer_cast<CLexerViolation>(lexerViolation);        
 		auto code = new QStandardItem(QString::fromStdString(MapLexerViolationToCode(castLexerViolation->Code())));
         auto severity = new QStandardItem(QString::fromStdString(MapSeverityToString(castLexerViolation->Severity())));
@@ -418,6 +472,14 @@ void QLinkerScriptSession::UpdateLexerViolationsInModel() const
 		offendingContent->setSelectable(false);
 		offendingContent->setEditable(false);
 		this->m_lexerViolationsItem->appendRow({ code, severity, description, lineNumber, columnIndex, offendingContent });
+
+        const auto entryToStyle = castLexerViolation->ViolationLocation();
+        this->m_scintilla->fillIndicatorRange(
+            entryToStyle.StartLineNumber(), 
+            entryToStyle.StartIndexInLine(),
+            entryToStyle.EndLineNumber(), 
+            entryToStyle.EndIndexInLine(), 
+            static_cast<int>(Indicators::IndicatorLexerViolation));        
 	}
 }
 

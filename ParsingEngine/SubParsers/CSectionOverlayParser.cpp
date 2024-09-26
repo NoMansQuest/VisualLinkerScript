@@ -354,7 +354,7 @@ std::shared_ptr<CSectionOverlayCommand> CSectionOverlayParser::TryParse(
                         {
                             // This is the start of a new expression or statement, etc. We need to rewind the iterator
                             // and return back to the caller.
-                            localIterator--;
+                            --localIterator;
                             parserState = ParserState::ParsingComplete;
                         }
                         break;
@@ -369,6 +369,7 @@ std::shared_ptr<CSectionOverlayCommand> CSectionOverlayParser::TryParse(
                 break;
             }
 
+        	case RawEntryType::Colon:
             case RawEntryType::Semicolon:
             case RawEntryType::Comma:
             case RawEntryType::QuestionMark:
@@ -388,6 +389,14 @@ std::shared_ptr<CSectionOverlayCommand> CSectionOverlayParser::TryParse(
                         if (!StringEquals(resolvedContent, "-") && !StringEquals(resolvedContent, "+"))
                         {
                             violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
+                            break;
+                        }
+
+                        // If it's colon, then we're good to go anyway...
+                        if (localIterator->EntryType() == RawEntryType::Colon)
+                        {
+                            colonEntry = *localIterator;
+                            parserState = ParserState::AwaitingBracketOpen;
                             break;
                         }
 
@@ -429,7 +438,7 @@ std::shared_ptr<CSectionOverlayCommand> CSectionOverlayParser::TryParse(
                                 violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation({*localIterator}, EParserViolationCode::NotAllowedInOverlayCommand)));
                             }
                         }
-                        else if (CParserHelpers::IsColon(resolvedContent))
+                        else if (localIterator->EntryType() == RawEntryType::Colon)
                         {
                             // This could be 'At VMA' definition
                             if ((oneEntryAhead.IsPresent()) && (oneEntryAhead.EntryType() == RawEntryType::Word))
@@ -459,7 +468,7 @@ std::shared_ptr<CSectionOverlayCommand> CSectionOverlayParser::TryParse(
                         }
                         else
                         {
-                            localIterator--;
+                            --localIterator;
                             parserState = ParserState::ParsingComplete;
                         }
                         break;
@@ -532,7 +541,7 @@ std::shared_ptr<CSectionOverlayCommand> CSectionOverlayParser::TryParse(
                         else
                         {
                             // This marks the end of our parsing
-                            localIterator--;
+                            --localIterator;
                             parserState = ParserState::ParsingComplete;                            
                             break;
                         }
@@ -620,7 +629,7 @@ std::shared_ptr<CSectionOverlayCommand> CSectionOverlayParser::TryParse(
                     case ParserState::AwaitingBracketClosure:
                     case ParserState::AwaitingEndOfParse:
                     {
-                        localIterator--;
+                        --localIterator;
                         parserState = ParserState::ParsingComplete;
                         break;
                     }
@@ -654,7 +663,7 @@ std::shared_ptr<CSectionOverlayCommand> CSectionOverlayParser::TryParse(
 
                     case ParserState::AwaitingEndOfParse:
                     {
-                        localIterator--;
+                        --localIterator;
                         parserState = ParserState::ParsingComplete;
                         break;
                     }

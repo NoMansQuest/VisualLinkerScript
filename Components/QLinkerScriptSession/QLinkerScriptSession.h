@@ -74,6 +74,7 @@ private:
     void UpdateParserViolationsInModel() const;
     void UpdateLexerViolationsInModel() const;
     void SetupViolationsView();
+    void SetupEditor();
 
     // Find related
     uint32_t m_searchSessionActive = false;

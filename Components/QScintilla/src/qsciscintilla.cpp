@@ -2997,13 +2997,13 @@ void QsciScintilla::fillIndicatorRange(int lineFrom, int indexFrom,
             for (int i = 0; i < INDIC_IME; ++i)
             {
                 SendScintilla(SCI_SETINDICATORCURRENT, i);
-                SendScintilla(SCI_INDICATORFILLRANGE, start, finish - start);
+                SendScintilla(SCI_INDICATORFILLRANGE, start, finish - start + 1);
             }
         }
         else
         {
             SendScintilla(SCI_SETINDICATORCURRENT, indicatorNumber);
-            SendScintilla(SCI_INDICATORFILLRANGE, start, finish - start);
+            SendScintilla(SCI_INDICATORFILLRANGE, start, finish - start + 1);
         }
     }
 }

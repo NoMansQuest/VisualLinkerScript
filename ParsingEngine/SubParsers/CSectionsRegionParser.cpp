@@ -221,6 +221,10 @@ std::shared_ptr<CSectionsRegion> CSectionsRegionParser::TryParse(
                 break;
             }
 
+            
+            case RawEntryType::EvaluativeOperators:
+            case RawEntryType::Comma:
+            case RawEntryType::QuestionMark:
             case RawEntryType::ArithmeticOperator:
             case RawEntryType::AssignmentOperator:
             case RawEntryType::Number:
