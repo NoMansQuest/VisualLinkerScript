@@ -490,7 +490,7 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
                 new CAssignmentStatement(lValueSymbol,
                                          assignmentSymbol,
                                          semicolonOperatorEntry,
-                                         std::move(parsedContent),
-                                         std::move(rawEntries),
-                                         std::move(violations)));
+                                         parsedContent,
+                                         rawEntries,
+                                         violations));
 }

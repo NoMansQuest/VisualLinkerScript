@@ -15,11 +15,10 @@ namespace VisualLinkerScript::Models
 
     public:
         /// @brief Default constructor, accessible to inheritors only
-        /// @param composingRawElements A list of object this element is comprised of.
-        explicit CVersionTag(CRawEntry tagEntry,
-                             std::vector<CRawEntry>&& rawElements,
-                             SharedPtrVector<CViolationBase>&& violations)
-            : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
+        explicit CVersionTag(const CRawEntry& tagEntry,
+                             const std::vector<CRawEntry>& rawElements,
+                             const SharedPtrVector<CViolationBase>& violations)
+            : CLinkerScriptContentBase(rawElements, violations),
               m_tagEntry(tagEntry)
         {}
 

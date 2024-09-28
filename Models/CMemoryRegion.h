@@ -20,16 +20,16 @@ namespace VisualLinkerScript::Models
 
     public:
         /// @brief Default constructor, accessible to inheritors only
-        explicit CMemoryRegion(CRawEntry headerTag,
-                               CRawEntry openiningBracket,
-                               CRawEntry closingBracket,
-                               std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& memoryStatements,
-                               std::vector<CRawEntry>&& rawElements,
-                               SharedPtrVector<CViolationBase>&& violations)
-            : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
-              m_memoryStatements(std::move(memoryStatements)),
+        explicit CMemoryRegion(const CRawEntry& headerTag,
+                               const CRawEntry& openingBracket,
+                               const CRawEntry& closingBracket,
+                               const SharedPtrVector<CLinkerScriptContentBase>& memoryStatements,
+                               const std::vector<CRawEntry>& rawElements,
+                               const SharedPtrVector<CViolationBase>& violations)
+            : CLinkerScriptContentBase(rawElements, violations),
+              m_memoryStatements(memoryStatements),
               m_headerTag(headerTag),
-              m_openingBracket(openiningBracket),
+              m_openingBracket(openingBracket),
               m_closingBracket(closingBracket)
         {}        
 

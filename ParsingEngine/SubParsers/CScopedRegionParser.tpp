@@ -210,7 +210,7 @@ std::shared_ptr<TProducingOutputType> CScopedRegionParser<TParserType, TContentP
                 new TProducingOutputType(regionHeaderEntry,
                                          openingBracketEntry,
                                          closingBracketEntry,
-                                         std::move(parsedContent),
-                                         std::move(rawEntries),
-                                         std::move(violations)));
+                                         parsedContent,
+                                         rawEntries,
+                                         violations));
 }

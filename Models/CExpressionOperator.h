@@ -15,10 +15,10 @@ namespace VisualLinkerScript::Models
 
     public:
         /// @brief Default constructor.
-        explicit CExpressionOperator(CRawEntry expressionOperator,
-                                     std::vector<CRawEntry>&& rawElements,
-                                     SharedPtrVector<CViolationBase>&& violations)
-            : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
+        explicit CExpressionOperator(const CRawEntry& expressionOperator,
+                                     const std::vector<CRawEntry>& rawElements,
+                                     const SharedPtrVector<CViolationBase>& violations)
+            : CLinkerScriptContentBase(rawElements, violations),
               m_expressionOperator(expressionOperator)
         {}
 

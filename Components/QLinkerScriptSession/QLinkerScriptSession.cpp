@@ -2,8 +2,8 @@
 #include "../MemoryVisualizer/QMemoryVisualizer.h"
 #include "../QScintilla/src/Qsci/qsciscintilla.h"
 #include "../QScintilla/ComponentHelpers.h"
-#include "../../ParsingEngine/CLexer.h"
-#include "../../ParsingEngine/CMasterParser.h"
+#include "../../ParsingEngine/CLinkerScriptLexer.h"
+#include "../../ParsingEngine/CLinkerScriptParser.h"
 #include "../../DrcEngine/CDrcManager.h"
 #include "../../Models/CLinkerScriptContentBase.h"
 #include "Components/QChromeTab/QChromeTabWidget.h"
@@ -300,7 +300,7 @@ void QLinkerScriptSession::EditorContentUpdated()
     // The lexer is always run
     auto absoluteFilePath = this->m_sessionFileInfo.AbsoluteFilePath();
     auto textToLex = this->m_scintilla->text().toStdString();
-    this->m_linkerScriptFile = CLexer::LexLinkerScript(absoluteFilePath, textToLex);
+    this->m_linkerScriptFile = CLinkerScriptLexer::LexLinkerScript(absoluteFilePath, textToLex);
     this->InitiateDeferredProcessing();
 }
 
@@ -485,7 +485,7 @@ void QLinkerScriptSession::UpdateLexerViolationsInModel() const
 
 void QLinkerScriptSession::DeferredContentProcessingAction() const
 {
-	CMasterParser::ParseLinkerScriptFile(this->m_linkerScriptFile);    
+	CLinkerScriptParser::ParseLinkerScriptFile(this->m_linkerScriptFile);    
     this->m_drcManager->PerformAnalysis(this->m_linkerScriptFile);
 
     UpdateLexerViolationsInModel();

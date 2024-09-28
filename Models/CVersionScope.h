@@ -16,25 +16,19 @@ namespace VisualLinkerScript::Models
         CRawEntry m_openingBracketEntry;
         CRawEntry m_closingBracketEntry;
         CRawEntry m_semicolonDelimiterEntry;
-        std::vector<std::shared_ptr<CLinkerScriptContentBase>> m_parsedContent;
+        SharedPtrVector<CLinkerScriptContentBase> m_parsedContent;
 
     public:
         /// @brief Default constructor, accessible to inheritors only
-        /// @param versionName Name of the version we'de defining
-        /// @param versionDependsOn (Optional) Name of the version this entry extends upon.
-        /// @param openingBracket Entry containing the opening curly-brakcet
-        /// @param closingBracket Entry containing the closing brakcet
-        /// @param semicolonDelimiter Entry containing the semicolon delimiter
-        /// @param composingRawElements A list of object this element is comprised of.
-        explicit CVersionScope(CRawEntry scopeNameEntry,
-                               CRawEntry inheritingScopeEntry,
-                               CRawEntry openingBracketEntry,
-                               CRawEntry closingBracketEntry,
-                               CRawEntry semicolonDelimiterEntry,
-                               std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent,
-                               std::vector<CRawEntry>&& rawElements,
-                               SharedPtrVector<CViolationBase>&& violations)
-            : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
+        explicit CVersionScope(const CRawEntry& scopeNameEntry,
+                               const CRawEntry& inheritingScopeEntry,
+                               const CRawEntry& openingBracketEntry,
+                               const CRawEntry& closingBracketEntry,
+                               const CRawEntry& semicolonDelimiterEntry,
+                               const SharedPtrVector<CLinkerScriptContentBase>& parsedContent,
+                               const std::vector<CRawEntry>& rawElements,
+                               const SharedPtrVector<CViolationBase>& violations)
+            : CLinkerScriptContentBase(rawElements, violations),
               m_scopeNameEntry(scopeNameEntry),
               m_inheritingScopeEntry(inheritingScopeEntry),
               m_openingBracketEntry(openingBracketEntry),
@@ -50,37 +44,37 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Reports back the name of the scope
-        CRawEntry ScopeNameEntry() const
+        [[nodiscard]] CRawEntry ScopeNameEntry() const
         {
             return this->m_scopeNameEntry;
         }
 
         /// @brief Reports back inheriting scope entry
-        CRawEntry InheritingScopeEntry() const
+        [[nodiscard]] CRawEntry InheritingScopeEntry() const
         {
             return this->m_inheritingScopeEntry;
         }
 
         /// @brief Reports back opening bracket entry
-        CRawEntry OpeningBracketEntry() const
+        [[nodiscard]] CRawEntry OpeningBracketEntry() const
         {
             return this->m_openingBracketEntry;
         }
 
         /// @brief Reports back closing bracket entry
-        CRawEntry ClosingBracketEntry() const
+        [[nodiscard]] CRawEntry ClosingBracketEntry() const
         {
             return this->m_closingBracketEntry;
         }
 
         /// @brief Reports back parsed content
-        const std::vector<std::shared_ptr<CLinkerScriptContentBase>> ParsedContent() const
+        [[nodiscard]] std::vector<std::shared_ptr<CLinkerScriptContentBase>> ParsedContent() const
         {
             return this->m_parsedContent;
         }
 
         /// @brief Produces debug information on what this object represents.
-        const virtual std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;
+        const std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;
     };
 }
 

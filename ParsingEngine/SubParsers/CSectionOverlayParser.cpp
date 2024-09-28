@@ -456,7 +456,7 @@ std::shared_ptr<CSectionOverlayCommand> CSectionOverlayParser::TryParse(
                                             new CSectionOutputPhdr(*localIterator,
                                                                    oneEntryAhead,
                                                                    {*localIterator, oneEntryAhead},
-                                                                  std::move(programHeaderViolations)));
+                                                                    programHeaderViolations));
 
                                 endingContent.emplace_back(programHeader);
                                 localIterator = oneEntryAheadIterator;
@@ -705,10 +705,10 @@ std::shared_ptr<CSectionOverlayCommand> CSectionOverlayParser::TryParse(
                                            noCrossRefsEntry,                                           
                                            bracketOpenEntry,
                                            bracketCloseEntry,
-                                           std::move(preColonContent),
-                                           std::move(postColonContent),
-                                           std::move(innerContent),
-                                           std::move(endingContent),
-                                           std::move(rawEntries),
-                                           std::move(violations)));
+                                           preColonContent,
+                                           postColonContent,
+                                           innerContent,
+                                           endingContent,
+                                           rawEntries,
+                                           violations));
 }

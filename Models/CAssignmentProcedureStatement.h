@@ -1,6 +1,7 @@
 #ifndef CASSIGNMENT_PROCEDURE_STATEMENT_H__
 #define CASSIGNMENT_PROCEDURE_STATEMENT_H__
 
+#include <utility>
 #include <vector>
 #include "CLinkerScriptContentBase.h"
 #include "CAssignmentStatement.h"
@@ -17,27 +18,27 @@ namespace VisualLinkerScript::Models
         CRawEntry m_procedureNameEntry;
         CRawEntry m_parenthesisOpenEntry;
         CRawEntry m_parenthesisCloseEntry;
+        CRawEntry m_delimiterOperator;
         std::shared_ptr<CAssignmentStatement> m_assignmentStatement;
-        CRawEntry m_deliminterOperator;
-        std::vector<std::shared_ptr<CLinkerScriptContentBase>> m_parsedContent;
+        SharedPtrVector<CLinkerScriptContentBase> m_parsedContent;
 
     public:
         /// @brief Detailed Constructor
-        explicit CAssignmentProcedureStatement(CRawEntry procedureNameEntry,
-                                               CRawEntry parenthesisOpenEntry,
-                                               CRawEntry parenthesisCloseEntry,
-                                               std::shared_ptr<CAssignmentStatement> assignmentStatement,
-                                               CRawEntry semicolonOperator,
-                                               std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& parsedContent,
-                                               std::vector<CRawEntry>&& rawElements,
-                                               SharedPtrVector<CViolationBase>&& violations)
-            : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
+        explicit CAssignmentProcedureStatement(const CRawEntry& procedureNameEntry,
+                                               const CRawEntry& parenthesisOpenEntry,
+                                               const CRawEntry& parenthesisCloseEntry,
+                                               const std::shared_ptr<CAssignmentStatement>& assignmentStatement,
+                                               const CRawEntry& semicolonOperator,
+                                               const SharedPtrVector<CLinkerScriptContentBase>& parsedContent,
+                                               const std::vector<CRawEntry>& rawElements,
+                                               const SharedPtrVector<CViolationBase>& violations)
+            : CLinkerScriptContentBase(rawElements,violations),
               m_procedureNameEntry(procedureNameEntry),
               m_parenthesisOpenEntry(parenthesisOpenEntry),
               m_parenthesisCloseEntry(parenthesisCloseEntry),
+              m_delimiterOperator(semicolonOperator),
               m_assignmentStatement(assignmentStatement),
-              m_deliminterOperator(semicolonOperator),
-              m_parsedContent(std::move(parsedContent))
+              m_parsedContent(parsedContent)
         {}
 
         /// @brief Reports back the type of this object.        
@@ -47,43 +48,43 @@ namespace VisualLinkerScript::Models
         }    
 
         /// @brief Gets the "ProcedureName"
-        const CRawEntry ProcedureNameEntry() const
+        [[nodiscard]] CRawEntry ProcedureNameEntry() const
         {
             return this->m_procedureNameEntry;
         }       
 
         /// @brief Gets the "ParenthesisCloseEntry"
-        const CRawEntry ParenthesisCloseEntry() const
+        [[nodiscard]] CRawEntry ParenthesisCloseEntry() const
         {
             return this->m_parenthesisCloseEntry;
         }   
 
         /// @brief Gets the "ParenthesisOpenEntry"
-        const CRawEntry ParenthesisOpenEntry() const
+        [[nodiscard]] CRawEntry ParenthesisOpenEntry() const
         {
             return this->m_parenthesisOpenEntry;
         } 
 
         /// @brief Gets the "AssignmentStatement"
-        const std::shared_ptr<CAssignmentStatement> AssignmentStatement() const
+        [[nodiscard]] std::shared_ptr<CAssignmentStatement> AssignmentStatement() const
         {
             return this->m_assignmentStatement;
         }        
 
         /// @brief Gets the "SemicolonOperator"
-        const CRawEntry& DelimiterOperator() const
+        [[nodiscard]] const CRawEntry& DelimiterOperator() const
         {
-            return this->m_deliminterOperator;
+            return this->m_delimiterOperator;
         }
 
         /// @brief Gets the "Parsed Content". This this scenario it is most likely to contain comments only...
-        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& ParsedContent() const
+        [[nodiscard]] const SharedPtrVector<CLinkerScriptContentBase>& ParsedContent() const
         {
             return this->m_parsedContent;
         }
 
         /// @brief Produces debug information on what this object represents.
-        const virtual std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;
+        [[nodiscard]] const std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;
     };
 }
 

@@ -15,10 +15,10 @@ namespace VisualLinkerScript::Models
 
     public:
         /// @brief Default constructor, accessible to inheritors only
-        explicit CParameterSeparator(CRawEntry commaEntry,
-                              std::vector<CRawEntry>&& rawElements,
-                              SharedPtrVector<CViolationBase>&& violations)
-            : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
+        explicit CParameterSeparator(const CRawEntry& commaEntry,
+                                     const std::vector<CRawEntry>& rawElements,
+                                     const SharedPtrVector<CViolationBase>& violations)
+            : CLinkerScriptContentBase(rawElements, violations),
               m_commaEntry(commaEntry)
         {}
 

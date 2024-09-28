@@ -18,14 +18,14 @@ namespace VisualLinkerScript::Models
 
     public:
         /// @brief Default constructor, accessible to inheritors only
-        explicit CPhdrsRegion(CRawEntry phdrsHeaderEntry,
-                              CRawEntry openingBracketEntry,
-                              CRawEntry closingBracketEntry,
-                              std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& phdrsStatements,
-                              std::vector<CRawEntry>&& rawElements,
-                              SharedPtrVector<CViolationBase>&& violations)
-            : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
-              m_statements(std::move(phdrsStatements)),
+        explicit CPhdrsRegion(const CRawEntry& phdrsHeaderEntry,
+                              const CRawEntry& openingBracketEntry,
+                              const CRawEntry& closingBracketEntry,
+                              const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& phdrsStatements,
+                              const std::vector<CRawEntry>& rawElements,
+                              const SharedPtrVector<CViolationBase>& violations)
+            : CLinkerScriptContentBase(rawElements, violations),
+              m_statements(phdrsStatements),
               m_openingBracketEntry(openingBracketEntry),
               m_closingBracketEntry(closingBracketEntry),
               m_phdrsHeaderEntry(phdrsHeaderEntry)

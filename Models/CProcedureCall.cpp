@@ -17,6 +17,6 @@ const std::string CProcedureCall::ToDebugInfo(uint32_t depth, const CLinkerScrip
             " @pos " + std::to_string(this->StartPosition()) +
             " -- content :";
 
-    content += "\n" + this->AssignmentStatmeent().ToDebugInfo(depth + 4, linkerScriptFile);
+    content += "\n" + this->AssignmentStatement().ToDebugInfo(depth + 4, linkerScriptFile);
     return content;
 }

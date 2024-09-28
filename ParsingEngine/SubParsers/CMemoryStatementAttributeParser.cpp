@@ -358,6 +358,6 @@ std::shared_ptr<CMemoryStatementAttribute> CMemoryStatementAttributeParser::TryP
                                               allocatableSection,
                                               executableSection,
                                               initializedSection,
-                                              std::move(rawEntries),
-                                              std::move(violations)));
+                                              rawEntries,
+                                              violations));
 }

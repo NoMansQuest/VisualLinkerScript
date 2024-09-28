@@ -6,8 +6,8 @@
 #include <memory>
 #include "CLinkerScriptSessionFileInfo.h"
 #include "DrcEngine/CDrcManager.h"
-#include "ParsingEngine/CLexer.h"
-#include "ParsingEngine/CMasterParser.h"
+#include "ParsingEngine/CLinkerScriptLexer.h"
+#include "ParsingEngine/CLinkerScriptParser.h"
 
 namespace VisualLinkerScript::ParsingEngine
 {

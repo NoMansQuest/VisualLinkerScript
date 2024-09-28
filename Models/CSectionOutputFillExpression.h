@@ -15,11 +15,11 @@ namespace VisualLinkerScript::Models
 
     public:
         /// @brief Default constructor, accessible to inheritors only
-        explicit CSectionOutputFillExpression(CRawEntry equalSign,
-                                              CRawEntry fillExpressionValue,
-                                              std::vector<CRawEntry>&& rawElements,
-                                              SharedPtrVector<CViolationBase>&& violations)
-            : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
+        explicit CSectionOutputFillExpression(const CRawEntry& equalSign,
+                                              const CRawEntry& fillExpressionValue,
+                                              const std::vector<CRawEntry>& rawElements,
+                                              const SharedPtrVector<CViolationBase>& violations)
+            : CLinkerScriptContentBase(rawElements, violations),
               m_equalSign(equalSign),
               m_fillExpressionValue(fillExpressionValue)
         {}

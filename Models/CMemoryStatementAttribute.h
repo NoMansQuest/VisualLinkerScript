@@ -29,16 +29,16 @@ namespace VisualLinkerScript::Models
 
     public:
         /// @brief Default constructor, accessible to inheritors only
-        explicit CMemoryStatementAttribute(CRawEntry parenthesisOpen,
-                                           CRawEntry parenthesisClose,
-                                           AttributeDefinitionState readOnlySection,
-                                           AttributeDefinitionState readWriteSection,
-                                           AttributeDefinitionState executableSection,
-                                           AttributeDefinitionState allocatableSection,
-                                           AttributeDefinitionState initializedSection,
-                                           std::vector<CRawEntry>&& rawEntries,
-                                           SharedPtrVector<CViolationBase>&& violations)
-            : CLinkerScriptContentBase(std::move(rawEntries), std::move(violations)),
+        explicit CMemoryStatementAttribute(const CRawEntry& parenthesisOpen,
+                                           const CRawEntry& parenthesisClose,
+                                           const AttributeDefinitionState& readOnlySection,
+                                           const AttributeDefinitionState& readWriteSection,
+                                           const AttributeDefinitionState& executableSection,
+                                           const AttributeDefinitionState& allocatableSection,
+                                           const AttributeDefinitionState& initializedSection,
+                                           const std::vector<CRawEntry>& rawEntries,
+                                           const SharedPtrVector<CViolationBase>& violations)
+            : CLinkerScriptContentBase(rawEntries, violations),
               m_parenthesisOpen(parenthesisOpen),
               m_parenthesisClose(parenthesisClose),
               m_readOnlySection(readOnlySection),

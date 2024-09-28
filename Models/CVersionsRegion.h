@@ -10,24 +10,21 @@ namespace VisualLinkerScript::Models
     class CVersionsRegion : public CLinkerScriptContentBase
     {  
     private:
-        std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& m_versionNodes;
+        SharedPtrVector<CLinkerScriptContentBase> m_versionNodes;
         CRawEntry m_openingBracketEntry;
         CRawEntry m_closingBracketEntry;
         CRawEntry m_versionHeaderEntry;
 
     public:
         /// @brief Default constructor, accessible to inheritors only
-        /// @param rawElements A list of object this element is comprised of
-        /// @param versionNodes A list of version nodes
-        /// @param violations Violations found in the current element
-        explicit CVersionsRegion(CRawEntry versionHeaderEntry,
-                                 CRawEntry openingBracketEntry,
-                                 CRawEntry closingBracketEntry,
-                                 std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& versionNodes,
-                                 std::vector<CRawEntry>&& rawElements,
-                                 SharedPtrVector<CViolationBase>&& violations)
-            : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
-              m_versionNodes(std::move(versionNodes)),
+        explicit CVersionsRegion(const CRawEntry& versionHeaderEntry,
+                                 const CRawEntry& openingBracketEntry,
+                                 const CRawEntry& closingBracketEntry,
+                                 const SharedPtrVector<CLinkerScriptContentBase>& versionNodes,
+                                 const std::vector<CRawEntry>& rawElements,
+                                 const SharedPtrVector<CViolationBase>& violations)
+            : CLinkerScriptContentBase(rawElements, violations),
+              m_versionNodes(versionNodes),
               m_openingBracketEntry(openingBracketEntry),
               m_closingBracketEntry(closingBracketEntry),
               m_versionHeaderEntry(versionHeaderEntry)
@@ -41,25 +38,25 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Reports back PHDR statements
-        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& Nodes()
+        const SharedPtrVector<CLinkerScriptContentBase>& Nodes()
         {
             return m_versionNodes;
         }
 
         /// @brief Reports back the entry containing the 'VERSION' header
-        const CRawEntry VersionHeaderEntry()
+        [[nodiscard]] CRawEntry VersionHeaderEntry()
         {
             return this->m_versionHeaderEntry;
         }
 
         /// @brief Reports back the entry containing the "{" symbol
-        const CRawEntry OpeningBracketEntry()
+        [[nodiscard]] CRawEntry OpeningBracketEntry()
         {
             return this->m_openingBracketEntry;
         }
 
         /// @brief Reports back the entry containing the "}" symbol
-        const CRawEntry ClosingBracketEntry()
+        [[nodiscard]] CRawEntry ClosingBracketEntry()
         {
             return this->m_closingBracketEntry;
         }

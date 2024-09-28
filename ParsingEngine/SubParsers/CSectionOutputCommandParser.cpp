@@ -405,7 +405,7 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
                                 auto toVmaRegion = std::shared_ptr<CLinkerScriptContentBase>(new CSectionOutputToVmaRegion(*localIterator,
                                                                                 *oneEntryAhead,
                                                                                 {*localIterator, *oneEntryAhead},
-                                                                                std::move(toVmaRegionViolations)));
+                                                                                toVmaRegionViolations));
                                 endingContent.emplace_back(toVmaRegion);
                                 localIterator = oneEntryAhead;
                             }
@@ -456,7 +456,7 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
                                     new CSectionOutputFillExpression(*localIterator,
                                                            *oneEntryAhead,
                                                            {*localIterator, *oneEntryAhead},
-                                                           std::move(programHeaderViolations)));
+                                                           programHeaderViolations));
                             endingContent.emplace_back(fillExpression);
                             localIterator = oneEntryAhead;
                         }
@@ -512,7 +512,7 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
                                     new CSectionOutputPhdr(*localIterator,
                                                            *oneEntryAhead,
                                                            {*localIterator, *oneEntryAhead},
-                                                           std::move(programHeaderViolations)));
+                                                           programHeaderViolations));
 
                             endingContent.emplace_back(phdrCall);
                             localIterator = oneEntryAhead;
@@ -549,9 +549,15 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
                         };
 
                         auto matchResult = MatchSequenceAnyContentWithinEnclosure(linkerScriptFile, localIterator, endOfVectorIterator, "(", validTypes, ")");
-                        if (matchResult.Successful()) {
+                        if (matchResult.Successful()) 
+                        {
                             auto matchedElements = matchResult.MatchedElements();
-                            auto sectionOutputType = std::shared_ptr<CLinkerScriptContentBase>(new CSectionOutputType(matchedElements[1], matchedElements[0], matchedElements[2], std::move(matchedElements), {}));
+                            auto sectionOutputType = std::shared_ptr<CLinkerScriptContentBase>(new CSectionOutputType(matchedElements[1], 
+                                matchedElements[0],
+                                matchedElements[2], 
+                                matchedElements, 
+                                {}));
+
                             preColonContent.emplace_back(sectionOutputType);
                             localIterator = matchResult.IteratorToLastElement();
                             parserState = ParserState::AwaitingColon;
@@ -766,14 +772,14 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
 
     return std::shared_ptr<CSectionOutputCommand>(
                 new CSectionOutputCommand(sectionOutputNameEntry,
-                                          std::move(preColonContent),
-                                          std::move(postColonContent),
+                                          preColonContent,
+                                          postColonContent,
                                           colonEntry,
                                           noCrossRefsEntry,
                                           bracketOpenEntry,
-                                          std::move(innerContent),
+                                          innerContent,
                                           bracketCloseEntry,
-                                          std::move(endingContent),
-                                          std::move(rawEntries),
-                                          std::move(violations)));
+                                          endingContent,
+                                          rawEntries,
+                                          violations));
 }

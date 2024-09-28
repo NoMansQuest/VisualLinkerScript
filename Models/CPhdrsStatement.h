@@ -19,17 +19,16 @@ namespace VisualLinkerScript::Models
         CRawEntry m_semicolonEntry;
 
     public:
-        /// @brief Default constructor, accessible to inheritors only
-        /// @param rawElements A list of object this element is comprised of.
-        explicit CPhdrsStatement(CRawEntry headerNameEntry,
-                                 CRawEntry headerTypeEntry,
-                                 CRawEntry fileHdrEntry,
-                                 std::shared_ptr<CLinkerScriptContentBase> atAddressFunction,
-                                 std::shared_ptr<CLinkerScriptContentBase> flagsFunction,
-                                 CRawEntry semicolonEntry,
-                                 std::vector<CRawEntry>&& rawElements, 
-                                 SharedPtrVector<CViolationBase>&& violations)
-            : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
+        /// @brief Default constructor, accessible to inheritors only        
+        explicit CPhdrsStatement(const CRawEntry& headerNameEntry,
+                                 const CRawEntry& headerTypeEntry,
+                                 const CRawEntry& fileHdrEntry,
+                                 const std::shared_ptr<CLinkerScriptContentBase>& atAddressFunction,
+                                 const std::shared_ptr<CLinkerScriptContentBase>& flagsFunction,
+                                 const CRawEntry& semicolonEntry,
+                                 const std::vector<CRawEntry>& rawElements, 
+                                 const SharedPtrVector<CViolationBase>& violations)
+            : CLinkerScriptContentBase(rawElements, violations),
               m_headerNameEntry(headerNameEntry),
               m_headerTypeEntry(headerTypeEntry),
               m_fileHdrEntry(fileHdrEntry),

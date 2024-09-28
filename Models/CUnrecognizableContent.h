@@ -11,11 +11,9 @@ namespace VisualLinkerScript::Models
     {   
     public:
         /// @brief Construct an "Unrecognizable" object
-        explicit CUnrecognizableContent(std::vector<CRawEntry>&& composingRawElements, 
-                                        SharedPtrVector<CViolationBase>&& violations = {})
-            : CLinkerScriptContentBase(
-                  std::move(composingRawElements),
-                  std::move(violations))
+        explicit CUnrecognizableContent(const std::vector<CRawEntry>& composingRawElements, 
+                                        const SharedPtrVector<CViolationBase>& violations = {})
+            : CLinkerScriptContentBase(composingRawElements, violations)
         {}        
 
     public:

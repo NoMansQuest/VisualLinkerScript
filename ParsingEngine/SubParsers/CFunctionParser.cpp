@@ -377,7 +377,7 @@ std::shared_ptr<CFunctionCall> CFunctionParser::TryParse(
             case RawEntryType::BracketClose:
             {
                 violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::UnexpectedTerminationOfExpression)));
-                localIterator--;
+                --localIterator;
                 parserState = ParserState::ParsingComplete;
                 break;
             }
@@ -415,7 +415,7 @@ std::shared_ptr<CFunctionCall> CFunctionParser::TryParse(
                 new CFunctionCall(functionNameEntry,
                                   parenthesisOverture,
                                   parenthesisClosure,
-                                  std::move(parsedContent),
-                                  std::move(rawEntries),
-                                  std::move(violations)));
+                                  parsedContent,
+                                  rawEntries,
+                                  violations));
 }

@@ -393,7 +393,7 @@ std::shared_ptr<CFunctionCall> CInputSectionFunctionExcludeFileParser::TryParse(
                 new CFunctionCall(functionNameEntry,
                                   parenthesisOverture,
                                   parenthesisClosure,
-                                  std::move(parsedContent),
-                                  std::move(rawEntries),
-                                  std::move(violations)));
+                                  parsedContent,
+                                  rawEntries,
+                                  violations));
 }

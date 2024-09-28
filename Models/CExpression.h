@@ -13,29 +13,29 @@ namespace VisualLinkerScript::Models
     class CExpression: public CLinkerScriptContentBase
     {   
     private:
-        std::vector<std::shared_ptr<CLinkerScriptContentBase>> m_composition;
+        SharedPtrVector<CLinkerScriptContentBase> m_composition;
         CRawEntry m_openingParenthesis;
         CRawEntry m_closingParenthesis;        
 
     public:
         /// @brief Parameterized constructor, accessible to inheritors only
-        explicit CExpression(CRawEntry openingParenthesis,
-                             CRawEntry closingParenthesis,
-                             std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& composition,
-                             std::vector<CRawEntry>&& rawElements, 
-                             SharedPtrVector<CViolationBase>&& violations)
-            : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
+        explicit CExpression(const CRawEntry& openingParenthesis,
+                             const CRawEntry& closingParenthesis,
+                             const SharedPtrVector<CLinkerScriptContentBase>& composition,
+                             const std::vector<CRawEntry>& rawElements,
+                             const SharedPtrVector<CViolationBase>& violations)
+            : CLinkerScriptContentBase(rawElements, violations),
               m_composition(composition),
               m_openingParenthesis(openingParenthesis),
               m_closingParenthesis(closingParenthesis)
         {}        
 
         /// @brief Simplified constructor, no parenthesis
-        explicit CExpression(std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& composition,
-                             std::vector<CRawEntry>&& rawElements,
-                             SharedPtrVector<CViolationBase>&& violations)
-            : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
-              m_composition(composition)
+        explicit CExpression(SharedPtrVector<CLinkerScriptContentBase> composition,
+                             const std::vector<CRawEntry>& rawElements,
+                             const SharedPtrVector<CViolationBase>& violations)
+    		: CLinkerScriptContentBase(rawElements, violations),
+              m_composition(std::move( composition))
         {}
 
     public:
@@ -45,7 +45,7 @@ namespace VisualLinkerScript::Models
             return ContentType::Expression;
         }    
 
-        /// @brief Reports back openning-parenthesis
+        /// @brief Reports back opening-parenthesis
         const CRawEntry& OpeningParenthesis() const
         {
             return this->m_openingParenthesis;
@@ -64,7 +64,7 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Produces debug information on what this object represents.
-        const virtual std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;
+        const std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;
     };
 }
 

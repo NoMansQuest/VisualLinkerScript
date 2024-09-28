@@ -15,10 +15,10 @@ namespace VisualLinkerScript::Models
 
     public:
         /// @brief Default constructor, accessible to inheritors only
-        explicit CStringEntry(CRawEntry stringEntry,
-                              std::vector<CRawEntry>&& rawElements,
-                              SharedPtrVector<CViolationBase>&& violations)
-            : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
+        explicit CStringEntry(const CRawEntry& stringEntry,
+                              const std::vector<CRawEntry>& rawElements,
+                              const SharedPtrVector<CViolationBase>& violations)
+            : CLinkerScriptContentBase(rawElements, violations),
               m_stringEntry(stringEntry)
         {}
 
@@ -36,4 +36,4 @@ namespace VisualLinkerScript::Models
     };
 }
 
-#endif // CSTRINGENTRY_H
+#endif // CSTRING_ENTRY_H__

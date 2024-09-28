@@ -15,10 +15,10 @@ namespace VisualLinkerScript::Models
 
     public:        
         /// @brief Default constructor, accessible to inheritors only
-        explicit CSymbol(CRawEntry symbol,
-                         std::vector<CRawEntry>&& rawElements, 
-                         SharedPtrVector<CViolationBase>&& violations)
-            : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
+        explicit CSymbol(const CRawEntry& symbol,
+                         const std::vector<CRawEntry>& rawElements, 
+                         const SharedPtrVector<CViolationBase>& violations)
+            : CLinkerScriptContentBase(rawElements, violations),
               m_symbol(symbol)
         {}   
 

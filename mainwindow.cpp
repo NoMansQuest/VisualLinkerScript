@@ -16,8 +16,8 @@
 #include "Components/QChromeTab/QChromeTabWidget.h"
 #include "Components/QLinkerScriptSession/QLinkerScriptSession.h"
 #include "LinkerScriptManager/QLinkerScriptManager.h"
-#include "ParsingEngine/CLexer.h"
-#include "ParsingEngine/CMasterParser.h"
+#include "ParsingEngine/CLinkerScriptLexer.h"
+#include "ParsingEngine/CLinkerScriptParser.h"
 #include "Messaging/CEventAggregator.h"
 #include "Messaging/UserInitiated/COpenFileRequest.h"
 #include "MD5/MD5.h"
@@ -326,7 +326,7 @@ this->m_centralWidgetLayout->addWidget(this->m_centralWidgetVSplitter);
 this->ui->centralwidget->setLayout(this->m_centralWidgetLayout);
 
 // OK, We need to generate the content here
-CLexer linkerScriptLexer;
+CLinkerScriptLexer linkerScriptLexer;
 QString fileName("C:\\Temp\\GccDefaultLinkerScriptFile.lds");
 QFile fileToRead(fileName);
 fileToRead.open(QFile::ReadOnly | QFile::Text);

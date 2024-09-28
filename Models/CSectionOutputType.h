@@ -16,12 +16,12 @@ namespace VisualLinkerScript::Models
 
     public:
         /// @brief Default constructor, accessible to inheritors only
-        explicit CSectionOutputType(CRawEntry typeEntry,
-                                    CRawEntry openingParenthesis,
-                                    CRawEntry closingParenthesis,
-                                    std::vector<CRawEntry>&& rawElements,
-                                    SharedPtrVector<CViolationBase>&& violations)
-            : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
+        explicit CSectionOutputType(const CRawEntry& typeEntry,
+                                    const CRawEntry& openingParenthesis,
+                                    const CRawEntry& closingParenthesis,
+                                    const std::vector<CRawEntry>& rawElements,
+                                    const SharedPtrVector<CViolationBase>& violations)
+            : CLinkerScriptContentBase(rawElements, violations),
               m_typeEntry(typeEntry),
               m_openingParenthesis(openingParenthesis),
               m_closingParenthesis(closingParenthesis)
@@ -40,7 +40,7 @@ namespace VisualLinkerScript::Models
             return this->m_typeEntry;
         }
 
-        /// @brief Reports back the openning parenthesis
+        /// @brief Reports back the opening parenthesis
         const CRawEntry& OpeningParenthesis()
         {
             return this->m_openingParenthesis;

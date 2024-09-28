@@ -177,7 +177,7 @@ std::shared_ptr<CVersionScope> CVersionRegionContentParser::TryParse(
                                                 {*localIterator, rawEntryPlusOne},
                                                 {}));
                                 parsedContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(versionScope));
-                                localIterator++; // We advance by one, as we've alredy consume the successor entry.
+                                ++localIterator; // We advance by one, as we've already consumed the successor entry.
                             }
                             else
                             {
@@ -349,7 +349,7 @@ std::shared_ptr<CVersionScope> CVersionRegionContentParser::TryParse(
                                   bracketOpenEntry,
                                   bracketCloseEntry,
                                   semicolonEntry,
-                                  std::move(parsedContent),
-                                  std::move(rawEntries),
-                                  std::move(violations)));
+                                  parsedContent,
+                                  rawEntries,
+                                  violations));
 }

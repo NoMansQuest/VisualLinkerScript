@@ -24,12 +24,12 @@ namespace VisualLinkerScript::Models
 
 		public:
 			/// @brief ViolationBase constructor.
-            CViolationBase(ESeverityCode severityCode)
+            explicit CViolationBase(const ESeverityCode severityCode)
 	            : m_severity(severityCode)
             {}
 
 			/// @brief Severity of the violation.
-            ESeverityCode Severity() const { return this->m_severity; }
+            [[nodiscard]] ESeverityCode Severity() const { return this->m_severity; }
 
 			/// @brief Type of the violation.
 		    virtual EViolationType Type() = 0;			

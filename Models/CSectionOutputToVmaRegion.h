@@ -15,12 +15,12 @@ namespace VisualLinkerScript::Models
 
     public:
         /// @brief Default constructor, accessible to inheritors only
-        explicit CSectionOutputToVmaRegion(CRawEntry greatherThanSign,
-                                           CRawEntry regionName,
-                                           std::vector<CRawEntry>&& rawElements,
-                                           SharedPtrVector<CViolationBase>&& violations)
-            : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
-              m_greatherThanSign(greatherThanSign),
+        explicit CSectionOutputToVmaRegion(const CRawEntry& greaterThanSign,
+                                           const CRawEntry& regionName,
+                                           const std::vector<CRawEntry>& rawElements,
+                                           const SharedPtrVector<CViolationBase>& violations)
+            : CLinkerScriptContentBase(rawElements, violations),
+              m_greatherThanSign(greaterThanSign),
               m_regionName(regionName)
         {}
 
@@ -32,7 +32,7 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Reports back the greather-than sign
-        const CRawEntry& GreatherThanSign()
+        const CRawEntry& GreaterThanSign()
         {
             return this->m_greatherThanSign;
         }

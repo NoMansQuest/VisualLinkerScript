@@ -20,16 +20,16 @@ namespace VisualLinkerScript::Models
 
     public:
         /// @brief Detailed Constructor
-        explicit CAssignmentStatement(CRawEntry lValueEntry,
-                                      CRawEntry assignmentOperator,
-                                      CRawEntry semicolonEntry,
-                                      std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& parsedContent,
-                                      std::vector<CRawEntry>&& rawElements, 
-                                      SharedPtrVector<CViolationBase>&& violations)
-            : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
-              m_assignmentOperator(std::move(assignmentOperator)),
-              m_lValueEntry(std::move(lValueEntry)),
-              m_parsedContent(std::move(parsedContent)),
+        explicit CAssignmentStatement(const CRawEntry& lValueEntry,
+                                      const CRawEntry& assignmentOperator,
+                                      const CRawEntry& semicolonEntry,
+                                      const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& parsedContent,
+                                      const std::vector<CRawEntry>& rawElements, 
+                                      const SharedPtrVector<CViolationBase>& violations)
+            : CLinkerScriptContentBase(rawElements, violations),
+              m_assignmentOperator(assignmentOperator),
+              m_lValueEntry(lValueEntry),
+              m_parsedContent(parsedContent),
               m_semicolonEntry(semicolonEntry)
         {}
 

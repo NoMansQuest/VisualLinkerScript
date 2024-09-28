@@ -328,7 +328,7 @@ std::shared_ptr<CSectionsRegion> CSectionsRegionParser::TryParse(
                 new CSectionsRegion(headerEntry,
                                     bracketOpenEntry,
                                     bracketCloseEntry,
-                                    std::move(parsedContent),
-                                    std::move(rawEntries),
-                                    std::move(violations)));
+                                    parsedContent,
+                                    rawEntries,
+                                    violations));
 }

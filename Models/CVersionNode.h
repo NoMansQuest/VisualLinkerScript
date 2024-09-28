@@ -16,12 +16,12 @@ namespace VisualLinkerScript::Models
 
     public:
         /// @brief Default constructor, accessible to inheritors only        
-        explicit CVersionNode(CRawEntry nodeEntry,
-                              CRawEntry semicolonEntry,
-                              CRawEntry parentTagEntry,
-                              std::vector<CRawEntry>&& rawElements,
-                              SharedPtrVector<CViolationBase>&& violations)
-            : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
+        explicit CVersionNode(const CRawEntry& nodeEntry,
+                              const CRawEntry& semicolonEntry,
+                              const CRawEntry& parentTagEntry,
+                              const std::vector<CRawEntry>& rawElements,
+                              const SharedPtrVector<CViolationBase>& violations)
+            : CLinkerScriptContentBase(rawElements, violations),
               m_nodeEntry(nodeEntry),
               m_semicolonEntry(semicolonEntry),
               m_parentTagEntry(parentTagEntry)

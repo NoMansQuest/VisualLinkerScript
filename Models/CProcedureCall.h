@@ -12,26 +12,26 @@ namespace VisualLinkerScript::Models
     {   
     private:
         CRawEntry m_procedureName;
-        CRawEntry m_openningParenthesis;
+        CRawEntry m_openingParenthesis;
         CRawEntry m_closingParenthesis;
         CRawEntry m_terminatingSemicolon;
         CAssignmentStatement m_assignmentStatement;
 
     public:
         /// @brief Default constructor, accessible to inheritors only
-        explicit CProcedureCall(CRawEntry procedureName,
-                                CRawEntry openningParenthesis,
-                                CRawEntry closingParenthesis,
-                                CRawEntry terminatingSemicolon,    
-                                CAssignmentStatement&& assignmentStatement,
-                                std::vector<CRawEntry>&& rawElements, 
-                                SharedPtrVector<CViolationBase>&& violations)
-            : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
+        explicit CProcedureCall(const CRawEntry& procedureName,
+                                const CRawEntry& openingParenthesis,
+                                const CRawEntry& closingParenthesis,
+                                const CRawEntry& terminatingSemicolon,    
+                                const CAssignmentStatement& assignmentStatement,
+                                const std::vector<CRawEntry>& rawElements, 
+                                const SharedPtrVector<CViolationBase>& violations)
+            : CLinkerScriptContentBase(rawElements, violations),
               m_procedureName(procedureName),
-              m_openningParenthesis(openningParenthesis),
+              m_openingParenthesis(openingParenthesis),
               m_closingParenthesis(closingParenthesis),
               m_terminatingSemicolon(terminatingSemicolon),
-              m_assignmentStatement(std::move(assignmentStatement))
+              m_assignmentStatement(assignmentStatement)
         {}        
 
     public:
@@ -42,7 +42,7 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Reports back the assignment-statement
-        const CAssignmentStatement& AssignmentStatmeent() const
+        const CAssignmentStatement& AssignmentStatement() const
         {
             return this->m_assignmentStatement;
         }
@@ -54,9 +54,9 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Reports back the openning parenthesis
-        const CRawEntry& OpenningParenthesis() const
+        const CRawEntry& OpeningParenthesis() const
         {
-            return this->m_openningParenthesis;
+            return this->m_openingParenthesis;
         }
 
         /// @brief Reports back the closing parenthesis
@@ -72,7 +72,7 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Produces debug information on what this object represents.
-        const virtual std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;
+        const std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;
     };
 }
 

@@ -15,11 +15,11 @@ namespace VisualLinkerScript::Models
 
     public:
         /// @brief Default constructor, accessible to inheritors only
-        explicit CSectionOutputPhdr(CRawEntry colonEntry,
-                                    CRawEntry phdrRegion,
-                                    std::vector<CRawEntry>&& rawElements,
-                                    SharedPtrVector<CViolationBase>&& violations)
-            : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
+        explicit CSectionOutputPhdr(const CRawEntry& colonEntry,
+                                    const CRawEntry& phdrRegion,
+                                    const std::vector<CRawEntry>& rawElements,
+                                    const SharedPtrVector<CViolationBase>& violations)
+            : CLinkerScriptContentBase(rawElements, violations),
               m_phdrName(phdrRegion),
               m_colonEntry(colonEntry)
         {}

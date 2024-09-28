@@ -4,7 +4,7 @@
 #include <algorithm>
 
 #include "CMasterParserException.h"
-#include "CMasterParser.h"
+#include "CLinkerScriptParser.h"
 
 #include "SubParsers/CAssignmentParser.h"
 #include "SubParsers/CAssignmentProcedureParser.h"
@@ -60,7 +60,7 @@ bool TryParseAssignments(
         const std::vector<CRawEntry>::const_iterator& endOfVectorIterator,
         std::shared_ptr<CRawFile> rawFile);
 
-void CMasterParser::ParseLinkerScriptFile(std::shared_ptr<CLinkerScriptFile> linkerScriptFile)
+void CLinkerScriptParser::ParseLinkerScriptFile(std::shared_ptr<CLinkerScriptFile> linkerScriptFile)
 {
     std::vector<CRawEntry>::const_iterator localIterator = linkerScriptFile->RawFile()->Content().cbegin();
     std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = linkerScriptFile->RawFile()->Content().cbegin();
@@ -85,18 +85,18 @@ void CMasterParser::ParseLinkerScriptFile(std::shared_ptr<CLinkerScriptFile> lin
                 {
                     break;
                 }
-                else if (TryParseFunctionAndAssignmentProcedureCalls(resolvedContent, violations, parsedContent, localIterator, endOfVectorIterator, linkerScriptFile->RawFile()))
+
+            	if (TryParseFunctionAndAssignmentProcedureCalls(resolvedContent, violations, parsedContent, localIterator, endOfVectorIterator, linkerScriptFile->RawFile()))
                 {
                     break;
                 }
-                else if (TryParseAssignments(resolvedContent, violations, parsedContent, localIterator, endOfVectorIterator, linkerScriptFile->RawFile()))
+
+            	if (TryParseAssignments(resolvedContent, violations, parsedContent, localIterator, endOfVectorIterator, linkerScriptFile->RawFile()))
                 {
                     break;
                 }
-                else
-                {
-                    violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
-                }
+
+            	violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));                
                 break;
             }
 

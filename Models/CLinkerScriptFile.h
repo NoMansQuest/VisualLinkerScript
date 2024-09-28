@@ -24,8 +24,8 @@ namespace VisualLinkerScript::Models
 
     public:
         /// @brief Default constructor
-        explicit CLinkerScriptFile(std::shared_ptr<CRawFile> rawFile)
-            : m_rawFile(std::move(rawFile))
+        explicit CLinkerScriptFile(const std::shared_ptr<CRawFile>& rawFile)
+            : m_rawFile(rawFile)
         {}
 
         /// @brief Returns the content of the file

@@ -18,17 +18,17 @@ namespace VisualLinkerScript::Models
 
     public:
         /// @brief Default constructor, accessible to inheritors only
-        explicit CInputSectionFunction(CRawEntry functionName,
-                                       CRawEntry openingParenthesis,
-                                       CRawEntry closingParenthesis,
-                                       std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& parsedContent,
-                                       std::vector<CRawEntry>&& rawElements,
-                                       SharedPtrVector<CViolationBase>&& violations)
-            : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
+        explicit CInputSectionFunction(const CRawEntry& functionName,
+                                       const CRawEntry& openingParenthesis,
+                                       const CRawEntry& closingParenthesis,
+                                       const SharedPtrVector<CLinkerScriptContentBase>& parsedContent,
+                                       const std::vector<CRawEntry>& rawElements,
+                                       const SharedPtrVector<CViolationBase>& violations)
+            : CLinkerScriptContentBase(rawElements, violations),
               m_functionName(functionName),
               m_openingParenthesis(openingParenthesis),
               m_closingParenthesis(closingParenthesis),
-              m_parsedContent(std::move(parsedContent))
+              m_parsedContent(parsedContent)
         {}
 
     public:

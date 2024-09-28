@@ -193,7 +193,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                 }
 
                 // Forced completion of parsing
-                localIterator--;
+                --localIterator;
                 parserState = ParserState::ParsingComplete;
                 break;
             }
@@ -215,7 +215,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                                 // colon spells the end of parsing, pretty much like semicolon.
                                 if (this->m_isSectionOutputAddressParser)
                                 {
-                                    localIterator--;
+                                    --localIterator;
                                     parserState = ParserState::ParsingComplete;
                                 }
                                 else
@@ -249,11 +249,11 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                         {
                             case TernaryState::AwaitingThenExpression:
                             {
-                                // EXCPETION: When parsing 'address' of a section-output command, an unexpected
+                                // EXCEPTION: When parsing 'address' of a section-output command, an unexpected
                                 // colon spells the end of parsing, pretty much like semicolon.
                                 if (this->m_isSectionOutputAddressParser)
                                 {
-                                    localIterator--;
+                                    --localIterator;
                                     parserState = ParserState::ParsingComplete;
                                 }
                                 else
@@ -555,7 +555,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                         }
                         else
                         {
-                            localIterator--;
+                            --localIterator;
                         }
 
                         if (parserState == ParserState::AwaitingContent)
@@ -582,7 +582,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
             case RawEntryType::BracketClose:
             {
                 violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::UnexpectedTerminationOfExpression)));
-                localIterator--;
+                --localIterator;
                 parserState = ParserState::ParsingComplete;
                 break;
             }
@@ -615,7 +615,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
     return std::shared_ptr<CExpression>(
                 new CExpression(parenthesisOpen,
                                 parenthesisClose,
-                                std::move(parsedContent),
-                                std::move(rawEntries),
-                                std::move(violations)));
+                                parsedContent,
+                                rawEntries,
+                                violations));
 }

@@ -13,9 +13,9 @@ namespace VisualLinkerScript::Models
     {
     public:
         /// @brief Default constructor
-        explicit CInputSectionTargetSection(CInputSectionWildcardWord targetSection,
-                                            SharedPtrVector<CViolationBase>&& violations)
-            : CLinkerScriptContentBase(targetSection.RawEntries(), std::move(violations))
+        explicit CInputSectionTargetSection(const CInputSectionWildcardWord& targetSection,
+                                            const SharedPtrVector<CViolationBase>& violations)
+            : CLinkerScriptContentBase(targetSection.RawEntries(), violations)
         {}
 
         /// @brief Reports back the type of this object.

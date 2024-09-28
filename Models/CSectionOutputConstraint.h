@@ -14,7 +14,7 @@ namespace VisualLinkerScript::Models
 
     public:
         /// @brief Default constructor, accessible to inheritors only
-        explicit CSectionOutputConstraint(CRawEntry sectionOutputConstraint)
+        explicit CSectionOutputConstraint(const CRawEntry& sectionOutputConstraint)
             : CLinkerScriptContentBase({ sectionOutputConstraint }, {})
         {}
 

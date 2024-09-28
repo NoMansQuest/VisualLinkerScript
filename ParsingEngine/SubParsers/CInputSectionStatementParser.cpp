@@ -399,7 +399,7 @@ std::shared_ptr<CInputSectionStatement> CInputSectionStatementParser::TryParse(
                 new CInputSectionStatement(fileSelector,
                                            parenthesisOpen,
                                            parenthesisClose,
-                                           std::move(parsedContent),
-                                           std::move(rawEntries),
-                                           std::move(violations)));
+                                           parsedContent,
+                                           rawEntries,
+                                           violations));
 }

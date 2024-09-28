@@ -16,35 +16,38 @@ namespace VisualLinkerScript::Models
 
     public:
         /// @brief Default constructor
-        explicit CSectionOutputAtLmaRegion(CRawEntry atEntry,
-                                CRawEntry greatherThanSign,
-                                CRawEntry regionName,
-                                std::vector<CRawEntry>&& rawElements,
-                                SharedPtrVector<CViolationBase>&& violations)
-            : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
+        explicit CSectionOutputAtLmaRegion(
+							    const CRawEntry& atEntry,
+                                const CRawEntry& greaterThanSign,
+                                const CRawEntry& regionName,
+                                const std::vector<CRawEntry>& rawElements,
+                                const SharedPtrVector<CViolationBase>& violations)
+            : CLinkerScriptContentBase(rawElements, violations),
               m_atEntry(atEntry),
-              m_greatherThanSign(greatherThanSign),
+              m_greatherThanSign(greaterThanSign),
               m_regionName(regionName)
         {}
 
         /// @brief Alternate constructor without 'rawElements'
-        explicit CSectionOutputAtLmaRegion(CRawEntry atEntry,
-                                CRawEntry greatherThanSign,
-                                CRawEntry regionName,
-                                SharedPtrVector<CViolationBase>&& violations)
-            : CLinkerScriptContentBase({atEntry, greatherThanSign, regionName}, std::move(violations)),
+        explicit CSectionOutputAtLmaRegion(
+								const CRawEntry& atEntry,
+                                const CRawEntry& greaterThanSign,
+                                const CRawEntry& regionName,
+                                const SharedPtrVector<CViolationBase>& violations)
+            : CLinkerScriptContentBase({atEntry, greaterThanSign, regionName}, violations),
               m_atEntry(atEntry),
-              m_greatherThanSign(greatherThanSign),
+              m_greatherThanSign(greaterThanSign),
               m_regionName(regionName)
         {}
 
         /// @brief Alternate constructor without 'rawElements' and 'violations'
-        explicit CSectionOutputAtLmaRegion(CRawEntry atEntry,
-                                CRawEntry greatherThanSign,
-                                CRawEntry regionName)
-            : CLinkerScriptContentBase({atEntry, greatherThanSign, regionName}, {}),
+        explicit CSectionOutputAtLmaRegion(
+								const CRawEntry& atEntry,
+                                const CRawEntry& greaterThanSign,
+                                const CRawEntry& regionName)
+            : CLinkerScriptContentBase({atEntry, greaterThanSign, regionName}, {}),
               m_atEntry(atEntry),
-              m_greatherThanSign(greatherThanSign),
+              m_greatherThanSign(greaterThanSign),
               m_regionName(regionName)
         {}
 

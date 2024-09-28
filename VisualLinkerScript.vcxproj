@@ -246,11 +246,11 @@
     <ClCompile Include="ParsingEngine\SubParsers\CInputSectionFunctionSortParser.cpp" />
     <ClCompile Include="Models\CInputSectionStatement.cpp" />
     <ClCompile Include="ParsingEngine\SubParsers\CInputSectionStatementParser.cpp" />
-    <ClCompile Include="ParsingEngine\CLexer.cpp" />
+    <ClCompile Include="ParsingEngine\CLinkerScriptLexer.cpp" />
     <ClCompile Include="Models\CLinkerScriptContentBase.cpp" />
     <ClCompile Include="Models\CLinkerScriptFile.cpp" />
     <ClCompile Include="DrcEngine\Rules\CLocationCounterCannotGoBackwardsRule.cpp" />
-    <ClCompile Include="ParsingEngine\CMasterParser.cpp" />
+    <ClCompile Include="ParsingEngine\CLinkerScriptParser.cpp" />
     <ClCompile Include="Components\MemoryVisualizer\Rendering\CMemoryObjectRenderer.cpp" />
     <ClCompile Include="Models\CMemoryRegion.cpp" />
     <ClCompile Include="ParsingEngine\SubParsers\CMemoryRegionContentParser.cpp" />
@@ -429,7 +429,7 @@
     <ClInclude Include="Models\CInputSectionTargetSection.h" />
     <ClInclude Include="Models\CInputSectionWildcardWord.h" />
     <ClInclude Include="Models\Intervention\CIntervention.h" />
-    <ClInclude Include="ParsingEngine\CLexer.h" />
+    <ClInclude Include="ParsingEngine\CLinkerScriptLexer.h" />
     <ClInclude Include="ParsingEngine\CLexerException.h" />
     <ClInclude Include="Models\CLinkerScriptContentBase.h" />
     <ClInclude Include="Models\CLinkerScriptFile.h" />
@@ -438,7 +438,7 @@
     <ClInclude Include="Components\MemoryVisualizer\Models\CLmaToVmaArrowCoordinates.h" />
     <ClInclude Include="Messaging\UserInitiated\CLoadMappingFileRequest.h" />
     <ClInclude Include="DrcEngine\Rules\CLocationCounterCannotGoBackwardsRule.h" />
-    <ClInclude Include="ParsingEngine\CMasterParser.h" />
+    <ClInclude Include="ParsingEngine\CLinkerScriptParser.h" />
     <ClInclude Include="ParsingEngine\CMasterParserException.h" />
     <ClInclude Include="Components\MemoryVisualizer\Models\CMemoryLocationIndicator.h" />
     <ClInclude Include="Components\MemoryVisualizer\Models\CMemoryObject.h" />

@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-#include "CLexer.h"
+#include "CLinkerScriptLexer.h"
 #include <QDebug>
 #include <QString>
 
@@ -436,7 +436,7 @@ namespace
 
 }
 
-std::shared_ptr<CLinkerScriptFile> CLexer::LexLinkerScript(const std::string& filePath, std::string fileContent)
+std::shared_ptr<CLinkerScriptFile> CLinkerScriptLexer::LexLinkerScript(const std::string& filePath, std::string fileContent)
 {    
     // TODO: Revise code in event of available capacity to reduce cyclomatic complexity
     std::vector<CRawEntry> lexerContent;
@@ -771,6 +771,6 @@ std::shared_ptr<CLinkerScriptFile> CLexer::LexLinkerScript(const std::string& fi
     }
 
     fileName = splitString.back();
-	const auto rawFile = std::make_shared<CRawFile>(std::move(fileContent), fileName, filePath, std::move(indentationData), std::move(lexerContent));
+	const auto rawFile = std::make_shared<CRawFile>(std::move(fileContent), fileName, filePath, indentationData, lexerContent);
     return std::make_shared<CLinkerScriptFile>(rawFile);
 }

@@ -10,7 +10,7 @@
 
 namespace VisualLinkerScript::Models::Raw 
 {
-    /// @brief This object represents a file processed by @see CLexer
+    /// @brief This object represents a file processed by @see CLinkerScriptLexer
     class CRawFile
     {
         std::vector<CRawEntry> m_content;
@@ -26,16 +26,16 @@ namespace VisualLinkerScript::Models::Raw
         /// @param absoluteFilePath Absolute file path
         /// @param indentationData Indentation data, per line of code
         /// @param content Vector of CRawEntry, which the linker-script is composed of.
-        explicit CRawFile(std::string&& fileContent,
-                          std::string fileName,
-                          std::string absoluteFilePath,
-						  std::unordered_map<uint32_t, CIndentationInfo>&& indentationData,
-                          std::vector<CRawEntry>&& content) :
-              m_content(std::move(content)),
-              m_indentationData(std::move(indentationData)),
-              m_fileName(std::move(fileName)),
-			  m_absoluteFilePath(std::move(absoluteFilePath)),
-              m_fileContent(std::move(fileContent))
+        explicit CRawFile(const std::string& fileContent,
+                          const std::string& fileName,
+                          const std::string& absoluteFilePath,
+						  const std::unordered_map<uint32_t, CIndentationInfo>& indentationData,
+                          const std::vector<CRawEntry>& content) :
+              m_content(content),
+              m_indentationData(indentationData),
+              m_fileName(fileName),
+			  m_absoluteFilePath(absoluteFilePath),
+              m_fileContent(fileContent)
         {}
 
     public:

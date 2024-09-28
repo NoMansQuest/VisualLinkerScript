@@ -14,7 +14,7 @@ namespace VisualLinkerScript::Models
 
     public:
         /// @brief Default constructor, accessible to inheritors only
-        explicit CSectionOutputDataExpression(CRawEntry dataExpressionEntry)
+        explicit CSectionOutputDataExpression(const CRawEntry& dataExpressionEntry)
             : CLinkerScriptContentBase({ dataExpressionEntry }, {})
         {}
 

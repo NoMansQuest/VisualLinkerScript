@@ -18,7 +18,7 @@ namespace VisualLinkerScript::ParsingEngine
 
     /// @brief This is the preliminary parser. It breaks down the stream to 
     ///        smaller composing entries, which will then be analyzed by the main parser.
-    class CLexer 
+    class CLinkerScriptLexer 
     {
     public:
         /// @brief Process the input file. This function can throw an exception 

@@ -12,7 +12,7 @@ namespace VisualLinkerScript::ParsingEngine
 	using namespace VisualLinkerScript::Models;
 
     /// @brief The main parser, in charge of parsing a give linker-script file
-    class CMasterParser
+    class CLinkerScriptParser
     {
     public:
         /// @brief Processes a @see {CRawFile} and produces a @see {CLinkerScriptFile} parsed content and violations.

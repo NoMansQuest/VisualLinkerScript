@@ -2,7 +2,6 @@
 #define CSECTION_OVERLAY_H__
 
 #include <vector>
-#include <memory>
 #include "CLinkerScriptContentBase.h"
 
 namespace VisualLinkerScript::Models
@@ -16,82 +15,82 @@ namespace VisualLinkerScript::Models
         CRawEntry m_noCrossRefsEntry;        
         CRawEntry m_bracketOpenEntry;
         CRawEntry m_bracketCloseEntry;                
-        std::vector<std::shared_ptr<CLinkerScriptContentBase>> m_preColonContent;
-        std::vector<std::shared_ptr<CLinkerScriptContentBase>> m_postColonContent;
-        std::vector<std::shared_ptr<CLinkerScriptContentBase>> m_endingContent;
-        std::vector<std::shared_ptr<CLinkerScriptContentBase>> m_innerContent;
+        SharedPtrVector<CLinkerScriptContentBase> m_preColonContent;
+        SharedPtrVector<CLinkerScriptContentBase> m_postColonContent;
+        SharedPtrVector<CLinkerScriptContentBase> m_endingContent;
+        SharedPtrVector<CLinkerScriptContentBase> m_innerContent;
 
     public:
         /// @brief Default constructor, accessible to inheritors only        
-        explicit CSectionOverlayCommand(CRawEntry headerEntry,                                        
-                                        CRawEntry colonEntry,
-                                        CRawEntry noCrossRefsEntry,                                        
-                                        CRawEntry bracketOpenEntry,
-                                        CRawEntry bracketCloseEntry,                                                                                
-                                        std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& preColonContent,
-                                        std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& postColonContent,
-                                        std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& innerContent,
-                                        std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& endingContent,
-                                        std::vector<CRawEntry>&& rawElements,
-                                        SharedPtrVector<CViolationBase>&& violations)
-            : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
+        explicit CSectionOverlayCommand(const CRawEntry& headerEntry,                                        
+                                        const CRawEntry& colonEntry,
+                                        const CRawEntry& noCrossRefsEntry,                                        
+                                        const CRawEntry& bracketOpenEntry,
+                                        const CRawEntry& bracketCloseEntry,                                                                                
+                                        const SharedPtrVector<CLinkerScriptContentBase>& preColonContent,
+                                        const SharedPtrVector<CLinkerScriptContentBase>& postColonContent,
+                                        const SharedPtrVector<CLinkerScriptContentBase>& innerContent,
+                                        const SharedPtrVector<CLinkerScriptContentBase>& endingContent,
+                                        const std::vector<CRawEntry>& rawElements,
+                                        const SharedPtrVector<CViolationBase>& violations)
+            : CLinkerScriptContentBase(rawElements, violations),
               m_headerEntry(headerEntry),              
               m_colonEntry(colonEntry),
               m_noCrossRefsEntry(noCrossRefsEntry),              
               m_bracketOpenEntry(bracketOpenEntry),
               m_bracketCloseEntry(bracketCloseEntry),
-              m_preColonContent(std::move(preColonContent)),
-              m_postColonContent(std::move(postColonContent)),
-              m_endingContent(std::move(endingContent)),
-              m_innerContent(std::move(innerContent))
+              m_preColonContent(preColonContent),
+              m_postColonContent(postColonContent),
+              m_endingContent(endingContent),
+              m_innerContent(innerContent)
         {}        
 
     public:
 
         /// @brief [Non-Optional] Header entry (i.e. 'OVERLAY').
-        CRawEntry HeaderEntry() const
+        [[nodiscard]] CRawEntry HeaderEntry() const
         {
             return this->m_headerEntry;
         }
 
         /// @brief [Non-Optional] Reports back the 'Colon' entry.
-        CRawEntry ColonEntry() const
+        [[nodiscard]] CRawEntry ColonEntry() const
         {
             return this->m_colonEntry;
         }
 
         /// @brief [Non-Optional] Reports the curly-bracket open entry.
-        CRawEntry BracketOpenEntry() const
+        [[nodiscard]] CRawEntry BracketOpenEntry() const
         {
             return this->m_bracketOpenEntry;
         }
 
         /// @brief [Non-Optional] Reports the curly-bracket close entry.
-        CRawEntry BracketCloseEntry() const
+        [[nodiscard]] CRawEntry BracketCloseEntry() const
         {
             return this->m_bracketCloseEntry;
         }
 
         /// @brief [Non-Optional] Reports the content defined inside the 'OVERLAY'
-        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& InnerContent() const
+        [[nodiscard]] const SharedPtrVector<CLinkerScriptContentBase>& InnerContent() const
         {
             return this->m_innerContent;
         }
 
         /// @brief [Non-Optional] Reports the content defined inside between the header and colon
-        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& PreColonContent() const
+        [[nodiscard]] const SharedPtrVector<CLinkerScriptContentBase>& PreColonContent() const
         {
             return this->m_preColonContent;
         }
 
         /// @brief [Non-Optional] Reports the content defined inside after the colon and before the bracket-open
-        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& PostColonContent() const
+        [[nodiscard]] const SharedPtrVector<CLinkerScriptContentBase>& PostColonContent() const
         {
             return this->m_postColonContent;
         }
 
         /// @brief [Non-Optional] Reports the content defined inside after bracket-closure
-        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& EndingContent() const
+        [[nodiscard]] const SharedPtrVector<CLinkerScriptContentBase>& EndingContent() const
         {
             return this->m_endingContent;
         }
@@ -103,7 +102,7 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Produces debug information on what this object represents.
-        const virtual std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;
+        [[nodiscard]] const std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;
     };
 }
 

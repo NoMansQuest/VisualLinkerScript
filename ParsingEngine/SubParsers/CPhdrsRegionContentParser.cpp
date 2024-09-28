@@ -305,6 +305,6 @@ std::shared_ptr<CPhdrsStatement> CPhdrsRegionContentParser::TryParse(
                                     atAddressFunction,
                                     flagsFunction,
                                     semicolonEntry,
-                                    std::move(rawEntries),
-                                    std::move(violations)));
+                                    rawEntries,
+                                    violations));
 }

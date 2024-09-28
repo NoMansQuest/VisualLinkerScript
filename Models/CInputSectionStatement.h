@@ -14,21 +14,21 @@ namespace VisualLinkerScript::Models
         std::shared_ptr<CLinkerScriptContentBase> m_fileSelector;
         CRawEntry m_openingParenthesis;
         CRawEntry m_closingParenthesis;
-        std::vector<std::shared_ptr<CLinkerScriptContentBase>> m_parsedContent;        
+        SharedPtrVector<CLinkerScriptContentBase> m_parsedContent;        
 
     public:
         /// @brief Default constructor, including desired sections
-        explicit CInputSectionStatement(std::shared_ptr<CLinkerScriptContentBase> fileSelector,
-                                        CRawEntry openingParenthesis,
-                                        CRawEntry closingParenthesis,
-                                        std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& parsedContent,
-                                        std::vector<CRawEntry>&& rawElements,
-                                        SharedPtrVector<CViolationBase>&& violations)
-            : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
+        explicit CInputSectionStatement(const std::shared_ptr<CLinkerScriptContentBase>& fileSelector,
+                                        const CRawEntry& openingParenthesis,
+                                        const CRawEntry& closingParenthesis,
+                                        const SharedPtrVector<CLinkerScriptContentBase>& parsedContent,
+                                        const std::vector<CRawEntry>& rawElements,
+                                        const SharedPtrVector<CViolationBase>& violations)
+            : CLinkerScriptContentBase(rawElements, violations),
               m_fileSelector(fileSelector),
               m_openingParenthesis(openingParenthesis),
               m_closingParenthesis(closingParenthesis),
-              m_parsedContent(std::move(parsedContent))
+              m_parsedContent(parsedContent)
         {}
 
     public:

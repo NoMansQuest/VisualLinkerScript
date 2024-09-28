@@ -15,11 +15,11 @@ namespace VisualLinkerScript::Models
 
     public:
         /// @brief Default constructor, accessible to inheritors only
-        explicit CIncludeCommand(CRawEntry includeCommandHeaderEntry,
-                                 CRawEntry includeFileEntry,
-                                 std::vector<CRawEntry>&& rawElements,
-                                 SharedPtrVector<CViolationBase>&& violations)
-            : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
+        explicit CIncludeCommand(const CRawEntry& includeCommandHeaderEntry,
+                                 const CRawEntry& includeFileEntry,
+                                 const std::vector<CRawEntry>& rawElements,
+                                 const SharedPtrVector<CViolationBase>& violations)
+            : CLinkerScriptContentBase(rawElements, violations),
               m_includeCommandHeaderEntry(includeCommandHeaderEntry),
               m_includeFileEntry(includeFileEntry)
         {}

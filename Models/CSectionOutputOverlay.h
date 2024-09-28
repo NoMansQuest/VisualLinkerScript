@@ -18,45 +18,44 @@ namespace VisualLinkerScript::Models
     {
     private:
         CRawEntry m_sectionOutputNameEntry;
-        std::vector<std::shared_ptr<CLinkerScriptContentBase>> m_preColonContent;
-        std::vector<std::shared_ptr<CLinkerScriptContentBase>> m_postColonContent;
+        SharedPtrVector<CLinkerScriptContentBase> m_preColonContent;
+        SharedPtrVector<CLinkerScriptContentBase> m_postColonContent;
         CRawEntry m_colonEntry;
         CRawEntry m_openingBracketEntry;
         CRawEntry m_closingBracketEntry;
         std::shared_ptr<CSectionOutputToVmaRegion> m_toVmaRegion;
         std::shared_ptr<CSectionOutputAtLmaRegion> m_atLmaRegionFunction;
-        std::vector<std::shared_ptr<CSectionOutputPhdr>> m_programHeaders;
+        SharedPtrVector<CSectionOutputPhdr> m_programHeaders;
         std::shared_ptr<CSectionOutputFillExpression> m_fillExpression;
-        std::vector<std::shared_ptr<CLinkerScriptContentBase>> m_innerContent;
+        SharedPtrVector<CLinkerScriptContentBase> m_innerContent;
 
     public:
         /// @brief Default constructor, accessible to inheritors only
-        /// @param rawElements A list of object this element is comprised of.
-        explicit CSectionOutputOverlay(CRawEntry sectionOutputNameEntry,
-                                       std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& preColonContent,
-                                       std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& postColonContent,
-                                       CRawEntry colonEntry,
-                                       CRawEntry openingBracketEntry,
-                                       CRawEntry closingBracketEntry,
-                                       std::shared_ptr<CSectionOutputToVmaRegion> toVmaRegion,
-                                       std::shared_ptr<CSectionOutputAtLmaRegion> atLmaRegionFunction,
-                                       std::vector<std::shared_ptr<CSectionOutputPhdr>>&& programHeaders,
-                                       std::shared_ptr<CSectionOutputFillExpression> fillExpression,
-                                       std::vector<std::shared_ptr<CLinkerScriptContentBase>>&& innerContent,
-                                       std::vector<CRawEntry>&& rawElements,
-                                       SharedPtrVector<CViolationBase>&& violations)
-            : CLinkerScriptContentBase(std::move(rawElements), std::move(violations)),
+        explicit CSectionOutputOverlay(const CRawEntry& sectionOutputNameEntry,
+                                       const SharedPtrVector<CLinkerScriptContentBase>& preColonContent,
+                                       const SharedPtrVector<CLinkerScriptContentBase>& postColonContent,
+                                       const CRawEntry& colonEntry,
+                                       const CRawEntry& openingBracketEntry,
+                                       const CRawEntry& closingBracketEntry,
+                                       const std::shared_ptr<CSectionOutputToVmaRegion>& toVmaRegion,
+                                       const std::shared_ptr<CSectionOutputAtLmaRegion>& atLmaRegionFunction,
+                                       const SharedPtrVector<CSectionOutputPhdr>& programHeaders,
+                                       const std::shared_ptr<CSectionOutputFillExpression>& fillExpression,
+                                       const SharedPtrVector<CLinkerScriptContentBase>& innerContent,
+                                       const std::vector<CRawEntry>& rawElements,
+                                       const SharedPtrVector<CViolationBase>& violations)
+            : CLinkerScriptContentBase(rawElements, violations),
               m_sectionOutputNameEntry(sectionOutputNameEntry),
-              m_preColonContent(std::move(preColonContent)),
-              m_postColonContent(std::move(postColonContent)),
+              m_preColonContent(preColonContent),
+              m_postColonContent(postColonContent),
               m_colonEntry(colonEntry),
               m_openingBracketEntry(openingBracketEntry),
               m_closingBracketEntry(closingBracketEntry),
               m_toVmaRegion(toVmaRegion),
               m_atLmaRegionFunction(atLmaRegionFunction),
-              m_programHeaders(std::move(programHeaders)),
+              m_programHeaders(programHeaders),
               m_fillExpression(fillExpression),
-              m_innerContent(std::move(innerContent))
+              m_innerContent(innerContent)
         {}
 
     public:
@@ -73,13 +72,13 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Reports back the content found after the header and before the colon
-        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& PreColonContent() const
+        const SharedPtrVector<CLinkerScriptContentBase>& PreColonContent() const
         {
             return this->m_preColonContent;
         }
 
         /// @brief Reports back the content found after the colon and before the opening bracket
-        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& PostColonContent() const
+        const SharedPtrVector<CLinkerScriptContentBase>& PostColonContent() const
         {
             return this->m_postColonContent;
         }
@@ -115,7 +114,7 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Reports back the program headers defined, if present.
-        const std::vector<std::shared_ptr<CSectionOutputPhdr>>& ProgramHeaders() const
+        const SharedPtrVector<CSectionOutputPhdr>& ProgramHeaders() const
         {
             return this->m_programHeaders;
         }
@@ -127,7 +126,7 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Reports back the outer content, which includes all parsed content.
-        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& InnerContent() const
+        const SharedPtrVector<CLinkerScriptContentBase>& InnerContent() const
         {
             return this->m_innerContent;
         }

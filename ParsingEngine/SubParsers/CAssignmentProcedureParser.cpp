@@ -390,7 +390,7 @@ std::shared_ptr<CAssignmentProcedureStatement> CAssignmentProcedureParser::TryPa
                                                   parenthesisCloseEntry,
                                                   assignmentStatement,
                                                   semicolonOperatorEntry,
-                                                  std::move(parsedContent),
-                                                  std::move(rawEntries),
-                                                  std::move(violations)));
+                                                  parsedContent,
+                                                  rawEntries,
+                                                  violations));
 }

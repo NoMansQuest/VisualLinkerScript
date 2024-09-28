@@ -122,7 +122,7 @@
     <ClCompile Include="ParsingEngine\SubParsers\CInputSectionStatementParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ParsingEngine\CLexer.cpp">
+    <ClCompile Include="ParsingEngine\CLinkerScriptLexer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Models\CLinkerScriptContentBase.cpp">
@@ -134,7 +134,7 @@
     <ClCompile Include="DrcEngine\Rules\CLocationCounterCannotGoBackwardsRule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ParsingEngine\CMasterParser.cpp">
+    <ClCompile Include="ParsingEngine\CLinkerScriptParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Components\MemoryVisualizer\Rendering\CMemoryObjectRenderer.cpp">
@@ -652,7 +652,7 @@
     <ClInclude Include="Models\Intervention\CIntervention.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ParsingEngine\CLexer.h">
+    <ClInclude Include="ParsingEngine\CLinkerScriptLexer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ParsingEngine\CLexerException.h">
@@ -679,7 +679,7 @@
     <ClInclude Include="DrcEngine\Rules\CLocationCounterCannotGoBackwardsRule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ParsingEngine\CMasterParser.h">
+    <ClInclude Include="ParsingEngine\CLinkerScriptParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ParsingEngine\CMasterParserException.h">
