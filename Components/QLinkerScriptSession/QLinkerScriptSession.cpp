@@ -5,7 +5,7 @@
 #include "../../ParsingEngine/CLinkerScriptLexer.h"
 #include "../../ParsingEngine/CLinkerScriptParser.h"
 #include "../../DrcEngine/CDrcManager.h"
-#include "../../Models/CLinkerScriptContentBase.h"
+#include "../../Models/CParsedContentBase.h"
 #include "Components/QChromeTab/QChromeTabWidget.h"
 #include "Components/QSearchPopup/QSearchPopup.h"
 #include "DrcEngine/CDrcViolation.h"
@@ -152,9 +152,9 @@ void QLinkerScriptSession::OnEditorResize() const
     this->PositionSearchPopup();
 }
 
-std::string QLinkerScriptSession::LinkerScriptContent() const
+void QLinkerScriptSession::UpdateContent(const std::string& newContent)
 {
-    return this->m_scintilla->text().toStdString();
+    this->m_scintilla->setText(QString::fromStdString(newContent));
 }
 
 void QLinkerScriptSession::PositionSearchPopup() const
@@ -285,22 +285,17 @@ void QLinkerScriptSession::OnFindReplace(std::string replaceWith)
     // To be implemented.
 }
 
-void QLinkerScriptSession::SetSessionFileInfo(const CLinkerScriptSessionFileInfo& newSessionFileInfo)
+std::shared_ptr<CLinkerScriptFile> QLinkerScriptSession::LinkerScriptFile() const
 {
-    this->m_sessionFileInfo = newSessionFileInfo;
-}
-
-void QLinkerScriptSession::SetLinkerScriptContent(const std::string& linkerScriptContent) const
-{;
-    this->m_scintilla->setText(QString::fromStdString(linkerScriptContent));    
-}
+    return this->m_linkerScriptFile;
+}    
 
 void QLinkerScriptSession::EditorContentUpdated()
 {
     // The lexer is always run
-    auto absoluteFilePath = this->m_sessionFileInfo.AbsoluteFilePath();
+    auto absoluteFilePath = this->m_linkerScriptFile->AbsoluteFilePath();
     auto textToLex = this->m_scintilla->text().toStdString();
-    this->m_linkerScriptFile = CLinkerScriptLexer::LexLinkerScript(absoluteFilePath, textToLex);
+    CLinkerScriptLexer::LexLinkerScript(this->m_linkerScriptFile);
     this->InitiateDeferredProcessing();
 }
 
@@ -367,7 +362,7 @@ void QLinkerScriptSession::UpdateParserViolationsInModel() const
         auto severity = new QStandardItem(QString::fromStdString(MapSeverityToString(castParserViolation->Severity())));
 		auto description = new QStandardItem(QString::fromStdString(MapParserViolationToDescription(castParserViolation->Code())));
 		//auto offendingContent = new QStandardItem(QString::fromStdString(castParserViolation->OffendingContent()));
-		auto offendingContent = new QStandardItem(QString::fromStdString(castParserViolation->GetOffendingContent(this->m_linkerScriptFile->RawFile())));
+		auto offendingContent = new QStandardItem(QString::fromStdString(castParserViolation->GetOffendingContent(this->m_linkerScriptFile)));
 
 		QStandardItem* lineNumber;
 		QStandardItem* columnIndex;        
@@ -461,7 +456,7 @@ void QLinkerScriptSession::UpdateLexerViolationsInModel() const
 		auto description = new QStandardItem(QString::fromStdString(MapLexerViolationToDescription(castLexerViolation->Code())));
 		auto lineNumber = new QStandardItem(QString::number(castLexerViolation->ViolationLocation().StartLineNumber()));
 		auto columnIndex = new QStandardItem(QString::number(castLexerViolation->ViolationLocation().StartIndexInLine()));
-		auto offendingContent = new QStandardItem(QString::fromStdString(this->m_linkerScriptFile->ResolveEntryText(castLexerViolation->ViolationLocation())));
+		auto offendingContent = new QStandardItem(QString::fromStdString(this->m_linkerScriptFile->ResolveRawEntry(castLexerViolation->ViolationLocation())));
 
 		code->setSelectable(false);
 		code->setEditable(false);
@@ -641,9 +636,9 @@ bool HasNonWhitespaceBeforeCurlyBracket(const std::string& str, uint32_t backwar
     return false;
 }
 
-CRawEntry PositionDropTest(const std::shared_ptr<CRawFile>& rawFile, const uint32_t absoluteCharacterPosition)
+CRawEntry PositionDropTest(const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile, const uint32_t absoluteCharacterPosition)
 {
-    for (const auto& entry: rawFile->Content())
+    for (const auto& entry: linkerScriptFile->LexedContent())
 	{
         if ((absoluteCharacterPosition > entry.StartPosition() + 1) && absoluteCharacterPosition < entry.StartPosition() + entry.Length())
         {
@@ -655,10 +650,10 @@ CRawEntry PositionDropTest(const std::shared_ptr<CRawFile>& rawFile, const uint3
 }
 
 
-CRawEntry PrecedingBracketOpenOnLine(const std::shared_ptr<CRawFile>& rawFile, uint32_t line, const uint32_t absoluteCharacterPosition)
+CRawEntry PrecedingBracketOpenOnLine(const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile, uint32_t line, const uint32_t absoluteCharacterPosition)
 {
     CRawEntry candidate;
-    for (const auto& entry : rawFile->Content())
+    for (const auto& entry : linkerScriptFile->LexedContent())
     {
         if (entry.EntryType() == RawEntryType::BracketOpen &&
             entry.StartLineNumber() == line &&
@@ -676,9 +671,9 @@ CRawEntry PrecedingBracketOpenOnLine(const std::shared_ptr<CRawFile>& rawFile, u
     return candidate;
 }
 
-CRawEntry SupersedingBracketCloseOnLine(const std::shared_ptr<CRawFile>& rawFile, uint32_t line, const uint32_t absoluteCharacterPosition)
+CRawEntry SupersedingBracketCloseOnLine(const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile, uint32_t line, const uint32_t absoluteCharacterPosition)
 {    
-    for (const auto& entry : rawFile->Content())
+    for (const auto& entry : linkerScriptFile->LexedContent())
     {
         if (entry.EntryType() == RawEntryType::BracketClose &&
             entry.StartLineNumber() == line &&

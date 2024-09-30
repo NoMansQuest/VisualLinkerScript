@@ -2,12 +2,12 @@
 #define CSECTION_OVERLAY_H__
 
 #include <vector>
-#include "CLinkerScriptContentBase.h"
+#include "CParsedContentBase.h"
 
 namespace VisualLinkerScript::Models
 {
     /// @brief Represents a single 'Output' segment in the "SECTIONS"
-    class CSectionOverlayCommand : public CLinkerScriptContentBase
+    class CSectionOverlayCommand : public CParsedContentBase
     {   
     private:
         CRawEntry m_headerEntry;        
@@ -15,10 +15,10 @@ namespace VisualLinkerScript::Models
         CRawEntry m_noCrossRefsEntry;        
         CRawEntry m_bracketOpenEntry;
         CRawEntry m_bracketCloseEntry;                
-        SharedPtrVector<CLinkerScriptContentBase> m_preColonContent;
-        SharedPtrVector<CLinkerScriptContentBase> m_postColonContent;
-        SharedPtrVector<CLinkerScriptContentBase> m_endingContent;
-        SharedPtrVector<CLinkerScriptContentBase> m_innerContent;
+        SharedPtrVector<CParsedContentBase> m_preColonContent;
+        SharedPtrVector<CParsedContentBase> m_postColonContent;
+        SharedPtrVector<CParsedContentBase> m_endingContent;
+        SharedPtrVector<CParsedContentBase> m_innerContent;
 
     public:
         /// @brief Default constructor, accessible to inheritors only        
@@ -27,13 +27,13 @@ namespace VisualLinkerScript::Models
                                         const CRawEntry& noCrossRefsEntry,                                        
                                         const CRawEntry& bracketOpenEntry,
                                         const CRawEntry& bracketCloseEntry,                                                                                
-                                        const SharedPtrVector<CLinkerScriptContentBase>& preColonContent,
-                                        const SharedPtrVector<CLinkerScriptContentBase>& postColonContent,
-                                        const SharedPtrVector<CLinkerScriptContentBase>& innerContent,
-                                        const SharedPtrVector<CLinkerScriptContentBase>& endingContent,
+                                        const SharedPtrVector<CParsedContentBase>& preColonContent,
+                                        const SharedPtrVector<CParsedContentBase>& postColonContent,
+                                        const SharedPtrVector<CParsedContentBase>& innerContent,
+                                        const SharedPtrVector<CParsedContentBase>& endingContent,
                                         const std::vector<CRawEntry>& rawElements,
                                         const SharedPtrVector<CViolationBase>& violations)
-            : CLinkerScriptContentBase(rawElements, violations),
+            : CParsedContentBase(rawElements, violations),
               m_headerEntry(headerEntry),              
               m_colonEntry(colonEntry),
               m_noCrossRefsEntry(noCrossRefsEntry),              
@@ -72,25 +72,25 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief [Non-Optional] Reports the content defined inside the 'OVERLAY'
-        [[nodiscard]] const SharedPtrVector<CLinkerScriptContentBase>& InnerContent() const
+        [[nodiscard]] const SharedPtrVector<CParsedContentBase>& InnerContent() const
         {
             return this->m_innerContent;
         }
 
         /// @brief [Non-Optional] Reports the content defined inside between the header and colon
-        [[nodiscard]] const SharedPtrVector<CLinkerScriptContentBase>& PreColonContent() const
+        [[nodiscard]] const SharedPtrVector<CParsedContentBase>& PreColonContent() const
         {
             return this->m_preColonContent;
         }
 
         /// @brief [Non-Optional] Reports the content defined inside after the colon and before the bracket-open
-        [[nodiscard]] const SharedPtrVector<CLinkerScriptContentBase>& PostColonContent() const
+        [[nodiscard]] const SharedPtrVector<CParsedContentBase>& PostColonContent() const
         {
             return this->m_postColonContent;
         }
 
         /// @brief [Non-Optional] Reports the content defined inside after bracket-closure
-        [[nodiscard]] const SharedPtrVector<CLinkerScriptContentBase>& EndingContent() const
+        [[nodiscard]] const SharedPtrVector<CParsedContentBase>& EndingContent() const
         {
             return this->m_endingContent;
         }
@@ -100,6 +100,9 @@ namespace VisualLinkerScript::Models
         {
             return ContentType::SectionsOverlayStatement;
         }
+
+        /// @copydoc CParsedContentBase::AggregateViolation
+        [[nodiscard]] const SharedPtrVector<CViolationBase> AggregateViolation() const override;
 
         /// @brief Produces debug information on what this object represents.
         [[nodiscard]] const std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;

@@ -1,16 +1,30 @@
 #include <vector>
 #include <memory>
 #include <string>
-#include <stdint.h>
 
 #include "CExpression.h"
 #include "CLinkerScriptFile.h"
 #include "../ParsingEngine/CParserViolation.h"
 #include "../DrcEngine/CDrcViolation.h"
 
+using namespace VisualLinkerScript;
 using namespace VisualLinkerScript::Models;
 using namespace VisualLinkerScript::ParsingEngine;
 using namespace VisualLinkerScript::DrcEngine;
+
+const SharedPtrVector<CViolationBase> CExpression::AggregateViolation() const
+{
+    SharedPtrVector<CViolationBase> allViolations;
+    for (const auto& childEntry : this->Composition())
+    {
+        allViolations.insert(
+            allViolations.end(),
+            childEntry->AggregateViolation().cbegin(),
+            childEntry->AggregateViolation().cend());
+    }
+    allViolations.insert(allViolations.end(), this->Violations().begin(), this->Violations().end());
+    return allViolations; // Note: R-Value optimization ensures this vector isn't unnecessarily copied.
+}
 
 /// @brief Produces debug information on what this object represents.
 const std::string CExpression::ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const
@@ -43,7 +57,7 @@ const std::string CExpression::ToDebugInfo(uint32_t depth, const CLinkerScriptFi
                         MapParserViolationToCode(converted->Code()) +
                         " @line: " + std::to_string(converted->InvoledEntries()[0].StartLineNumber()) +
                         " @post: " + std::to_string(converted->InvoledEntries()[0].StartPosition()) +
-                        " content: " + ((converted->InvoledEntries().size() > 0) ? linkerScriptFile.ResolveEntryText(converted->InvoledEntries()[0]) : "<NONE>") +
+                        " content: " + ((converted->InvoledEntries().size() > 0) ? linkerScriptFile.ResolveRawEntry(converted->InvoledEntries()[0]) : "<NONE>") +
                         "\n";
                 break;
             }
@@ -56,7 +70,7 @@ const std::string CExpression::ToDebugInfo(uint32_t depth, const CLinkerScriptFi
                         std::to_string((uint32_t)converted->Code()) +
                         " @line: " + std::to_string(converted->InvolvedElements()[0]->RawEntries()[0].StartLineNumber()) +
                         " @pos: " + std::to_string(converted->InvolvedElements()[0]->RawEntries()[0].StartLineNumber()) +
-                        " content: " + ((converted->InvolvedElements().size() > 0) ? linkerScriptFile.ResolveEntryText(*converted->InvolvedElements()[0]) : "<NONE>") +
+                        " content: " + ((converted->InvolvedElements().size() > 0) ? linkerScriptFile.ResolveParsedContent(*converted->InvolvedElements()[0]) : "<NONE>") +
                         "\n";
                 break;
             }

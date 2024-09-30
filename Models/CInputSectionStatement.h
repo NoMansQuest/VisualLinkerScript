@@ -2,29 +2,29 @@
 #define CINPUT_SECTION_H__
 
 #include <vector>
-#include "CLinkerScriptContentBase.h"
+#include "CParsedContentBase.h"
 
 namespace VisualLinkerScript::Models
 {
     /// @brief Represents a Input-Section declaration
     /// @brief Example: *(.data)
-    class CInputSectionStatement : public CLinkerScriptContentBase
+    class CInputSectionStatement : public CParsedContentBase
     {
     private:
-        std::shared_ptr<CLinkerScriptContentBase> m_fileSelector;
+        std::shared_ptr<CParsedContentBase> m_fileSelector;
         CRawEntry m_openingParenthesis;
         CRawEntry m_closingParenthesis;
-        SharedPtrVector<CLinkerScriptContentBase> m_parsedContent;        
+        SharedPtrVector<CParsedContentBase> m_parsedContent;        
 
     public:
         /// @brief Default constructor, including desired sections
-        explicit CInputSectionStatement(const std::shared_ptr<CLinkerScriptContentBase>& fileSelector,
+        explicit CInputSectionStatement(const std::shared_ptr<CParsedContentBase>& fileSelector,
                                         const CRawEntry& openingParenthesis,
                                         const CRawEntry& closingParenthesis,
-                                        const SharedPtrVector<CLinkerScriptContentBase>& parsedContent,
+                                        const SharedPtrVector<CParsedContentBase>& parsedContent,
                                         const std::vector<CRawEntry>& rawElements,
                                         const SharedPtrVector<CViolationBase>& violations)
-            : CLinkerScriptContentBase(rawElements, violations),
+            : CParsedContentBase(rawElements, violations),
               m_fileSelector(fileSelector),
               m_openingParenthesis(openingParenthesis),
               m_closingParenthesis(closingParenthesis),
@@ -39,39 +39,42 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Reports back the list of parameters
-        const SharedPtrVector<CLinkerScriptContentBase>& ParsedContent() const
+        [[nodiscard]] const SharedPtrVector<CParsedContentBase>& ParsedContent() const
         {
             return this->m_parsedContent;
         }
 
         /// @brief Reports back the filter header
-        std::shared_ptr<CLinkerScriptContentBase> FileSelector() const
+        [[nodiscard]] std::shared_ptr<CParsedContentBase> FileSelector() const
         {
             return this->m_fileSelector;
         }
 
         /// @brief Reports back the opening parenthesis
-        const CRawEntry& OpeningParenthesis() const
+        [[nodiscard]] const CRawEntry& OpeningParenthesis() const
         {
             return this->m_openingParenthesis;
         }
 
         /// @brief Reports back the closing parenthesis
-        const CRawEntry& ClosingParenthesis() const
+        [[nodiscard]] const CRawEntry& ClosingParenthesis() const
         {
             return this->m_closingParenthesis;
         }
 
         /// @brief If true, the input-sections requested particular regions of target group
-        const bool AreCodeSectionsSpecified() const
+        [[nodiscard]] bool AreCodeSectionsSpecified() const
         {
             return m_openingParenthesis.IsPresent() &&
                    m_closingParenthesis.IsPresent() &&
                    !m_parsedContent.empty();
         }
 
+        /// @copydoc CParsedContentBase::AggregateViolation
+        [[nodiscard]] const SharedPtrVector<CViolationBase> AggregateViolation() const override;
+
         /// @brief Produces debug information on what this object represents.
-        const virtual std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;
+        [[nodiscard]] const std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;
     };
 }
 

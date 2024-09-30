@@ -2,12 +2,12 @@
 #define CSECTION_OUTPUT_FILL_EXPRESSION_H__
 
 #include <vector>
-#include "CLinkerScriptContentBase.h"
+#include "CParsedContentBase.h"
 
 namespace VisualLinkerScript::Models
 {
     /// @brief Represents an "AtLmaRegion" assigned to a "Section Output"
-    class CSectionOutputFillExpression : public CLinkerScriptContentBase
+    class CSectionOutputFillExpression : public CParsedContentBase
     {
     private:
         CRawEntry m_equalSign;
@@ -19,7 +19,7 @@ namespace VisualLinkerScript::Models
                                               const CRawEntry& fillExpressionValue,
                                               const std::vector<CRawEntry>& rawElements,
                                               const SharedPtrVector<CViolationBase>& violations)
-            : CLinkerScriptContentBase(rawElements, violations),
+            : CParsedContentBase(rawElements, violations),
               m_equalSign(equalSign),
               m_fillExpressionValue(fillExpressionValue)
         {}
@@ -41,6 +41,11 @@ namespace VisualLinkerScript::Models
         const CRawEntry& FillExpressionValue()
         {
             return this->m_fillExpressionValue;
+        }
+
+        /// @copydoc CParsedContentBase::AggregateViolation
+        [[nodiscard]] const SharedPtrVector<CViolationBase> AggregateViolation() const override {
+            return this->Violations();	        
         }
     };
 }

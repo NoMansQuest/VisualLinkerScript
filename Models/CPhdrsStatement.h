@@ -3,19 +3,19 @@
 
 #include <vector>
 #include <memory>
-#include "CLinkerScriptContentBase.h"
+#include "CParsedContentBase.h"
 
 namespace VisualLinkerScript::Models
 {
     /// @brief Represents a single entry in the PHDRS region
-    class CPhdrsStatement : public CLinkerScriptContentBase
+    class CPhdrsStatement : public CParsedContentBase
     {   
     private:
         CRawEntry m_headerNameEntry;
         CRawEntry m_headerTypeEntry;
         CRawEntry m_fileHdrEntry;
-        std::shared_ptr<CLinkerScriptContentBase> m_atAddressFunction;
-        std::shared_ptr<CLinkerScriptContentBase> m_flagsFunction;
+        std::shared_ptr<CParsedContentBase> m_atAddressFunction;
+        std::shared_ptr<CParsedContentBase> m_flagsFunction;
         CRawEntry m_semicolonEntry;
 
     public:
@@ -23,12 +23,12 @@ namespace VisualLinkerScript::Models
         explicit CPhdrsStatement(const CRawEntry& headerNameEntry,
                                  const CRawEntry& headerTypeEntry,
                                  const CRawEntry& fileHdrEntry,
-                                 const std::shared_ptr<CLinkerScriptContentBase>& atAddressFunction,
-                                 const std::shared_ptr<CLinkerScriptContentBase>& flagsFunction,
+                                 const std::shared_ptr<CParsedContentBase>& atAddressFunction,
+                                 const std::shared_ptr<CParsedContentBase>& flagsFunction,
                                  const CRawEntry& semicolonEntry,
                                  const std::vector<CRawEntry>& rawElements, 
                                  const SharedPtrVector<CViolationBase>& violations)
-            : CLinkerScriptContentBase(rawElements, violations),
+            : CParsedContentBase(rawElements, violations),
               m_headerNameEntry(headerNameEntry),
               m_headerTypeEntry(headerTypeEntry),
               m_fileHdrEntry(fileHdrEntry),
@@ -40,41 +40,44 @@ namespace VisualLinkerScript::Models
         /// @brief Reports back the type of this object.        
         ContentType Type() override
         {
-            return ContentType::PhdrsStatement;
+            return ContentType::ProgramHeaderStatement;
         }
 
         /// @brief Reports back the Header-Name Entry
-        const CRawEntry& HeaderNameEntry() const
+        [[nodiscard]] const CRawEntry& HeaderNameEntry() const
         {
             return this->m_headerNameEntry;
         }
 
         /// @brief Reports back the Header-Type Entry
-        const CRawEntry& HeaderTypeEntry() const
+        [[nodiscard]] const CRawEntry& HeaderTypeEntry() const
         {
             return this->m_headerTypeEntry;
         }
 
         /// @brief Reports back the 'AT(ADDRESS)'
-        const std::shared_ptr<CLinkerScriptContentBase> AtAddressFunction() const
+        [[nodiscard]] std::shared_ptr<CParsedContentBase> AtAddressFunction() const
         {
             return this->m_atAddressFunction;
         }
 
         /// @brief Reports back the Flags function
-        const std::shared_ptr<CLinkerScriptContentBase> FlagsFunction() const
+        [[nodiscard]] std::shared_ptr<CParsedContentBase> FlagsFunction() const
         {
             return this->m_flagsFunction;
         }
 
         /// @brief Reports back the Semicolon Entry
-        const CRawEntry& SemicolonEntry() const
+        [[nodiscard]] const CRawEntry& SemicolonEntry() const
         {
             return this->m_semicolonEntry;
         }
 
+        /// @copydoc CParsedContentBase::AggregateViolation
+        [[nodiscard]] virtual const SharedPtrVector<CViolationBase> AggregateViolation() const;
+
         /// @brief Produces debug information on what this object represents.
-        const virtual std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;
+        [[nodiscard]] const std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;
     };
 }
 

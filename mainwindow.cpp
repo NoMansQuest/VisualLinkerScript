@@ -64,7 +64,7 @@ void MainWindow::InitializeLinkerScriptManager()
     // Create Untitled session
     auto linkerScriptSession = this->m_linkerScriptManager->CreateSessionForUntitled();
     auto tabId = this->m_contentTabRegion->AddTab(linkerScriptSession, false);    
-    auto formattedFileName = StringFormat("*%s", linkerScriptSession->SessionFileInfo().FileName().c_str());
+    auto formattedFileName = StringFormat("*%s", linkerScriptSession->LinkerScriptFile()->FileName().c_str());
     this->m_contentTabRegion->SetTabTitle(tabId, QString::fromStdString(formattedFileName));    
 }
 
@@ -119,7 +119,7 @@ void MainWindow::MenuActionNewFile()
 {        
     auto linkerScriptSession = this->m_linkerScriptManager->CreateSessionForUntitled();
     auto tabId = this->m_contentTabRegion->AddTab(linkerScriptSession, false);
-    auto formattedFileName = StringFormat("*%s", linkerScriptSession->SessionFileInfo().FileName().c_str());
+    auto formattedFileName = StringFormat("*%s", linkerScriptSession->LinkerScriptFile()->FileName().c_str());
     this->m_contentTabRegion->SetTabTitle(tabId, QString::fromStdString(formattedFileName));
     this->m_contentTabRegion->NavigateToTab(tabId);
 }
@@ -153,17 +153,17 @@ void MainWindow::MenuActionOpenFile()
     MD5::CMD5Hasher md5Hash(fileContent.c_str(), fileInfo.size(), signatureBuffer);
     MD5::sig_to_string(signatureBuffer, signatureString, 64);
 
-    CLinkerScriptSessionFileInfo sessionFileInfo(
-        true,
+    auto linkerScriptFile = std::make_shared<CLinkerScriptFile>(
         fileName.toStdString(),
         fileInfo.fileName().toStdString(),
-        fileInfo.absolutePath().toStdString(),
-        std::string(signatureString));        
+        fileInfo.absoluteFilePath().toStdString(),
+        true,
+        signatureString);
 
-    auto linkerScriptSession = this->m_linkerScriptManager->CreateSessionForExistingFile(sessionFileInfo);
-    linkerScriptSession->SetLinkerScriptContent(fileContent);
+    auto linkerScriptSession = this->m_linkerScriptManager->CreateSessionForExistingFile(linkerScriptFile);
+    linkerScriptSession->UpdateContent(fileContent);
     auto tabId = this->m_contentTabRegion->AddTab(linkerScriptSession, false);        
-    this->m_contentTabRegion->SetTabTitle(tabId, QString::fromStdString(sessionFileInfo.FileName()));    
+    this->m_contentTabRegion->SetTabTitle(tabId, QString::fromStdString(linkerScriptFile->FileName()));
     this->m_contentTabRegion->NavigateToTab(tabId);    
 }
 

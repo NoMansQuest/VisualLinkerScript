@@ -17,7 +17,7 @@
 
 #include "../Models/CComment.h"
 #include "../Models/CIncludeCommand.h"
-#include "../Models/CLinkerScriptContentBase.h"
+#include "../Models/CParsedContentBase.h"
 #include "../Models/Raw/RawEntryType.h"
 
 #include "../../../../Helpers.h"
@@ -39,38 +39,38 @@ CFunctionParser multiParameterFunctionParser(false, true);
 bool TryParseLinkerScriptMasterBlocks(
         const std::string& resolvedContent,
         SharedPtrVector<CViolationBase>& violations,
-        SharedPtrVector<CLinkerScriptContentBase>& parsedContent,
+        SharedPtrVector<CParsedContentBase>& parsedContent,
         std::vector<CRawEntry>::const_iterator& entryIterator,
-        std::vector<CRawEntry>::const_iterator endOfVectorIterator,
-        std::shared_ptr<CRawFile> rawFile); // i.e. MEMORY, VERSION, ETC.
+        const std::vector<CRawEntry>::const_iterator& endOfVectorIterator,
+        const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile); // i.e. MEMORY, VERSION, ETC.
 
 bool TryParseFunctionAndAssignmentProcedureCalls(
         const std::string& resolvedContent,
         SharedPtrVector<CViolationBase>& violations,
-        SharedPtrVector<CLinkerScriptContentBase>& parsedContent,
+        SharedPtrVector<CParsedContentBase>& parsedContent,
         std::vector<CRawEntry>::const_iterator& entryIterator,
-        std::vector<CRawEntry>::const_iterator endOfVectorIterator,
-        std::shared_ptr<CRawFile> rawFile); // ENTRY(....) or, PROVIDE(X=Y);, etc.
+        const std::vector<CRawEntry>::const_iterator& endOfVectorIterator,
+        const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile); // ENTRY(....) or, PROVIDE(X=Y);, etc.
 
 bool TryParseAssignments(
         const std::string& resolvedContent,
         SharedPtrVector<CViolationBase>& violations,
-        SharedPtrVector<CLinkerScriptContentBase>& parsedContent,
+        SharedPtrVector<CParsedContentBase>& parsedContent,
         std::vector<CRawEntry>::const_iterator& entryIterator,
         const std::vector<CRawEntry>::const_iterator& endOfVectorIterator,
-        std::shared_ptr<CRawFile> rawFile);
+        const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile);
 
 void CLinkerScriptParser::ParseLinkerScriptFile(std::shared_ptr<CLinkerScriptFile> linkerScriptFile)
 {
-    std::vector<CRawEntry>::const_iterator localIterator = linkerScriptFile->RawFile()->Content().cbegin();
-    std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = linkerScriptFile->RawFile()->Content().cbegin();
-    std::vector<CRawEntry>::const_iterator endOfVectorIterator = linkerScriptFile->RawFile()->Content().cend();
-    SharedPtrVector<CLinkerScriptContentBase> parsedContent;
+    std::vector<CRawEntry>::const_iterator localIterator = linkerScriptFile->LexedContent().cbegin();
+    std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = linkerScriptFile->LexedContent().cbegin();
+    std::vector<CRawEntry>::const_iterator endOfVectorIterator = linkerScriptFile->LexedContent().cend();
+    SharedPtrVector<CParsedContentBase> parsedContent;
     SharedPtrVector<CViolationBase> violations;
 
     while (localIterator != endOfVectorIterator)
     {
-        auto resolvedContent = linkerScriptFile->ResolveEntryText(*localIterator);
+        auto resolvedContent = linkerScriptFile->ResolveRawEntry(*localIterator);
         switch (localIterator->EntryType())
         {
             case RawEntryType::Comment:
@@ -81,17 +81,17 @@ void CLinkerScriptParser::ParseLinkerScriptFile(std::shared_ptr<CLinkerScriptFil
 
             case RawEntryType::Word:
             {
-                if (TryParseLinkerScriptMasterBlocks(resolvedContent, violations, parsedContent, localIterator, endOfVectorIterator, linkerScriptFile->RawFile()))
+                if (TryParseLinkerScriptMasterBlocks(resolvedContent, violations, parsedContent, localIterator, endOfVectorIterator, linkerScriptFile))
                 {
                     break;
                 }
 
-            	if (TryParseFunctionAndAssignmentProcedureCalls(resolvedContent, violations, parsedContent, localIterator, endOfVectorIterator, linkerScriptFile->RawFile()))
+            	if (TryParseFunctionAndAssignmentProcedureCalls(resolvedContent, violations, parsedContent, localIterator, endOfVectorIterator, linkerScriptFile))
                 {
                     break;
                 }
 
-            	if (TryParseAssignments(resolvedContent, violations, parsedContent, localIterator, endOfVectorIterator, linkerScriptFile->RawFile()))
+            	if (TryParseAssignments(resolvedContent, violations, parsedContent, localIterator, endOfVectorIterator, linkerScriptFile))
                 {
                     break;
                 }
@@ -136,71 +136,70 @@ void CLinkerScriptParser::ParseLinkerScriptFile(std::shared_ptr<CLinkerScriptFil
                         "Unrecognized raw-entry type detected.");
         }
 
-        // Can't advance an interator beyond 'endOfVector'.
+        // Can't advance an iterator beyond 'endOfVector'.
         if (localIterator != endOfVectorIterator) {
-            localIterator++;
+            ++localIterator;
         }
     }
 
     // And finally record our output...
-    linkerScriptFile->UpdateParsedContent(parsedContent);
-    linkerScriptFile->UpdateParserViolations(violations);
+    linkerScriptFile->UpdateParsedContent(parsedContent, violations);
 }
 
 bool TryParseLinkerScriptMasterBlocks(
         const std::string& resolvedContent,
         SharedPtrVector<CViolationBase>& violations,
-        SharedPtrVector<CLinkerScriptContentBase>& parsedContent,
+        SharedPtrVector<CParsedContentBase>& parsedContent,
         std::vector<CRawEntry>::const_iterator& entryIterator,
-        std::vector<CRawEntry>::const_iterator endOfVectorIterator,
-        std::shared_ptr<CRawFile> rawFile)
+        const std::vector<CRawEntry>::const_iterator& endOfVectorIterator,
+        const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile)
 {
     if (StringEquals(resolvedContent, "MEMORY", false))
     {
-        auto parsedMemoryRegion = memoryParserRegion.TryParse(*rawFile, entryIterator, endOfVectorIterator);
+        auto parsedMemoryRegion = memoryParserRegion.TryParse(*linkerScriptFile, entryIterator, endOfVectorIterator);
         if (parsedMemoryRegion == nullptr)
         {
             violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*entryIterator, EParserViolationCode::MemoryRegionParsingFailed)));
         }
         else
         {
-            parsedContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(parsedMemoryRegion));
+            parsedContent.emplace_back(std::dynamic_pointer_cast<CParsedContentBase>(parsedMemoryRegion));
         }
     }
     else if (StringEquals(resolvedContent, "SECTIONS", false))
     {
-        auto parsedSectionsRegion = sectionsRegionParser.TryParse(*rawFile, entryIterator, endOfVectorIterator);
+        auto parsedSectionsRegion = sectionsRegionParser.TryParse(*linkerScriptFile, entryIterator, endOfVectorIterator);
         if (parsedSectionsRegion == nullptr)
         {
             violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*entryIterator, EParserViolationCode::SectionsRegionParsingFailed)));
         }
         else
         {
-            parsedContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(parsedSectionsRegion));
+            parsedContent.emplace_back(std::dynamic_pointer_cast<CParsedContentBase>(parsedSectionsRegion));
         }
     }
     else if (StringEquals(resolvedContent, "PHDRS", false))
     {
-        auto parsedPhdrsRegion = phdrsRegionParser.TryParse(*rawFile, entryIterator, endOfVectorIterator);
+        auto parsedPhdrsRegion = phdrsRegionParser.TryParse(*linkerScriptFile, entryIterator, endOfVectorIterator);
         if (parsedPhdrsRegion == nullptr)
         {
             violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*entryIterator, EParserViolationCode::PhdrsRegionParsingFailed)));
         }
         else
         {
-            parsedContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(parsedPhdrsRegion));
+            parsedContent.emplace_back(std::dynamic_pointer_cast<CParsedContentBase>(parsedPhdrsRegion));
         }
     }
     else if (StringEquals(resolvedContent, "VERSION", false))
     {
-        auto parsedVersionRegion = versionRegionParser.TryParse(*rawFile, entryIterator, endOfVectorIterator);
+        auto parsedVersionRegion = versionRegionParser.TryParse(*linkerScriptFile, entryIterator, endOfVectorIterator);
         if (parsedVersionRegion == nullptr)
         {
             violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*entryIterator, EParserViolationCode::VersionRegionParsingFailed)));
         }
         else
         {
-            parsedContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(parsedVersionRegion));
+            parsedContent.emplace_back(std::dynamic_pointer_cast<CParsedContentBase>(parsedVersionRegion));
         }
     }
     else
@@ -214,10 +213,10 @@ bool TryParseLinkerScriptMasterBlocks(
 bool TryParseFunctionAndAssignmentProcedureCalls(
         const std::string& resolvedContent,
         SharedPtrVector<CViolationBase>& violations,
-        SharedPtrVector<CLinkerScriptContentBase>& parsedContent,
+        SharedPtrVector<CParsedContentBase>& parsedContent,
         std::vector<CRawEntry>::const_iterator& entryIterator,
-        std::vector<CRawEntry>::const_iterator endOfVectorIterator,
-        std::shared_ptr<CRawFile> rawFile)
+        const std::vector<CRawEntry>::const_iterator& endOfVectorIterator,
+        const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile)
 {
     CRawEntry rawEntryPlusOne;
     if (entryIterator + 1 != endOfVectorIterator)
@@ -229,38 +228,38 @@ bool TryParseFunctionAndAssignmentProcedureCalls(
     if (StringEquals(resolvedContent, "INCLUDE", false) && rawEntryPlusOne.IsPresent() && ((rawEntryPlusOne.EntryType() == RawEntryType::String) || (rawEntryPlusOne.EntryType() == RawEntryType::Word)))
     {
         auto parsedIncludeCommand = std::shared_ptr<CIncludeCommand>(new CIncludeCommand(*entryIterator, rawEntryPlusOne, {*entryIterator, rawEntryPlusOne},{}));
-        parsedContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(parsedIncludeCommand));
+        parsedContent.emplace_back(std::dynamic_pointer_cast<CParsedContentBase>(parsedIncludeCommand));
         ++entryIterator; // Manually advance the iterator by 1. The master loop will also advance it again, ensuring normal operation of the parser.
     }
     else if (StringIn(resolvedContent, {"INPUT", "GROUP", "AS_NEEDED"}, false))
     {
-        auto parsedMultiParamFunctionCall = multiParameterFunctionParser.TryParse(*rawFile, entryIterator, endOfVectorIterator);
+        auto parsedMultiParamFunctionCall = multiParameterFunctionParser.TryParse(*linkerScriptFile, entryIterator, endOfVectorIterator);
         if (parsedMultiParamFunctionCall == nullptr)
         {
             return false;
         }
 
-        parsedContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(parsedMultiParamFunctionCall));
+        parsedContent.emplace_back(std::dynamic_pointer_cast<CParsedContentBase>(parsedMultiParamFunctionCall));
     }
     else if (StringIn(resolvedContent, {"OUTPUT", "SEARCH_DIR", "STARTUP"}, false) || CParserHelpers::IsFunctionName(resolvedContent))
     {
-        auto parsedSingleParamFunctionCall = singleParameterFunctionParser.TryParse(*rawFile, entryIterator, endOfVectorIterator);
+        auto parsedSingleParamFunctionCall = singleParameterFunctionParser.TryParse(*linkerScriptFile, entryIterator, endOfVectorIterator);
         if (parsedSingleParamFunctionCall == nullptr)
         {
             return false;
         }
 
-        parsedContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(parsedSingleParamFunctionCall));
+        parsedContent.emplace_back(std::dynamic_pointer_cast<CParsedContentBase>(parsedSingleParamFunctionCall));
     }
     else if (CParserHelpers::IsAssignmentProcedure(resolvedContent))
     {
-        auto assignmentProcedureStatement = assignmentProcedureParser.TryParse(*rawFile, entryIterator, endOfVectorIterator);
+        auto assignmentProcedureStatement = assignmentProcedureParser.TryParse(*linkerScriptFile, entryIterator, endOfVectorIterator);
         if (assignmentProcedureStatement == nullptr)
         {
             return false;
         }
 
-        parsedContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(assignmentProcedureStatement));
+        parsedContent.emplace_back(std::dynamic_pointer_cast<CParsedContentBase>(assignmentProcedureStatement));
     }
     else
     {
@@ -273,18 +272,18 @@ bool TryParseFunctionAndAssignmentProcedureCalls(
 bool TryParseAssignments(
         const std::string& resolvedContent,
         SharedPtrVector<CViolationBase>& violations,
-        SharedPtrVector<CLinkerScriptContentBase>& parsedContent,
+        SharedPtrVector<CParsedContentBase>& parsedContent,
         std::vector<CRawEntry>::const_iterator& entryIterator,
         const std::vector<CRawEntry>::const_iterator& endOfVectorIterator,
-        std::shared_ptr<CRawFile> rawFile)
+        const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile)
 {
-    auto parsedAssignment = assignmentParser.TryParse(*rawFile, entryIterator, endOfVectorIterator);
+    auto parsedAssignment = assignmentParser.TryParse(*linkerScriptFile, entryIterator, endOfVectorIterator);
     if (parsedAssignment == nullptr)
     {
         return false;
     }
 
-    parsedContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(parsedAssignment));
+    parsedContent.emplace_back(std::dynamic_pointer_cast<CParsedContentBase>(parsedAssignment));
     return true;
 }
 

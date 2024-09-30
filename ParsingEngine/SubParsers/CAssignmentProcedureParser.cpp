@@ -10,7 +10,7 @@
 
 #include "../../Models/CComment.h"
 #include "../../Models/CAssignmentStatement.h"
-#include "../../Models/Raw/CRawEntry.h"
+#include "../../Models/CLinkerScriptFile.h"
 #include "../../Models/CAssignmentProcedureStatement.h"
 #include "../CParserViolation.h"
 #include "../EParserViolationCode.h"
@@ -33,7 +33,7 @@ namespace
 }
 
 std::shared_ptr<CAssignmentProcedureStatement> CAssignmentProcedureParser::TryParse(
-        CRawFile& linkerScriptFile,
+        const CLinkerScriptFile& linkerScriptFile,
         std::vector<CRawEntry>::const_iterator& iterator,
         std::vector<CRawEntry>::const_iterator endOfVectorIterator)
 {
@@ -41,7 +41,7 @@ std::shared_ptr<CAssignmentProcedureStatement> CAssignmentProcedureParser::TryPa
     auto parsingStartIteratorPosition = iterator;
     auto parserState = ParserState::AwaitingProcedureName;
 
-    std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
+    std::vector<std::shared_ptr<CParsedContentBase>> parsedContent;
     SharedPtrVector<CViolationBase> violations;
 
     CRawEntry procedureNameEntry;

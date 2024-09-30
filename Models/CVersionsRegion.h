@@ -2,15 +2,15 @@
 #define CVERSIONS_REGION_H__
 
 #include <vector>
-#include "CLinkerScriptContentBase.h"
+#include "CParsedContentBase.h"
 
 namespace VisualLinkerScript::Models
 {
     /// @brief Represents the VERSIONS region in the Linker-Script.
-    class CVersionsRegion : public CLinkerScriptContentBase
+    class CVersionsRegion : public CParsedContentBase
     {  
     private:
-        SharedPtrVector<CLinkerScriptContentBase> m_versionNodes;
+        SharedPtrVector<CParsedContentBase> m_versionNodes;
         CRawEntry m_openingBracketEntry;
         CRawEntry m_closingBracketEntry;
         CRawEntry m_versionHeaderEntry;
@@ -20,10 +20,10 @@ namespace VisualLinkerScript::Models
         explicit CVersionsRegion(const CRawEntry& versionHeaderEntry,
                                  const CRawEntry& openingBracketEntry,
                                  const CRawEntry& closingBracketEntry,
-                                 const SharedPtrVector<CLinkerScriptContentBase>& versionNodes,
+                                 const SharedPtrVector<CParsedContentBase>& versionNodes,
                                  const std::vector<CRawEntry>& rawElements,
                                  const SharedPtrVector<CViolationBase>& violations)
-            : CLinkerScriptContentBase(rawElements, violations),
+            : CParsedContentBase(rawElements, violations),
               m_versionNodes(versionNodes),
               m_openingBracketEntry(openingBracketEntry),
               m_closingBracketEntry(closingBracketEntry),
@@ -34,11 +34,11 @@ namespace VisualLinkerScript::Models
         /// @brief Reports back the type of this object.        
         ContentType Type() override
         {
-            return ContentType::PhdrsRegion;
+            return ContentType::ProgramHeaderRegion;
         }
 
         /// @brief Reports back PHDR statements
-        const SharedPtrVector<CLinkerScriptContentBase>& Nodes()
+        const SharedPtrVector<CParsedContentBase>& Nodes()
         {
             return m_versionNodes;
         }
@@ -59,6 +59,11 @@ namespace VisualLinkerScript::Models
         [[nodiscard]] CRawEntry ClosingBracketEntry()
         {
             return this->m_closingBracketEntry;
+        }
+
+        /// @copydoc CParsedContentBase::AggregateViolation
+        [[nodiscard]] const SharedPtrVector<CViolationBase> AggregateViolation() const override {
+            return this->Violations();
         }
     };
 }

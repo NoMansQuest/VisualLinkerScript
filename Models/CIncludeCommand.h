@@ -2,12 +2,12 @@
 #define CINCLUDE_COMMAND_H__
 
 #include <vector>
-#include "CLinkerScriptContentBase.h"
+#include "CParsedContentBase.h"
 
 namespace VisualLinkerScript::Models
 {
     /// @brief Represents an "Include" command, found at linker script file root
-    class CIncludeCommand : public CLinkerScriptContentBase
+    class CIncludeCommand : public CParsedContentBase
     {
     private:
         CRawEntry m_includeCommandHeaderEntry;
@@ -19,7 +19,7 @@ namespace VisualLinkerScript::Models
                                  const CRawEntry& includeFileEntry,
                                  const std::vector<CRawEntry>& rawElements,
                                  const SharedPtrVector<CViolationBase>& violations)
-            : CLinkerScriptContentBase(rawElements, violations),
+            : CParsedContentBase(rawElements, violations),
               m_includeCommandHeaderEntry(includeCommandHeaderEntry),
               m_includeFileEntry(includeFileEntry)
         {}
@@ -38,6 +38,11 @@ namespace VisualLinkerScript::Models
         /// @brief Reports the entry contianing the "file" part
         const CRawEntry& IncludeFileEntry() {
             return this->m_includeFileEntry;
+        }
+
+        /// @copydoc CParsedContentBase::AggregateViolation
+        [[nodiscard]] const SharedPtrVector<CViolationBase> AggregateViolation() const override {
+            return this->Violations();
         }
     };
 }

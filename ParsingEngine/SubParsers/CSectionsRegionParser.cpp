@@ -44,7 +44,7 @@ namespace
 }
 
 std::shared_ptr<CSectionsRegion> CSectionsRegionParser::TryParse(
-        CRawFile& linkerScriptFile,
+		const CLinkerScriptFile& linkerScriptFile,
         std::vector<CRawEntry>::const_iterator& iterator,
         std::vector<CRawEntry>::const_iterator endOfVectorIterator)
 {
@@ -63,7 +63,7 @@ std::shared_ptr<CSectionsRegion> CSectionsRegionParser::TryParse(
     CRawEntry headerEntry;
     CRawEntry bracketOpenEntry;
     CRawEntry bracketCloseEntry;
-    std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
+    std::vector<std::shared_ptr<CParsedContentBase>> parsedContent;
 
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
     {
@@ -93,7 +93,7 @@ std::shared_ptr<CSectionsRegion> CSectionsRegionParser::TryParse(
         {
             case RawEntryType::Comment:
             {
-                std::shared_ptr<CLinkerScriptContentBase> commentObject(new CComment({*localIterator}, {}));
+                std::shared_ptr<CParsedContentBase> commentObject(new CComment({*localIterator}, {}));
                 parsedContent.emplace_back(commentObject);
                 break;
             }
@@ -160,7 +160,7 @@ std::shared_ptr<CSectionsRegion> CSectionsRegionParser::TryParse(
                             }
                             else
                             {
-                                parsedContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(parsedOverlayStatement));
+                                parsedContent.emplace_back(std::dynamic_pointer_cast<CParsedContentBase>(parsedOverlayStatement));
                             }
                         }
                         else if (CParserHelpers::IsOutputSectionDataFunctionName(resolvedContent))
@@ -172,7 +172,7 @@ std::shared_ptr<CSectionsRegion> CSectionsRegionParser::TryParse(
                             }
                             else
                             {
-                                parsedContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(parsedFunction));
+                                parsedContent.emplace_back(std::dynamic_pointer_cast<CParsedContentBase>(parsedFunction));
                             }
                         }
                         else if (CParserHelpers::IsAssignmentProcedure(resolvedContent))
@@ -184,7 +184,7 @@ std::shared_ptr<CSectionsRegion> CSectionsRegionParser::TryParse(
                             }
                             else
                             {
-                                parsedContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(parsedAssignmentProcedure));
+                                parsedContent.emplace_back(std::dynamic_pointer_cast<CParsedContentBase>(parsedAssignmentProcedure));
                             }
                         }
                         else
@@ -201,12 +201,12 @@ std::shared_ptr<CSectionsRegion> CSectionsRegionParser::TryParse(
                                 }
                                 else
                                 {
-                                    parsedContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(sectionOutputCommand));
+                                    parsedContent.emplace_back(std::dynamic_pointer_cast<CParsedContentBase>(sectionOutputCommand));
                                 }
                             }
                             else
                             {
-                                parsedContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(parsedAssignment));
+                                parsedContent.emplace_back(std::dynamic_pointer_cast<CParsedContentBase>(parsedAssignment));
                             }
                         }
                         break;

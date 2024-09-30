@@ -1,5 +1,4 @@
 #include "QLinkerScriptManager.h"
-#include "../Components/QLinkerScriptSession/CLinkerScriptSessionFileInfo.h"
 #include "../Components/QLinkerScriptSession/QLinkerScriptSession.h"
 
 /// @brief Create a new session for an 'untitled' linker script.
@@ -12,7 +11,7 @@ std::shared_ptr<QLinkerScriptSession> QLinkerScriptManager::CreateSessionForUnti
         bool matchFound = false;
         auto iterator = std::find_if(this->m_sessions.begin(), this->m_sessions.end(), [=](const std::shared_ptr<QLinkerScriptSession>& entry)
         {
-            return StringEquals(StringFormat(untitledFileNameTemplate, proposedIndex), entry->SessionFileInfo().FileName());
+            return StringEquals(StringFormat(untitledFileNameTemplate, proposedIndex), entry->LinkerScriptFile()->FileName());
         });
         if (iterator != this->m_sessions.end())
         {
@@ -20,20 +19,21 @@ std::shared_ptr<QLinkerScriptSession> QLinkerScriptManager::CreateSessionForUnti
         }        
         break;
     }
-
+        
     auto newSessionId = this->m_sessionIdHolder++;
     auto targetFileName = StringFormat(untitledFileNameTemplate, proposedIndex);
-    auto newSession = std::make_shared<QLinkerScriptSession>(newSessionId, CLinkerScriptSessionFileInfo(false, "", targetFileName, "", ""));
+    auto linkerScriptFile = std::make_shared<Models::CLinkerScriptFile>(targetFileName, "", "", false);
+    auto newSession = std::make_shared<QLinkerScriptSession>(newSessionId, linkerScriptFile);
     this->m_sessions.emplace_back(newSession);
     emit this->evNewSessionCreated(newSession);
     return newSession;
 }
 
 /// @brief Creates a new session based on an existing file on the disk
-std::shared_ptr<QLinkerScriptSession> QLinkerScriptManager::CreateSessionForExistingFile(CLinkerScriptSessionFileInfo existingFileInfo)
+std::shared_ptr<QLinkerScriptSession> QLinkerScriptManager::CreateSessionForExistingFile(std::shared_ptr<Models::CLinkerScriptFile> linkerScriptFile)
 {
     auto newSessionId = this->m_sessionIdHolder++;
-    auto newSession = std::make_shared<QLinkerScriptSession>(newSessionId, existingFileInfo);
+    auto newSession = std::make_shared<QLinkerScriptSession>(newSessionId, linkerScriptFile);
     this->m_sessions.emplace_back(newSession);
     emit this->evNewSessionCreated(newSession);
     return newSession;

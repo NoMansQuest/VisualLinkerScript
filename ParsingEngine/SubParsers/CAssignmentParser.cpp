@@ -8,6 +8,7 @@
 
 #include "../CMasterParserException.h"
 
+#include "../../Models/CLinkerScriptFile.h"
 #include "../../Models/CComment.h"
 #include "../../Models/Raw/CRawEntry.h"
 #include "../../Models/CAssignmentStatement.h"
@@ -34,13 +35,13 @@ namespace
 }
 
 std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
-        CRawFile& linkerScriptFile,
+        const CLinkerScriptFile& linkerScriptFile,
         std::vector<CRawEntry>::const_iterator& iterator,
         std::vector<CRawEntry>::const_iterator endOfVectorIterator)
 {
     auto localIterator = iterator;
     auto parsingStartIteratorPosition = iterator;
-    SharedPtrVector<CLinkerScriptContentBase> parsedContent;
+    SharedPtrVector<CParsedContentBase> parsedContent;
     SharedPtrVector<CViolationBase> violations;
 
     auto parserState = ParserState::AwaitingLValue;

@@ -23,7 +23,7 @@ SharedPtrVector<CViolationBase> CEntryIsDefinedRule::PerformCheck(const std::sha
     auto foundDirectives = QueryObject<CFunctionCall>(
 		linkerScriptFile,
 	    [&](const std::shared_ptr<CLinkerScriptFile>& localLinkerScriptFile, const std::shared_ptr<CFunctionCall>& resolveEntryText) {
-		    return StringEquals(localLinkerScriptFile->ResolveEntryText(resolveEntryText->FunctionName()), "ENTRY", true);
+		    return StringEquals(localLinkerScriptFile->ResolveParsedContent(resolveEntryText->FunctionName()), "ENTRY", true);
 	    });
 
 	if (foundDirectives.size() > 1)

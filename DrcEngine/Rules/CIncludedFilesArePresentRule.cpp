@@ -21,7 +21,7 @@ SharedPtrVector<CViolationBase> CInputFilesAreFoundRule::PerformCheck(const std:
     const auto foundIncludeCommands = QueryObject<CIncludeCommand>(linkerScriptFile);
     for (const auto includeCommandResult: foundIncludeCommands) {
         // Check if file exists        
-        auto targetFile = includeCommandResult->LinkerScriptFile()->ResolveEntryText(includeCommandResult->Result()->IncludeFileEntry());
+        auto targetFile = includeCommandResult->LinkerScriptFile()->ResolveParsedContent(includeCommandResult->Result()->IncludeFileEntry());
 
         // Check if any other file has the name described
         auto targetFileFound = false;
@@ -44,7 +44,7 @@ SharedPtrVector<CViolationBase> CInputFilesAreFoundRule::PerformCheck(const std:
         auto errorMessage = StringFormat("Included files are expected to be present, but '{}' was not found", targetFile);
         violations.emplace_back(std::static_pointer_cast<CViolationBase>(std::shared_ptr<CDrcViolation>(new CDrcViolation(
 	        std::vector{
-		        std::dynamic_pointer_cast<CLinkerScriptContentBase>(includeCommandResult->Result())
+		        std::dynamic_pointer_cast<CParsedContentBase>(includeCommandResult->Result())
 	        },
 	        this->DrcRuleTitle(),
 	        errorMessage,

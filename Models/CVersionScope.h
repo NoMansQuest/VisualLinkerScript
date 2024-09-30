@@ -2,13 +2,13 @@
 #define CVERSION_SCOPE_H__
 
 #include <vector>
-#include "CLinkerScriptContentBase.h"
+#include "CParsedContentBase.h"
 #include "Raw/CRawEntry.h"
 
 namespace VisualLinkerScript::Models
 {
     /// @brief Represents a single entry in a version-node inside the "VERSIONS" region
-    class CVersionScope : public CLinkerScriptContentBase
+    class CVersionScope : public CParsedContentBase
     {   
     private:
         CRawEntry m_scopeNameEntry;
@@ -16,7 +16,7 @@ namespace VisualLinkerScript::Models
         CRawEntry m_openingBracketEntry;
         CRawEntry m_closingBracketEntry;
         CRawEntry m_semicolonDelimiterEntry;
-        SharedPtrVector<CLinkerScriptContentBase> m_parsedContent;
+        SharedPtrVector<CParsedContentBase> m_parsedContent;
 
     public:
         /// @brief Default constructor, accessible to inheritors only
@@ -25,10 +25,10 @@ namespace VisualLinkerScript::Models
                                const CRawEntry& openingBracketEntry,
                                const CRawEntry& closingBracketEntry,
                                const CRawEntry& semicolonDelimiterEntry,
-                               const SharedPtrVector<CLinkerScriptContentBase>& parsedContent,
+                               const SharedPtrVector<CParsedContentBase>& parsedContent,
                                const std::vector<CRawEntry>& rawElements,
                                const SharedPtrVector<CViolationBase>& violations)
-            : CLinkerScriptContentBase(rawElements, violations),
+            : CParsedContentBase(rawElements, violations),
               m_scopeNameEntry(scopeNameEntry),
               m_inheritingScopeEntry(inheritingScopeEntry),
               m_openingBracketEntry(openingBracketEntry),
@@ -68,13 +68,16 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Reports back parsed content
-        [[nodiscard]] std::vector<std::shared_ptr<CLinkerScriptContentBase>> ParsedContent() const
+        [[nodiscard]] std::vector<std::shared_ptr<CParsedContentBase>> ParsedContent() const
         {
             return this->m_parsedContent;
         }
 
+        /// @copydoc CParsedContentBase::AggregateViolation
+        [[nodiscard]] virtual const SharedPtrVector<CViolationBase> AggregateViolation() const;
+
         /// @brief Produces debug information on what this object represents.
-        const std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;
+        [[nodiscard]] const std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;
     };
 }
 

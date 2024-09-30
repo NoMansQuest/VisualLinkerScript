@@ -2,12 +2,12 @@
 #define CSECTIONOUTPUTCONSTRAINT_H
 
 #include <vector>
-#include "CLinkerScriptContentBase.h"
+#include "CParsedContentBase.h"
 
 namespace VisualLinkerScript::Models
 {
     /// @brief Represents an section- output constraint: ONLY_IF_RW and ONLY_IF_RO
-    class CSectionOutputConstraint : public CLinkerScriptContentBase
+    class CSectionOutputConstraint : public CParsedContentBase
     {
     private:
         CRawEntry m_sectionOutputConstraint;
@@ -15,7 +15,7 @@ namespace VisualLinkerScript::Models
     public:
         /// @brief Default constructor, accessible to inheritors only
         explicit CSectionOutputConstraint(const CRawEntry& sectionOutputConstraint)
-            : CLinkerScriptContentBase({ sectionOutputConstraint }, {})
+            : CParsedContentBase({ sectionOutputConstraint }, {})
         {}
 
     public:
@@ -29,6 +29,11 @@ namespace VisualLinkerScript::Models
         const CRawEntry& Constraint()
         {
             return this->m_sectionOutputConstraint;
+        }
+
+        /// @copydoc CParsedContentBase::AggregateViolation
+        [[nodiscard]] const SharedPtrVector<CViolationBase> AggregateViolation() const override {
+            return this->Violations();
         }
     };
 }

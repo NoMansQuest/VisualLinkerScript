@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <memory>
-#include "CLinkerScriptContentBase.h"
+#include "CParsedContentBase.h"
 
 namespace VisualLinkerScript::Models
 {
@@ -16,7 +16,7 @@ namespace VisualLinkerScript::Models
     };
 
     /// @brief Represents attributes of "MEMORY" entries found in the "MEMORIES" region
-    class CMemoryStatementAttribute : public CLinkerScriptContentBase
+    class CMemoryStatementAttribute : public CParsedContentBase
     {
     private:
         CRawEntry m_parenthesisOpen;
@@ -38,7 +38,7 @@ namespace VisualLinkerScript::Models
                                            const AttributeDefinitionState& initializedSection,
                                            const std::vector<CRawEntry>& rawEntries,
                                            const SharedPtrVector<CViolationBase>& violations)
-            : CLinkerScriptContentBase(rawEntries, violations),
+            : CParsedContentBase(rawEntries, violations),
               m_parenthesisOpen(parenthesisOpen),
               m_parenthesisClose(parenthesisClose),
               m_readOnlySection(readOnlySection),
@@ -50,7 +50,7 @@ namespace VisualLinkerScript::Models
 
         /// @brief Default constructor, accessible to inheritors only
         explicit CMemoryStatementAttribute()
-            : CLinkerScriptContentBase({}, {}),
+            : CParsedContentBase({}, {}),
               m_readOnlySection(AttributeDefinitionState::Undefined),
               m_readWriteSection(AttributeDefinitionState::Undefined),
               m_executableSection(AttributeDefinitionState::Undefined),
@@ -79,45 +79,50 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Reports back 'Parenthesis-Open' entry
-        const CRawEntry ParenthesisOpen()
+        [[nodiscard]] CRawEntry ParenthesisOpen()
         {
             return m_parenthesisOpen;
         }
 
         /// @brief Reports back 'Parenthesis-Close' entry
-        const CRawEntry ParenthesisClose()
+        [[nodiscard]] CRawEntry ParenthesisClose()
         {
             return m_parenthesisClose;
         }
 
-        /// @brief Rpeorts back the Attributes of the statement.
-        const AttributeDefinitionState ReadOnlySection()
+        /// @brief Reports back the Attributes of the statement.
+        [[nodiscard]] AttributeDefinitionState ReadOnlySection() const
         {
             return this->m_readOnlySection;
         }
 
         /// @brief Reports back the state of 'ReadWriteSection' attribute
-        const AttributeDefinitionState ReadWriteSection()
+        [[nodiscard]] AttributeDefinitionState ReadWriteSection() const
         {
             return this->m_readWriteSection;
         }
 
         /// @brief Reports back the state of 'ExecutableSection' attribute
-        const AttributeDefinitionState ExecutableSection()
+        [[nodiscard]] AttributeDefinitionState ExecutableSection() const
         {
             return this->m_executableSection;
         }
 
         /// @brief Reports back the state of 'AllocatableSection' attribute
-        const AttributeDefinitionState AllocatableSection()
+        [[nodiscard]] AttributeDefinitionState AllocatableSection() const
         {
             return this->m_allocatableSection;
         }
 
         /// @brief Reports back the state of 'InitializedSection' attribute
-        const AttributeDefinitionState InitializedSection()
+        [[nodiscard]] AttributeDefinitionState InitializedSection() const
         {
             return this->m_initializedSection;
+        }
+
+        /// @copydoc CParsedContentBase::AggregateViolation
+        [[nodiscard]] const SharedPtrVector<CViolationBase> AggregateViolation() const override {
+            return this->Violations();
         }
     };
 }

@@ -2,15 +2,15 @@
 #define CSECTIONS_REGION_H__
 
 #include <vector>
-#include "CLinkerScriptContentBase.h"
+#include "CParsedContentBase.h"
 
 namespace VisualLinkerScript::Models
 {
     /// @brief Represents the 'MEMORIES' region in the linker-script
-    class CSectionsRegion : public CLinkerScriptContentBase
+    class CSectionsRegion : public CParsedContentBase
     {       
     private:
-        SharedPtrVector<CLinkerScriptContentBase> m_entries;
+        SharedPtrVector<CParsedContentBase> m_entries;
         CRawEntry m_openingBracketEntry;
         CRawEntry m_closingBracketEntry;
         CRawEntry m_sectionsHeaderEntry;
@@ -20,10 +20,10 @@ namespace VisualLinkerScript::Models
         explicit CSectionsRegion(const CRawEntry& sectionsHeaderEntry,
                                  const CRawEntry& openingBracketEntry,
                                  const CRawEntry& closingBracketEntry,
-                                 const SharedPtrVector<CLinkerScriptContentBase>& entries,
+                                 const SharedPtrVector<CParsedContentBase>& entries,
                                  const std::vector<CRawEntry>& rawElements,
                                  const SharedPtrVector<CViolationBase>& violations)
-            : CLinkerScriptContentBase(rawElements, violations),
+            : CParsedContentBase(rawElements, violations),
               m_entries(entries),
               m_openingBracketEntry(openingBracketEntry),
               m_closingBracketEntry(closingBracketEntry),
@@ -38,7 +38,7 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Reports back the statements
-        [[nodiscard]] const SharedPtrVector<CLinkerScriptContentBase>& Entries() const
+        [[nodiscard]] const SharedPtrVector<CParsedContentBase>& Entries() const
         {
             return m_entries;
         }
@@ -60,6 +60,9 @@ namespace VisualLinkerScript::Models
         {         
             return this->m_closingBracketEntry;
         }
+
+        /// @copydoc CParsedContentBase::AggregateViolation
+        [[nodiscard]] const SharedPtrVector<CViolationBase> AggregateViolation() const override;
 
         /// @brief Produces debug information on what this object represents.
         [[nodiscard]] const std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;

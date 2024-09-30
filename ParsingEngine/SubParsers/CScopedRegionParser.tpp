@@ -29,13 +29,13 @@ namespace
 
 template <SubParserType TParserType, typename TContentParserType, class TProducingOutputType>
 std::shared_ptr<TProducingOutputType> CScopedRegionParser<TParserType, TContentParserType, TProducingOutputType>::TryParse(
-        CRawFile& linkerScriptFile,
+		const CLinkerScriptFile& linkerScriptFile,
         std::vector<CRawEntry>::const_iterator& iterator,
         std::vector<CRawEntry>::const_iterator endOfVectorIterator)
 {
     auto localIterator = iterator;
     auto parsingStartIteratorPosition = iterator;
-    std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
+    std::vector<std::shared_ptr<CParsedContentBase>> parsedContent;
     SharedPtrVector<CViolationBase> violations;
 
     auto parserState = ParserState::AwaitingHeader;
@@ -52,7 +52,7 @@ std::shared_ptr<TProducingOutputType> CScopedRegionParser<TParserType, TContentP
         {
             case RawEntryType::Comment:
             {
-                parsedContent.emplace_back(std::shared_ptr<CLinkerScriptContentBase>(new CComment(std::vector<CRawEntry>{*localIterator}, {})));
+                parsedContent.emplace_back(std::shared_ptr<CParsedContentBase>(new CComment(std::vector<CRawEntry>{*localIterator}, {})));
                 break;
             }
 
@@ -91,7 +91,7 @@ std::shared_ptr<TProducingOutputType> CScopedRegionParser<TParserType, TContentP
                     }
                     else
                     {
-                        parsedContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(parsedStatement));
+                        parsedContent.emplace_back(std::dynamic_pointer_cast<CParsedContentBase>(parsedStatement));
                     }
                 }
                 else if (parserState == ParserState::AwaitingHeader)

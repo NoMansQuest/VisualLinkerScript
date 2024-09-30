@@ -3,21 +3,21 @@
 
 #include <vector>
 #include <string>
-#include "CLinkerScriptContentBase.h"
+#include "CParsedContentBase.h"
 #include "Raw/CRawEntry.h"
 #include "CViolationBase.h"
 
 namespace VisualLinkerScript::Models
 {
     /// @brief Represents a single 'Output' segment in the "SECTIONS"
-    class CSectionOutputCommand : public CLinkerScriptContentBase
+    class CSectionOutputCommand : public CParsedContentBase
     {   
     private:
         CRawEntry m_sectionOutputNameEntry;
-        SharedPtrVector<CLinkerScriptContentBase> m_preColonContent;
-        SharedPtrVector<CLinkerScriptContentBase> m_postColonContent;
-        SharedPtrVector<CLinkerScriptContentBase> m_innerContent;
-        SharedPtrVector<CLinkerScriptContentBase> m_endingContent;
+        SharedPtrVector<CParsedContentBase> m_preColonContent;
+        SharedPtrVector<CParsedContentBase> m_postColonContent;
+        SharedPtrVector<CParsedContentBase> m_innerContent;
+        SharedPtrVector<CParsedContentBase> m_endingContent;
         CRawEntry m_colonEntry;        
         CRawEntry m_noCrossRefsEntry;
         CRawEntry m_openingBracketEntry;
@@ -27,17 +27,17 @@ namespace VisualLinkerScript::Models
     public:
         /// @brief Default constructor, accessible to inheritors only
         explicit CSectionOutputCommand(const CRawEntry& sectionOutputNameEntry,
-                                       const SharedPtrVector<CLinkerScriptContentBase>& preColonContent,
-                                       const SharedPtrVector<CLinkerScriptContentBase>& postColonContent,
+                                       const SharedPtrVector<CParsedContentBase>& preColonContent,
+                                       const SharedPtrVector<CParsedContentBase>& postColonContent,
                                        const CRawEntry& colonEntry,
                                        const CRawEntry& noCrossRefsEntry,
                                        const CRawEntry& openingBracketEntry,
-                                       const SharedPtrVector<CLinkerScriptContentBase>& innerContent,
+                                       const SharedPtrVector<CParsedContentBase>& innerContent,
                                        const CRawEntry& closingBracketEntry,
-                                       const SharedPtrVector<CLinkerScriptContentBase>& endingContent,
+                                       const SharedPtrVector<CParsedContentBase>& endingContent,
                                        const std::vector<CRawEntry>& rawElements,
                                        const SharedPtrVector<CViolationBase>& violations)
-            : CLinkerScriptContentBase(rawElements, violations),
+            : CParsedContentBase(rawElements, violations),
               m_sectionOutputNameEntry(sectionOutputNameEntry),
               m_preColonContent(preColonContent),
               m_postColonContent(postColonContent),
@@ -57,56 +57,58 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Reports back the name of the SectionOutput
-        CRawEntry SectionOutputNameEntry() const
+        [[nodiscard]] CRawEntry SectionOutputNameEntry() const
         {
             return this->m_sectionOutputNameEntry;
         }
 
         /// @brief Reports back the content found after the header and before the colon
-        const SharedPtrVector<CLinkerScriptContentBase>& PreColonContent() const
+        [[nodiscard]] const SharedPtrVector<CParsedContentBase>& PreColonContent() const
         {
             return this->m_preColonContent;
         }
 
         /// @brief Reports back the content found after the colon and before the opening bracket
-        const SharedPtrVector<CLinkerScriptContentBase>& PostColonContent() const
+        [[nodiscard]] const SharedPtrVector<CParsedContentBase>& PostColonContent() const
         {
             return this->m_postColonContent;
         }
 
         /// @brief Reports back the 'Colon' found after 'Name' and before 'Bracket-Open'.
-        CRawEntry ColonEntry() const
+        [[nodiscard]] CRawEntry ColonEntry() const
         {
             return this->m_colonEntry;
         }
 
         /// @brief Reports back the 'Opening Bracket' entry, should be present.
-        CRawEntry OpeningBracketEntry() const
+        [[nodiscard]] CRawEntry OpeningBracketEntry() const
         {
             return this->m_openingBracketEntry;
         }
 
         /// @brief Reports back the 'Closing Bracket' entr, should be present.
-        CRawEntry ClosingBracketEntry() const
+        [[nodiscard]] CRawEntry ClosingBracketEntry() const
         {
             return this->m_closingBracketEntry;
         }
 
         /// @brief Reports back the outer content, which includes all parsed content.
-        const SharedPtrVector<CLinkerScriptContentBase>& InnerContent() const
+        [[nodiscard]] const SharedPtrVector<CParsedContentBase>& InnerContent() const
         {
             return this->m_innerContent;
         }
 
-
         /// @brief Reports back the ending content, which can contain AtLma, ToVma, Phdrs and fill-expression
-        const SharedPtrVector<CLinkerScriptContentBase>& EndingContent() const
+        [[nodiscard]] const SharedPtrVector<CParsedContentBase>& EndingContent() const
         {
             return this->m_endingContent;
         }
 
+        /// @copydoc CParsedContentBase::AggregateViolation
+        [[nodiscard]] const SharedPtrVector<CViolationBase> AggregateViolation() const override;
+
         /// @brief Produces debug information on what this object represents.
-        const virtual std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;
+        [[nodiscard]] const std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;
     };
 }
 

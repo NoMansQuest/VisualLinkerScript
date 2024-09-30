@@ -4,7 +4,48 @@
 
 #include "CSectionOverlayCommand.h"
 
+using namespace VisualLinkerScript;
 using namespace VisualLinkerScript::Models;
+
+const SharedPtrVector<CViolationBase> CSectionOverlayCommand::AggregateViolation() const
+{
+    SharedPtrVector<CViolationBase> allViolations;
+
+    for (const auto& childEntry : this->PreColonContent())
+    {
+        allViolations.insert(
+            allViolations.end(),
+            childEntry->AggregateViolation().cbegin(),
+            childEntry->AggregateViolation().cend());
+    }
+
+    for (const auto& childEntry : this->PostColonContent())
+    {
+        allViolations.insert(
+            allViolations.end(),
+            childEntry->AggregateViolation().cbegin(),
+            childEntry->AggregateViolation().cend());
+    }
+
+    for (const auto& childEntry : this->InnerContent())
+    {
+        allViolations.insert(
+            allViolations.end(),
+            childEntry->AggregateViolation().cbegin(),
+            childEntry->AggregateViolation().cend());
+    }
+
+    for (const auto& childEntry : this->EndingContent())
+    {
+        allViolations.insert(
+            allViolations.end(),
+            childEntry->AggregateViolation().cbegin(),
+            childEntry->AggregateViolation().cend());
+    }
+
+    allViolations.insert(allViolations.end(), this->Violations().begin(), this->Violations().end());
+    return allViolations; // Note: R-Value optimization ensures this vector isn't unnecessarily copied.
+}
 
 /// @brief Produces debug information on what this object represents.
 const std::string CSectionOverlayCommand::ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const

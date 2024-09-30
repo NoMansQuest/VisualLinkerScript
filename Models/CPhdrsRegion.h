@@ -2,16 +2,16 @@
 #define CPHDRS_REGION_H__
 
 #include <vector>
-#include "CLinkerScriptContentBase.h"
+#include "CParsedContentBase.h"
 #include "CPhdrsStatement.h"
 
 namespace VisualLinkerScript::Models
 {
     /// @brief Represents the PHDRS region in the Linker-Script.
-    class CPhdrsRegion : public CLinkerScriptContentBase
+    class CPhdrsRegion : public CParsedContentBase
     {  
     private:
-        std::vector<std::shared_ptr<CLinkerScriptContentBase>> m_statements;
+        std::vector<std::shared_ptr<CParsedContentBase>> m_statements;
         CRawEntry m_openingBracketEntry;
         CRawEntry m_closingBracketEntry;
         CRawEntry m_phdrsHeaderEntry;
@@ -21,10 +21,10 @@ namespace VisualLinkerScript::Models
         explicit CPhdrsRegion(const CRawEntry& phdrsHeaderEntry,
                               const CRawEntry& openingBracketEntry,
                               const CRawEntry& closingBracketEntry,
-                              const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& phdrsStatements,
+                              const std::vector<std::shared_ptr<CParsedContentBase>>& phdrsStatements,
                               const std::vector<CRawEntry>& rawElements,
                               const SharedPtrVector<CViolationBase>& violations)
-            : CLinkerScriptContentBase(rawElements, violations),
+            : CParsedContentBase(rawElements, violations),
               m_statements(phdrsStatements),
               m_openingBracketEntry(openingBracketEntry),
               m_closingBracketEntry(closingBracketEntry),
@@ -35,35 +35,38 @@ namespace VisualLinkerScript::Models
         /// @brief Reports back the type of this object.        
         ContentType Type() override
         {
-            return ContentType::PhdrsRegion;
+            return ContentType::ProgramHeaderRegion;
         }
 
         /// @brief Reports back PHDR statements
-        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& Statements() const
+        [[nodiscard]] const std::vector<std::shared_ptr<CParsedContentBase>>& Statements() const
         {
             return m_statements;
         }
 
         /// @brief Reports back the entry containing the 'PHDRS' header  
-        const CRawEntry PhdrsHeaderEntry() const
+        [[nodiscard]] CRawEntry PhdrsHeaderEntry() const
         {
             return this->m_phdrsHeaderEntry;
         }
 
         /// @brief Reports back the entry containing the "{" symbol
-        const CRawEntry OpeningBracketEntry() const
+        [[nodiscard]] CRawEntry OpeningBracketEntry() const
         {
             return this->m_openingBracketEntry;
         }
 
         /// @brief Reports back the entry containing the "}" symbol
-        const CRawEntry ClosingBracketEntry() const
+        [[nodiscard]] CRawEntry ClosingBracketEntry() const
         {
             return this->m_closingBracketEntry;
         }
 
+        /// @copydoc CParsedContentBase::AggregateViolation
+        [[nodiscard]] virtual const SharedPtrVector<CViolationBase> AggregateViolation() const;
+
         /// @brief Produces debug information on what this object represents.
-        const virtual std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;
+        [[nodiscard]] const std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;
     };
 }
 

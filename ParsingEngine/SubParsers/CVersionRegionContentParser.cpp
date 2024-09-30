@@ -10,7 +10,7 @@
 #include "../CParserViolation.h"
 #include "../EParserViolationCode.h"
 
-#include "../../Models/CLinkerScriptContentBase.h"
+#include "../../Models/CParsedContentBase.h"
 #include "../../Models/CVersionScope.h"
 #include "../../Models/CVersionTag.h"
 #include "../../Models/CVersionNode.h"
@@ -38,7 +38,7 @@ namespace
 }
 
 std::shared_ptr<CVersionScope> CVersionRegionContentParser::TryParse(
-        CRawFile& linkerScriptFile,
+		const CLinkerScriptFile& linkerScriptFile,
         std::vector<CRawEntry>::const_iterator& iterator,
         std::vector<CRawEntry>::const_iterator endOfVectorIterator)
 {
@@ -55,7 +55,7 @@ std::shared_ptr<CVersionScope> CVersionRegionContentParser::TryParse(
     CRawEntry bracketCloseEntry;
     CRawEntry parentScopeEntry;
     CRawEntry semicolonEntry;
-    std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
+    std::vector<std::shared_ptr<CParsedContentBase>> parsedContent;
 
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
     {
@@ -101,7 +101,7 @@ std::shared_ptr<CVersionScope> CVersionRegionContentParser::TryParse(
         {
             case RawEntryType::Comment:
             {
-                std::shared_ptr<CLinkerScriptContentBase> commentObject(new CComment({*localIterator}, {}));
+                std::shared_ptr<CParsedContentBase> commentObject(new CComment({*localIterator}, {}));
                 parsedContent.emplace_back(commentObject);
                 break;
             }
@@ -176,7 +176,7 @@ std::shared_ptr<CVersionScope> CVersionRegionContentParser::TryParse(
                                                 currentVersionTag,
                                                 {*localIterator, rawEntryPlusOne},
                                                 {}));
-                                parsedContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(versionScope));
+                                parsedContent.emplace_back(std::dynamic_pointer_cast<CParsedContentBase>(versionScope));
                                 ++localIterator; // We advance by one, as we've already consumed the successor entry.
                             }
                             else

@@ -125,7 +125,7 @@
     <ClCompile Include="ParsingEngine\CLinkerScriptLexer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Models\CLinkerScriptContentBase.cpp">
+    <ClCompile Include="Models\CParsedContentBase.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Models\CLinkerScriptFile.cpp">
@@ -461,9 +461,6 @@
     <ClCompile Include="Components\InputDialogs\QLabelAssistedInput.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="Components\QLinkerScriptSession\CLinkerScriptSessionFileInfo.h">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="MD5\MD5.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -658,7 +655,7 @@
     <ClInclude Include="ParsingEngine\CLexerException.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Models\CLinkerScriptContentBase.h">
+    <ClInclude Include="Models\CParsedContentBase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Models\CLinkerScriptFile.h">
@@ -1269,9 +1266,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="debug\moc_predefs.h.cbt">
-      <Filter>Generated Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="release\moc_predefs.h.cbt">
       <Filter>Generated Files</Filter>
     </CustomBuild>

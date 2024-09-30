@@ -2,7 +2,7 @@
 #define CMEMORY_REGION_H__
 
 #include <vector>
-#include "CLinkerScriptContentBase.h"
+#include "CParsedContentBase.h"
 #include "Raw/CRawEntry.h"
 
 using namespace VisualLinkerScript::Models::Raw;
@@ -10,10 +10,10 @@ using namespace VisualLinkerScript::Models::Raw;
 namespace VisualLinkerScript::Models
 {
     /// @brief Represents the 'MEMORIES' region in the linker-script
-    class CMemoryRegion : public CLinkerScriptContentBase
+    class CMemoryRegion : public CParsedContentBase
     {       
     private:
-        std::vector<std::shared_ptr<CLinkerScriptContentBase>> m_memoryStatements;
+        std::vector<std::shared_ptr<CParsedContentBase>> m_memoryStatements;
         CRawEntry m_headerTag;
         CRawEntry m_openingBracket;
         CRawEntry m_closingBracket;
@@ -23,10 +23,10 @@ namespace VisualLinkerScript::Models
         explicit CMemoryRegion(const CRawEntry& headerTag,
                                const CRawEntry& openingBracket,
                                const CRawEntry& closingBracket,
-                               const SharedPtrVector<CLinkerScriptContentBase>& memoryStatements,
+                               const SharedPtrVector<CParsedContentBase>& memoryStatements,
                                const std::vector<CRawEntry>& rawElements,
                                const SharedPtrVector<CViolationBase>& violations)
-            : CLinkerScriptContentBase(rawElements, violations),
+            : CParsedContentBase(rawElements, violations),
               m_memoryStatements(memoryStatements),
               m_headerTag(headerTag),
               m_openingBracket(openingBracket),
@@ -41,7 +41,7 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Reports back the statements
-        const std::vector<std::shared_ptr<CLinkerScriptContentBase>>& Statements() const
+        const std::vector<std::shared_ptr<CParsedContentBase>>& Statements() const
         {
             return m_memoryStatements;
         }
@@ -64,8 +64,11 @@ namespace VisualLinkerScript::Models
             return this->m_closingBracket;
         }
 
+        /// @copydoc CParsedContentBase::AggregateViolation
+        [[nodiscard]] const SharedPtrVector<CViolationBase> AggregateViolation() const override;
+
         /// @brief Produces debug information on what this object represents.
-        const virtual std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;
+        const std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;
     };
 }
 

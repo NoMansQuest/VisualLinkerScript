@@ -436,9 +436,8 @@ namespace
 
 }
 
-std::shared_ptr<CLinkerScriptFile> CLinkerScriptLexer::LexLinkerScript(const std::string& filePath, std::string fileContent)
+void CLinkerScriptLexer::LexLinkerScript(std::shared_ptr<CLinkerScriptFile>& linkerScriptFile)
 {    
-    // TODO: Revise code in event of available capacity to reduce cyclomatic complexity
     std::vector<CRawEntry> lexerContent;
     std::unordered_map<uint32_t, CIndentationInfo> indentationData;
     LexerPosition lexerContext { 0, 0, 0, LexerStates::Default, 0, 0, 0};
@@ -447,6 +446,7 @@ std::shared_ptr<CLinkerScriptFile> CLinkerScriptLexer::LexLinkerScript(const std
 
     do
     {
+        const auto& fileContent = linkerScriptFile->FileContent();
         endOfStreamReached = lexerContext.AbsolutePosition + 1 > fileContent.length();
         auto nextCharacter = (lexerContext.AbsolutePosition + 1 < fileContent.length()) ? fileContent[lexerContext.AbsolutePosition + 1] : ' ';
         auto previousCharacter = lexerContext.AbsolutePosition > 0 ? fileContent[lexerContext.AbsolutePosition - 1] : ' ';
@@ -660,16 +660,15 @@ std::shared_ptr<CLinkerScriptFile> CLinkerScriptLexer::LexLinkerScript(const std
     std::vector<std::string> splitString;
 
 #ifdef COMPILING_FOR_WINDOWS
-    splitString = VisualLinkerScript::StringSplit(filePath, '\\');
+    splitString = VisualLinkerScript::StringSplit(linkerScriptFile->AbsoluteFilePath(), '\\');
 #elif COMPILING_FOR_UNIX_BASED
-    auto splitString = VisualLinkerScript::StringSplit(filePath, '/');
+    splitString = VisualLinkerScript::StringSplit(filePath, '/');
 #else
 #error Either 'COMPILING_FOR_WINDOWS' need to be set or 'COMPILING_FOR_UNIX_BASED'
 #endif
 
-
     // Generate result
-    QString qRawContent = QString::fromStdString(fileContent);
+    QString qRawContent = QString::fromStdString(linkerScriptFile->FileContent());
     QString debugOutput = "";
     for (auto entry : lexerContent)
     {
@@ -771,6 +770,5 @@ std::shared_ptr<CLinkerScriptFile> CLinkerScriptLexer::LexLinkerScript(const std
     }
 
     fileName = splitString.back();
-	const auto rawFile = std::make_shared<CRawFile>(std::move(fileContent), fileName, filePath, indentationData, lexerContent);
-    return std::make_shared<CLinkerScriptFile>(rawFile);
+    linkerScriptFile->UpdateLexerData(lexerContent, indentationData, {});
 }

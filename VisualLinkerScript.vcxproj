@@ -215,7 +215,6 @@
     <ClCompile Include="Components\InputDialogs\QLabelAssistedInput.cpp" />
     <ClCompile Include="Components\InputDialogs\QListAssistedInput.cpp" />
     <ClCompile Include="Components\QFlatCheckBox\QFlatCheckBox.cpp" />
-    <ClCompile Include="Components\QLinkerScriptSession\CLinkerScriptSessionFileInfo.h" />
     <ClCompile Include="Components\QManualSizeGrip\QManualSizeGrip.cpp" />
     <ClCompile Include="Components\QScintilla\scintilla\lexlib\Accessor.cpp" />
     <ClCompile Include="Components\QScintilla\scintilla\src\AutoComplete.cpp" />
@@ -247,7 +246,7 @@
     <ClCompile Include="Models\CInputSectionStatement.cpp" />
     <ClCompile Include="ParsingEngine\SubParsers\CInputSectionStatementParser.cpp" />
     <ClCompile Include="ParsingEngine\CLinkerScriptLexer.cpp" />
-    <ClCompile Include="Models\CLinkerScriptContentBase.cpp" />
+    <ClCompile Include="Models\CParsedContentBase.cpp" />
     <ClCompile Include="Models\CLinkerScriptFile.cpp" />
     <ClCompile Include="DrcEngine\Rules\CLocationCounterCannotGoBackwardsRule.cpp" />
     <ClCompile Include="ParsingEngine\CLinkerScriptParser.cpp" />
@@ -431,7 +430,7 @@
     <ClInclude Include="Models\Intervention\CIntervention.h" />
     <ClInclude Include="ParsingEngine\CLinkerScriptLexer.h" />
     <ClInclude Include="ParsingEngine\CLexerException.h" />
-    <ClInclude Include="Models\CLinkerScriptContentBase.h" />
+    <ClInclude Include="Models\CParsedContentBase.h" />
     <ClInclude Include="Models\CLinkerScriptFile.h" />
     <ClInclude Include="QueryEngine\CLinq.h" />
     <ClInclude Include="Components\MemoryVisualizer\Models\CLmaToVmaArrow.h" />
@@ -639,14 +638,6 @@
     <ClInclude Include="Components\QScintilla\src\Qsci\qscistyledtext.h" />
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="debug\moc_predefs.h.cbt">
-      <FileType>Document</FileType>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\mkspecs\features\data\dummy.cpp;%(AdditionalInputs)</AdditionalInputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">cl -Bx"$(QTDIR)\bin\qmake.exe" -nologo -Zc:wchar_t -FS -Zc:rvalueCast -Zc:inline -Zc:strictStrings -Zc:throwingNew -permissive- -Zc:__cplusplus -Zc:externConstexpr -Zi -MDd -std:c++17 -utf-8 -W3 -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 -wd4577 -wd4467 -E $(QTDIR)\mkspecs\features\data\dummy.cpp 2&gt;NUL &gt;debug\moc_predefs.h</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Generate moc_predefs.h</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">debug\moc_predefs.h;%(Outputs)</Outputs>
-    </CustomBuild>
     <CustomBuild Include="release\moc_predefs.h.cbt">
       <FileType>Document</FileType>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\mkspecs\features\data\dummy.cpp;%(AdditionalInputs)</AdditionalInputs>

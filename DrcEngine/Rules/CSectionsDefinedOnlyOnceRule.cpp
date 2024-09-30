@@ -25,8 +25,8 @@ SharedPtrVector<CViolationBase> CSectionsDefinedOnlyOnceRule::PerformCheck(const
         for (const auto sectionsRegionResult : foundSectionsRegion) {
             auto errorMessage = "'SECTIONS' region could only be defined once in linker-script file.";
             violations.emplace_back(std::static_pointer_cast<CViolationBase>(std::shared_ptr<CDrcViolation>(new CDrcViolation(
-                SharedPtrVector<CLinkerScriptContentBase>{
-                std::dynamic_pointer_cast<CLinkerScriptContentBase>(sectionsRegionResult->Result())
+                SharedPtrVector<CParsedContentBase>{
+                std::dynamic_pointer_cast<CParsedContentBase>(sectionsRegionResult->Result())
             },
                 this->DrcRuleTitle(),
                 errorMessage,

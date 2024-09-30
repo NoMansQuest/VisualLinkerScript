@@ -126,13 +126,13 @@ namespace
 
 
 std::shared_ptr<CMemoryStatementAttribute> CMemoryStatementAttributeParser::TryParse(
-        CRawFile& linkerScriptFile,
+		const CLinkerScriptFile& linkerScriptFile,
         std::vector<CRawEntry>::const_iterator& iterator,
         std::vector<CRawEntry>::const_iterator endOfVectorIterator)
 {
     auto localIterator = iterator;
     auto parsingStartIteratorPosition = iterator;
-    std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
+    std::vector<std::shared_ptr<CParsedContentBase>> parsedContent;
     SharedPtrVector<CViolationBase> violations;
 
     if (iterator->EntryType() != RawEntryType::ParenthesisOpen)
@@ -182,7 +182,7 @@ std::shared_ptr<CMemoryStatementAttribute> CMemoryStatementAttributeParser::TryP
         {
             // Any line-change would be rended parsing attempt null and void (however, it may be possible to report
             // back a type of statement)
-            localIterator--;
+            --localIterator;
             parserState = ParserState::ParsingComplete;
             break;
         }

@@ -40,10 +40,10 @@ namespace
         AwaitingElseExpression,
     };
 
-    bool CanOperatorsCoexist(CRawEntry leftOperator, CRawEntry rightOperator, CRawFile& linkerScriptFile)
+    bool CanOperatorsCoexist(const CRawEntry& leftOperator, const CRawEntry& rightOperator, const CLinkerScriptFile& linkerScriptFile)
     {
-        auto op2Resolved = linkerScriptFile.ResolveRawEntry(rightOperator);
-        if (rightOperator.EntryType() == RawEntryType::ArithmeticOperator)
+	    const auto op2Resolved = linkerScriptFile.ResolveRawEntry(rightOperator);
+        if (leftOperator.EntryType() == RawEntryType::ArithmeticOperator)
         {
             return (StringEquals(op2Resolved, "-") || StringEquals(op2Resolved, "+"));
         }
@@ -53,13 +53,13 @@ namespace
 }
 
 std::shared_ptr<CExpression> CExpressionParser::TryParse(
-        CRawFile& linkerScriptFile,
+		const CLinkerScriptFile& linkerScriptFile,
         std::vector<CRawEntry>::const_iterator& iterator,
         std::vector<CRawEntry>::const_iterator endOfVectorIterator)
 {
     auto localIterator = iterator;
     auto parsingStartIteratorPosition = iterator;
-    std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
+    std::vector<std::shared_ptr<CParsedContentBase>> parsedContent;
     SharedPtrVector<CViolationBase> violations;
 
     auto parserState = ParserState::AwaitingContent;
@@ -152,7 +152,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                             }
                             else
                             {
-                                parsedContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(parsedFunction));
+                                parsedContent.emplace_back(std::dynamic_pointer_cast<CParsedContentBase>(parsedFunction));
                                 parserState = ParserState::AwaitingOperator; // Parser state switches here.
                             }
                         }
@@ -162,7 +162,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                         }
                         else
                         {
-                            auto symbol = std::shared_ptr<CLinkerScriptContentBase>(new CSymbol(*localIterator, {*localIterator}, {}));
+                            auto symbol = std::shared_ptr<CParsedContentBase>(new CSymbol(*localIterator, {*localIterator}, {}));
                             parsedContent.emplace_back(symbol);
                             parserState = ParserState::AwaitingOperator; // Parser state switches here.
                         }
@@ -229,7 +229,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                             case TernaryState::AwaitingElseExpression:
                             {
                                 // Ternary wise it's OK
-                                auto ternaryIf = std::shared_ptr<CLinkerScriptContentBase>(new CExpressionOperator(*localIterator, {*localIterator}, {}));
+                                auto ternaryIf = std::shared_ptr<CParsedContentBase>(new CExpressionOperator(*localIterator, {*localIterator}, {}));
                                 parsedContent.emplace_back(ternaryIf);
                                 ternaryState = TernaryState::AwaitingThenExpression;
                                 break;
@@ -268,7 +268,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                             case TernaryState::AwaitingElseExpression:
                             {
                                 // Ternary wise it's OK
-                                auto ternaryIf = std::shared_ptr<CLinkerScriptContentBase>(new CExpressionOperator(*localIterator, {*localIterator}, {}));
+                                auto ternaryIf = std::shared_ptr<CParsedContentBase>(new CExpressionOperator(*localIterator, {*localIterator}, {}));
                                 parsedContent.emplace_back(ternaryIf);
                                 ternaryState = TernaryState::AwaitingThenExpression;
                                 parserState = ParserState::AwaitingContent;
@@ -305,7 +305,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                             case TernaryState::AwaitingThenExpression:
                             {
                                 // Ternary wise it's OK
-                                auto ternaryIf = std::shared_ptr<CLinkerScriptContentBase>(new CExpressionOperator(*localIterator, {*localIterator}, {}));
+                                auto ternaryIf = std::shared_ptr<CParsedContentBase>(new CExpressionOperator(*localIterator, {*localIterator}, {}));
                                 parsedContent.emplace_back(ternaryIf);
                                 ternaryState = TernaryState::AwaitingElseExpression;
                                 break;
@@ -333,7 +333,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                             case TernaryState::AwaitingThenExpression:
                             {
                                 // Ternary wise it's OK
-                                auto ternaryIf = std::shared_ptr<CLinkerScriptContentBase>(new CExpressionOperator(*localIterator, {*localIterator}, {}));
+                                auto ternaryIf = std::shared_ptr<CParsedContentBase>(new CExpressionOperator(*localIterator, {*localIterator}, {}));
                                 parsedContent.emplace_back(ternaryIf);
                                 ternaryState = TernaryState::AwaitingElseExpression;
                                 break;
@@ -370,22 +370,22 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                     case ParserState::AwaitingContent:
                     {
                         // An exceptional authorized case is when signed operators are found right after evaluative operators.
-                        if (CanOperatorsCoexist(*localIterator, previousOperator, linkerScriptFile))
+                        if (CanOperatorsCoexist(previousOperator, *localIterator, linkerScriptFile))
                         {
-                            auto genericOperator = std::shared_ptr<CLinkerScriptContentBase>(new CExpressionNumber(*localIterator, {*localIterator}, {}));
+                            auto genericOperator = std::shared_ptr<CParsedContentBase>(new CExpressionNumber(*localIterator, {*localIterator}, {}));
                             parsedContent.emplace_back(genericOperator);
                             break;
                         }
 
                         violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::WasExpectingASymbolOrNumberHere)));
-                        auto evaluativeOperator = std::shared_ptr<CLinkerScriptContentBase>(new CExpressionOperator(*localIterator, {*localIterator}, {}));
+                        auto evaluativeOperator = std::shared_ptr<CParsedContentBase>(new CExpressionOperator(*localIterator, {*localIterator}, {}));
                         parsedContent.emplace_back(evaluativeOperator);
                         break;
                     }
 
                     case ParserState::AwaitingOperator:
                     {
-                        auto genericOperator = std::shared_ptr<CLinkerScriptContentBase>(new CExpressionOperator(*localIterator, {*localIterator}, {}));
+                        auto genericOperator = std::shared_ptr<CParsedContentBase>(new CExpressionOperator(*localIterator, {*localIterator}, {}));
                         parsedContent.emplace_back(genericOperator);
                         parserState = ParserState::AwaitingContent;
                         break;
@@ -408,22 +408,22 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                     case ParserState::AwaitingContent:
                     {
                         // An exceptional authorized case is when signed operators are put consecutively.
-                        if (CanOperatorsCoexist(*localIterator, previousOperator, linkerScriptFile))
+                        if (CanOperatorsCoexist(previousOperator, *localIterator, linkerScriptFile))
                         {
-                            auto genericOperator = std::shared_ptr<CLinkerScriptContentBase>(new CExpressionNumber(*localIterator, {*localIterator}, {}));
+                            auto genericOperator = std::shared_ptr<CParsedContentBase>(new CExpressionNumber(*localIterator, {*localIterator}, {}));
                             parsedContent.emplace_back(genericOperator);
                             break;
                         }
 
                         violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::WasExpectingASymbolOrNumberHere)));
-                        auto genericOperator = std::shared_ptr<CLinkerScriptContentBase>(new CExpressionOperator(*localIterator, {*localIterator}, {}));
+                        auto genericOperator = std::shared_ptr<CParsedContentBase>(new CExpressionOperator(*localIterator, {*localIterator}, {}));
                         parsedContent.emplace_back(genericOperator);
                         break;
                     }
 
                     case ParserState::AwaitingOperator:
                     {
-                        auto genericOperator = std::shared_ptr<CLinkerScriptContentBase>(new CExpressionOperator(*localIterator, {*localIterator}, {}));
+                        auto genericOperator = std::shared_ptr<CParsedContentBase>(new CExpressionOperator(*localIterator, {*localIterator}, {}));
                         parsedContent.emplace_back(genericOperator);
                         parserState = ParserState::AwaitingContent;
                         break;
@@ -451,7 +451,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                 {
                     case ParserState::AwaitingContent:
                     {
-                        auto numericValue = std::shared_ptr<CLinkerScriptContentBase>(new CExpressionNumber(*localIterator, {*localIterator}, {}));
+                        auto numericValue = std::shared_ptr<CParsedContentBase>(new CExpressionNumber(*localIterator, {*localIterator}, {}));
                         parsedContent.emplace_back(numericValue);
                         parserState = ParserState::AwaitingOperator;
                         break;
@@ -460,7 +460,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                     case ParserState::AwaitingOperator:
                     {
                         violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::WasExpectingAnOperatorHere)));
-                        auto numericValue = std::shared_ptr<CLinkerScriptContentBase>(new CExpressionNumber(*localIterator, {*localIterator}, {}));
+                        auto numericValue = std::shared_ptr<CParsedContentBase>(new CExpressionNumber(*localIterator, {*localIterator}, {}));
                         parsedContent.emplace_back(numericValue);
                         break;
                     }
@@ -481,7 +481,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                 {
                     case ParserState::AwaitingContent:
                     {
-                        auto stringEntry = std::shared_ptr<CLinkerScriptContentBase>(new CStringEntry(*localIterator, {*localIterator}, {}));
+                        auto stringEntry = std::shared_ptr<CParsedContentBase>(new CStringEntry(*localIterator, {*localIterator}, {}));
                         parsedContent.emplace_back(stringEntry);
                         parserState = ParserState::AwaitingOperator;
                         break;
@@ -490,7 +490,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                     case ParserState::AwaitingOperator:
                     {
                         violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::WasExpectingAnOperatorHere)));
-                        auto stringEntry = std::shared_ptr<CLinkerScriptContentBase>(new CStringEntry(*localIterator, {*localIterator}, {}));
+                        auto stringEntry = std::shared_ptr<CParsedContentBase>(new CStringEntry(*localIterator, {*localIterator}, {}));
                         parsedContent.emplace_back(stringEntry);
                         break;
                     }
@@ -522,7 +522,7 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                         auto parsedNestedExpression = nestedExpressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
                         if (parsedNestedExpression != nullptr)
                         {
-                            parsedContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(parsedNestedExpression));
+                            parsedContent.emplace_back(std::dynamic_pointer_cast<CParsedContentBase>(parsedNestedExpression));
                             parserState = ParserState::AwaitingOperator;
                         }
                         else

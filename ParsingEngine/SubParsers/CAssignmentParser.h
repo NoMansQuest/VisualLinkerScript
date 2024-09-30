@@ -30,7 +30,7 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
 
         /// @copydoc CSubParserBase::TryParse(std::vector<CRawEntry>::const_iterator&)
         virtual std::shared_ptr<CAssignmentStatement> TryParse(
-                CRawFile& linkerScriptFile,
+                const CLinkerScriptFile& linkerScriptFile,
                 std::vector<CRawEntry>::const_iterator& iterator,
                 std::vector<CRawEntry>::const_iterator endOfVectorIterator) override;
     };

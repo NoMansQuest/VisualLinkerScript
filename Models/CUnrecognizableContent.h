@@ -2,18 +2,18 @@
 #define CUNRECOGNIZABLE_CONTENT_H__
 
 #include <vector>
-#include "CLinkerScriptContentBase.h"
+#include "CParsedContentBase.h"
 
 namespace VisualLinkerScript::Models
 {
     /// @brief Represents a single 'Output' segment in the "SECTIONS"
-    class CUnrecognizableContent : public CLinkerScriptContentBase
+    class CUnrecognizableContent : public CParsedContentBase
     {   
     public:
         /// @brief Construct an "Unrecognizable" object
         explicit CUnrecognizableContent(const std::vector<CRawEntry>& composingRawElements, 
                                         const SharedPtrVector<CViolationBase>& violations = {})
-            : CLinkerScriptContentBase(composingRawElements, violations)
+            : CParsedContentBase(composingRawElements, violations)
         {}        
 
     public:
@@ -21,6 +21,11 @@ namespace VisualLinkerScript::Models
         ContentType Type() override
         {
             return ContentType::UnrecognizableContent;
+        }
+
+        /// @copydoc CParsedContentBase::AggregateViolation
+        [[nodiscard]] const SharedPtrVector<CViolationBase> AggregateViolation() const override {
+            return this->Violations();
         }
     };
 }

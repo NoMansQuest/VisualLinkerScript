@@ -42,14 +42,14 @@ namespace
 }
 
 std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
-        CRawFile& linkerScriptFile,
+        const CLinkerScriptFile& linkerScriptFile,
         std::vector<CRawEntry>::const_iterator& iterator,
         std::vector<CRawEntry>::const_iterator endOfVectorIterator)
 {
     auto localIterator = iterator;
     auto parsingStartIteratorPosition = iterator;
 
-    SharedPtrVector<CLinkerScriptContentBase> parsedContent;
+    SharedPtrVector<CParsedContentBase> parsedContent;
     SharedPtrVector<CViolationBase> violations;
     CExpressionParser expressionParser;
     CMemoryStatementAttributeParser attributeParser;
@@ -63,9 +63,9 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
     CRawEntry commaSeparatingOriginAndLength;
     CRawEntry lengthHeaderEntry;
     CRawEntry lengthAssignmentSymbol;
-    std::shared_ptr<CLinkerScriptContentBase> attributes;
-    std::shared_ptr<CLinkerScriptContentBase> originRValue;
-    std::shared_ptr<CLinkerScriptContentBase> lengthRValue;
+    std::shared_ptr<CParsedContentBase> attributes;
+    std::shared_ptr<CParsedContentBase> originRValue;
+    std::shared_ptr<CParsedContentBase> lengthRValue;
 
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
     {

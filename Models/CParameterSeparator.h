@@ -2,13 +2,13 @@
 #define CPARAMETER_SEPARATOR_H__
 
 #include <vector>
-#include "CLinkerScriptContentBase.h"
+#include "CParsedContentBase.h"
 #include "Raw/CRawEntry.h"
 
 namespace VisualLinkerScript::Models
 {
     /// @brief Represents a comma which is used to separate parameters in a function
-    class CParameterSeparator : public CLinkerScriptContentBase
+    class CParameterSeparator : public CParsedContentBase
     {
     private:
         CRawEntry m_commaEntry;
@@ -18,7 +18,7 @@ namespace VisualLinkerScript::Models
         explicit CParameterSeparator(const CRawEntry& commaEntry,
                                      const std::vector<CRawEntry>& rawElements,
                                      const SharedPtrVector<CViolationBase>& violations)
-            : CLinkerScriptContentBase(rawElements, violations),
+            : CParsedContentBase(rawElements, violations),
               m_commaEntry(commaEntry)
         {}
 
@@ -32,6 +32,11 @@ namespace VisualLinkerScript::Models
         const CRawEntry& CommaEntry()
         {
             return this->m_commaEntry;
+        }
+
+        /// @copydoc CParsedContentBase::AggregateViolation
+        [[nodiscard]] virtual const SharedPtrVector<CViolationBase> AggregateViolation() const {
+            return this->Violations();
         }
     };
 }

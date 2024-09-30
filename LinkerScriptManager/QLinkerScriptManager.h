@@ -6,6 +6,11 @@
 #include <memory>
 #include "../Helpers.h"
 
+namespace VisualLinkerScript::Models
+{
+	class CLinkerScriptFile;
+}
+
 using namespace VisualLinkerScript;
 class QLinkerScriptSession;
 class CLinkerScriptSessionFileInfo;
@@ -25,7 +30,7 @@ public:
         : QObject(parent)
     {}
 
-    /// @brief Default desctructor
+    /// @brief Default destructor
     ~QLinkerScriptManager()
     {}
 
@@ -47,7 +52,7 @@ public:
     std::shared_ptr<QLinkerScriptSession> CreateSessionForUntitled(void);
 
     /// @brief Creates a new session based on an existing file on the disk
-    std::shared_ptr<QLinkerScriptSession> CreateSessionForExistingFile(CLinkerScriptSessionFileInfo existingFileInfo);
+    std::shared_ptr<QLinkerScriptSession> CreateSessionForExistingFile(std::shared_ptr<Models::CLinkerScriptFile> linkerScriptFile);
 
 protected:
 };

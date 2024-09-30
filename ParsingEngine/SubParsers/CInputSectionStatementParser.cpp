@@ -8,6 +8,7 @@
 #include "CInputSectionFunctionExcludeFileParser.h"
 
 #include "Constants.h"
+#include "SubParserHelpers.h"
 #include "../CMasterParserException.h"
 #include "../../Models/Raw/CRawEntry.h"
 #include "../../Models/CComment.h"
@@ -44,7 +45,7 @@ namespace
 }
 
 std::shared_ptr<CInputSectionStatement> CInputSectionStatementParser::TryParse(
-        CRawFile& linkerScriptFile,
+		const CLinkerScriptFile& linkerScriptFile,
         std::vector<CRawEntry>::const_iterator& iterator,
         std::vector<CRawEntry>::const_iterator endOfVectorIterator)
 {
@@ -57,10 +58,10 @@ std::shared_ptr<CInputSectionStatement> CInputSectionStatementParser::TryParse(
 
     auto parserState = ParserState::AwaitingHeader;
 
-    std::shared_ptr<CLinkerScriptContentBase> fileSelector;
+    std::shared_ptr<CParsedContentBase> fileSelector;
     CRawEntry parenthesisOpen;
     CRawEntry parenthesisClose;
-    std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
+    std::vector<std::shared_ptr<CParsedContentBase>> parsedContent;
 
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
     {
@@ -105,7 +106,7 @@ std::shared_ptr<CInputSectionStatement> CInputSectionStatementParser::TryParse(
                         auto copyOfIteratorPlusOne = copyOfIterator + 1;
 
                         if (copyOfIteratorPlusOne == endOfVectorIterator) {
-                            fileSelector = std::shared_ptr<CLinkerScriptContentBase>(new CWildcardEntry(inputSectionFusedEntry, {inputSectionFusedEntry}, {}));
+                            fileSelector = std::shared_ptr<CParsedContentBase>(new CWildcardEntry(inputSectionFusedEntry, {inputSectionFusedEntry}, {}));
                             parserState = ParserState::ParsingComplete;
                             localIterator = copyOfIterator; // This is officially our vector.
                         }
@@ -113,7 +114,7 @@ std::shared_ptr<CInputSectionStatement> CInputSectionStatementParser::TryParse(
                         {
                             if (copyOfIteratorPlusOne->EntryType() == RawEntryType::ParenthesisOpen)
                             {
-                                fileSelector = std::shared_ptr<CLinkerScriptContentBase>(new CWildcardEntry(inputSectionFusedEntry, {inputSectionFusedEntry}, {}));
+                                fileSelector = std::shared_ptr<CParsedContentBase>(new CWildcardEntry(inputSectionFusedEntry, {inputSectionFusedEntry}, {}));
                                 localIterator = copyOfIterator; // This is officially our vector.
                                 parserState = ParserState::AwaitingOptionalParenthesisOverture;
                             }
@@ -127,7 +128,7 @@ std::shared_ptr<CInputSectionStatement> CInputSectionStatementParser::TryParse(
                             }
                             else
                             {
-                                fileSelector = std::shared_ptr<CLinkerScriptContentBase>(new CWildcardEntry(inputSectionFusedEntry, {inputSectionFusedEntry}, {}));
+                                fileSelector = std::shared_ptr<CParsedContentBase>(new CWildcardEntry(inputSectionFusedEntry, {inputSectionFusedEntry}, {}));
                                 parserState = ParserState::ParsingComplete;
                                 localIterator = copyOfIterator; // This is officially our vector.
                             }
@@ -146,7 +147,7 @@ std::shared_ptr<CInputSectionStatement> CInputSectionStatementParser::TryParse(
                     case ParserState::AwaitingOptionalParenthesisClosure:
                     {
                         auto fusedWord = FuseEntriesToFormAWilcardWord(linkerScriptFile, localIterator, endOfVectorIterator);
-                        parsedContent.emplace_back(std::shared_ptr<CLinkerScriptContentBase>(new CWildcardEntry(fusedWord, { fusedWord }, {})));
+                        parsedContent.emplace_back(std::shared_ptr<CParsedContentBase>(new CWildcardEntry(fusedWord, { fusedWord }, {})));
                         parserState = ParserState::AwaitingOptionalParenthesisClosure;
                         break;
                     }
@@ -175,7 +176,7 @@ std::shared_ptr<CInputSectionStatement> CInputSectionStatementParser::TryParse(
                             {
                                 // This is a SORT function.
                                 auto parsedSortFunctionCall = sortParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
-                                fileSelector = std::dynamic_pointer_cast<CLinkerScriptContentBase>(parsedSortFunctionCall);
+                                fileSelector = std::dynamic_pointer_cast<CParsedContentBase>(parsedSortFunctionCall);
                                 parserState = ParserState::AwaitingOptionalParenthesisOverture;
                             }
                             else
@@ -192,7 +193,7 @@ std::shared_ptr<CInputSectionStatement> CInputSectionStatementParser::TryParse(
                             else
                             {
                                 auto headerFusedEntry = FuseEntriesToFormAWilcardWord(linkerScriptFile, localIterator, endOfVectorIterator);
-                                fileSelector = std::shared_ptr<CLinkerScriptContentBase>(new CWildcardEntry(headerFusedEntry, {headerFusedEntry}, {}));
+                                fileSelector = std::shared_ptr<CParsedContentBase>(new CWildcardEntry(headerFusedEntry, {headerFusedEntry}, {}));
                                 if ((localIterator + 1 != endOfVectorIterator) && ((localIterator+1)->EntryType() == RawEntryType::ParenthesisOpen))
                                 {
                                     parserState = ParserState::AwaitingOptionalParenthesisOverture;
@@ -230,7 +231,7 @@ std::shared_ptr<CInputSectionStatement> CInputSectionStatementParser::TryParse(
                                 }
                                 else
                                 {
-                                    parsedContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(parsedSortFunctionCall));
+                                    parsedContent.emplace_back(std::dynamic_pointer_cast<CParsedContentBase>(parsedSortFunctionCall));
                                 }
                             }
                             else if (CParserHelpers::IsExcludeFileCall(resolvedContent))
@@ -243,7 +244,7 @@ std::shared_ptr<CInputSectionStatement> CInputSectionStatementParser::TryParse(
                                 }
                                 else
                                 {
-                                    parsedContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(parsedExcludeFileCall));
+                                    parsedContent.emplace_back(std::dynamic_pointer_cast<CParsedContentBase>(parsedExcludeFileCall));
                                 }
                             }
                             else
@@ -259,7 +260,7 @@ std::shared_ptr<CInputSectionStatement> CInputSectionStatementParser::TryParse(
                         {
                             // This is a normal section definition. We accept it.
                             auto fusedEntry = FuseEntriesToFormAWilcardWord(linkerScriptFile, localIterator, endOfVectorIterator);
-                            parsedContent.emplace_back(std::shared_ptr<CLinkerScriptContentBase>(new CWildcardEntry(fusedEntry, {fusedEntry}, {})));
+                            parsedContent.emplace_back(std::shared_ptr<CParsedContentBase>(new CWildcardEntry(fusedEntry, {fusedEntry}, {})));
                         }
                         break;
                     }
@@ -333,7 +334,7 @@ std::shared_ptr<CInputSectionStatement> CInputSectionStatementParser::TryParse(
                     {
                         if (CParserHelpers::IsStartOfWildcard(resolvedContent)) {
                             auto fusedEntry = FuseEntriesToFormAWilcardWord(linkerScriptFile, localIterator, endOfVectorIterator);
-                            fileSelector = std::shared_ptr<CLinkerScriptContentBase>(new CWildcardEntry(fusedEntry, {fusedEntry}, {}));
+                            fileSelector = std::shared_ptr<CParsedContentBase>(new CWildcardEntry(fusedEntry, {fusedEntry}, {}));
                             parserState = ParserState::AwaitingOptionalParenthesisOverture;
                         } else{
                             return nullptr; // We abort here.
@@ -348,7 +349,7 @@ std::shared_ptr<CInputSectionStatement> CInputSectionStatementParser::TryParse(
                     {
                         if (CParserHelpers::IsStartOfWildcard(resolvedContent)) {
                             auto fusedEntry = FuseEntriesToFormAWilcardWord(linkerScriptFile, localIterator, endOfVectorIterator);
-                            parsedContent.emplace_back(std::shared_ptr<CLinkerScriptContentBase>(new CWildcardEntry(fusedEntry, {fusedEntry}, {})));
+                            parsedContent.emplace_back(std::shared_ptr<CParsedContentBase>(new CWildcardEntry(fusedEntry, {fusedEntry}, {})));
                         } else {
                             violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
                         }

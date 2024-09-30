@@ -2,13 +2,13 @@
 #define CEXPRESSION_NUMBER_H__
 
 #include <vector>
-#include "CLinkerScriptContentBase.h"
+#include "CParsedContentBase.h"
 #include "Raw/CRawEntry.h"
 
 namespace VisualLinkerScript::Models
 {
     /// @brief Represents a Number which is used in an expression
-    class CExpressionNumber : public CLinkerScriptContentBase
+    class CExpressionNumber : public CParsedContentBase
     {
     private:
         CRawEntry m_expressionNumber;
@@ -18,7 +18,7 @@ namespace VisualLinkerScript::Models
         explicit CExpressionNumber(const CRawEntry& expressionNumber,
                                    const std::vector<CRawEntry>& rawElements,
                                    const SharedPtrVector<CViolationBase>& violations)
-            : CLinkerScriptContentBase(rawElements, violations),
+            : CParsedContentBase(rawElements, violations),
               m_expressionNumber(expressionNumber)
         {}
 
@@ -26,6 +26,13 @@ namespace VisualLinkerScript::Models
         ContentType Type() override
         {
             return ContentType::Number;
+        }
+
+
+        /// @copydoc CParsedContentBase::AggregateViolation
+        [[nodiscard]] const SharedPtrVector<CViolationBase> AggregateViolation() const override
+        {
+            return this->Violations();
         }
 
         /// @brief Gets the number Raw-Entry

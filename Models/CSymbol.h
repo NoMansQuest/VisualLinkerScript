@@ -2,13 +2,13 @@
 #define CSECONDARY_SYMBOL_H__
 
 #include <vector>
-#include "CLinkerScriptContentBase.h"
+#include "CParsedContentBase.h"
 #include "Raw/CRawEntry.h"
 
 namespace VisualLinkerScript::Models
 {
     /// @brief Represents a symbol which is R-Value or L-Value expression and may be preceded by an arithmetic sign.
-    class CSymbol : public CLinkerScriptContentBase
+    class CSymbol : public CParsedContentBase
     { 
     private:
         CRawEntry m_symbol;
@@ -18,7 +18,7 @@ namespace VisualLinkerScript::Models
         explicit CSymbol(const CRawEntry& symbol,
                          const std::vector<CRawEntry>& rawElements, 
                          const SharedPtrVector<CViolationBase>& violations)
-            : CLinkerScriptContentBase(rawElements, violations),
+            : CParsedContentBase(rawElements, violations),
               m_symbol(symbol)
         {}   
 
@@ -31,7 +31,12 @@ namespace VisualLinkerScript::Models
         /// @brief Gets the symbol itself
         const CRawEntry& Symbol()
         {
-            return this->m_symbol;
+        	return this->m_symbol;
+        }
+
+        /// @copydoc CParsedContentBase::AggregateViolation
+        [[nodiscard]] const SharedPtrVector<CViolationBase> AggregateViolation() const override {
+            return this->Violations();
         }
     };
 }

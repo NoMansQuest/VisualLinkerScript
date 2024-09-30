@@ -2,17 +2,31 @@
 #include <memory>
 #include <string>
 #include <sstream>
-#include <stdint.h>
+#include <cstdint>
 
 #include "CLinkerScriptFile.h"
 #include "CFunctionCall.h"
 #include "../ParsingEngine/CParserViolation.h"
 #include "../DrcEngine/CDrcViolation.h"
-#include "../DrcEngine/EDrcViolationCode.h"
 
+using namespace VisualLinkerScript;
 using namespace VisualLinkerScript::Models;
 using namespace VisualLinkerScript::ParsingEngine;
 using namespace VisualLinkerScript::DrcEngine;
+
+const SharedPtrVector<CViolationBase> CFunctionCall::AggregateViolation() const
+{
+    SharedPtrVector<CViolationBase> allViolations;
+    for (const auto& childEntry : this->ParsedContent())
+    {
+        allViolations.insert(
+            allViolations.end(),
+            childEntry->AggregateViolation().cbegin(),
+            childEntry->AggregateViolation().cend());
+    }
+    allViolations.insert(allViolations.end(), this->Violations().begin(), this->Violations().end());
+    return allViolations; // Note: R-Value optimization ensures this vector isn't unnecessarily copied.
+}
 
 /// @brief Produces debug information on what this object represents.
 const std::string CFunctionCall::ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const
@@ -20,7 +34,7 @@ const std::string CFunctionCall::ToDebugInfo(uint32_t depth, const CLinkerScript
     std::stringstream contentStream;
     contentStream << (this->Violations().size() > 0 ? "[ ** ] " : "[ OK ] ")
             << std::string("CFunctionCall ")
-            << "[ " << linkerScriptFile.ResolveEntryText(this->m_functionName) << " ]"
+            << "[ " << linkerScriptFile.ResolveRawEntry(this->m_functionName) << " ]"
             << " @pos "
             << std::to_string(this->StartPosition())
             << " -- content :";
@@ -48,7 +62,7 @@ const std::string CFunctionCall::ToDebugInfo(uint32_t depth, const CLinkerScript
                                   << " @post: "
                                   << firstEntryInViolation.StartPosition()
                                   << " content: "
-                                  << linkerScriptFile.ResolveEntryText(firstEntryInViolation);
+                                  << linkerScriptFile.ResolveRawEntry(firstEntryInViolation);
                 }
                 contentStream  << "\n";
                 break;

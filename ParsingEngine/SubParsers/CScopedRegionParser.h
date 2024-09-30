@@ -15,12 +15,12 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
             "Content-parser must be default-constructible." );
 
         static_assert(
-            std::is_base_of< CLinkerScriptContentBase, TProducingOutputType >::value,
-            "Only 'Producing Output Types' based on 'CLinkerScriptContentBase' are allowed" );
+            std::is_base_of< CParsedContentBase, TProducingOutputType >::value,
+            "Only 'Producing Output Types' based on 'CParsedContentBase' are allowed" );
 
         static_assert(
             std::is_constructible< TProducingOutputType, CRawEntry, CRawEntry, CRawEntry,
-                                   const SharedPtrVector<CLinkerScriptContentBase>&,
+                                   const SharedPtrVector<CParsedContentBase>&,
                                    const std::vector<CRawEntry>&,
                                    const SharedPtrVector<CViolationBase>& >::value,
             "TProducingOutputType is not compatible. Please check the constructor." );
@@ -38,7 +38,7 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
 
         /// @copydoc CSubParserBase::TryParse(std::vector<CRawEntry>::const_iterator&)
         virtual std::shared_ptr<TProducingOutputType> TryParse(
-                CRawFile& linkerScriptFile,
+				const CLinkerScriptFile& linkerScriptFile,
                 std::vector<CRawEntry>::const_iterator& iterator,
                 std::vector<CRawEntry>::const_iterator endOfVectorIterator) override;
     };

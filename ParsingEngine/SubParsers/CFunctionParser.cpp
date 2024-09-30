@@ -39,13 +39,13 @@ namespace
 }
 
 std::shared_ptr<CFunctionCall> CFunctionParser::TryParse(
-        CRawFile& linkerScriptFile,
+		const CLinkerScriptFile& linkerScriptFile,
         std::vector<CRawEntry>::const_iterator& iterator,
         std::vector<CRawEntry>::const_iterator endOfVectorIterator)
 {
     auto localIterator = iterator;
     auto parsingStartIteratorPosition = iterator;
-    SharedPtrVector<CLinkerScriptContentBase> parsedContent;
+    SharedPtrVector<CParsedContentBase> parsedContent;
     SharedPtrVector<CViolationBase> violations;
 
     CExpressionParser nestedExpressionParser;
@@ -91,7 +91,7 @@ std::shared_ptr<CFunctionCall> CFunctionParser::TryParse(
         {
             case RawEntryType::Comment:
             {
-                parsedContent.emplace_back(std::shared_ptr<CLinkerScriptContentBase>(new CComment({*localIterator},{})));
+                parsedContent.emplace_back(std::shared_ptr<CParsedContentBase>(new CComment({*localIterator},{})));
                 break;
             }
 
@@ -326,7 +326,7 @@ std::shared_ptr<CFunctionCall> CFunctionParser::TryParse(
                     {
                         // We're going for the second parameter, save this and move on
                         if (parameterSeparatorState == ParameterSeparatorState::NowExpectingComma) {
-                            parsedContent.emplace_back(std::shared_ptr<CLinkerScriptContentBase>(new CParameterSeparator(*localIterator, {*localIterator},{})));
+                            parsedContent.emplace_back(std::shared_ptr<CParsedContentBase>(new CParameterSeparator(*localIterator, {*localIterator},{})));
                             parameterSeparatorState = ParameterSeparatorState::NowExpectingNextParameter;
                         }
                         else if (parameterSeparatorState == ParameterSeparatorState::AwaitingFirstParameter)

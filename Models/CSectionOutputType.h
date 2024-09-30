@@ -2,12 +2,12 @@
 #define CSECTION_OUTPUT_TYPE_H__
 
 #include <vector>
-#include "CLinkerScriptContentBase.h"
+#include "CParsedContentBase.h"
 
 namespace VisualLinkerScript::Models
 {
     /// @brief Represents a procedural call
-    class CSectionOutputType : public CLinkerScriptContentBase
+    class CSectionOutputType : public CParsedContentBase
     {
     private:
         CRawEntry m_typeEntry;
@@ -21,7 +21,7 @@ namespace VisualLinkerScript::Models
                                     const CRawEntry& closingParenthesis,
                                     const std::vector<CRawEntry>& rawElements,
                                     const SharedPtrVector<CViolationBase>& violations)
-            : CLinkerScriptContentBase(rawElements, violations),
+            : CParsedContentBase(rawElements, violations),
               m_typeEntry(typeEntry),
               m_openingParenthesis(openingParenthesis),
               m_closingParenthesis(closingParenthesis)
@@ -50,6 +50,11 @@ namespace VisualLinkerScript::Models
         const CRawEntry& ClosingParenthesis()
         {
             return this->m_closingParenthesis;
+        }
+
+        /// @copydoc CParsedContentBase::AggregateViolation
+        [[nodiscard]] const SharedPtrVector<CViolationBase> AggregateViolation() const override {
+            return this->Violations();
         }
     };
 }

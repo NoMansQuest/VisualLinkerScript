@@ -2,13 +2,13 @@
 #define CEXPRESSION_OPERATOR_H__
 
 #include <vector>
-#include "CLinkerScriptContentBase.h"
+#include "CParsedContentBase.h"
 #include "Raw/CRawEntry.h"
 
 namespace VisualLinkerScript::Models
 {
     /// @brief Represents evaluative and arithmetic operators which is used in expressions.
-    class CExpressionOperator : public CLinkerScriptContentBase
+    class CExpressionOperator : public CParsedContentBase
     {
     private:
         CRawEntry m_expressionOperator;
@@ -18,7 +18,7 @@ namespace VisualLinkerScript::Models
         explicit CExpressionOperator(const CRawEntry& expressionOperator,
                                      const std::vector<CRawEntry>& rawElements,
                                      const SharedPtrVector<CViolationBase>& violations)
-            : CLinkerScriptContentBase(rawElements, violations),
+            : CParsedContentBase(rawElements, violations),
               m_expressionOperator(expressionOperator)
         {}
 
@@ -26,6 +26,12 @@ namespace VisualLinkerScript::Models
         ContentType Type() override
         {
             return ContentType::ArithmeticOrLogicalOperator;
+        }
+
+        /// @copydoc CParsedContentBase::AggregateViolation
+        [[nodiscard]] const SharedPtrVector<CViolationBase> AggregateViolation() const override
+        {
+            return this->Violations();
         }
 
         /// @brief Gets the operator itself

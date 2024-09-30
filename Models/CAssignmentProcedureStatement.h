@@ -3,7 +3,7 @@
 
 #include <utility>
 #include <vector>
-#include "CLinkerScriptContentBase.h"
+#include "CParsedContentBase.h"
 #include "CAssignmentStatement.h"
 #include "Raw/CRawEntry.h"
 
@@ -12,7 +12,7 @@ namespace VisualLinkerScript::Models
 {
     /// @brief Represents assignment statements. They are not bound to a particular region and could almost be 
     ///        anywhere and everywhere. 
-    class CAssignmentProcedureStatement : public CLinkerScriptContentBase
+    class CAssignmentProcedureStatement : public CParsedContentBase
     { 
     private:
         CRawEntry m_procedureNameEntry;
@@ -20,7 +20,7 @@ namespace VisualLinkerScript::Models
         CRawEntry m_parenthesisCloseEntry;
         CRawEntry m_delimiterOperator;
         std::shared_ptr<CAssignmentStatement> m_assignmentStatement;
-        SharedPtrVector<CLinkerScriptContentBase> m_parsedContent;
+        SharedPtrVector<CParsedContentBase> m_parsedContent;
 
     public:
         /// @brief Detailed Constructor
@@ -29,10 +29,10 @@ namespace VisualLinkerScript::Models
                                                const CRawEntry& parenthesisCloseEntry,
                                                const std::shared_ptr<CAssignmentStatement>& assignmentStatement,
                                                const CRawEntry& semicolonOperator,
-                                               const SharedPtrVector<CLinkerScriptContentBase>& parsedContent,
+                                               const SharedPtrVector<CParsedContentBase>& parsedContent,
                                                const std::vector<CRawEntry>& rawElements,
                                                const SharedPtrVector<CViolationBase>& violations)
-            : CLinkerScriptContentBase(rawElements,violations),
+            : CParsedContentBase(rawElements,violations),
               m_procedureNameEntry(procedureNameEntry),
               m_parenthesisOpenEntry(parenthesisOpenEntry),
               m_parenthesisCloseEntry(parenthesisCloseEntry),
@@ -77,11 +77,14 @@ namespace VisualLinkerScript::Models
             return this->m_delimiterOperator;
         }
 
-        /// @brief Gets the "Parsed Content". This this scenario it is most likely to contain comments only...
-        [[nodiscard]] const SharedPtrVector<CLinkerScriptContentBase>& ParsedContent() const
+        /// @brief Gets the "Parsed Content". This scenario it is most likely to contain comments only...
+        [[nodiscard]] const SharedPtrVector<CParsedContentBase>& ParsedContent() const
         {
             return this->m_parsedContent;
         }
+
+        /// @copydoc CParsedContentBase::AggregateViolation
+        [[nodiscard]] const SharedPtrVector<CViolationBase> AggregateViolation() const override;
 
         /// @brief Produces debug information on what this object represents.
         [[nodiscard]] const std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;

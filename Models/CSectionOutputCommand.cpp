@@ -7,9 +7,50 @@
 #include "../ParsingEngine/CParserViolation.h"
 #include "../DrcEngine/CDrcViolation.h"
 
+using namespace VisualLinkerScript;
 using namespace VisualLinkerScript::Models;
 using namespace VisualLinkerScript::ParsingEngine;
 using namespace VisualLinkerScript::DrcEngine;
+
+const SharedPtrVector<CViolationBase> CSectionOutputCommand::AggregateViolation() const
+{
+    SharedPtrVector<CViolationBase> allViolations;
+
+    for (const auto& childEntry : this->PreColonContent())
+    {
+        allViolations.insert(
+            allViolations.end(),
+            childEntry->AggregateViolation().cbegin(),
+            childEntry->AggregateViolation().cend());
+    }
+
+    for (const auto& childEntry : this->PostColonContent())
+    {
+        allViolations.insert(
+            allViolations.end(),
+            childEntry->AggregateViolation().cbegin(),
+            childEntry->AggregateViolation().cend());
+    }
+
+    for (const auto& childEntry : this->InnerContent())
+    {
+        allViolations.insert(
+            allViolations.end(),
+            childEntry->AggregateViolation().cbegin(),
+            childEntry->AggregateViolation().cend());
+    }
+
+    for (const auto& childEntry : this->EndingContent())
+    {
+        allViolations.insert(
+            allViolations.end(),
+            childEntry->AggregateViolation().cbegin(),
+            childEntry->AggregateViolation().cend());
+    }
+
+    allViolations.insert(allViolations.end(), this->Violations().begin(), this->Violations().end());
+    return allViolations; // Note: R-Value optimization ensures this vector isn't unnecessarily copied.
+}
 
 /// @brief Produces debug information on what this object represents.
 const std::string CSectionOutputCommand::ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const
@@ -75,7 +116,7 @@ const std::string CSectionOutputCommand::ToDebugInfo(uint32_t depth, const CLink
                         MapParserViolationToCode(converted->Code()) +
                         " @line: " + std::to_string(converted->InvoledEntries()[0].StartLineNumber()) +
                         " @post: " + std::to_string(converted->InvoledEntries()[0].StartPosition()) +
-                        " content: " + ((!converted->InvoledEntries().empty()) ? linkerScriptFile.ResolveEntryText(converted->InvoledEntries()[0]) : "<NONE>") +
+                        " content: " + ((!converted->InvoledEntries().empty()) ? linkerScriptFile.ResolveRawEntry(converted->InvoledEntries()[0]) : "<NONE>") +
                         "\n";
                 break;
             }
@@ -88,7 +129,7 @@ const std::string CSectionOutputCommand::ToDebugInfo(uint32_t depth, const CLink
                         std::to_string((uint32_t)converted->Code()) +
                         " @line: " + std::to_string(converted->InvolvedElements()[0]->RawEntries()[0].StartLineNumber()) +
                         " @pos: " + std::to_string(converted->InvolvedElements()[0]->RawEntries()[0].StartLineNumber()) +
-                        " content: " + ((!converted->InvolvedElements().empty()) ? linkerScriptFile.ResolveEntryText(*converted->InvolvedElements()[0]) : "<NONE>") +
+                        " content: " + ((!converted->InvolvedElements().empty()) ? linkerScriptFile.ResolveParsedContent(*converted->InvolvedElements()[0]) : "<NONE>") +
                         "\n";
                 break;
             }

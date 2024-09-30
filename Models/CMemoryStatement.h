@@ -3,35 +3,35 @@
 
 #include <vector>
 #include <memory>
-#include "CLinkerScriptContentBase.h"
+#include "CParsedContentBase.h"
 
 namespace VisualLinkerScript::Models
 {
     /// @brief Represents a single entry in the "MEMORIES" region
-    class CMemoryStatement : public CLinkerScriptContentBase
+    class CMemoryStatement : public CParsedContentBase
     {   
     private:
         CRawEntry m_nameEntry;
-        std::shared_ptr<CLinkerScriptContentBase> m_attributes;
+        std::shared_ptr<CParsedContentBase> m_attributes;
         CRawEntry m_colonEntry;
-        std::shared_ptr<CLinkerScriptContentBase> m_originAssignment;
-        std::shared_ptr<CLinkerScriptContentBase> m_lengthAssignment;
+        std::shared_ptr<CParsedContentBase> m_originAssignment;
+        std::shared_ptr<CParsedContentBase> m_lengthAssignment;
 
     public:
         /// @brief Default constructor, accessible to inheritors only
         explicit CMemoryStatement(CRawEntry nameEntry,
-                                  std::shared_ptr<CLinkerScriptContentBase> attributes,
+                                  std::shared_ptr<CParsedContentBase> attributes,
                                   CRawEntry colonEntry,
                                   CRawEntry originHeaderEntry,
                                   CRawEntry originAssignmentSymbolEntry,
                                   CRawEntry commaSeparatingOriginFromLengthEntry,
                                   CRawEntry lengthHeaderEntry,
                                   CRawEntry lengthAssignmentSymbolEntry,
-                                  std::shared_ptr<CLinkerScriptContentBase> originRValue,
-                                  std::shared_ptr<CLinkerScriptContentBase> lengthRValue,
+                                  std::shared_ptr<CParsedContentBase> originRValue,
+                                  std::shared_ptr<CParsedContentBase> lengthRValue,
                                   std::vector<CRawEntry>&& rawEntries,
                                   SharedPtrVector<CViolationBase>&& violations)
-            : CLinkerScriptContentBase(std::move(rawEntries), std::move(violations)),
+            : CParsedContentBase(std::move(rawEntries), std::move(violations)),
               m_nameEntry(nameEntry),
               m_attributes(attributes),
               m_colonEntry(colonEntry),
@@ -47,37 +47,40 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Reports back 'Name' entry
-        const CRawEntry NameEntry() const
+        [[nodiscard]] CRawEntry NameEntry() const
         {
             return m_nameEntry;
         }
 
-        /// @brief Rpeorts back the Attributes of the statement (as CMemoryStatementAttribute)
-        const std::shared_ptr<CLinkerScriptContentBase> Attributes() const
+        /// @brief Reports back the Attributes of the statement (as CMemoryStatementAttribute)
+        [[nodiscard]] std::shared_ptr<CParsedContentBase> Attributes() const
         {
             return m_attributes;
         }
 
         /// @brief Reports back 'Colon' entry
-        const CRawEntry ColonEntry() const
+        [[nodiscard]] CRawEntry ColonEntry() const
         {
             return m_colonEntry;
         }
 
-        /// @brief Rpeorts back 'ORIGIN' or 'org' assignment
-        const std::shared_ptr<CLinkerScriptContentBase> OriginAssignment() const
+        /// @brief Reports back 'ORIGIN' or 'org' assignment
+        [[nodiscard]] std::shared_ptr<CParsedContentBase> OriginAssignment() const
         {
             return m_originAssignment;
         }
 
         /// @brief Reports back 'LENGTH' or 'l' or 'len' assignment
-        std::shared_ptr<CLinkerScriptContentBase> LengthAssignment() const
+        [[nodiscard]] std::shared_ptr<CParsedContentBase> LengthAssignment() const
         {
             return m_lengthAssignment;
         }
 
+        /// @copydoc CParsedContentBase::AggregateViolation
+        [[nodiscard]] virtual const SharedPtrVector<CViolationBase> AggregateViolation() const;
+
         /// @brief Produces debug information on what this object represents.
-        const virtual std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;
+        [[nodiscard]] const std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;
     };    
 }
 

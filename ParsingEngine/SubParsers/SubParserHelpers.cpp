@@ -1,20 +1,17 @@
 #include <vector>
-#include <memory>
 #include <string>
-#include <iterator>
 
 #include "SubParserHelpers.h"
 #include "../../Helpers.h"
 #include "../../Models/Raw/CRawEntry.h"
 #include "../../Models/Raw/RawEntryType.h"
-#include "../../Models/Raw/CRawFile.h"
 
 using namespace VisualLinkerScript;
 using namespace VisualLinkerScript::ParsingEngine::SubParsers;
 
 namespace
 {
-    bool CanBePartOfWildcard(CRawFile& linkerScriptFile, CRawEntry rawEntry)
+    bool CanBePartOfWildcard(const CLinkerScriptFile& linkerScriptFile, const CRawEntry& rawEntry)
     {
         switch (rawEntry.EntryType())
         {
@@ -49,7 +46,7 @@ namespace
         }
     }
 
-    bool CanBeStartOfWildcard(CRawFile& linkerScriptFile, CRawEntry rawEntry)
+    bool CanBeStartOfWildcard(const CLinkerScriptFile& linkerScriptFile, const CRawEntry& rawEntry)
     {
         switch (rawEntry.EntryType())
         {
@@ -86,13 +83,13 @@ namespace
 }
 
 SequenceMatchResult VisualLinkerScript::ParsingEngine::SubParsers::MatchSequenceAnyContentWithinEnclosure(
-    CRawFile& linkerScriptFile,
+    const CLinkerScriptFile& linkerScriptFile,
     std::vector<CRawEntry>::const_iterator iterator,
-    std::vector<CRawEntry>::const_iterator endOfVectorIterator,
-    std::string start,
-    std::vector<std::string> enclosingContent,
-    std::string end,
-    bool caseSensitive)
+    const std::vector<CRawEntry>::const_iterator& endOfVectorIterator,
+    const std::string& start,
+    const std::vector<std::string>& enclosingContent,
+    const std::string& end,
+    const bool caseSensitive)
 {
     std::vector<CRawEntry> matchingElements;
     if (!StringEquals(linkerScriptFile.ResolveRawEntry(*iterator), start, !caseSensitive))
@@ -102,9 +99,9 @@ SequenceMatchResult VisualLinkerScript::ParsingEngine::SubParsers::MatchSequence
 
     matchingElements.emplace_back(*iterator);
     auto contentMatchFound = false;
-    iterator++;
+    ++iterator;
 
-    for (auto entry: enclosingContent)
+    for (const auto& entry: enclosingContent)
     {
         if (iterator == endOfVectorIterator)
         {
@@ -113,94 +110,93 @@ SequenceMatchResult VisualLinkerScript::ParsingEngine::SubParsers::MatchSequence
 
         if (!StringEquals(linkerScriptFile.ResolveRawEntry(*iterator), entry, !caseSensitive) || iterator->EntryType() == RawEntryType::Comment)
         {
-            iterator++;
+            ++iterator;
             continue;
         }
 
         matchingElements.emplace_back(*iterator);
         contentMatchFound = true;
-        iterator++;
+        ++iterator;
         break;
     }
 
     if (!AdvanceToNextNonCommentEntry(linkerScriptFile, iterator, endOfVectorIterator))
     {
-        return SequenceMatchResult();
+        return {};
     }
 
     if (!StringEquals(linkerScriptFile.ResolveRawEntry(*iterator), end, !caseSensitive))
     {
-        return SequenceMatchResult();
+        return {};
     }
 
     matchingElements.emplace_back(*iterator);    
-    return SequenceMatchResult(contentMatchFound, std::move(matchingElements), iterator);
+    return SequenceMatchResult(contentMatchFound, matchingElements, iterator);
 }
 
 
 SequenceMatchResult VisualLinkerScript::ParsingEngine::SubParsers::MatchSequenceOpenEnded(
-    CRawFile& linkerScriptFile,
+    const CLinkerScriptFile& linkerScriptFile,
     std::vector<CRawEntry>::const_iterator iterator,
-    std::vector<CRawEntry>::const_iterator endOfVectorIterator,
-    std::vector<std::string> expectedExactSequence,
-    bool caseSensitive)
+    const std::vector<CRawEntry>::const_iterator& endOfVectorIterator,
+    const std::vector<std::string>& expectedExactSequence,
+    const bool caseSensitive)
 {
     std::vector<CRawEntry> matchingElements;
     if (!AdvanceToNextNonCommentEntry(linkerScriptFile, iterator, endOfVectorIterator))
     {
-        return SequenceMatchResult();
+        return {};
     }
 
     matchingElements.emplace_back(*iterator);
 
-    for (auto entry: expectedExactSequence)
+    for (const auto& entry: expectedExactSequence)
     {
         if ((iterator == endOfVectorIterator) || (iterator->EntryType() == RawEntryType::Comment))
         {
-            return SequenceMatchResult();
+            return {};
         }
 
         if (!StringEquals(linkerScriptFile.ResolveRawEntry(*iterator), entry, !caseSensitive))
         {
-            return SequenceMatchResult();
+            return {};
         }
 
         matchingElements.emplace_back(*iterator);
-        iterator++;
+        ++iterator;
     }
 
-    return SequenceMatchResult(true, std::move(matchingElements), iterator -1);
+    return SequenceMatchResult(true, matchingElements, iterator -1);
 }
 
-
 SequenceMatchResult VisualLinkerScript::ParsingEngine::SubParsers::MatchSequenceAnyContent(
-    CRawFile& linkerScriptFile,
+    const CLinkerScriptFile& linkerScriptFile,
     std::vector<CRawEntry>::const_iterator iterator,
-    std::vector<CRawEntry>::const_iterator endOfVectorIterator,
-    std::vector<std::string> allEligibleEntries,
-    bool caseSensitive)
+    const std::vector<CRawEntry>::const_iterator& endOfVectorIterator,
+    const std::vector<std::string>& allEligibleEntries,
+    const bool caseSensitive)
 {
     std::vector<CRawEntry> matchingElements;
     if (!AdvanceToNextNonCommentEntry(linkerScriptFile, iterator, endOfVectorIterator))
     {
-        return SequenceMatchResult();
+        return {};
     }
 
     auto resolvedContent = linkerScriptFile.ResolveRawEntry(*iterator);
     matchingElements.emplace_back(*iterator);
     auto matchSuccess = StringIn(resolvedContent, allEligibleEntries, caseSensitive);
-    return SequenceMatchResult(matchSuccess, std::move(matchingElements), iterator);
+    return SequenceMatchResult(matchSuccess, matchingElements, iterator);
 }
 
 
 std::vector<CRawEntry>::const_iterator VisualLinkerScript::ParsingEngine::SubParsers::FindNextNonCommentEntry(
-        CRawFile& linkerScriptFile,
+		const CLinkerScriptFile& linkerScriptFile,
         std::vector<CRawEntry>::const_iterator startingPoint,
-        std::vector<CRawEntry>::const_iterator endOfVectorIterator)
+		const std::vector<CRawEntry>::const_iterator& endOfVectorIterator)
 {
     while ((startingPoint != endOfVectorIterator) && (startingPoint->EntryType() == RawEntryType::Comment))
     {
-        startingPoint++;
+        ++startingPoint;
     }
 
     return startingPoint;
@@ -208,18 +204,18 @@ std::vector<CRawEntry>::const_iterator VisualLinkerScript::ParsingEngine::SubPar
 
 
 CRawEntry VisualLinkerScript::ParsingEngine::SubParsers::FuseEntriesToFormAWilcardWord(
-        CRawFile& linkerScriptFile,
+		const CLinkerScriptFile& linkerScriptFile,
         std::vector<CRawEntry>::const_iterator& iterator,
-        std::vector<CRawEntry>::const_iterator endOfVectorIterator)
+		const std::vector<CRawEntry>::const_iterator& endOfVectorIterator)
 {    
     if (!CanBeStartOfWildcard(linkerScriptFile, *iterator))
     {
         throw std::invalid_argument("Starting entry not a valid wildcard/word.");
     }
 
-    std::vector<CRawEntry>::const_iterator copyOfIterator = iterator;
-    auto startLine = iterator->StartLineNumber();
-    auto startPosition = iterator->StartPosition();
+    auto copyOfIterator = iterator;
+    const auto startLine = iterator->StartLineNumber();
+    const auto startPosition = iterator->StartPosition();
     uint32_t previousEntryEndPosition;
     auto firstEntry = true;
     while (copyOfIterator != endOfVectorIterator && CanBePartOfWildcard(linkerScriptFile, *copyOfIterator))
@@ -265,9 +261,9 @@ CRawEntry VisualLinkerScript::ParsingEngine::SubParsers::FuseEntriesToFormAWilca
 
 
 bool VisualLinkerScript::ParsingEngine::SubParsers::AdvanceToNextNonCommentEntry(
-    CRawFile& linkerScriptFile,
+    const CLinkerScriptFile& linkerScriptFile,
     std::vector<CRawEntry>::const_iterator& iterator,
-    std::vector<CRawEntry>::const_iterator endOfVectorIterator)
+    const std::vector<CRawEntry>::const_iterator& endOfVectorIterator)
 {
     if (iterator->EntryType() != RawEntryType::Comment)
     {
@@ -276,7 +272,7 @@ bool VisualLinkerScript::ParsingEngine::SubParsers::AdvanceToNextNonCommentEntry
 
     while ((iterator != endOfVectorIterator) && (iterator->EntryType() != RawEntryType::Comment))
     {
-        iterator++;
+        ++iterator;
     }
 
     return (iterator != endOfVectorIterator);

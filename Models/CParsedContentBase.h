@@ -24,8 +24,8 @@ namespace VisualLinkerScript::Models
         Expression,
         ArithmeticOrLogicalOperator,
         EnclosedExpression,        
-        PhdrsRegion,
-        PhdrsStatement,
+        ProgramHeaderRegion,
+        ProgramHeaderStatement,
         ParameterSeparator,
         MemoryRegion,
         MemoryStatement,
@@ -39,7 +39,7 @@ namespace VisualLinkerScript::Models
         SectionOutputToRegion,
         SectionsOverlayStatement,
         SectionOutputFillExpression,
-        SectionOutputPhdr,              // Example: :phdr
+        SectionOutputProgramHeader,     // Example: :phdr
         SectionOutputDataExpression,    // Mainly 'CREATE_OBJECT_SYMBOLS'
         InputSectionTargetSection,      // Example: *data.*(... <InputSectionTargetSection> ... )
         InputSectionWildcardWord,       // Example: *data?.ctor.[A-Za-z0-9]*
@@ -57,7 +57,7 @@ namespace VisualLinkerScript::Models
     };
 
     /// @brief Linker-Script content based object.
-    class CLinkerScriptContentBase
+    class CParsedContentBase
     {
     private:
         std::vector<CRawEntry> m_rawEntries;
@@ -69,12 +69,12 @@ namespace VisualLinkerScript::Models
         /// @brief Constructor, accessible to inheritors only
         /// @param rawEntries A list of object this element is comprised of
         /// @param violations Violations related to this content (if any)
-        explicit CLinkerScriptContentBase(const std::vector<CRawEntry>& rawEntries,
+        explicit CParsedContentBase(const std::vector<CRawEntry>& rawEntries,
                                           const SharedPtrVector<CViolationBase>& violations)
             : m_rawEntries(rawEntries),
               m_violations(violations)
         {
-	        // No action done ehere.
+	        // No action are done.
         }
 
     public:
@@ -82,42 +82,47 @@ namespace VisualLinkerScript::Models
         virtual ContentType Type() = 0;
 
         /// @brief Does content pass integrity check?
-        bool IsValid() const
+        [[nodiscard]] bool IsValid() const
         {
             return m_violations.empty();
         }
 
         /// @brief Returns the first element present        
-        const std::vector<CRawEntry>& RawEntries() const
+        [[nodiscard]] const std::vector<CRawEntry>& RawEntries() const
         {            
             return m_rawEntries;
         }
 
-        /// @brief Returns list detected violations
-        const SharedPtrVector<CViolationBase>& Violations() const
-        {
-            return m_violations;
-        }
-
-        /// @brief Content-Sensitive path.
-        void SetObjectPath(std::string objectPath){
+    	/// @brief Content-Sensitive path.
+        void SetObjectPath(const std::string& objectPath)
+    	{
             this->m_objectPath = objectPath;
         }
 
         /// @brief Returns object's path. Example:
         /// @remarks '<linker-script-file-name>/<region>/[sub-region]/<object-type>#index
-        const std::string ObjectPath() const {
+        [[nodiscard]] std::string ObjectPath() const
+        {
             return this->m_objectPath;
         }
 
         /// @brief Returns list detected violations
-        uint32_t StartPosition() const
+        [[nodiscard]] uint32_t StartPosition() const
         {
             return this->m_rawEntries[0].StartPosition();
         }
 
+        /// @brief Returns list detected violations
+        [[nodiscard]] const SharedPtrVector<CViolationBase>& Violations() const
+        {
+            return m_violations;
+        }
+
+        /// @brief Returns a aggregate of violations concerning this object and children.
+        [[nodiscard]] virtual const SharedPtrVector<CViolationBase> AggregateViolation() const = 0;
+
         /// @brief Produces debug information on what this object represents.
-        const virtual std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const;
+        [[nodiscard]] const virtual std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const;
     };
 }
 

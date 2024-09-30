@@ -2,12 +2,12 @@
 #define CSECTION_OUTPUT_TO_REGION_H__
 
 #include <vector>
-#include "CLinkerScriptContentBase.h"
+#include "CParsedContentBase.h"
 
 namespace VisualLinkerScript::Models
 {
     /// @brief Represents an "AtLmaRegion" assigned to a "Section Output"
-    class CSectionOutputToVmaRegion : public CLinkerScriptContentBase
+    class CSectionOutputToVmaRegion : public CParsedContentBase
     {
     private:
         CRawEntry m_greatherThanSign;
@@ -19,7 +19,7 @@ namespace VisualLinkerScript::Models
                                            const CRawEntry& regionName,
                                            const std::vector<CRawEntry>& rawElements,
                                            const SharedPtrVector<CViolationBase>& violations)
-            : CLinkerScriptContentBase(rawElements, violations),
+            : CParsedContentBase(rawElements, violations),
               m_greatherThanSign(greaterThanSign),
               m_regionName(regionName)
         {}
@@ -42,6 +42,11 @@ namespace VisualLinkerScript::Models
         {
             return this->m_regionName;
         }
+
+        /// @copydoc CParsedContentBase::AggregateViolation
+        [[nodiscard]] const SharedPtrVector<CViolationBase> AggregateViolation() const override {
+            return this->Violations();
+        } 
     };
 }
 

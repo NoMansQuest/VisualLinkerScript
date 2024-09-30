@@ -2,12 +2,12 @@
 #define CCOMMENT_H__
 
 #include <vector>
-#include "CLinkerScriptContentBase.h"
+#include "CParsedContentBase.h"
 
 namespace VisualLinkerScript::Models
 {
     /// @brief Represents a comment entry
-    class CComment : public CLinkerScriptContentBase
+    class CComment : public CParsedContentBase
     {   
     public:
         /// @brief Default constructor, accessible to inheritors only
@@ -15,8 +15,14 @@ namespace VisualLinkerScript::Models
         /// @param violations Violations list.
         explicit CComment(const std::vector<CRawEntry>& composingRawElements,                              
                           const SharedPtrVector<CViolationBase>& violations)
-            : CLinkerScriptContentBase(composingRawElements, violations)
-        {}        
+            : CParsedContentBase(composingRawElements, violations)
+        {}
+
+        /// @copydoc CParsedContentBase::AggregateViolation
+        [[nodiscard]] const SharedPtrVector<CViolationBase> AggregateViolation() const override
+        {
+            return this->Violations();
+        }
 
         /// @brief Reports back the type of this object.        
         ContentType Type() override

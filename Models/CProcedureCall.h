@@ -2,13 +2,13 @@
 #define CPROCEDURE_CALL_STATEMENT_H__
 
 #include <vector>
-#include "CLinkerScriptContentBase.h"
+#include "CParsedContentBase.h"
 #include "CAssignmentStatement.h"
 
 namespace VisualLinkerScript::Models
 {
     /// @brief Represents a procedural call
-    class CProcedureCall : public CLinkerScriptContentBase
+    class CProcedureCall : public CParsedContentBase
     {   
     private:
         CRawEntry m_procedureName;
@@ -26,7 +26,7 @@ namespace VisualLinkerScript::Models
                                 const CAssignmentStatement& assignmentStatement,
                                 const std::vector<CRawEntry>& rawElements, 
                                 const SharedPtrVector<CViolationBase>& violations)
-            : CLinkerScriptContentBase(rawElements, violations),
+            : CParsedContentBase(rawElements, violations),
               m_procedureName(procedureName),
               m_openingParenthesis(openingParenthesis),
               m_closingParenthesis(closingParenthesis),
@@ -42,37 +42,40 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Reports back the assignment-statement
-        const CAssignmentStatement& AssignmentStatement() const
+        [[nodiscard]] const CAssignmentStatement& AssignmentStatement() const
         {
             return this->m_assignmentStatement;
         }
 
         /// @brief Reports back the procedure-name
-        const CRawEntry& ProcedureName() const
+        [[nodiscard]] const CRawEntry& ProcedureName() const
         {
             return this->m_procedureName;
         }
 
         /// @brief Reports back the openning parenthesis
-        const CRawEntry& OpeningParenthesis() const
+        [[nodiscard]] const CRawEntry& OpeningParenthesis() const
         {
             return this->m_openingParenthesis;
         }
 
         /// @brief Reports back the closing parenthesis
-        const CRawEntry& ClosingParenthesis() const
+        [[nodiscard]] const CRawEntry& ClosingParenthesis() const
         {
             return this->m_closingParenthesis;
         }
 
         /// @brief Reports back the terminating semicolon at the end of the procedure call.
-        const CRawEntry& TerminatingSemicolon() const
+        [[nodiscard]] const CRawEntry& TerminatingSemicolon() const
         {
             return this->m_terminatingSemicolon;
         }
 
+        /// @copydoc CParsedContentBase::AggregateViolation
+        [[nodiscard]] virtual const SharedPtrVector<CViolationBase> AggregateViolation() const;
+
         /// @brief Produces debug information on what this object represents.
-        const std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;
+        [[nodiscard]] const std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;
     };
 }
 

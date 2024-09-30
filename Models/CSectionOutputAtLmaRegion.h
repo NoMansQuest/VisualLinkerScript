@@ -2,12 +2,12 @@
 #define CSECTION_OUTPUT_AT_LMA_REGION_H__
 
 #include <vector>
-#include "CLinkerScriptContentBase.h"
+#include "CParsedContentBase.h"
 
 namespace VisualLinkerScript::Models
 {
     /// @brief Represents an "AtLmaRegion" assigned to a "Section Output"
-    class CSectionOutputAtLmaRegion : public CLinkerScriptContentBase
+    class CSectionOutputAtLmaRegion : public CParsedContentBase
     {
     private:
         CRawEntry m_atEntry;
@@ -22,7 +22,7 @@ namespace VisualLinkerScript::Models
                                 const CRawEntry& regionName,
                                 const std::vector<CRawEntry>& rawElements,
                                 const SharedPtrVector<CViolationBase>& violations)
-            : CLinkerScriptContentBase(rawElements, violations),
+            : CParsedContentBase(rawElements, violations),
               m_atEntry(atEntry),
               m_greatherThanSign(greaterThanSign),
               m_regionName(regionName)
@@ -34,7 +34,7 @@ namespace VisualLinkerScript::Models
                                 const CRawEntry& greaterThanSign,
                                 const CRawEntry& regionName,
                                 const SharedPtrVector<CViolationBase>& violations)
-            : CLinkerScriptContentBase({atEntry, greaterThanSign, regionName}, violations),
+            : CParsedContentBase({atEntry, greaterThanSign, regionName}, violations),
               m_atEntry(atEntry),
               m_greatherThanSign(greaterThanSign),
               m_regionName(regionName)
@@ -45,7 +45,7 @@ namespace VisualLinkerScript::Models
 								const CRawEntry& atEntry,
                                 const CRawEntry& greaterThanSign,
                                 const CRawEntry& regionName)
-            : CLinkerScriptContentBase({atEntry, greaterThanSign, regionName}, {}),
+            : CParsedContentBase({atEntry, greaterThanSign, regionName}, {}),
               m_atEntry(atEntry),
               m_greatherThanSign(greaterThanSign),
               m_regionName(regionName)
@@ -65,7 +65,7 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Reports back the greather-than sign
-        const CRawEntry& GreatherThanSign()
+        const CRawEntry& GreaterThanSign()
         {
             return this->m_greatherThanSign;
         }
@@ -74,6 +74,11 @@ namespace VisualLinkerScript::Models
         const CRawEntry& RegionName()
         {
             return this->m_regionName;
+        }
+
+        /// @copydoc CParsedContentBase::AggregateViolation
+        [[nodiscard]] const SharedPtrVector<CViolationBase> AggregateViolation() const override {
+            return this->Violations();	        
         }
     };
 }

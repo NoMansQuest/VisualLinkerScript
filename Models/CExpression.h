@@ -2,7 +2,7 @@
 #define CEXPRESSION_H__
 
 #include <vector>
-#include "CLinkerScriptContentBase.h"
+#include "CParsedContentBase.h"
 #include "Raw/CRawEntry.h"
 
 using namespace VisualLinkerScript::Models::Raw;
@@ -10,10 +10,10 @@ using namespace VisualLinkerScript::Models::Raw;
 namespace VisualLinkerScript::Models
 {
     /// @brief Represents a compound R-Value expression, composed of multiple symbols (and/or sub expressions).
-    class CExpression: public CLinkerScriptContentBase
+    class CExpression: public CParsedContentBase
     {   
     private:
-        SharedPtrVector<CLinkerScriptContentBase> m_composition;
+        SharedPtrVector<CParsedContentBase> m_composition;
         CRawEntry m_openingParenthesis;
         CRawEntry m_closingParenthesis;        
 
@@ -21,20 +21,20 @@ namespace VisualLinkerScript::Models
         /// @brief Parameterized constructor, accessible to inheritors only
         explicit CExpression(const CRawEntry& openingParenthesis,
                              const CRawEntry& closingParenthesis,
-                             const SharedPtrVector<CLinkerScriptContentBase>& composition,
+                             const SharedPtrVector<CParsedContentBase>& composition,
                              const std::vector<CRawEntry>& rawElements,
                              const SharedPtrVector<CViolationBase>& violations)
-            : CLinkerScriptContentBase(rawElements, violations),
+            : CParsedContentBase(rawElements, violations),
               m_composition(composition),
               m_openingParenthesis(openingParenthesis),
               m_closingParenthesis(closingParenthesis)
         {}        
 
         /// @brief Simplified constructor, no parenthesis
-        explicit CExpression(SharedPtrVector<CLinkerScriptContentBase> composition,
+        explicit CExpression(SharedPtrVector<CParsedContentBase> composition,
                              const std::vector<CRawEntry>& rawElements,
                              const SharedPtrVector<CViolationBase>& violations)
-    		: CLinkerScriptContentBase(rawElements, violations),
+    		: CParsedContentBase(rawElements, violations),
               m_composition(std::move( composition))
         {}
 
@@ -46,25 +46,28 @@ namespace VisualLinkerScript::Models
         }    
 
         /// @brief Reports back opening-parenthesis
-        const CRawEntry& OpeningParenthesis() const
+        [[nodiscard]] const CRawEntry& OpeningParenthesis() const
         {
             return this->m_openingParenthesis;
         }
 
         /// @brief Reports back closing parenthesis
-        const CRawEntry& ClosingParenthesis() const
+        [[nodiscard]] const CRawEntry& ClosingParenthesis() const
         {
             return this->m_closingParenthesis;
         }
 
         /// @brief Gets the "Composition" 
-        const SharedPtrVector<CLinkerScriptContentBase>& Composition() const
+        [[nodiscard]] const SharedPtrVector<CParsedContentBase>& Composition() const
         {
             return this->m_composition;
         }
 
+        /// @copydoc CParsedContentBase::AggregateViolation
+        [[nodiscard]] const SharedPtrVector<CViolationBase> AggregateViolation() const override;
+
         /// @brief Produces debug information on what this object represents.
-        const std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;
+        [[nodiscard]] const std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;
     };
 }
 

@@ -30,13 +30,13 @@ namespace
 }
 
 std::shared_ptr<CFunctionCall> CInputSectionFunctionKeepParser::TryParse(
-        CRawFile& linkerScriptFile,
+		const CLinkerScriptFile& linkerScriptFile,
         std::vector<CRawEntry>::const_iterator& iterator,
         std::vector<CRawEntry>::const_iterator endOfVectorIterator)
 {
     auto localIterator = iterator;
     auto parsingStartIteratorPosition = iterator;
-    SharedPtrVector<CLinkerScriptContentBase> parsedContent;
+    SharedPtrVector<CParsedContentBase> parsedContent;
     SharedPtrVector<CViolationBase> violations;
 
     CInputSectionStatementParser statementParser;
@@ -88,7 +88,7 @@ std::shared_ptr<CFunctionCall> CInputSectionFunctionKeepParser::TryParse(
         {
             case RawEntryType::Comment:
             {
-                parsedContent.emplace_back(std::shared_ptr<CLinkerScriptContentBase>(new CComment({*localIterator},{})));
+                parsedContent.emplace_back(std::shared_ptr<CParsedContentBase>(new CComment({*localIterator},{})));
                 break;
             }
 
@@ -118,7 +118,7 @@ std::shared_ptr<CFunctionCall> CInputSectionFunctionKeepParser::TryParse(
                         if (parsedStatement == nullptr) {
                             violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
                         } else {
-                            parsedContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(parsedStatement));
+                            parsedContent.emplace_back(std::dynamic_pointer_cast<CParsedContentBase>(parsedStatement));
                         }
                         break;
                     }
@@ -240,7 +240,7 @@ std::shared_ptr<CFunctionCall> CInputSectionFunctionKeepParser::TryParse(
                         }
                         else
                         {
-                            parsedContent.emplace_back(std::dynamic_pointer_cast<CLinkerScriptContentBase>(parsedStatement));
+                            parsedContent.emplace_back(std::dynamic_pointer_cast<CParsedContentBase>(parsedStatement));
                         }
                         break;
                     }

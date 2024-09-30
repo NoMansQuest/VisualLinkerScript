@@ -36,13 +36,13 @@ namespace
 }
 
 std::shared_ptr<CPhdrsStatement> CPhdrsRegionContentParser::TryParse(
-        CRawFile& linkerScriptFile,
+		const CLinkerScriptFile& linkerScriptFile,
         std::vector<CRawEntry>::const_iterator& iterator,
         std::vector<CRawEntry>::const_iterator endOfVectorIterator)
 {   
     auto localIterator = iterator;
     auto parsingStartIteratorPosition = iterator;
-    std::vector<std::shared_ptr<CLinkerScriptContentBase>> parsedContent;
+    std::vector<std::shared_ptr<CParsedContentBase>> parsedContent;
     SharedPtrVector<CViolationBase> violations;
 
     auto parserState = ParserState::AwaitingName;
@@ -55,8 +55,8 @@ std::shared_ptr<CPhdrsStatement> CPhdrsRegionContentParser::TryParse(
     // This is to parse the AT(<Expression>) part. The expression is parenthesized.
     CFunctionParser functionParser;
 
-    std::shared_ptr<CLinkerScriptContentBase> atAddressFunction;
-    std::shared_ptr<CLinkerScriptContentBase> flagsFunction;
+    std::shared_ptr<CParsedContentBase> atAddressFunction;
+    std::shared_ptr<CParsedContentBase> flagsFunction;
     CRawEntry semicolonEntry;
 
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
@@ -249,7 +249,7 @@ std::shared_ptr<CPhdrsStatement> CPhdrsRegionContentParser::TryParse(
                     break;
                 }
 
-                localIterator--;
+                --localIterator;
                 parserState = ParserState::ParsingComplete;
                 break;
             }

@@ -5,7 +5,7 @@
 #include <cstdint>
 #include "../Helpers.h"
 #include "Models/CViolationBase.h"
-#include "Models/CLinkerScriptContentBase.h"
+#include "Models/CParsedContentBase.h"
 
 namespace VisualLinkerScript::DrcEngine
 {

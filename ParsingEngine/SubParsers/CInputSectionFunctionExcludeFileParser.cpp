@@ -5,6 +5,7 @@
 #include "CInputSectionFunctionExcludeFileParser.h"
 #include "CInputSectionFunctionSortParser.h"
 #include "Constants.h"
+#include "SubParserHelpers.h"
 
 #include "../CMasterParserException.h"
 
@@ -31,13 +32,13 @@ namespace
 }
 
 std::shared_ptr<CFunctionCall> CInputSectionFunctionExcludeFileParser::TryParse(
-        CRawFile& linkerScriptFile,
+		const CLinkerScriptFile& linkerScriptFile,
         std::vector<CRawEntry>::const_iterator& iterator,
         std::vector<CRawEntry>::const_iterator endOfVectorIterator)
 {
     auto localIterator = iterator;
     auto parsingStartIteratorPosition = iterator;
-    SharedPtrVector<CLinkerScriptContentBase> parsedContent;
+    SharedPtrVector<CParsedContentBase> parsedContent;
     SharedPtrVector<CViolationBase> violations;
 
     auto parserState = ParserState::AwaitingHeader;
@@ -89,7 +90,7 @@ std::shared_ptr<CFunctionCall> CInputSectionFunctionExcludeFileParser::TryParse(
         {
             case RawEntryType::Comment:
             {
-                parsedContent.emplace_back(std::shared_ptr<CLinkerScriptContentBase>(new CComment({*localIterator},{})));
+                parsedContent.emplace_back(std::shared_ptr<CParsedContentBase>(new CComment({*localIterator},{})));
                 break;
             }
 
@@ -145,7 +146,7 @@ std::shared_ptr<CFunctionCall> CInputSectionFunctionExcludeFileParser::TryParse(
                         else
                         {
                             auto fusedWord = FuseEntriesToFormAWilcardWord(linkerScriptFile, localIterator, endOfVectorIterator);
-                            parsedContent.emplace_back(std::shared_ptr<CLinkerScriptContentBase>(new CWildcardEntry(fusedWord, { fusedWord }, {})));
+                            parsedContent.emplace_back(std::shared_ptr<CParsedContentBase>(new CWildcardEntry(fusedWord, { fusedWord }, {})));
                         }
                         break;
                     }
@@ -261,7 +262,7 @@ std::shared_ptr<CFunctionCall> CInputSectionFunctionExcludeFileParser::TryParse(
                     case ParserState::AwaitingParenthesisClosure:
                     {
                         auto fusedWord = FuseEntriesToFormAWilcardWord(linkerScriptFile, localIterator, endOfVectorIterator);
-                        parsedContent.emplace_back(std::shared_ptr<CLinkerScriptContentBase>(new CWildcardEntry(fusedWord, { fusedWord }, {})));
+                        parsedContent.emplace_back(std::shared_ptr<CParsedContentBase>(new CWildcardEntry(fusedWord, { fusedWord }, {})));
                         break;
                     }
 

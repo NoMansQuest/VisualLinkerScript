@@ -23,14 +23,14 @@ SharedPtrVector<CViolationBase> CNoDuplicateMemoryRegionNameRule::PerformCheck(c
     for (const auto memoryStatementToInspect: foundMemoryStatements) {
         // Check if any other file has the name described
        SharedPtrVector<CMemoryStatement> foundDuplicates { memoryStatementToInspect->Result() };
-       auto inspectStatementName = memoryStatementToInspect->LinkerScriptFile()->ResolveEntryText(memoryStatementToInspect->Result()->NameEntry());
+       auto inspectStatementName = memoryStatementToInspect->LinkerScriptFile()->ResolveRawEntry(memoryStatementToInspect->Result()->NameEntry());
 
        for (const auto memoryStatementSecondLoop: foundMemoryStatements) {
             if (memoryStatementSecondLoop->Result()->StartPosition() == memoryStatementToInspect->Result()->StartPosition()) {
                 continue;
             }
 
-            auto secondLoopStatementName = memoryStatementSecondLoop->LinkerScriptFile()->ResolveEntryText(memoryStatementSecondLoop->Result()->NameEntry());
+            auto secondLoopStatementName = memoryStatementSecondLoop->LinkerScriptFile()->ResolveRawEntry(memoryStatementSecondLoop->Result()->NameEntry());
 
             if (StringEquals(inspectStatementName,secondLoopStatementName)){
                 foundDuplicates.emplace_back(memoryStatementSecondLoop->Result());
@@ -49,8 +49,8 @@ SharedPtrVector<CViolationBase> CNoDuplicateMemoryRegionNameRule::PerformCheck(c
         {
             auto subItemStatement = foundDuplicates[index];
             std::string subItemErrorMessage = "Memory statement with identical name defined here";
-            SharedPtrVector<CLinkerScriptContentBase> subItemStatements {
-                std::dynamic_pointer_cast<CLinkerScriptContentBase>(subItemStatement)
+            SharedPtrVector<CParsedContentBase> subItemStatements {
+                std::dynamic_pointer_cast<CParsedContentBase>(subItemStatement)
             };
 
             subitems.emplace_back(std::make_shared<CDrcViolation>(
@@ -64,8 +64,8 @@ SharedPtrVector<CViolationBase> CNoDuplicateMemoryRegionNameRule::PerformCheck(c
                 ESeverityCode::Error));
         }
 
-        SharedPtrVector<CLinkerScriptContentBase> memoryStatementsToInspect {
-            std::dynamic_pointer_cast<CLinkerScriptContentBase>(memoryStatementToInspect->Result())
+        SharedPtrVector<CParsedContentBase> memoryStatementsToInspect {
+            std::dynamic_pointer_cast<CParsedContentBase>(memoryStatementToInspect->Result())
         };
 
         auto violation = std::shared_ptr<CDrcViolation>(new CDrcViolation(

@@ -29,17 +29,17 @@ SharedPtrVector<CViolationBase> CDirectivesDeclaredOnlyOnceRule::PerformCheck(co
         "STARTUP",
     };
 
-    for (auto directive : directives) 
+    for (const auto& directive : directives) 
     {
 	    if (auto foundDirectives = QueryObject<CFunctionCall>(
             linkerScriptFile,
 		    [&](const std::shared_ptr<CLinkerScriptFile>& localLinkerScriptFile, const std::shared_ptr<CFunctionCall>& ResolveEntryText) {
-			    return StringEquals(localLinkerScriptFile->ResolveEntryText(ResolveEntryText->FunctionName()), directive, true);
+			    return StringEquals(localLinkerScriptFile->ResolveRawEntry(ResolveEntryText->FunctionName()), directive, true);
 		    }); 
             foundDirectives.size() > 1) 
         {
              violations.emplace_back(std::static_pointer_cast<CViolationBase>(std::shared_ptr<CDrcViolation>(new CDrcViolation(
-	             std::vector<std::shared_ptr<CLinkerScriptContentBase>>(),
+	             std::vector<std::shared_ptr<CParsedContentBase>>(),
 	             this->DrcRuleTitle(),
 	             "Directive is defined more than once.",
 	             EDrcViolationCode::EntryDirectiveDefinedMoreThanOnce,

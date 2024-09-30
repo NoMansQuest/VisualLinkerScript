@@ -2,12 +2,12 @@
 #define CVERSION_NODE_H__
 
 #include <vector>
-#include "CLinkerScriptContentBase.h"
+#include "CParsedContentBase.h"
 
 namespace VisualLinkerScript::Models
 {
     /// @brief Represents a single entry in the "MEMORIES" region
-    class CVersionNode : public CLinkerScriptContentBase
+    class CVersionNode : public CParsedContentBase
     {   
     private:
         CRawEntry m_nodeEntry;
@@ -21,7 +21,7 @@ namespace VisualLinkerScript::Models
                               const CRawEntry& parentTagEntry,
                               const std::vector<CRawEntry>& rawElements,
                               const SharedPtrVector<CViolationBase>& violations)
-            : CLinkerScriptContentBase(rawElements, violations),
+            : CParsedContentBase(rawElements, violations),
               m_nodeEntry(nodeEntry),
               m_semicolonEntry(semicolonEntry),
               m_parentTagEntry(parentTagEntry)
@@ -49,6 +49,11 @@ namespace VisualLinkerScript::Models
         CRawEntry ParentTagEntry()
         {
             return this->m_parentTagEntry;
+        }
+
+        /// @copydoc CParsedContentBase::AggregateViolation
+        [[nodiscard]] const SharedPtrVector<CViolationBase> AggregateViolation() const override {
+            return this->Violations();
         }
     };    
 }

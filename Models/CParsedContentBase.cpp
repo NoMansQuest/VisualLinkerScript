@@ -5,19 +5,19 @@
 #include <stdint.h>
 
 #include "CLinkerScriptFile.h"
-#include "CLinkerScriptContentBase.h"
+#include "CParsedContentBase.h"
 
 using namespace VisualLinkerScript::Models;
 
 /// @brief Produces debug information on what this object represents.
-const std::string CLinkerScriptContentBase::ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const
+const std::string CParsedContentBase::ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const
 {
-    const CLinkerScriptContentBase& thisReference = *this;
+    const CParsedContentBase& thisReference = *this;
     std::string content =
             (this->Violations().size() > 0 ? "[ ** ] " : "[ OK ] ") +
-            std::string("CLinkerScriptContentBase") +
+            std::string("CParsedContentBase") +
             " @pos " + std::to_string(this->StartPosition()) +
-            " -- content : " + linkerScriptFile.ResolveEntryText(thisReference);
+            " -- content : " + linkerScriptFile.ResolveParsedContent(thisReference);
 
     return std::string(depth, ' ') + " - " + content;
 }

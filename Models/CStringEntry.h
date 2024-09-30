@@ -2,13 +2,13 @@
 #define CSTRING_ENTRY_H__
 
 #include <vector>
-#include "CLinkerScriptContentBase.h"
+#include "CParsedContentBase.h"
 #include "Raw/CRawEntry.h"
 
 namespace VisualLinkerScript::Models
 {
     /// @brief Represents a symbol which is R-Value or L-Value expression and may be preceded by an arithmetic sign.
-    class CStringEntry : public CLinkerScriptContentBase
+    class CStringEntry : public CParsedContentBase
     {
     private:
         CRawEntry m_stringEntry;
@@ -18,7 +18,7 @@ namespace VisualLinkerScript::Models
         explicit CStringEntry(const CRawEntry& stringEntry,
                               const std::vector<CRawEntry>& rawElements,
                               const SharedPtrVector<CViolationBase>& violations)
-            : CLinkerScriptContentBase(rawElements, violations),
+            : CParsedContentBase(rawElements, violations),
               m_stringEntry(stringEntry)
         {}
 
@@ -32,6 +32,11 @@ namespace VisualLinkerScript::Models
         const CRawEntry& StringEntry()
         {
             return this->m_stringEntry;
+        }
+
+        /// @copydoc CParsedContentBase::AggregateViolation
+        [[nodiscard]] const SharedPtrVector<CViolationBase> AggregateViolation() const override {
+            return this->Violations();
         }
     };
 }

@@ -2,19 +2,25 @@
 #define CINPUTSECTIONWILDCARDWORD_H
 
 #include <vector>
-#include "CLinkerScriptContentBase.h"
+#include "CParsedContentBase.h"
 
 namespace VisualLinkerScript::Models
 {
     /// @brief Represents a wildcard word. Example: *.data.?.[A-Za-z]
-    class CInputSectionWildcardWord : public CLinkerScriptContentBase
+    class CInputSectionWildcardWord : public CParsedContentBase
     {
     public:
         /// @brief Default constructor
         explicit CInputSectionWildcardWord(const std::vector<CRawEntry>& composingRawEntries,
                                            const SharedPtrVector<CViolationBase>& violations)
-            : CLinkerScriptContentBase(composingRawEntries, violations)
+            : CParsedContentBase(composingRawEntries, violations)
         {}
+
+        /// @copydoc CParsedContentBase::AggregateViolation
+        [[nodiscard]] const SharedPtrVector<CViolationBase> AggregateViolation() const override
+        {
+            return this->Violations();
+        }
 
         /// @brief Reports back the type of this object.
         ContentType Type() override

@@ -2,12 +2,12 @@
 #define CSECTION_OUTPUT_SPECIAL_KEYWORD_H__
 
 #include <vector>
-#include "CLinkerScriptContentBase.h"
+#include "CParsedContentBase.h"
 
 namespace VisualLinkerScript::Models
 {
     /// @brief Represents an "AtLmaRegion" assigned to a "Section Output"
-    class CSectionOutputDataExpression : public CLinkerScriptContentBase
+    class CSectionOutputDataExpression : public CParsedContentBase
     {
     private:
         CRawEntry m_dataExpression;
@@ -15,7 +15,7 @@ namespace VisualLinkerScript::Models
     public:
         /// @brief Default constructor, accessible to inheritors only
         explicit CSectionOutputDataExpression(const CRawEntry& dataExpressionEntry)
-            : CLinkerScriptContentBase({ dataExpressionEntry }, {})
+            : CParsedContentBase({ dataExpressionEntry }, {})
         {}
 
     public:
@@ -29,6 +29,11 @@ namespace VisualLinkerScript::Models
         const CRawEntry& DataExpression()
         {
             return this->m_dataExpression;
+        }
+
+        /// @copydoc CParsedContentBase::AggregateViolation
+        [[nodiscard]] const SharedPtrVector<CViolationBase> AggregateViolation() const override {
+            return this->Violations();
         }
     };
 }

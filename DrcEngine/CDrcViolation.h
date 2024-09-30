@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 #include <memory>
-#include <Models/CLinkerScriptContentBase.h>
+#include <Models/CParsedContentBase.h>
 #include <Models/Intervention/CIntervention.h>
 #include "EDrcViolationCode.h"
 #include "../Models/CViolationBase.h"
@@ -21,7 +21,7 @@ namespace VisualLinkerScript::DrcEngine
     {
     private:
         EDrcViolationCode m_violationCode;
-        SharedPtrVector<CLinkerScriptContentBase> m_involvedElements;
+        SharedPtrVector<CParsedContentBase> m_involvedElements;
         SharedPtrVector<CDrcViolation> m_subitems;
         std::string m_violationMessage;
         std::string m_title;
@@ -30,7 +30,7 @@ namespace VisualLinkerScript::DrcEngine
 
     public:
         /// @brief Default constructor, reporting the @see {involvedEntries} only
-        explicit CDrcViolation(SharedPtrVector<CLinkerScriptContentBase> involvedElements,
+        explicit CDrcViolation(SharedPtrVector<CParsedContentBase> involvedElements,
                                std::string title,
                                std::string violationMessage,
                                std::string contentSensitivePath,
@@ -49,7 +49,7 @@ namespace VisualLinkerScript::DrcEngine
         {}
 
         /// @brief Specialized constructor - ContentSensitivePath not taken
-        explicit CDrcViolation(SharedPtrVector<CLinkerScriptContentBase> involvedElements,
+        explicit CDrcViolation(SharedPtrVector<CParsedContentBase> involvedElements,
                                std::string title,
                                std::string violationMessage,
                                SharedPtrVector<CDrcViolation>&& subitems,
@@ -66,7 +66,7 @@ namespace VisualLinkerScript::DrcEngine
         {}
 
         /// @brief Specialized constructor - ContentSensitivePath and SubItems not taken
-        explicit CDrcViolation(SharedPtrVector<CLinkerScriptContentBase> involvedElements,
+        explicit CDrcViolation(SharedPtrVector<CParsedContentBase> involvedElements,
                                std::string title,
                                std::string violationMessage,
                                const std::shared_ptr<CIntervention>& correctiveAction,
@@ -81,7 +81,7 @@ namespace VisualLinkerScript::DrcEngine
         {}
 
         /// @brief Specialized constructor - ContentSensitivePath, SubItems and CorrectiveAction not taken
-        explicit CDrcViolation(SharedPtrVector<CLinkerScriptContentBase> involvedElements,
+        explicit CDrcViolation(SharedPtrVector<CParsedContentBase> involvedElements,
                                std::string title,
                                std::string violationMessage,
                                const EDrcViolationCode violationCode,
@@ -94,7 +94,7 @@ namespace VisualLinkerScript::DrcEngine
         {}
 
         /// @brief Specialized constructor - ContentSensitivePath, SubItems and CorrectiveAction not taken
-        explicit CDrcViolation(std::shared_ptr<CLinkerScriptContentBase> involvedElement,
+        explicit CDrcViolation(std::shared_ptr<CParsedContentBase> involvedElement,
                                std::string title,
                                std::string violationMessage,
                                const EDrcViolationCode violationCode,
@@ -108,7 +108,7 @@ namespace VisualLinkerScript::DrcEngine
 
     public:
         /// @brief Reports back a list of involved elements
-        [[nodiscard]] SharedPtrVector<CLinkerScriptContentBase> InvolvedElements() const
+        [[nodiscard]] SharedPtrVector<CParsedContentBase> InvolvedElements() const
         {
             return this->m_involvedElements;
         }

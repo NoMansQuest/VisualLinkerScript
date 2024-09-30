@@ -4,9 +4,7 @@
 #include <QtWidgets>
 #include <QString>
 #include <memory>
-#include "CLinkerScriptSessionFileInfo.h"
 #include "DrcEngine/CDrcManager.h"
-#include "ParsingEngine/CLinkerScriptLexer.h"
 #include "ParsingEngine/CLinkerScriptParser.h"
 
 namespace VisualLinkerScript::ParsingEngine
@@ -35,12 +33,15 @@ private:
 
 public:
     /// @brief Default constructor
-    QLinkerScriptSession(const uint32_t sessionId, CLinkerScriptSessionFileInfo sessionFileInfo, QWidget *parent = nullptr)
+    QLinkerScriptSession(
+				const uint32_t sessionId, 
+				const std::shared_ptr<VisualLinkerScript::Models::CLinkerScriptFile>& linkerScriptFile, 
+				QWidget *parent = nullptr)
         : QWidget(parent),
           m_sessionId(sessionId),
           m_sessionsTabIndex(0),		  
-          m_sessionFileInfo(std::move(sessionFileInfo))
-    {
+		  m_linkerScriptFile(linkerScriptFile)
+    {        
         this->BuildUserInterface();
     }
 
@@ -54,8 +55,7 @@ private:
     QChromeTabWidget* m_panelsTab;
     QVBoxLayout* m_centralLayout;
     QSplitter* m_horizontalSplitter;
-    QSplitter* m_verticalSplitter;  
-    CLinkerScriptSessionFileInfo m_sessionFileInfo;
+    QSplitter* m_verticalSplitter;    
     QTimer m_deferredProcedureCaller;
     QSearchPopup* m_searchPopup;
 
@@ -92,17 +92,11 @@ public:
     /// @brief Reports back the session's tab index.
     [[nodiscard]] uint32_t TabIndex() const { return this->m_sessionsTabIndex; }
 
-    /// @brief Updates session's file information.
-    void SetSessionFileInfo(const CLinkerScriptSessionFileInfo& newSessionFileInfo);
-
-    /// @brief Reports back the session's file info.
-    [[nodiscard]] CLinkerScriptSessionFileInfo SessionFileInfo(void) const { return this->m_sessionFileInfo; }
-
     /// @brief Reports back the linker script content.
-    [[nodiscard]] std::string LinkerScriptContent(void) const;
+    [[nodiscard]] std::shared_ptr<VisualLinkerScript::Models::CLinkerScriptFile> LinkerScriptFile() const;
 
-    /// @brief: Update's linker script content. This action is reversible via "Undo".
-    void SetLinkerScriptContent(const std::string& linkerScriptContent) const;
+    /// @brief Updates content of the linker-script file. Consequently, it updates the editor and triggers an analysis.
+    void UpdateContent(const std::string& newContent);
 
     /// TODO: DISCARD IF POSSIBLE
     /// @brief Returns back the memory visualizer widget
