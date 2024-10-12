@@ -11,10 +11,10 @@ using namespace VisualLinkerScript::Models;
 const SharedPtrVector<CViolationBase> CMemoryStatement::AggregateViolation() const
 {
     SharedPtrVector<CViolationBase> allViolations;
-    allViolations.insert(allViolations.end(), this->Attributes()->AggregateViolation().cbegin(), this->Attributes()->AggregateViolation().cend());
-    allViolations.insert(allViolations.end(), this->OriginAssignment()->AggregateViolation().cbegin(), this->OriginAssignment()->AggregateViolation().cend());
-    allViolations.insert(allViolations.end(), this->LengthAssignment()->AggregateViolation().cbegin(), this->LengthAssignment()->AggregateViolation().cend());
-    allViolations.insert(allViolations.end(), this->Violations().begin(), this->Violations().end());
+    FuseVectors(allViolations, this->Attributes()->AggregateViolation());
+    FuseVectors(allViolations, this->OriginAssignment()->AggregateViolation());
+    FuseVectors(allViolations, this->LengthAssignment()->AggregateViolation());
+    FuseVectors(allViolations, this->Violations());
     return allViolations; // Note: R-Value optimization ensures this vector isn't unnecessarily copied.
 }
 

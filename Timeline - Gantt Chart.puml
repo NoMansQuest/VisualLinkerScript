@@ -1,0 +1,96 @@
+@startgantt VisualLinkerScript Timeline
+
+Project starts 2022-09-25
+[ Research and preparation] requires 20 days
+
+[ UI - Main UI Infrastructure] requires 30 days
+[ UI - Main UI Infrastructure] starts at [ Research and preparation]'s end
+
+[ UI - QSS Style definition] requires 30 days
+[ UI - QSS Style definition] starts at [ UI - Main UI Infrastructure]'s end
+
+[ LEXER - LinkerScript Lexer] requires 20 days
+[ LEXER - LinkerScript Lexer] starts at [ UI - QSS Style definition]'s end
+
+[ PARSER - R-Value Expression Parser] requires 25 days
+[ PARSER - R-Value Expression Parser] starts at [ LEXER - LinkerScript Lexer]'s end
+[ PARSER - Comments Parser] requires 8 days
+[ PARSER - Comments Parser] starts at [ LEXER - LinkerScript Lexer]'s end
+ 
+[ PARSER - Assignment Parser] requires 25 days
+[ PARSER - Assignment Parser] starts at [ PARSER - R-Value Expression Parser]'s end
+[ PARSER - Controlled Assignment Parser] requires 4 days
+[ PARSER - Controlled Assignment Parser] starts at [ PARSER - Assignment Parser]'s end
+[ PARSER - Program Header Section Parser] requires 30 days
+[ PARSER - Program Header Section Parser] starts at [ LEXER - LinkerScript Lexer]'s end
+[ PARSER - Memory Section Parser] requires 18 days
+[ PARSER - Memory Section Parser] starts at [ LEXER - LinkerScript Lexer]'s end
+[ PARSER - Sections Parser] requires 15 days
+[ PARSER - Sections Parser] starts at [ LEXER - LinkerScript Lexer]'s end
+[ PARSER - Section Output Command Parser] requires 25 days
+[ PARSER - Section Output Command Parser] starts at [ PARSER - Sections Parser]'s end
+[ PARSER - Section Output Command Entries Parser] requires 22 days
+[ PARSER - Section Output Command Entries Parser] starts at [ PARSER - Sections Parser]'s end
+[ PARSER - Section Output Command Wildcard Fusion] requires 22 days
+[ PARSER - Section Output Command Wildcard Fusion] starts at [ PARSER - Sections Parser]'s end
+[ PARSER - Section Overlay Parser] requires 22 days
+[ PARSER - Section Overlay Parser] starts at [ PARSER - Sections Parser]'s end
+[ PARSER - Versions Section Parser] requires 18 days
+[ PARSER - Versions Section Parser] starts at [ LEXER - LinkerScript Lexer]'s end
+[ PARSER - Master Parser] requires 2 days 
+[ PARSER - Master Parser] starts at [ PARSER - Section Overlay Parser]'s end
+ 
+
+[ DRC - DRC manager] requires 3 days
+[ DRC - DRC manager] starts at [ PARSER - Master Parser]'s end
+[ DRC - Directives Declared Only Once Rule] requires 3 days
+[ DRC - Directives Declared Only Once Rule] starts at [ DRC - DRC manager]'s end
+[ DRC - Entry Is Defined Rule] requires 3 days
+[ DRC - Entry Is Defined Rule] starts at [ DRC - DRC manager]'s end
+[ DRC - Included Files Are Present Rule] requires 3 days
+[ DRC - Included Files Are Present Rule] starts at [ DRC - DRC manager]'s end
+[ DRC - Include Rescursion Guard Rule] requires 3 days
+[ DRC - Include Rescursion Guard Rule] starts at [ DRC - DRC manager]'s end
+[ DRC - Location Counter Cannot Go Backward Rule] requires 3 days
+[ DRC - Location Counter Cannot Go Backward Rule] starts at [ DRC - DRC manager]'s end
+[ DRC - MemoryRegion Defined Once Rule] requires 3 days
+[ DRC - MemoryRegion Defined Once Rule] starts at [ DRC - DRC manager]'s end
+[ DRC - No Duplicate Memory Region Name Rule] requires 3 days
+[ DRC - No Duplicate Memory Region Name Rule] starts at [ DRC - DRC manager]'s end
+[ DRC - Sections Defined Only Once Rule] requires 3 days
+[ DRC - Sections Defined Only Once Rule] starts at [ DRC - DRC manager]'s end
+[ DRC - Symbols Defined In Advance Rule] requires 3 days 
+[ DRC - Symbols Defined In Advance Rule] starts at [ DRC - DRC manager]'s end
+ 
+[ UI - Integration of QScintilla] requires 30 days
+[ UI - Integration of QScintilla] starts at [ PARSER - Master Parser]'s end
+[ UI - LinkerScript lexer for QScintilla] requires 20 days
+[ UI - LinkerScript lexer for QScintilla] starts at [ UI - Integration of QScintilla]'s end
+ 
+[ UI - QChromTabWidget design] requires 17 days
+[ UI - QChromTabWidget design] starts at [ UI - LinkerScript lexer for QScintilla]'s end
+[ Component - Linker Script Session] requires 32 days
+[ Component - Linker Script Session] starts at [ UI - QChromTabWidget design]'s end
+ 
+[ MESSAGING - Message System And Events] requires 15 days
+[ MESSAGING - Message System And Events] starts at [ Component - Linker Script Session]'s end
+ 
+[ MD5 Hash] requires 4 day
+[ MD5 Hash] starts at [ Component - Linker Script Session]'s end
+
+[ UI QManualCheckBox] requires 5 days
+[ UI QManualCheckBox] starts at [ Component - Linker Script Session]'s end
+[ UI QManualSizeGrip] requires 5 days
+[ UI QManualSizeGrip] starts at [ UI QManualCheckBox]'s end
+ 
+[ UI - Search & Replace popup] requires 10 days
+[ UI - Search & Replace popup] starts at [ UI QManualSizeGrip]'s end
+ 
+[ LEXER - AutoStyler Lexer] requires 20 days
+[ LEXER - AutoStyler Lexer] starts at [ UI - Search & Replace popup]'s end
+ 
+[ Component - Memory Visualizer] requires 32 days
+[ Component - Memory Visualizer] starts at [ LEXER - AutoStyler Lexer]'s end
+
+
+@endgantt

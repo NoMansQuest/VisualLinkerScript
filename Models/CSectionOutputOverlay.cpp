@@ -13,42 +13,30 @@ const SharedPtrVector<CViolationBase> CSectionOutputOverlay::AggregateViolation(
 
     for (const auto& childEntry : this->PreColonContent())
     {
-        allViolations.insert(
-            allViolations.end(),
-            childEntry->AggregateViolation().cbegin(),
-            childEntry->AggregateViolation().cend());
+        FuseVectors(allViolations, childEntry->AggregateViolation());
     }
 
     for (const auto& childEntry : this->PostColonContent())
     {
-        allViolations.insert(
-            allViolations.end(),
-            childEntry->AggregateViolation().cbegin(),
-            childEntry->AggregateViolation().cend());
+        FuseVectors(allViolations, childEntry->AggregateViolation());
     }
 
-    allViolations.insert(allViolations.end(), this->ToVmaRegion()->AggregateViolation().cbegin(), this->ToVmaRegion()->AggregateViolation().cend());
-    allViolations.insert(allViolations.end(), this->AtLmaRegionFunction()->AggregateViolation().cbegin(), this->AtLmaRegionFunction()->AggregateViolation().cend());
+    FuseVectors(allViolations, this->ToVmaRegion()->AggregateViolation());
+    FuseVectors(allViolations, this->AtLmaRegionFunction()->AggregateViolation());
 
     for (const auto& childEntry : this->ProgramHeaders())
     {
-        allViolations.insert(
-            allViolations.end(),
-            childEntry->AggregateViolation().cbegin(),
-            childEntry->AggregateViolation().cend());
+        FuseVectors(allViolations, childEntry->AggregateViolation());
     }
 
-    allViolations.insert(allViolations.end(), this->FillExpression()->AggregateViolation().cbegin(), this->FillExpression()->AggregateViolation().cend());
+    FuseVectors(allViolations, this->FillExpression()->AggregateViolation());
 
     for (const auto& childEntry : this->InnerContent())
     {
-        allViolations.insert(
-            allViolations.end(),
-            childEntry->AggregateViolation().cbegin(),
-            childEntry->AggregateViolation().cend());
+        FuseVectors(allViolations, childEntry->AggregateViolation());
     }
 
-    allViolations.insert(allViolations.end(), this->Violations().begin(), this->Violations().end());
+    FuseVectors(allViolations, this->Violations());
     return allViolations; // Note: R-Value optimization ensures this vector isn't unnecessarily copied.
 }
 

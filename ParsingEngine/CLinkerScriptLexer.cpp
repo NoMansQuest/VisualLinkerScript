@@ -446,11 +446,10 @@ void CLinkerScriptLexer::LexLinkerScript(std::shared_ptr<CLinkerScriptFile>& lin
 
     do
     {
-        const auto& fileContent = linkerScriptFile->FileContent();
-        endOfStreamReached = lexerContext.AbsolutePosition + 1 > fileContent.length();
-        auto nextCharacter = (lexerContext.AbsolutePosition + 1 < fileContent.length()) ? fileContent[lexerContext.AbsolutePosition + 1] : ' ';
-        auto previousCharacter = lexerContext.AbsolutePosition > 0 ? fileContent[lexerContext.AbsolutePosition - 1] : ' ';
-        auto currentCharacter = !endOfStreamReached ? fileContent[lexerContext.AbsolutePosition] : ' ';
+        endOfStreamReached = lexerContext.AbsolutePosition + 1 > linkerScriptFile->Content().length();
+        auto nextCharacter = (lexerContext.AbsolutePosition + 1 < linkerScriptFile->Content().length()) ? linkerScriptFile->Content()[lexerContext.AbsolutePosition + 1] : ' ';
+        auto previousCharacter = lexerContext.AbsolutePosition > 0 ? linkerScriptFile->Content()[lexerContext.AbsolutePosition - 1] : ' ';
+        auto currentCharacter = !endOfStreamReached ? linkerScriptFile->Content()[lexerContext.AbsolutePosition] : ' ';
         auto isLineFeed = IsLineFeed(currentCharacter);
 
         // We assign the ScopeDepth to a line under two scenarios: End-Of-Stream and New-Line
@@ -487,14 +486,14 @@ void CLinkerScriptLexer::LexLinkerScript(std::shared_ptr<CLinkerScriptFile>& lin
                     continue;
                 }
 
-                if (SafeTestPatternInString(fileContent, lexerContext.AbsolutePosition, { '/', '*' }))
+                if (SafeTestPatternInString(linkerScriptFile->Content(), lexerContext.AbsolutePosition, { '/', '*' }))
                 {
                     blockStartPosition = lexerContext; // Save this position                    
                     lexerContext.Advance(1, LexerStates::InComment);
                     continue;
                 }
 
-                if (SafeTestPatternInString(fileContent, lexerContext.AbsolutePosition, { '/', 'D', 'I', 'S', 'C', 'A', 'R', 'D', '/' }))
+                if (SafeTestPatternInString(linkerScriptFile->Content(), lexerContext.AbsolutePosition, { '/', 'D', 'I', 'S', 'C', 'A', 'R', 'D', '/' }))
                 {
                     auto wordLength = 9;
                     auto endWordPosition = lexerContext.Clone(wordLength - 1);
@@ -510,7 +509,7 @@ void CLinkerScriptLexer::LexLinkerScript(std::shared_ptr<CLinkerScriptFile>& lin
                     continue;
                 }
 
-                auto assignmentSymbolType = TestForAssignmentSymbol(fileContent, lexerContext.AbsolutePosition);
+                auto assignmentSymbolType = TestForAssignmentSymbol(linkerScriptFile->Content(), lexerContext.AbsolutePosition);
                 if (assignmentSymbolType != AssignmentSymbolTypes::NotAnAssignmentSymbol)
                 {
                     auto assignmentOperatorLength = static_cast<int32_t>(assignmentSymbolType);
@@ -520,7 +519,7 @@ void CLinkerScriptLexer::LexLinkerScript(std::shared_ptr<CLinkerScriptFile>& lin
                     continue;
                 }
 
-                auto evaluatingSymbolType = TestForEvaluativeSymbol(fileContent, lexerContext.AbsolutePosition);
+                auto evaluatingSymbolType = TestForEvaluativeSymbol(linkerScriptFile->Content(), lexerContext.AbsolutePosition);
                 if (evaluatingSymbolType != EvaluativeSymbolTypes::NotAnEvaluativeSymbol)
                 {
                     auto symbolTypeLength = static_cast<int32_t>(evaluatingSymbolType);
@@ -668,7 +667,7 @@ void CLinkerScriptLexer::LexLinkerScript(std::shared_ptr<CLinkerScriptFile>& lin
 #endif
 
     // Generate result
-    QString qRawContent = QString::fromStdString(linkerScriptFile->FileContent());
+    QString qRawContent = QString::fromStdString(linkerScriptFile->ContentOnDisk());
     QString debugOutput = "";
     for (auto entry : lexerContent)
     {

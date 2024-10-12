@@ -163,7 +163,8 @@ bool TryParseLinkerScriptMasterBlocks(
         }
         else
         {
-            parsedContent.emplace_back(std::dynamic_pointer_cast<CParsedContentBase>(parsedMemoryRegion));
+            parsedContent.emplace_back(std::dynamic_pointer_cast<CParsedContentBase>(parsedMemoryRegion));            
+            FuseVectors(violations, parsedMemoryRegion->AggregateViolation());
         }
     }
     else if (StringEquals(resolvedContent, "SECTIONS", false))
@@ -175,24 +176,26 @@ bool TryParseLinkerScriptMasterBlocks(
         }
         else
         {
-            parsedContent.emplace_back(std::dynamic_pointer_cast<CParsedContentBase>(parsedSectionsRegion));
+            parsedContent.emplace_back(std::dynamic_pointer_cast<CParsedContentBase>(parsedSectionsRegion));            
+            FuseVectors(violations, parsedSectionsRegion->AggregateViolation());
         }
     }
     else if (StringEquals(resolvedContent, "PHDRS", false))
     {
-        auto parsedPhdrsRegion = phdrsRegionParser.TryParse(*linkerScriptFile, entryIterator, endOfVectorIterator);
+	    const auto parsedPhdrsRegion = phdrsRegionParser.TryParse(*linkerScriptFile, entryIterator, endOfVectorIterator);
         if (parsedPhdrsRegion == nullptr)
         {
             violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*entryIterator, EParserViolationCode::PhdrsRegionParsingFailed)));
         }
         else
         {
-            parsedContent.emplace_back(std::dynamic_pointer_cast<CParsedContentBase>(parsedPhdrsRegion));
+            parsedContent.emplace_back(std::dynamic_pointer_cast<CParsedContentBase>(parsedPhdrsRegion));            
+            FuseVectors(violations, parsedPhdrsRegion->AggregateViolation());
         }
     }
     else if (StringEquals(resolvedContent, "VERSION", false))
     {
-        auto parsedVersionRegion = versionRegionParser.TryParse(*linkerScriptFile, entryIterator, endOfVectorIterator);
+	    const auto parsedVersionRegion = versionRegionParser.TryParse(*linkerScriptFile, entryIterator, endOfVectorIterator);
         if (parsedVersionRegion == nullptr)
         {
             violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*entryIterator, EParserViolationCode::VersionRegionParsingFailed)));
@@ -200,6 +203,7 @@ bool TryParseLinkerScriptMasterBlocks(
         else
         {
             parsedContent.emplace_back(std::dynamic_pointer_cast<CParsedContentBase>(parsedVersionRegion));
+            FuseVectors(violations, parsedVersionRegion->AggregateViolation());            
         }
     }
     else
@@ -229,17 +233,19 @@ bool TryParseFunctionAndAssignmentProcedureCalls(
     {
         auto parsedIncludeCommand = std::shared_ptr<CIncludeCommand>(new CIncludeCommand(*entryIterator, rawEntryPlusOne, {*entryIterator, rawEntryPlusOne},{}));
         parsedContent.emplace_back(std::dynamic_pointer_cast<CParsedContentBase>(parsedIncludeCommand));
+        FuseVectors(violations, parsedIncludeCommand->AggregateViolation());        
         ++entryIterator; // Manually advance the iterator by 1. The master loop will also advance it again, ensuring normal operation of the parser.
     }
     else if (StringIn(resolvedContent, {"INPUT", "GROUP", "AS_NEEDED"}, false))
     {
-        auto parsedMultiParamFunctionCall = multiParameterFunctionParser.TryParse(*linkerScriptFile, entryIterator, endOfVectorIterator);
+	    const auto parsedMultiParamFunctionCall = multiParameterFunctionParser.TryParse(*linkerScriptFile, entryIterator, endOfVectorIterator);
         if (parsedMultiParamFunctionCall == nullptr)
         {
             return false;
         }
 
         parsedContent.emplace_back(std::dynamic_pointer_cast<CParsedContentBase>(parsedMultiParamFunctionCall));
+        FuseVectors(violations, parsedMultiParamFunctionCall->AggregateViolation());
     }
     else if (StringIn(resolvedContent, {"OUTPUT", "SEARCH_DIR", "STARTUP"}, false) || CParserHelpers::IsFunctionName(resolvedContent))
     {
@@ -250,6 +256,7 @@ bool TryParseFunctionAndAssignmentProcedureCalls(
         }
 
         parsedContent.emplace_back(std::dynamic_pointer_cast<CParsedContentBase>(parsedSingleParamFunctionCall));
+        FuseVectors(violations, parsedSingleParamFunctionCall->AggregateViolation());        
     }
     else if (CParserHelpers::IsAssignmentProcedure(resolvedContent))
     {
@@ -259,7 +266,8 @@ bool TryParseFunctionAndAssignmentProcedureCalls(
             return false;
         }
 
-        parsedContent.emplace_back(std::dynamic_pointer_cast<CParsedContentBase>(assignmentProcedureStatement));
+        parsedContent.emplace_back(std::dynamic_pointer_cast<CParsedContentBase>(assignmentProcedureStatement));        
+        FuseVectors(violations, assignmentProcedureStatement->AggregateViolation());
     }
     else
     {
@@ -284,6 +292,7 @@ bool TryParseAssignments(
     }
 
     parsedContent.emplace_back(std::dynamic_pointer_cast<CParsedContentBase>(parsedAssignment));
+    FuseVectors(violations, parsedAssignment->AggregateViolation());
     return true;
 }
 

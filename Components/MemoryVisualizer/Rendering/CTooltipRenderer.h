@@ -4,7 +4,6 @@
 #include <QPainter>
 #include "../Models/CTooltip.h"
 
-
 /// @brief Renderer in charge of drawing CStatementObject
 class CTooltipeRenderer
 {

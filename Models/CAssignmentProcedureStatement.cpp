@@ -11,21 +11,18 @@ using namespace VisualLinkerScript::Models;
 const SharedPtrVector<CViolationBase> CAssignmentProcedureStatement::AggregateViolation() const
 {
     SharedPtrVector<CViolationBase> allViolations;
+
     if (this->AssignmentStatement() != nullptr)
     {
-        allViolations.insert(
-            allViolations.end(), 
-            this->AssignmentStatement()->AggregateViolation().cbegin(),
-            this->AssignmentStatement()->AggregateViolation().cend());
+        FuseVectors(allViolations, this->AssignmentStatement()->AggregateViolation());
     }
+
     for (const auto& childEntry : this->ParsedContent())
     {
-        allViolations.insert(
-            allViolations.end(),
-            childEntry->AggregateViolation().cbegin(),
-            childEntry->AggregateViolation().cend());
+        FuseVectors(allViolations, childEntry->AggregateViolation());
     }
-    allViolations.insert(allViolations.end(), this->Violations().begin(), this->Violations().end());
+
+	FuseVectors(allViolations, this->Violations());
     return allViolations; // Note: R-Value optimization ensures this vector isn't unnecessarily copied.
 }
 

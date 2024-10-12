@@ -23,7 +23,8 @@ namespace VisualLinkerScript::Models
     private:
         std::string m_fileName;
         std::string m_absolutePath;
-        std::string m_fileContent;
+        std::string m_contentOnDisk;
+        std::string m_content;
         std::string m_md5Hash;
         bool m_isOnDisk;
 
@@ -41,21 +42,34 @@ namespace VisualLinkerScript::Models
         explicit CLinkerScriptFile(
 			const std::string& fileName, 
             const std::string& absolutePath,
-            const std::string& fileContent,
+            const std::string& contentOnDisk,
             const bool isOnDisk = false,
             const std::string& signatureOnDisk = "")
         {
-            this->m_fileContent = fileContent;
+            this->m_contentOnDisk = contentOnDisk;
             this->m_fileName = fileName;
             this->m_absolutePath = absolutePath;
             this->m_isOnDisk = isOnDisk;
             this->m_md5Hash = signatureOnDisk;
+            this->m_content = contentOnDisk;
         }
 
         /// @brief Returns the content of the file.
-        [[nodiscard]] const std::string& FileContent() const
+        [[nodiscard]] const std::string& ContentOnDisk() const
         {
-            return this->m_fileContent;
+            return this->m_contentOnDisk;
+        }
+
+        /// @brief Returns the content of the file.
+        [[nodiscard]] const std::string& Content() const
+        {
+            return this->m_content;
+        }
+
+        /// @brief Returns the content of the file.
+        void UpdateContent(const std::string& newContent)
+        {
+            this->m_content = newContent;
         }
 
         /// @brief Retried the lexed content
@@ -107,7 +121,7 @@ namespace VisualLinkerScript::Models
         ///        referring to.        
         [[nodiscard]] std::string ResolveRawEntry(const CRawEntry& entryToResolve) const
         {
-            return this->FileContent().substr(entryToResolve.StartPosition(), entryToResolve.Length());
+            return this->Content().substr(entryToResolve.StartPosition(), entryToResolve.Length());
         }
 
         /// @brief Returns the full text the input component is composed of.
@@ -117,7 +131,7 @@ namespace VisualLinkerScript::Models
         {
             const auto startPosition = contentToResolve.RawEntries().front().StartPosition();
             const auto endPosition = contentToResolve.RawEntries().back().StartPosition() +contentToResolve.RawEntries().back().Length() - 1;
-            return this->FileContent().substr(startPosition, endPosition - startPosition + 1);
+            return this->Content().substr(startPosition, endPosition - startPosition + 1);
         }
 
         /// @brief Produces debug information on what this object represents.
@@ -151,7 +165,7 @@ namespace VisualLinkerScript::Models
 				const std::string& fileContent,
 				const std::string& md5Hash)
         {
-            this->m_fileContent = fileContent;
+            this->m_contentOnDisk = fileContent;
             this->m_md5Hash = md5Hash;
         }
 

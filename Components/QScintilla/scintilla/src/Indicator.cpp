@@ -76,16 +76,16 @@ void Indicator::Draw(Surface *surface, const PRectangle &rc, const PRectangle &r
 		}
 		surface->DrawRGBAImage(rcSquiggle, image.GetWidth(), image.GetHeight(), image.Pixels());
 	} else if (sacDraw.style == INDIC_SQUIGGLELOW) {
-		surface->MoveTo(irc.left, irc.top);
+		surface->MoveTo(irc.left, irc.top + 2);
 		int x = irc.left + 3;
 		int y = 0;
 		while (x < rc.right) {
-			surface->LineTo(x - 1, irc.top + y);
-			y = 1 - y;
-			surface->LineTo(x, irc.top + y);
-			x += 3;
+			surface->LineTo(x, irc.top + y + 2);
+			y = 2 - y;
+			surface->LineTo(x + 2, irc.top + y + 2);
+			x += 4;
 		}
-		surface->LineTo(irc.right, irc.top + y);	// Finish the line
+		surface->LineTo(irc.right, irc.top + y + 2);	// Finish the line
 	} else if (sacDraw.style == INDIC_TT) {
 		surface->MoveTo(irc.left, ymid);
 		int x = irc.left + 5;

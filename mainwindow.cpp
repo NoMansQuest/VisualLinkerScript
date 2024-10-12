@@ -155,8 +155,8 @@ void MainWindow::MenuActionOpenFile()
 
     auto linkerScriptFile = std::make_shared<CLinkerScriptFile>(
         fileName.toStdString(),
-        fileInfo.fileName().toStdString(),
         fileInfo.absoluteFilePath().toStdString(),
+        fileContent,
         true,
         signatureString);
 

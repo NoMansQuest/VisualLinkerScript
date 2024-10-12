@@ -68,7 +68,7 @@ private:
     std::shared_ptr<QStandardItem> m_drcViolationsItem;
 
     void InitiateDeferredProcessing();
-    void DeferredContentProcessingAction() const;
+    void DeferredContentProcessingAction();
     void EditorContentUpdated();
     void UpdateDrcViolationsInModel() const;
     void UpdateParserViolationsInModel() const;

@@ -20,7 +20,7 @@ namespace VisualLinkerScript::ParsingEngine
     {
     public:
         /// @brief Process the input file. This function can throw an exception 
-        /// @param linkerScriptFile The linker script file.
+        /// @param linkerScriptFile The linker script file (lexer will use the 'Content()').
         /// @exception
         static void LexLinkerScript(std::shared_ptr<CLinkerScriptFile>& linkerScriptFile);
     };

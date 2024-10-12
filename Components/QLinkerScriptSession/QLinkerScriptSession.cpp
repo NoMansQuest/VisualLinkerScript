@@ -292,10 +292,6 @@ std::shared_ptr<CLinkerScriptFile> QLinkerScriptSession::LinkerScriptFile() cons
 
 void QLinkerScriptSession::EditorContentUpdated()
 {
-    // The lexer is always run
-    auto absoluteFilePath = this->m_linkerScriptFile->AbsoluteFilePath();
-    auto textToLex = this->m_scintilla->text().toStdString();
-    CLinkerScriptLexer::LexLinkerScript(this->m_linkerScriptFile);
     this->InitiateDeferredProcessing();
 }
 
@@ -478,8 +474,11 @@ void QLinkerScriptSession::UpdateLexerViolationsInModel() const
 	}
 }
 
-void QLinkerScriptSession::DeferredContentProcessingAction() const
+void QLinkerScriptSession::DeferredContentProcessingAction()
 {
+    // TODO: Candidate for optimization (i.e. m_scintilla->text().toStdString() results in a 'copy').
+    this->m_linkerScriptFile->UpdateContent(this->m_scintilla->text().toStdString());
+    CLinkerScriptLexer::LexLinkerScript(this->m_linkerScriptFile);
 	CLinkerScriptParser::ParseLinkerScriptFile(this->m_linkerScriptFile);    
     this->m_drcManager->PerformAnalysis(this->m_linkerScriptFile);
 

@@ -14,14 +14,11 @@ const SharedPtrVector<CViolationBase> CInputSectionStatement::AggregateViolation
 
     for (const auto& childEntry : this->ParsedContent())
     {
-        allViolations.insert(
-            allViolations.end(),
-            childEntry->AggregateViolation().cbegin(),
-            childEntry->AggregateViolation().cend());
+        FuseVectors(allViolations, childEntry->AggregateViolation());
     }
 
-    allViolations.insert(allViolations.end(), this->FileSelector()->AggregateViolation().cbegin(), this->FileSelector()->AggregateViolation().cend());
-    allViolations.insert(allViolations.end(), this->Violations().begin(), this->Violations().end());
+    FuseVectors(allViolations, this->FileSelector()->AggregateViolation());
+    FuseVectors(allViolations, this->Violations());
     return allViolations; // Note: R-Value optimization ensures this vector isn't unnecessarily copied.
 }
 

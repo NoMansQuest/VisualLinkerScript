@@ -68,6 +68,12 @@ namespace VisualLinkerScript
     template <typename T>
     using SharedPtrVector = std::vector<std::shared_ptr<T>>;
 
+    /// @brief Merges 'vectorToAdd' into 'mainVector'
+    template <typename T>
+    void FuseVectors(std::vector<T>& mainVector, const std::vector<T>& vectorToAdd) {
+        mainVector.insert(mainVector.end(), vectorToAdd.cbegin(), vectorToAdd.cend());
+    }
+
     /// @brief Performs a 'Linq.Where()'
     template <typename T>
     SharedPtrVector<T> LinqWhere(
