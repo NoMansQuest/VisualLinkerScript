@@ -3,19 +3,20 @@
 Project starts 2022-09-25
 [ Research and preparation] requires 20 days
 
-[ UI - Main UI Infrastructure] requires 30 days
+[ UI - Main UI Infrastructure] requires 55 days
 [ UI - Main UI Infrastructure] starts at [ Research and preparation]'s end
 
-[ UI - QSS Style definition] requires 30 days
+[ UI - QSS Style definition] requires 15 days
 [ UI - QSS Style definition] starts at [ UI - Main UI Infrastructure]'s end
 
 [ LEXER - LinkerScript Lexer] requires 20 days
 [ LEXER - LinkerScript Lexer] starts at [ UI - QSS Style definition]'s end
 
-[ PARSER - R-Value Expression Parser] requires 25 days
+[ PARSER - R-Value Expression Parser] requires 45 days
 [ PARSER - R-Value Expression Parser] starts at [ LEXER - LinkerScript Lexer]'s end
 [ PARSER - Comments Parser] requires 8 days
 [ PARSER - Comments Parser] starts at [ LEXER - LinkerScript Lexer]'s end
+
  
 [ PARSER - Assignment Parser] requires 25 days
 [ PARSER - Assignment Parser] starts at [ PARSER - R-Value Expression Parser]'s end

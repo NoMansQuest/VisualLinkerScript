@@ -16,5 +16,7 @@
         <file>Images/arrow-left-icon.svg</file>
         <file>Images/arrow-right-icon.svg</file>
         <file>Images/close-icon-black.svg</file>
+        <file>Images/down-arrow-icon.svg</file>
+        <file>Images/right-arrow-icon.svg</file>
     </qresource>
 </RCC>

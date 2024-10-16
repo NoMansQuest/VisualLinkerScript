@@ -49,7 +49,7 @@ uint32_t LeadingWhiteSpaces(const std::string& stringToInspect);
 void QLinkerScriptSession::BuildUserInterface()
 {
     // Setup UI.
-    this->m_issuesTreeView = new QTreeView(this);
+    this->m_issuesTreeView = new QIssuesTreeView(this);
     this->m_memoryVisualizer = new QMemoryVisualizer(this);
     this->m_scintilla = new QsciScintilla(this);
     this->m_horizontalSplitter = new QSplitter(Qt::Horizontal, this);    
@@ -145,6 +145,8 @@ void QLinkerScriptSession::SetupViolationsView()
     this->m_violationsItemModel->appendRow({ this->m_lexerViolationsItem.get() });
     this->m_violationsItemModel->appendRow({ this->m_parserViolationsItem.get() });
     this->m_violationsItemModel->appendRow({ this->m_drcViolationsItem.get() });
+
+    this->m_issuesTreeView->Initialize();
 }
 
 void QLinkerScriptSession::OnEditorResize() const

@@ -488,6 +488,9 @@
     <ClCompile Include="DrcEngine\EDrcViolationCode.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="Components\QLinkerScriptSession\CustomComponents\QIssuesTreeView.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Components\QScintilla\scintilla\lexlib\Accessor.h">
@@ -1300,6 +1303,9 @@
       <Filter>Generated Files</Filter>
     </QtMoc>
     <QtMoc Include="Components\QManualSizeGrip\QManualSizeGrip.h">
+      <Filter>Generated Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Components\QLinkerScriptSession\CustomComponents\QIssuesTreeView.h">
       <Filter>Generated Files</Filter>
     </QtMoc>
   </ItemGroup>

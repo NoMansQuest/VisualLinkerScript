@@ -4,6 +4,7 @@
 #include <QtWidgets>
 #include <QString>
 #include <memory>
+#include "CustomComponents/QIssuesTreeView.h"
 #include "DrcEngine/CDrcManager.h"
 #include "ParsingEngine/CLinkerScriptParser.h"
 
@@ -51,13 +52,16 @@ public:
 private:
     QMemoryVisualizer* m_memoryVisualizer;
     QsciScintilla* m_scintilla;
-    QTreeView* m_issuesTreeView;
+    QIssuesTreeView* m_issuesTreeView;
     QChromeTabWidget* m_panelsTab;
     QVBoxLayout* m_centralLayout;
     QSplitter* m_horizontalSplitter;
     QSplitter* m_verticalSplitter;    
     QTimer m_deferredProcedureCaller;
     QSearchPopup* m_searchPopup;
+
+
+
 
     std::shared_ptr<VisualLinkerScript::ParsingEngine::CAutoStyler> m_autoStyler;
     std::unique_ptr<VisualLinkerScript::DrcEngine::CDrcManager> m_drcManager;
@@ -108,7 +112,7 @@ public:
 
     /// TODO: DISCARD IF POSSIBLE
     /// @brief Returns back the issues tree-view. 
-    QTreeView* IssuesTreeView() const { return this->m_issuesTreeView; }
+    QIssuesTreeView* IssuesTreeView() const { return this->m_issuesTreeView; }
 
     /// @breif Make the search dialog appear.
     void ShowSearchPopup() const;
