@@ -46,6 +46,21 @@ CRawEntry PrecedingBracketOpenOnLine(const std::shared_ptr<CRawFile>& rawFile, c
 CRawEntry SupersedingBracketCloseOnLine(const std::shared_ptr<CRawFile>& rawFile, const uint32_t line, const uint32_t absoluteCharacterPosition);
 uint32_t LeadingWhiteSpaces(const std::string& stringToInspect);
 
+static QIcon GetIconForSeverity(const ESeverityCode severity)
+{
+    switch (severity)
+    {
+	    case ESeverityCode::Error:
+	        return QIcon(":/resources/Images/error-sign-icon.svg");
+	    case ESeverityCode::Warning:
+	        return QIcon(":/resources/Images/warning-sign-icon.svg");
+	    case ESeverityCode::Information:
+	        return QIcon(":/resources/Images/info-sign-icon.svg");
+    	default:
+            throw std::exception("Unrecognized severity");
+    }
+}
+
 void QLinkerScriptSession::BuildUserInterface()
 {
     // Setup UI.
@@ -306,7 +321,7 @@ void QLinkerScriptSession::UpdateDrcViolationsInModel() const
 	for (const auto& drcViolation : this->m_linkerScriptFile->DrcViolations())
 	{
 		auto castDrcViolation = std::dynamic_pointer_cast<CDrcViolation>(drcViolation);
-		auto code = new QStandardItem(QString::fromStdString(MapDrcViolationToCode(castDrcViolation->Code())));
+		auto code = new QStandardItem(GetIconForSeverity(castDrcViolation->Severity()), QString::fromStdString(MapDrcViolationToCode(castDrcViolation->Code())));
 		auto description = new QStandardItem(QString::fromStdString(MapDrcViolationToDescription(castDrcViolation->Code())));
         auto severity = new QStandardItem(QString::fromStdString(MapSeverityToString(castDrcViolation->Severity())));
 		//auto offendingContent = new QStandardItem(QString::fromStdString(castDrcViolation->OffendingContent()));
@@ -335,8 +350,12 @@ void QLinkerScriptSession::UpdateDrcViolationsInModel() const
 			columnIndex = new QStandardItem(QString::number(0));
 		}
 
-		code->setSelectable(false);
+		code->setSelectable(true);
 		code->setEditable(false);
+        description->setSelectable(false);
+        description->setEditable(false);
+        severity->setSelectable(false);
+        severity->setSelectable(false);
 		lineNumber->setSelectable(false);
 		lineNumber->setEditable(false);
 		columnIndex->setSelectable(false);
@@ -356,10 +375,9 @@ void QLinkerScriptSession::UpdateParserViolationsInModel() const
 	for (const auto& parserViolation : this->m_linkerScriptFile->ParserViolations())
 	{
 		auto castParserViolation = std::dynamic_pointer_cast<CParserViolation>(parserViolation);
-		auto code = new QStandardItem(QString::fromStdString(MapParserViolationToCode(castParserViolation->Code())));
+		auto code = new QStandardItem(GetIconForSeverity(castParserViolation->Severity()), QString::fromStdString(MapParserViolationToCode(castParserViolation->Code())));
         auto severity = new QStandardItem(QString::fromStdString(MapSeverityToString(castParserViolation->Severity())));
-		auto description = new QStandardItem(QString::fromStdString(MapParserViolationToDescription(castParserViolation->Code())));
-		//auto offendingContent = new QStandardItem(QString::fromStdString(castParserViolation->OffendingContent()));
+		auto description = new QStandardItem(QString::fromStdString(MapParserViolationToDescription(castParserViolation->Code())));		
 		auto offendingContent = new QStandardItem(QString::fromStdString(castParserViolation->GetOffendingContent(this->m_linkerScriptFile)));
 
 		QStandardItem* lineNumber;
@@ -389,16 +407,20 @@ void QLinkerScriptSession::UpdateParserViolationsInModel() const
 			}            
 		}
 
-		code->setSelectable(false);
-		code->setEditable(false);
-		lineNumber->setSelectable(false);
+		code->setSelectable(true);
+		code->setEditable(false);        
+		lineNumber->setSelectable(true);
 		lineNumber->setEditable(false);
-		columnIndex->setSelectable(false);
+		columnIndex->setSelectable(true);
 		columnIndex->setEditable(false);
-		offendingContent->setSelectable(false);
+        description->setSelectable(true);
+        description->setEditable(false);
+        severity->setSelectable(true);
+        severity->setEditable(false);
+		offendingContent->setSelectable(true);
 		offendingContent->setEditable(false);
-		this->m_parserViolationsItem->appendRow({ code, severity, description, lineNumber, columnIndex, offendingContent });
 
+		this->m_parserViolationsItem->appendRow({ code, severity, description, lineNumber, columnIndex, offendingContent });
 
         if (!castParserViolation->InvoledEntries().empty())
         {
@@ -435,7 +457,6 @@ void QLinkerScriptSession::UpdateParserViolationsInModel() const
                     static_cast<int>(Indicators::IndicatorParserViolation));
             }
         }
-
 	}
 }
 
@@ -448,20 +469,24 @@ void QLinkerScriptSession::UpdateLexerViolationsInModel() const
 	for (const auto& lexerViolation : this->m_linkerScriptFile->LexerViolations())
 	{
         // Set indicators in the editor        
-		auto castLexerViolation = std::dynamic_pointer_cast<CLexerViolation>(lexerViolation);        
-		auto code = new QStandardItem(QString::fromStdString(MapLexerViolationToCode(castLexerViolation->Code())));
+		auto castLexerViolation = std::dynamic_pointer_cast<CLexerViolation>(lexerViolation);
+		auto code = new QStandardItem(GetIconForSeverity(castLexerViolation->Severity()), QString::fromStdString(MapLexerViolationToCode(castLexerViolation->Code())));
         auto severity = new QStandardItem(QString::fromStdString(MapSeverityToString(castLexerViolation->Severity())));
 		auto description = new QStandardItem(QString::fromStdString(MapLexerViolationToDescription(castLexerViolation->Code())));
 		auto lineNumber = new QStandardItem(QString::number(castLexerViolation->ViolationLocation().StartLineNumber()));
 		auto columnIndex = new QStandardItem(QString::number(castLexerViolation->ViolationLocation().StartIndexInLine()));
 		auto offendingContent = new QStandardItem(QString::fromStdString(this->m_linkerScriptFile->ResolveRawEntry(castLexerViolation->ViolationLocation())));
 
-		code->setSelectable(false);
+		code->setSelectable(true);
 		code->setEditable(false);
 		lineNumber->setSelectable(false);
 		lineNumber->setEditable(false);
 		columnIndex->setSelectable(false);
 		columnIndex->setEditable(false);
+        description->setSelectable(false);
+        description->setEditable(false);
+        severity->setSelectable(false);
+        severity->setSelectable(false);
 		offendingContent->setSelectable(false);
 		offendingContent->setEditable(false);
 		this->m_lexerViolationsItem->appendRow({ code, severity, description, lineNumber, columnIndex, offendingContent });

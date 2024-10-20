@@ -33,8 +33,8 @@ std::string VisualLinkerScript::ParsingEngine::MapParserViolationToDescription(E
     case EParserViolationCode::NoCorrespondingParenthesisOvertureFound: return "No corresponding parenthesis overture found";
     case EParserViolationCode::ExpectedOperatorAfterThisEntry: return "Expected operator after this entry";
     case EParserViolationCode::WasExpectingAnOperatorHere: return "Was expecting an operator here";
-    case EParserViolationCode::AssignmentOperatorNotValidInAnRValueExpression: return "Assignment operator not valid in an r value expression";
-    case EParserViolationCode::MissingOperatorInRValueExpression: return "Missing operator in r value expression";
+    case EParserViolationCode::AssignmentOperatorNotValidInAnRValueExpression: return "Assignment operator not valid in an R-Value expression";
+    case EParserViolationCode::MissingOperatorInRValueExpression: return "Missing operator in R-Value expression";
     case EParserViolationCode::StringsNotAllowedInExpressions: return "Strings not allowed in expressions";
     case EParserViolationCode::WasExpectingASymbolOrNumberBeforeExpressionEnds: return "Was expecting a symbol or number before expression ends";
     case EParserViolationCode::WasExpectingASymbolOrNumberHere: return "Was expecting a symbol or number here";

@@ -378,7 +378,7 @@ QSearchPopup[HasFocus="false"] {
 
 
 /*
- * QListView
+ * QTreeView styling
  */
 QTreeView {
     cursor: pointer;
@@ -388,13 +388,13 @@ QTreeView {
     border: 1px solid #444444; /* Optional border around the QTreeView */
 }
 
-QTreeView::header {
-    background-color: @paperBackground; /* Header background color */
-    color: #d0d0d0; /* Header text color */
-    min-height: 10px; /* Set minimum header height */
-    padding: 2px; /* Adjust padding if necessary */
-    font-size: 12px; /* You can also reduce the font size to make it smaller */
-}
+    QTreeView::header {
+        background-color: @paperBackground; /* Header background color */
+        color: #d0d0d0; /* Header text color */
+        min-height: 10px; /* Set minimum header height */
+        padding: 2px; /* Adjust padding if necessary */
+        font-size: 12px; /* You can also reduce the font size to make it smaller */
+    }
 
 QHeaderView::section {
     background-color: @paperBackground; /* Section background color */
@@ -408,38 +408,39 @@ QTreeView::branch {
     background-color: @paperBackground;
 }
 
+
+/*
 QTreeView::item {
-    background-color: @paperBackground; /* Default item background */
-    color: #ffd0d0d0; /* Item text color */
+    background-color: @paperBackground; 
+    outline: none;   
+    color: #ffd0d0d0; 
     border: none;
     padding: 1px;
     height: 20px;
 }
 
 QTreeView::item:focus {
-    border: none; /* Remove the focus border */
-}
-
-QTreeView::item:alternate {
-    background-color: #ff3e3e3e; /* Alternate row color */
+    border: none;
+    outline: none;
 }
 
 QTreeView::item:hover {
     cursor: pointer;
-    background-color: #ff3a3a3a; /* Darker hover effect */
-    color: #d0d0d0; /* Keep text color the same on hover */
-}
-
-QTreeView::item:selected {
-    outline: none; /* Remove the selection outline */
-    background-color: #ff505050; /* Selected item background */
-    color: #e0e0e0; /* Selected item text color */
+    background-color: #ff3a3a3a;
+    color: #d0d0d0;
 }
 
 QTreeView::item:selected:!active {
-    background-color: #ff666666; /* Slightly darker background when unfocused */
+    background-color: #ff666666; 
     color: #e0e0e0;
 }
+
+QTreeView::item:selected {
+    outline: none;
+    background-color: #ff505050;
+    color: #e0e0e0;
+}
+    */
 
 QHeaderView::section {
     background-color: #ff3a3a3a;

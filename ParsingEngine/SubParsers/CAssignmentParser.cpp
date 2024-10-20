@@ -164,6 +164,7 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
                         break;
                     }
 
+                    case ParserState::AwaitingParenthesisClosure:
                     case ParserState::AwaitingSemicolon:
                     {
                         violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
@@ -202,7 +203,7 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
 
                     case ParserState::AwaitingParenthesisClosure:
                     {
-                        localIterator--;
+                        --localIterator;
                         parserState = ParserState::ParsingComplete;
                         break;
                     }

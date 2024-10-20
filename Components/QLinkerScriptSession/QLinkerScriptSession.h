@@ -60,9 +60,6 @@ private:
     QTimer m_deferredProcedureCaller;
     QSearchPopup* m_searchPopup;
 
-
-
-
     std::shared_ptr<VisualLinkerScript::ParsingEngine::CAutoStyler> m_autoStyler;
     std::unique_ptr<VisualLinkerScript::DrcEngine::CDrcManager> m_drcManager;
 

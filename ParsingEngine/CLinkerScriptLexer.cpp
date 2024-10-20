@@ -769,5 +769,6 @@ void CLinkerScriptLexer::LexLinkerScript(std::shared_ptr<CLinkerScriptFile>& lin
     }
 
     fileName = splitString.back();
-    linkerScriptFile->UpdateLexerData(lexerContent, indentationData, {});
+
+	linkerScriptFile->UpdateLexerData(lexerContent, indentationData, {});
 }

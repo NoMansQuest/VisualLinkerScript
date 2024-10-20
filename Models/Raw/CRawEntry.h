@@ -89,6 +89,8 @@ namespace VisualLinkerScript::Models::Raw
             this->m_scopeDepth = cloneSource.ScopeDepth();
             this->m_startLineNumber = cloneSource.StartLineNumber();
             this->m_endLineNumber = cloneSource.EndLineNumber();
+            this->m_startIndexInLine = cloneSource.StartIndexInLine();
+            this->m_endIndexInLine = cloneSource.EndIndexInLine();
             this->m_entryType = cloneSource.EntryType();
             return *this;
         }

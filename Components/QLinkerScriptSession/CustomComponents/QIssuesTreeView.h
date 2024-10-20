@@ -28,7 +28,7 @@ private:
 
 public:
     /// @brief Initializes the root icons.
-    void Initialize() const;
+    void Initialize();
 
 private slots:
 

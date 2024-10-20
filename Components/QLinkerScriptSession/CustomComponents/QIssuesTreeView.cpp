@@ -1,6 +1,6 @@
 #include "QIssuesTreeView.h"
 
-void QIssuesTreeView::Initialize() const
+void QIssuesTreeView::Initialize()
 {
     QStandardItemModel* model = qobject_cast<QStandardItemModel*>(this->model());
     if (!model) 
@@ -17,6 +17,8 @@ void QIssuesTreeView::Initialize() const
 				*this->m_treeCollapsedIcon);
         }
     }
+
+    this->setSelectionBehavior(SelectionBehavior::SelectRows);
 }
 
 void QIssuesTreeView::onItemClicked(const QModelIndex& index)
@@ -59,6 +61,3 @@ void QIssuesTreeView::onItemExpanded(const QModelIndex& index) const
     QStandardItem* item = model->itemFromIndex(index);
     item->setIcon(*this->m_treeExpandedIcon);
 }
-
-
-

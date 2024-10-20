@@ -18,5 +18,8 @@
         <file>Images/close-icon-black.svg</file>
         <file>Images/down-arrow-icon.svg</file>
         <file>Images/right-arrow-icon.svg</file>
+        <file>Images/error-sign-icon.svg</file>
+        <file>Images/info-sign-icon.svg</file>
+        <file>Images/warning-sign-icon.svg</file>
     </qresource>
 </RCC>
