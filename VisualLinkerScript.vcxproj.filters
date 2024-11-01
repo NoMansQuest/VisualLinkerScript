@@ -473,13 +473,13 @@
     <ClCompile Include="Components\QLinkerScriptSession\AutoStyling\CAutoStyler.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="Components\QLinkerScriptSession\AutoStyling\SStylerReplaceLine.h">
+    <ClCompile Include="Components\QLinkerScriptSession\EditorAction\SEditorReplaceContent.h">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="Components\QLinkerScriptSession\AutoStyling\SStylerRemoveLine.h">
+    <ClCompile Include="Components\QLinkerScriptSession\EditorAction\SEditorRemoveLine.h">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="Components\QLinkerScriptSession\AutoStyling\SStylerSelectText.h">
+    <ClCompile Include="Components\QLinkerScriptSession\EditorAction\SEditorSelectText.h">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="ParsingEngine\ELexerViolationCode.cpp">
@@ -491,6 +491,15 @@
     <ClCompile Include="Components\QLinkerScriptSession\CustomComponents\QIssuesTreeView.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="Components\QLinkerScriptSession\EditorAction\SEditorSetCaretPosition.h">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\QLinkerScriptSession\EditorAction\SEditorSetLineContent.h">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DrcEngine\CCorrectiveAction.h">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Components\QScintilla\scintilla\lexlib\Accessor.h">
@@ -500,12 +509,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Components\QScintilla\scintilla\src\AutoComplete.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Models\Intervention\CActionBase.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Models\Intervention\CAddTextAction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Compiler\ExpressionEvaluation\CArithmeticResultOp.h">
@@ -649,9 +652,6 @@
     <ClInclude Include="Models\CInputSectionWildcardWord.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Models\Intervention\CIntervention.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ParsingEngine\CLinkerScriptLexer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -779,9 +779,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Messaging\UserInitiated\CRedoRequest.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Models\Intervention\CRemoveTextAction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Compiler\ExpressionEvaluation\CResultBase.h">
@@ -1246,13 +1243,13 @@
     <ClInclude Include="Components\QLinkerScriptSession\AutoStyling\CAutoStyler.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
-    <ClInclude Include="Components\QLinkerScriptSession\AutoStyling\SStylerActionBase.h">
+    <ClInclude Include="Components\QLinkerScriptSession\EditorAction\SEditorActionBase.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
-    <ClInclude Include="Components\QLinkerScriptSession\AutoStyling\SStylerAddContent.h">
+    <ClInclude Include="Components\QLinkerScriptSession\EditorAction\SEditorAddContent.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
-    <ClInclude Include="Components\QLinkerScriptSession\AutoStyling\SStylerRemoveContent.h">
+    <ClInclude Include="Components\QLinkerScriptSession\EditorAction\SEditorRemoveContent.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="ParsingEngine\CLexerViolation.h">
@@ -1265,6 +1262,15 @@
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="Models\CComment.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\QLinkerScriptSession\EditorAction\EEditorActionType.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\QLinkerScriptSession\EditorAction\SEditorShowAutoCompletion.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\QLinkerScriptSession\EditorAction\SEditorAddEmptyLine.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>

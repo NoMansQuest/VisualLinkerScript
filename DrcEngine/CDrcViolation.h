@@ -5,16 +5,15 @@
 #include <vector>
 #include <memory>
 #include <Models/CParsedContentBase.h>
-#include <Models/Intervention/CIntervention.h>
 #include "EDrcViolationCode.h"
 #include "../Models/CViolationBase.h"
 #include "../Helpers.h"
 
 namespace VisualLinkerScript::DrcEngine 
 {
-    using namespace VisualLinkerScript;
+	class CCorrectiveAction;
+	using namespace VisualLinkerScript;
     using namespace VisualLinkerScript::Models;
-    using namespace VisualLinkerScript::Models::Intervention;
 
     /// @brief This object contains information about a detected violation in the Linker Script
     class CDrcViolation : public CViolationBase
@@ -26,7 +25,7 @@ namespace VisualLinkerScript::DrcEngine
         std::string m_violationMessage;
         std::string m_title;
         std::string m_contentSensitivePath;        
-        std::shared_ptr<CIntervention> m_correctiveAction;
+        std::shared_ptr<CCorrectiveAction> m_correctiveAction;
 
     public:
         /// @brief Default constructor, reporting the @see {involvedEntries} only
@@ -35,7 +34,7 @@ namespace VisualLinkerScript::DrcEngine
                                std::string violationMessage,
                                std::string contentSensitivePath,
                                SharedPtrVector<CDrcViolation> subitems,
-                               const std::shared_ptr<CIntervention>& correctiveAction,                                
+                               const std::shared_ptr<CCorrectiveAction>& correctiveAction,
                                const EDrcViolationCode violationCode,
                                const ESeverityCode drcViolationSeverity = ESeverityCode::Error)
             : CViolationBase(drcViolationSeverity),
@@ -53,7 +52,7 @@ namespace VisualLinkerScript::DrcEngine
                                std::string title,
                                std::string violationMessage,
                                SharedPtrVector<CDrcViolation>&& subitems,
-                               const std::shared_ptr<CIntervention>& correctiveAction,
+                               const std::shared_ptr<CCorrectiveAction>& correctiveAction,
                                const EDrcViolationCode violationCode,
 							   const ESeverityCode drcViolationSeverity = ESeverityCode::Error)
             : CViolationBase(drcViolationSeverity),
@@ -69,7 +68,7 @@ namespace VisualLinkerScript::DrcEngine
         explicit CDrcViolation(SharedPtrVector<CParsedContentBase> involvedElements,
                                std::string title,
                                std::string violationMessage,
-                               const std::shared_ptr<CIntervention>& correctiveAction,
+                               const std::shared_ptr<CCorrectiveAction>& correctiveAction,
                                const EDrcViolationCode violationCode,
 							   const ESeverityCode drcViolationSeverity = ESeverityCode::Error)
             : CViolationBase(drcViolationSeverity),
@@ -130,7 +129,7 @@ namespace VisualLinkerScript::DrcEngine
 
         /// @brief Reports back the corrective action that helps resolve this violation.
         /// @remarks If no corrective action is available, 'nullptr' will be returned.
-        std::shared_ptr<CIntervention> CorrectiveAction(){
+        std::shared_ptr<CCorrectiveAction> CorrectiveAction(){
             return this->m_correctiveAction;
         }
 

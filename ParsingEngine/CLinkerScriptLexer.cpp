@@ -399,8 +399,9 @@ namespace
 
     /// @brief Generic function to insert multi-character lexer content. This is a massive help to code readability.
     void AddLexerContent(
-        std::vector<CRawEntry>& contentVector, 
-        const RawEntryType entryType, 
+        std::vector<CRawEntry>& contentVector,
+        const RawEntryType entryType,
+        uint32_t& parentVectorIndex,
         const LexerPosition& startPosition, 
         const LexerPosition& endPosition)
     {
@@ -420,6 +421,7 @@ namespace
     void AddLexerContent(
         std::vector<CRawEntry>& contentVector,
         const RawEntryType entryType,
+        uint32_t& parentVectorIndex,
         const LexerPosition& startPosition)
     {
         contentVector.emplace_back(
@@ -442,6 +444,7 @@ void CLinkerScriptLexer::LexLinkerScript(std::shared_ptr<CLinkerScriptFile>& lin
     std::unordered_map<uint32_t, CIndentationInfo> indentationData;
     LexerPosition lexerContext { 0, 0, 0, LexerStates::Default, 0, 0, 0};
     LexerPosition blockStartPosition;
+    uint32_t parentVectorIndex = 0;
     auto endOfStreamReached = false;
 
     do
@@ -497,7 +500,7 @@ void CLinkerScriptLexer::LexLinkerScript(std::shared_ptr<CLinkerScriptFile>& lin
                 {
                     auto wordLength = 9;
                     auto endWordPosition = lexerContext.Clone(wordLength - 1);
-                    AddLexerContent(lexerContent, RawEntryType::Word, lexerContext, endWordPosition);
+                    AddLexerContent(lexerContent, RawEntryType::Word, parentVectorIndex, lexerContext, endWordPosition);
                     lexerContext.Advance(wordLength); // Move lexer to the character after the word (= length).
                     continue;
                 }
@@ -514,7 +517,7 @@ void CLinkerScriptLexer::LexLinkerScript(std::shared_ptr<CLinkerScriptFile>& lin
                 {
                     auto assignmentOperatorLength = static_cast<int32_t>(assignmentSymbolType);
                     auto endWordPosition = lexerContext.Clone(assignmentOperatorLength - 1);
-                    AddLexerContent(lexerContent, RawEntryType::AssignmentOperator, lexerContext, endWordPosition);
+                    AddLexerContent(lexerContent, RawEntryType::AssignmentOperator, parentVectorIndex, lexerContext, endWordPosition);
                     lexerContext.Advance(assignmentOperatorLength);
                     continue;
                 }
@@ -524,7 +527,7 @@ void CLinkerScriptLexer::LexLinkerScript(std::shared_ptr<CLinkerScriptFile>& lin
                 {
                     auto symbolTypeLength = static_cast<int32_t>(evaluatingSymbolType);
                     auto endWordPosition = lexerContext.Clone(symbolTypeLength - 1);
-                    AddLexerContent(lexerContent, RawEntryType::EvaluativeOperators, lexerContext, endWordPosition);
+                    AddLexerContent(lexerContent, RawEntryType::EvaluativeOperators, parentVectorIndex, lexerContext, endWordPosition);
                     lexerContext.Advance(symbolTypeLength);
                     continue;
                 }
@@ -532,7 +535,7 @@ void CLinkerScriptLexer::LexLinkerScript(std::shared_ptr<CLinkerScriptFile>& lin
                 auto punctuateType = TestForStatementPunctuatesAndWildcards(currentCharacter);
                 if (punctuateType != RawEntryType::Unknown)
                 {
-                    AddLexerContent(lexerContent, punctuateType, lexerContext);                    
+                    AddLexerContent(lexerContent, punctuateType, parentVectorIndex, lexerContext);
                     lexerContext.Advance(1);
                     continue;
                 }
@@ -541,7 +544,7 @@ void CLinkerScriptLexer::LexLinkerScript(std::shared_ptr<CLinkerScriptFile>& lin
                 {
                     auto operatorLength = IsArithmeticShiftOperator(currentCharacter, nextCharacter) ? 2 : 1;
                     auto endWordPosition = lexerContext.Clone(operatorLength - 1);
-                    AddLexerContent(lexerContent, RawEntryType::ArithmeticOperator, lexerContext, endWordPosition);
+                    AddLexerContent(lexerContent, RawEntryType::ArithmeticOperator, parentVectorIndex, lexerContext, endWordPosition);
                     lexerContext.Advance(operatorLength);
                     continue;
                 }
@@ -551,7 +554,7 @@ void CLinkerScriptLexer::LexLinkerScript(std::shared_ptr<CLinkerScriptFile>& lin
 				{
                     auto scopeDepthIncrease = (scopeDepthPunctuates == RawEntryType::BracketOpen) ? 1 : (scopeDepthPunctuates == RawEntryType::BracketClose) ? -1 : 0; 
                     auto parenthesisDepthIncrease = (scopeDepthPunctuates == RawEntryType::ParenthesisOpen) ? 1 : (scopeDepthPunctuates == RawEntryType::ParenthesisClose) ? -1 : 0;
-                    AddLexerContent(lexerContent, scopeDepthPunctuates, lexerContext);
+                    AddLexerContent(lexerContent, scopeDepthPunctuates, parentVectorIndex, lexerContext);
                     lexerContext.SafeAddScopeDepth(scopeDepthIncrease);
                     lexerContext.SafeAddParenthesisDepth(parenthesisDepthIncrease);
                     lexerContext.Advance(1);
@@ -566,7 +569,7 @@ void CLinkerScriptLexer::LexLinkerScript(std::shared_ptr<CLinkerScriptFile>& lin
                 }
 
             	// If all else failed, this character is unknown to us.
-                AddLexerContent(lexerContent, RawEntryType::Unknown, lexerContext);
+                AddLexerContent(lexerContent, RawEntryType::Unknown, parentVectorIndex, lexerContext);
                 lexerContext.Advance(1, LexerStates::InWord);
                 break;
             }
@@ -578,7 +581,7 @@ void CLinkerScriptLexer::LexLinkerScript(std::shared_ptr<CLinkerScriptFile>& lin
                              
 				if (endOfStreamReached || commentClosureDetected)
 				{
-                    AddLexerContent(lexerContent, RawEntryType::Comment, blockStartPosition, endCommentPosition);
+                    AddLexerContent(lexerContent, RawEntryType::Comment, parentVectorIndex, blockStartPosition, endCommentPosition);
 				}
 
                 auto updatedMachineState = commentClosureDetected ? LexerStates::Default : LexerStates::InComment;
@@ -602,7 +605,7 @@ void CLinkerScriptLexer::LexLinkerScript(std::shared_ptr<CLinkerScriptFile>& lin
 
 				if (endOfStreamReached || stringClosureDetected || newLineBreaksString)
 				{                    
-                    AddLexerContent(lexerContent, RawEntryType::String, blockStartPosition, endOfStringPosition);
+                    AddLexerContent(lexerContent, RawEntryType::String, parentVectorIndex, blockStartPosition, endOfStringPosition);
 				}
 
                 auto updatedMachineState = newLineBreaksString || stringClosureDetected ? LexerStates::Default : LexerStates::InString;
@@ -641,7 +644,7 @@ void CLinkerScriptLexer::LexLinkerScript(std::shared_ptr<CLinkerScriptFile>& lin
                 }
                                 
                 auto endOfWordPosition = lexerContext.Clone(-1); // Word has already ended in the previous position.
-                AddLexerContent(lexerContent, typeOfRawEntry, blockStartPosition, endOfWordPosition);
+                AddLexerContent(lexerContent, typeOfRawEntry, parentVectorIndex, blockStartPosition, endOfWordPosition);
 
                 // Note: this character needs to be reprocessed, hence do not advance our position.
                 // Note: Since this character will be reprocessed, we do not need to worry about LineFeed either.
@@ -654,9 +657,12 @@ void CLinkerScriptLexer::LexLinkerScript(std::shared_ptr<CLinkerScriptFile>& lin
         }
 
     } while (!endOfStreamReached);
+	linkerScriptFile->UpdateLexerData(lexerContent, indentationData, {});
+}
 
-    std::string fileName;
-    std::vector<std::string> splitString;
+/*
+std::string fileName;
+std::vector<std::string> splitString;
 
 #ifdef COMPILING_FOR_WINDOWS
     splitString = VisualLinkerScript::StringSplit(linkerScriptFile->AbsoluteFilePath(), '\\');
@@ -727,31 +733,31 @@ void CLinkerScriptLexer::LexLinkerScript(std::shared_ptr<CLinkerScriptFile>& lin
             translatedType = "Unknown";
             break;
 
-		case RawEntryType::NotPresent:
+        case RawEntryType::NotPresent:
             translatedType = "NotPresent";
-			break;
-		case RawEntryType::EvaluativeOperators:
+            break;
+        case RawEntryType::EvaluativeOperators:
             translatedType = "EvaluativeOperators";
-			break;
+            break;
 
-		case RawEntryType::Wildcard:
+        case RawEntryType::Wildcard:
             translatedType = "Wildcard";
-			break;
+            break;
 
-		case RawEntryType::Colon:
+        case RawEntryType::Colon:
             translatedType = "Colon";
-			break;
+            break;
 
-		case RawEntryType::QuestionMark:
+        case RawEntryType::QuestionMark:
             translatedType = "QuestionMark";
-			break;
+            break;
 
         default:
             translatedType = "ERROR";
             break;
         }
 
-        /*
+
         auto formattedOutput = QString("Type: %1\t\t, From line %2\t index %3\t to %4\t index %5\t, BytePos: %6\t (%7\t bytes). P-Depth: %8\t, S-Depth: %9\t Content: '%10'")
             .arg(translatedType)
             .arg(entry.StartLineNumber())
@@ -765,10 +771,9 @@ void CLinkerScriptLexer::LexLinkerScript(std::shared_ptr<CLinkerScriptFile>& lin
             .arg(qRawContent.mid(entry.StartPosition(), entry.Length()));
 
         qDebug() << formattedOutput;
-        */
+
     }
 
     fileName = splitString.back();
+    */
 
-	linkerScriptFile->UpdateLexerData(lexerContent, indentationData, {});
-}

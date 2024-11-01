@@ -1709,6 +1709,18 @@ public slots:
     //! \a index.
     virtual void insertAt(const QString &text, int line, int index);
 
+    //! Remove text based on absolute positions
+    //! \a startPosition
+    //! \a length of the text to remove.
+    virtual void deleteRange(uint32_t startPosition, uint32_t length) const;
+
+    // Delete range (line/column base)
+    //! \a startLineNumber
+    //! \a startColumnIndex
+    //! \a endLineNumber
+    //! \a endColumnIndex
+    virtual void deleteRange(uint32_t startLineNumber, uint32_t startColumnIndex, uint32_t endLineNumber, uint32_t endColumnIndex) const;
+
     //! If the cursor is either side of a brace character then move it to the
     //! position of the corresponding brace.
     virtual void moveToMatchingBrace();
@@ -1980,6 +1992,10 @@ public slots:
     //! \sa getSelection()
     virtual void setSelection(int lineFrom, int indexFrom, int lineTo,
             int indexTo);
+
+    //! Gets the selections count. By default this is always 1 unless in multi-cursor mode
+    //! where selections will be greater than 1.
+    virtual int getSelectionsCount();
 
     //! Sets the background colour, including the alpha component, of selected
     //! text to \a col.

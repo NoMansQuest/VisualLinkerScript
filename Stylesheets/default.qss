@@ -407,8 +407,7 @@ QHeaderView::section {
 QTreeView::branch {
     background-color: @paperBackground;
 }
-
-
+   
 /*
 QTreeView::item {
     background-color: @paperBackground; 

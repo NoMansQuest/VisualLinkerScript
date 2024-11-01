@@ -226,7 +226,7 @@ CRawEntry VisualLinkerScript::ParsingEngine::SubParsers::FuseEntriesToFormAWilca
             break;
         }
 
-        if (!firstEntry && (copyOfIterator->StartPosition() != previousEntryEndPosition + 1)) // Spaces breaking the fusing.
+        if (!firstEntry && (copyOfIterator->StartPosition() != previousEntryEndPosition + 1)) // Spaces breaking the fusion.
         {
             break;
         }

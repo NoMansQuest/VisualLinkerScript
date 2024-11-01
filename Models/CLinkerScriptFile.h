@@ -2,6 +2,7 @@
 #define CLINKERSCRIPTFILE_H__
 
 #include <memory>
+#include <sstream>
 #include <vector>
 #include <string>
 #include "CViolationBase.h"
@@ -26,6 +27,7 @@ namespace VisualLinkerScript::Models
         std::string m_contentOnDisk;
         std::string m_content;
         std::string m_md5Hash;
+        std::vector<std::string> m_lines;
         bool m_isOnDisk;
 
         SharedPtrVector<CViolationBase> m_drcViolations;
@@ -36,6 +38,21 @@ namespace VisualLinkerScript::Models
         std::vector<CRawEntry> m_lexedContent;
         SharedPtrVector<CParsedContentBase> m_parsedContent;
         std::shared_ptr<CRawFile> m_rawFile;
+
+
+        /// @brief Breaks the given text into lines and fills in the lines vector
+        void UpdateLines(const std::string& content)
+        {
+            this->m_lines.clear();
+            std::istringstream stream(content);
+            std::string line;
+
+            while (std::getline(stream, line)) 
+            {
+                line.erase(std::remove(line.begin(), line.end(), '\r'), line.end());
+                this->m_lines.emplace_back(line);
+            }
+        }
 
     public:
         /// @brief Default constructor
@@ -66,10 +83,17 @@ namespace VisualLinkerScript::Models
             return this->m_content;
         }
 
+        /// @brief Returns the line content.
+        [[nodiscard]] const std::vector<std::string>& Lines() const
+        {
+            return this->m_lines;
+        }
+
         /// @brief Returns the content of the file.
         void UpdateContent(const std::string& newContent)
         {
             this->m_content = newContent;
+            this->UpdateLines(newContent);
         }
 
         /// @brief Retried the lexed content
@@ -167,6 +191,7 @@ namespace VisualLinkerScript::Models
         {
             this->m_contentOnDisk = fileContent;
             this->m_md5Hash = md5Hash;
+            this->UpdateLines(fileContent);
         }
 
         /// @brief Update the data on of the Linker-Script file.

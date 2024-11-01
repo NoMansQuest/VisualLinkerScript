@@ -2028,6 +2028,11 @@ void QsciScintilla::setSelection(int lineFrom, int indexFrom, int lineTo,
             positionFromLineIndex(lineTo, indexTo));
 }
 
+// Gets selection count
+int QsciScintilla::getSelectionsCount()
+{
+    return SendScintilla(SCI_GETSELECTIONS);
+}
 
 // Set the background colour of selected text.
 void QsciScintilla::setSelectionBackgroundColor(const QColor &col)
@@ -2422,6 +2427,19 @@ void QsciScintilla::getCursorPosition(int *line, int *index) const
     lineIndexFromPosition(SendScintilla(SCI_GETCURRENTPOS), line, index);
 }
 
+// Delete range
+void QsciScintilla::deleteRange(uint32_t startPosition, uint32_t length) const
+{
+    this->SendScintilla(SCI_DELETERANGE, startPosition, length);
+}
+
+// Delete range
+void QsciScintilla::deleteRange(uint32_t startLineNumber, uint32_t startColumnIndex, uint32_t endLineNumber, uint32_t endColumnIndex) const
+{
+    int startPosition = this->positionFromLineIndex(startLineNumber, startColumnIndex);
+    int endPosition = this->positionFromLineIndex(endLineNumber, endColumnIndex);
+    this->SendScintilla(SCI_DELETERANGE, startPosition, endPosition - startPosition + 1);
+}
 
 // Set the cursor position
 void QsciScintilla::setCursorPosition(int line, int index)

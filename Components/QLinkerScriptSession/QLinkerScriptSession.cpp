@@ -1,4 +1,5 @@
 #include "QLinkerScriptSession.h"
+
 #include "../MemoryVisualizer/QMemoryVisualizer.h"
 #include "../QScintilla/src/Qsci/qsciscintilla.h"
 #include "../QScintilla/ComponentHelpers.h"
@@ -9,6 +10,14 @@
 #include "Components/QChromeTab/QChromeTabWidget.h"
 #include "Components/QSearchPopup/QSearchPopup.h"
 #include "DrcEngine/CDrcViolation.h"
+#include "EditorAction/SEditorAddContent.h"
+#include "EditorAction/SEditorAddEmptyLine.h"
+#include "EditorAction/SEditorRemoveContent.h"
+#include "EditorAction/SEditorRemoveLine.h"
+#include "EditorAction/SEditorReplaceContent.h"
+#include "EditorAction/SEditorSelectText.h"
+#include "EditorAction/SEditorSetCaretPosition.h"
+#include "EditorAction/SEditorSetLineContent.h"
 #include "ParsingEngine/CLexerViolation.h"
 #include "ParsingEngine/CParserViolation.h"
 #include "ParsingEngine/EParserViolationCode.h"
@@ -31,6 +40,7 @@ struct SearchMatchResult {
 using namespace VisualLinkerScript::Components;
 using namespace VisualLinkerScript::ParsingEngine;
 using namespace VisualLinkerScript::DrcEngine;
+using namespace VisualLinkerScript::Components::LinkerScriptSession::EditorAction;
 
 bool HasNonWhitespaceBeforeCurlyBracket(const std::string& str, uint32_t backwardStartingIndex);
 
@@ -89,9 +99,7 @@ void QLinkerScriptSession::BuildUserInterface()
     // Panels tab
     auto issuesTab = this->m_panelsTab->AddTab(std::shared_ptr<QWidget>(this->m_issuesTreeView), true);
     this->m_panelsTab->SetTabTitle(issuesTab, "Violations");
-
     this->setLayout(this->m_centralLayout);
-    this->m_drcManager = std::make_unique<CDrcManager>();
 
     // Setup deferred procedure call system
     QObject::connect(&this->m_deferredProcedureCaller, &QTimer::timeout, this, &QLinkerScriptSession::DeferredContentProcessingAction);
@@ -104,9 +112,7 @@ void QLinkerScriptSession::BuildUserInterface()
     this->m_scintilla->setIndicatorForegroundColor(QColor::fromRgb(0xff, 0xff, 0xff, 0x1F), static_cast<int>(Indicators::IndicatorFind));
     QObject::connect(this->m_scintilla, &QsciScintilla::textChanged, this, &QLinkerScriptSession::EditorContentUpdated);
     QObject::connect(this->m_scintilla, &QsciScintilla::SCN_CHARADDED, this, &QLinkerScriptSession::OnCharAddedToEditor);
-    QObject::connect(this->m_scintilla, &QsciScintilla::resized, this, &QLinkerScriptSession::OnEditorResize);
-
-    // QObject::connect(this->m_scintilla, &QsciScintilla::handleCharAdded, )
+    QObject::connect(this->m_scintilla, &QsciScintilla::resized, this, &QLinkerScriptSession::OnEditorResize);    
 
     // Connect search popup signals
     QObject::connect(this->m_searchPopup, &QSearchPopup::evSearchReplaceRequested, this, &QLinkerScriptSession::OnSearchReplaceRequested);
@@ -126,9 +132,14 @@ void QLinkerScriptSession::SetupEditor()
     this->m_scintilla->indicatorDefine(QsciScintilla::SquiggleLowIndicator, static_cast<int>(Indicators::IndicatorDrcViolation));
     this->m_scintilla->indicatorDefine(QsciScintilla::SquiggleLowIndicator, static_cast<int>(Indicators::IndicatorLexerViolation));
 
+    // Setup indicators style
     this->m_scintilla->setIndicatorForegroundColor(QColor::fromRgb(255, 0, 0), static_cast<int>(Indicators::IndicatorParserViolation));
     this->m_scintilla->setIndicatorForegroundColor(QColor::fromRgb(255, 102, 255), static_cast<int>(Indicators::IndicatorLexerViolation));
     this->m_scintilla->setIndicatorForegroundColor(QColor::fromRgb(255, 153, 51), static_cast<int>(Indicators::IndicatorParserViolation));
+
+    // Setup selection style
+    this->m_scintilla->setSelectionBackgroundColor(QColor::fromRgb(48, 31, 99));
+    this->m_scintilla->setSelectionForegroundColor(QColor::fromRgb(255, 255, 255));
 }
 
 void QLinkerScriptSession::SetupViolationsView()
@@ -210,12 +221,11 @@ void QLinkerScriptSession::OnSearchReplaceRequested(
             auto focusedFoundEntryPositionSet = false;
             SearchMatchResult resultToFocusOn;
 
-            for (const auto entry: foundEntries)
+            for (const auto& entry: foundEntries)
             {
                 int lineNumber;
                 int columnPosition;
                 this->m_scintilla->lineIndexFromPosition(entry.start, &lineNumber, &columnPosition);
-
                 this->m_scintilla->fillIndicatorRange(
                     lineNumber,
                     columnPosition,
@@ -309,6 +319,10 @@ std::shared_ptr<CLinkerScriptFile> QLinkerScriptSession::LinkerScriptFile() cons
 
 void QLinkerScriptSession::EditorContentUpdated()
 {
+    this->m_linkerScriptFile->UpdateContent(this->m_scintilla->text().toStdString());
+    CLinkerScriptLexer::LexLinkerScript(this->m_linkerScriptFile);
+
+    // The deferred processing involves parsing and DRC.
     this->InitiateDeferredProcessing();
 }
 
@@ -320,49 +334,22 @@ void QLinkerScriptSession::UpdateDrcViolationsInModel() const
 
 	for (const auto& drcViolation : this->m_linkerScriptFile->DrcViolations())
 	{
-		auto castDrcViolation = std::dynamic_pointer_cast<CDrcViolation>(drcViolation);
-		auto code = new QStandardItem(GetIconForSeverity(castDrcViolation->Severity()), QString::fromStdString(MapDrcViolationToCode(castDrcViolation->Code())));
-		auto description = new QStandardItem(QString::fromStdString(MapDrcViolationToDescription(castDrcViolation->Code())));
-        auto severity = new QStandardItem(QString::fromStdString(MapSeverityToString(castDrcViolation->Severity())));
-		//auto offendingContent = new QStandardItem(QString::fromStdString(castDrcViolation->OffendingContent()));
-		auto offendingContent = new QStandardItem(QString::fromStdString(""));
+		const auto castDrcViolation = std::dynamic_pointer_cast<CDrcViolation>(drcViolation);
+        const auto code = MapDrcViolationToCode(castDrcViolation->Code());
+        const auto severity = castDrcViolation->Severity();
+        const auto description = MapDrcViolationToCode(castDrcViolation->Code());
+        const auto offendingContent = ""; // TODO: To be fixed.
+        uint32_t lineNumber = 0;
+        uint32_t columnIndex = 0;
 
-		QStandardItem* lineNumber;
-		QStandardItem* columnIndex;
-
-		if (!castDrcViolation->InvolvedElements().empty())
+		if (!castDrcViolation->InvolvedElements().empty() && !castDrcViolation->InvolvedElements().at(0)->RawEntries().empty())
 		{
-			if (!castDrcViolation->InvolvedElements().at(0)->RawEntries().empty())
-			{
-				auto firstEntry = castDrcViolation->InvolvedElements().at(0)->RawEntries().at(0);
-				lineNumber = new QStandardItem(QString::number(firstEntry.StartLineNumber()));
-				columnIndex = new QStandardItem(QString::number(firstEntry.StartIndexInLine()));
-			}
-			else
-			{
-				lineNumber = new QStandardItem(QString::number(0));
-				columnIndex = new QStandardItem(QString::number(0));
-			}
-		}
-		else
-		{
-			lineNumber = new QStandardItem(QString::number(0));
-			columnIndex = new QStandardItem(QString::number(0));
+			const auto& firstEntry = castDrcViolation->InvolvedElements().at(0)->RawEntries().at(0);
+            lineNumber = firstEntry.StartLineNumber();
+			columnIndex = firstEntry.StartIndexInLine();			
 		}
 
-		code->setSelectable(true);
-		code->setEditable(false);
-        description->setSelectable(false);
-        description->setEditable(false);
-        severity->setSelectable(false);
-        severity->setSelectable(false);
-		lineNumber->setSelectable(false);
-		lineNumber->setEditable(false);
-		columnIndex->setSelectable(false);
-		columnIndex->setEditable(false);
-		offendingContent->setSelectable(false);
-		offendingContent->setEditable(false);
-		this->m_drcViolationsItem->appendRow({ code, severity, description, lineNumber, columnIndex, offendingContent });
+        AddViolation(*this->m_parserViolationsItem, code, severity, description, lineNumber, columnIndex, offendingContent);
 	}
 }
 
@@ -374,57 +361,38 @@ void QLinkerScriptSession::UpdateParserViolationsInModel() const
 
 	for (const auto& parserViolation : this->m_linkerScriptFile->ParserViolations())
 	{
-		auto castParserViolation = std::dynamic_pointer_cast<CParserViolation>(parserViolation);
-		auto code = new QStandardItem(GetIconForSeverity(castParserViolation->Severity()), QString::fromStdString(MapParserViolationToCode(castParserViolation->Code())));
-        auto severity = new QStandardItem(QString::fromStdString(MapSeverityToString(castParserViolation->Severity())));
-		auto description = new QStandardItem(QString::fromStdString(MapParserViolationToDescription(castParserViolation->Code())));		
-		auto offendingContent = new QStandardItem(QString::fromStdString(castParserViolation->GetOffendingContent(this->m_linkerScriptFile)));
-
-		QStandardItem* lineNumber;
-		QStandardItem* columnIndex;        
+		const auto castParserViolation = std::dynamic_pointer_cast<CParserViolation>(parserViolation);
+        const auto code = MapParserViolationToCode(castParserViolation->Code());
+        const auto severity = castParserViolation->Severity();
+        const auto description = MapParserViolationToDescription(castParserViolation->Code());
+        auto offendingContent = castParserViolation->GetOffendingContent(this->m_linkerScriptFile);
+        uint32_t lineNumber = 0;
+		uint32_t columnIndex = 0;
 
 		if (!castParserViolation->InvoledEntries().empty())
 		{
-			lineNumber = new QStandardItem(QString::number(castParserViolation->InvoledEntries().cbegin()->StartLineNumber()));
-			columnIndex = new QStandardItem(QString::number(castParserViolation->InvoledEntries().cbegin()->StartIndexInLine()));
+			lineNumber = castParserViolation->InvoledEntries().cbegin()->StartLineNumber();
+			columnIndex = castParserViolation->InvoledEntries().cbegin()->StartIndexInLine();
 		}
 		else
 		{
 			if (castParserViolation->EntryBeforeViolation().EntryType() != RawEntryType::NotPresent)
 			{
-				lineNumber = new QStandardItem(QString::number(castParserViolation->EntryBeforeViolation().StartLineNumber()));
-				columnIndex = new QStandardItem(QString::number(castParserViolation->EntryBeforeViolation().StartIndexInLine()));
+				lineNumber = castParserViolation->EntryBeforeViolation().StartLineNumber();
+				columnIndex = castParserViolation->EntryBeforeViolation().StartIndexInLine();
 			}
 			else if (castParserViolation->EntryAfterViolation().EntryType() != RawEntryType::NotPresent)
 			{
-				lineNumber = new QStandardItem(QString::number(castParserViolation->EntryAfterViolation().StartLineNumber()));
-				columnIndex = new QStandardItem(QString::number(castParserViolation->EntryAfterViolation().StartIndexInLine()));
-			}
-			else
-			{
-				lineNumber = new QStandardItem(0);
-				columnIndex = new QStandardItem(0);
-			}            
+				lineNumber = castParserViolation->EntryAfterViolation().StartLineNumber();
+				columnIndex = castParserViolation->EntryAfterViolation().StartIndexInLine();
+			}      
 		}
 
-		code->setSelectable(true);
-		code->setEditable(false);        
-		lineNumber->setSelectable(true);
-		lineNumber->setEditable(false);
-		columnIndex->setSelectable(true);
-		columnIndex->setEditable(false);
-        description->setSelectable(true);
-        description->setEditable(false);
-        severity->setSelectable(true);
-        severity->setEditable(false);
-		offendingContent->setSelectable(true);
-		offendingContent->setEditable(false);
-
-		this->m_parserViolationsItem->appendRow({ code, severity, description, lineNumber, columnIndex, offendingContent });
+        AddViolation(*this->m_parserViolationsItem, code, severity, description, lineNumber, columnIndex, offendingContent);
 
         if (!castParserViolation->InvoledEntries().empty())
         {
-            for (const auto entryToHighlight: castParserViolation->InvoledEntries())
+            for (const auto& entryToHighlight: castParserViolation->InvoledEntries())
             {
                 this->m_scintilla->fillIndicatorRange(
                     entryToHighlight.StartLineNumber(),
@@ -468,28 +436,14 @@ void QLinkerScriptSession::UpdateLexerViolationsInModel() const
 
 	for (const auto& lexerViolation : this->m_linkerScriptFile->LexerViolations())
 	{
-        // Set indicators in the editor        
-		auto castLexerViolation = std::dynamic_pointer_cast<CLexerViolation>(lexerViolation);
-		auto code = new QStandardItem(GetIconForSeverity(castLexerViolation->Severity()), QString::fromStdString(MapLexerViolationToCode(castLexerViolation->Code())));
-        auto severity = new QStandardItem(QString::fromStdString(MapSeverityToString(castLexerViolation->Severity())));
-		auto description = new QStandardItem(QString::fromStdString(MapLexerViolationToDescription(castLexerViolation->Code())));
-		auto lineNumber = new QStandardItem(QString::number(castLexerViolation->ViolationLocation().StartLineNumber()));
-		auto columnIndex = new QStandardItem(QString::number(castLexerViolation->ViolationLocation().StartIndexInLine()));
-		auto offendingContent = new QStandardItem(QString::fromStdString(this->m_linkerScriptFile->ResolveRawEntry(castLexerViolation->ViolationLocation())));
-
-		code->setSelectable(true);
-		code->setEditable(false);
-		lineNumber->setSelectable(false);
-		lineNumber->setEditable(false);
-		columnIndex->setSelectable(false);
-		columnIndex->setEditable(false);
-        description->setSelectable(false);
-        description->setEditable(false);
-        severity->setSelectable(false);
-        severity->setSelectable(false);
-		offendingContent->setSelectable(false);
-		offendingContent->setEditable(false);
-		this->m_lexerViolationsItem->appendRow({ code, severity, description, lineNumber, columnIndex, offendingContent });
+        const auto castLexerViolation = std::dynamic_pointer_cast<CLexerViolation>(lexerViolation);
+        const auto code = MapLexerViolationToCode(castLexerViolation->Code());
+        const auto severity = castLexerViolation->Severity();
+        const auto description = MapLexerViolationToDescription(castLexerViolation->Code());
+        const auto lineNumber = castLexerViolation->ViolationLocation().StartLineNumber();
+        const auto columnIndex = castLexerViolation->ViolationLocation().StartIndexInLine();
+		const auto offendingContent = this->m_linkerScriptFile->ResolveRawEntry(castLexerViolation->ViolationLocation());
+        AddViolation(*this->m_lexerViolationsItem, code, severity, description, lineNumber, columnIndex, offendingContent);
 
         const auto entryToStyle = castLexerViolation->ViolationLocation();
         this->m_scintilla->fillIndicatorRange(
@@ -501,13 +455,42 @@ void QLinkerScriptSession::UpdateLexerViolationsInModel() const
 	}
 }
 
+void QLinkerScriptSession::AddViolation(
+    QStandardItem& rootItem,
+    const std::string& code,
+    const ESeverityCode severity,
+    const std::string& description,
+    const uint32_t lineNumber,
+    const uint32_t columnIndex,
+    const std::string& offendingCode)
+{
+    auto codeItem = new QStandardItem(GetIconForSeverity(severity), QString::fromStdString(code));
+    auto severityItem = new QStandardItem(QString::fromStdString(MapSeverityToString(severity)));
+    auto descriptionItem = new QStandardItem(QString::fromStdString(description));
+    auto lineNumberItem = new QStandardItem(QString::number(lineNumber));
+    auto columnIndexItem = new QStandardItem(QString::number(columnIndex));
+    auto offendingContentItem = new QStandardItem(QString::fromStdString(offendingCode));
+
+    codeItem->setSelectable(true);
+    codeItem->setEditable(false);
+    lineNumberItem->setSelectable(true);
+    lineNumberItem->setEditable(false);
+    columnIndexItem->setSelectable(true);
+    columnIndexItem->setEditable(false);
+    descriptionItem->setSelectable(true);
+    descriptionItem->setEditable(false);
+    severityItem->setSelectable(true);
+    severityItem->setEditable(false);
+    offendingContentItem->setSelectable(true);
+    offendingContentItem->setEditable(false);
+    rootItem.appendRow({ codeItem, severityItem, descriptionItem, lineNumberItem, columnIndexItem, offendingContentItem });
+}
+
 void QLinkerScriptSession::DeferredContentProcessingAction()
 {
-    // TODO: Candidate for optimization (i.e. m_scintilla->text().toStdString() results in a 'copy').
-    this->m_linkerScriptFile->UpdateContent(this->m_scintilla->text().toStdString());
-    CLinkerScriptLexer::LexLinkerScript(this->m_linkerScriptFile);
+    // TODO: Candidate for optimization (i.e. m_scintilla->text().toStdString() results in a 'copy').    
 	CLinkerScriptParser::ParseLinkerScriptFile(this->m_linkerScriptFile);    
-    this->m_drcManager->PerformAnalysis(this->m_linkerScriptFile);
+    this->m_drcManager.PerformAnalysis(this->m_linkerScriptFile);
 
     UpdateLexerViolationsInModel();
     UpdateParserViolationsInModel();
@@ -524,16 +507,153 @@ bool QLinkerScriptSession::eventFilter(QObject* obj, QEvent* event)
     if (event->type() == QEvent::KeyPress) 
     {
         const auto keyEvent = dynamic_cast<QKeyEvent*>(event);
-	    if (keyEvent->key() == Qt::Key_Escape) 
+        if (obj == this->m_scintilla)
         {
-            this->m_searchPopup->hide();
-            this->ResetFindIndicators(Indicators::IndicatorFind);
-            this->m_scintilla->setSelection(0, 0, 0, 0);
-            this->m_searchSessionActive = false;
-            this->m_searchSessionCurrentFocusedEntryStartPosition = false;
-        }
+            // Special case: For 'Escape', we perform some actions before
+            // processing the key-press action.
+            if (keyEvent->key() == Qt::Key_Escape)
+            {
+                this->m_searchPopup->hide();
+                this->ResetFindIndicators(Indicators::IndicatorFind);
+                this->m_scintilla->setSelection(0, 0, 0, 0);                
+                this->m_searchSessionActive = false;
+                this->m_searchSessionCurrentFocusedEntryStartPosition = false;
+            }
+            
+            if (this->m_scintilla->getSelectionsCount() > 1)
+            {
+                return QWidget::eventFilter(obj, event);
+            }
+
+            // We need to Lex the content before handing over controller to AutoStyler, as the styler
+            // needs access to an up-to-date content.
+            this->m_linkerScriptFile->UpdateContent(this->m_scintilla->text().toStdString());
+            CLinkerScriptLexer::LexLinkerScript(this->m_linkerScriptFile);
+
+            // Make further calls as needed.
+            int lineNumber, columnIndex;
+            this->m_scintilla->getCursorPosition(&lineNumber, &columnIndex);
+            const auto absolutePosition = this->m_scintilla->positionFromLineIndex(lineNumber, columnIndex);
+            const auto actionsToPerform = this->m_autoStyler.ProcessKeyboardEvent(
+                this->m_linkerScriptFile,
+                *keyEvent,
+                absolutePosition,
+                lineNumber,
+                columnIndex);
+
+            // In case there are actions to perform, we'll exit here.
+            if (!actionsToPerform.empty())
+            {
+                this->ApplyEditorActions(actionsToPerform);
+                return true;
+            }            
+        }	    
     }    
     return QWidget::eventFilter(obj, event);
+}
+
+void QLinkerScriptSession::ApplyEditorActions(SharedPtrVector<SEditorActionBase> actions) const
+{
+    this->m_scintilla->beginUndoAction();
+
+    std::sort(
+        actions.begin(), 
+        actions.end(), 
+        [](const std::shared_ptr<SEditorActionBase>& a, const std::shared_ptr<SEditorActionBase>& b)
+	    {
+            return (a->LineNumber == b->LineNumber)
+        		? a->ColumnIndex < b->ColumnIndex
+        		: a->LineNumber < b->LineNumber;
+	    });
+
+	for (const auto& action : actions)
+	{
+        switch (action->ActionType())
+        {
+		    case EEditorActionType::AddContent:
+		    {
+                const auto castAddContent = std::dynamic_pointer_cast<SEditorAddContent>(action);
+                this->m_scintilla->insertAt(
+                    QString::fromStdString(castAddContent->TextToInsert), 
+                    castAddContent->LineNumber, 
+                    castAddContent->ColumnIndex);
+		        break;
+		    }
+
+            case EEditorActionType::AddEmptyLine:
+            {
+                const auto castAddEmptyLine = std::dynamic_pointer_cast<SEditorAddEmptyLine>(action);
+                this->m_scintilla->insertAt("\n", castAddEmptyLine->LineNumber, this->m_scintilla->lineLength(castAddEmptyLine->LineNumber));
+                break;
+            }
+
+        	case EEditorActionType::SetLineContent:
+            {
+                const auto castSetLineContent = std::dynamic_pointer_cast<SEditorSetLineContent>(action);
+                this->m_scintilla->setLineText(QString::fromStdString(castSetLineContent->TextToSet), castSetLineContent->LineNumber);
+                break;
+            }
+
+            case EEditorActionType::RemoveContent:
+            {
+                const auto castRemoveContent = std::dynamic_pointer_cast<SEditorRemoveContent>(action);
+                this->m_scintilla->deleteRange(
+                    castRemoveContent->LineNumber,
+                    castRemoveContent->ColumnIndex, 
+                    castRemoveContent->EndLineNumber, 
+                    castRemoveContent->EndColumnIndex);
+                break;
+            }
+
+            case EEditorActionType::RemoveLine:
+            {
+                const auto castRemoveLine    = std::dynamic_pointer_cast<SEditorRemoveLine>(action);
+                const auto endColumnIndex = this->m_scintilla->lineLength(castRemoveLine->LineNumber) - 1;
+                this->m_scintilla->deleteRange(castRemoveLine->LineNumber,0,castRemoveLine->LineNumber, endColumnIndex);
+                break;
+            }
+
+            case EEditorActionType::ReplaceContent:
+            {
+                const auto castReplaceContent = std::dynamic_pointer_cast<SEditorReplaceContent>(action);
+                
+                this->m_scintilla->deleteRange(
+                    castReplaceContent->LineNumber,
+                    castReplaceContent->ColumnIndex,
+                    castReplaceContent->EndLineNumber,
+                    castReplaceContent->EndColumnIndex);
+
+                this->m_scintilla->insertAt(
+                    QString::fromStdString(castReplaceContent->TextToReplace),
+                    castReplaceContent->LineNumber,
+                    castReplaceContent->ColumnIndex);
+
+                break;
+            }
+
+            case EEditorActionType::SelectText:
+            {
+                const auto castSelectText = std::dynamic_pointer_cast<SEditorSelectText>(action);
+                this->m_scintilla->setSelection(
+                    castSelectText->LineNumber,
+                    castSelectText->ColumnIndex,
+                    castSelectText->EndLineNumber,
+                    castSelectText->EndColumnIndex);
+                break;
+            }
+
+        	case EEditorActionType::SetCaretPosition:
+            {
+                const auto castSetCaretPosition = std::dynamic_pointer_cast<SEditorSetCaretPosition>(action);
+                this->m_scintilla->setCursorPosition(castSetCaretPosition->LineNumber, castSetCaretPosition->ColumnIndex);
+                break;
+            }
+
+        	default:
+                throw std::exception("Unrecognized editor action type.");
+        }
+	}
+    this->m_scintilla->endUndoAction();
 }
 
 void QLinkerScriptSession::ResetFindIndicators(Indicators indicatorToReset) const
@@ -555,10 +675,10 @@ void QLinkerScriptSession::OnCharAddedToEditor(const int charAdded) const
 
 
 std::vector<SearchMatchResult> SearchForContent(
-    const QString& contentToSearchIn, 
-    const QString& whatToSearchFor, 
-    const bool caseMatch, 
-    const bool regEx, 
+    const QString& contentToSearchIn,
+    const QString& whatToSearchFor,
+    const bool caseMatch,
+    const bool regEx,
     const bool wordMatch)
 {
     std::vector<SearchMatchResult> results;
@@ -634,101 +754,4 @@ std::vector<SearchMatchResult> SearchForContent(
     }
 
     return results;
-}
-
-bool HasNonWhitespaceBeforeCurlyBracket(const std::string& str, uint32_t backwardStartingIndex)
-{
-    // Check characters before the curly-bracket
-    if (str[backwardStartingIndex] != '}')
-    {
-        throw std::exception("Starting index should be a closing curly bracket");
-    }
-
-    if (backwardStartingIndex == 0)
-    {
-        return false; // We're the first character of the line anyway.
-    }
-
-    auto hoveringIndex = backwardStartingIndex - 1;
-    do
-    {        
-        if (!std::isspace(static_cast<unsigned char>(str[hoveringIndex]))) {
-            return true;
-        }
-        --backwardStartingIndex;
-    } while (backwardStartingIndex > 0);
-
-    // No non-whitespace characters found before the curly-bracket
-    return false;
-}
-
-CRawEntry PositionDropTest(const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile, const uint32_t absoluteCharacterPosition)
-{
-    for (const auto& entry: linkerScriptFile->LexedContent())
-	{
-        if ((absoluteCharacterPosition > entry.StartPosition() + 1) && absoluteCharacterPosition < entry.StartPosition() + entry.Length())
-        {
-            return entry;
-        }
-    }
-
-    return CRawEntry(); // Not-Present entry (i.e. nothing found).
-}
-
-
-CRawEntry PrecedingBracketOpenOnLine(const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile, uint32_t line, const uint32_t absoluteCharacterPosition)
-{
-    CRawEntry candidate;
-    for (const auto& entry : linkerScriptFile->LexedContent())
-    {
-        if (entry.EntryType() == RawEntryType::BracketOpen &&
-            entry.StartLineNumber() == line &&
-            entry.StartPosition() < absoluteCharacterPosition)
-        {
-            candidate = entry;
-        }
-
-        if (entry.StartPosition() > absoluteCharacterPosition)
-        {
-            break;
-        }
-    }
-
-    return candidate;
-}
-
-CRawEntry SupersedingBracketCloseOnLine(const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile, uint32_t line, const uint32_t absoluteCharacterPosition)
-{    
-    for (const auto& entry : linkerScriptFile->LexedContent())
-    {
-        if (entry.EntryType() == RawEntryType::BracketClose &&
-            entry.StartLineNumber() == line &&
-            entry.StartPosition() >= absoluteCharacterPosition)
-        {
-            return entry;
-        }
-    }
-
-    return CRawEntry();
-}
-
-uint32_t LeadingWhiteSpaces(const std::string& stringToInspect)
-{
-    uint32_t count = 0;
-    for (int hover = 0; hover < stringToInspect.length(); hover++)
-    {
-	    if (stringToInspect[hover] == ' ')
-	    {
-            count++;
-	    }
-        else if (stringToInspect[hover] == '\t')
-        {
-            count += 4;
-        }
-        else
-        {
-            break;
-        }
-    }
-    return count;
-}
+};

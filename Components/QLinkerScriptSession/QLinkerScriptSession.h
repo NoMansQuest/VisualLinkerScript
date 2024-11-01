@@ -3,15 +3,15 @@
 
 #include <QtWidgets>
 #include <QString>
+#include <string>
 #include <memory>
+
+#include "AutoStyling/CAutoStyler.h"
+#include "Components/QScintilla/ComponentHelpers.h"
 #include "CustomComponents/QIssuesTreeView.h"
 #include "DrcEngine/CDrcManager.h"
+#include "EditorAction/SEditorActionBase.h"
 #include "ParsingEngine/CLinkerScriptParser.h"
-
-namespace VisualLinkerScript::ParsingEngine
-{
-	class CAutoStyler;
-}
 
 class QChromeTabWidget;
 enum class Indicators;
@@ -60,21 +60,34 @@ private:
     QTimer m_deferredProcedureCaller;
     QSearchPopup* m_searchPopup;
 
-    std::shared_ptr<VisualLinkerScript::ParsingEngine::CAutoStyler> m_autoStyler;
-    std::unique_ptr<VisualLinkerScript::DrcEngine::CDrcManager> m_drcManager;
+    VisualLinkerScript::Components::LinkerScriptSession::AutoStyling::CAutoStyler m_autoStyler;
+    VisualLinkerScript::DrcEngine::CDrcManager m_drcManager;
 
     std::shared_ptr<QStandardItemModel> m_violationsItemModel;
     std::shared_ptr<QStandardItem> m_lexerViolationsItem;
     std::shared_ptr<QStandardItem> m_parserViolationsItem;
-    std::shared_ptr<QStandardItem> m_drcViolationsItem;
+    std::shared_ptr<QStandardItem> m_drcViolationsItem;       
 
-    void InitiateDeferredProcessing();
-    void DeferredContentProcessingAction();
-    void EditorContentUpdated();
+    // Violations
     void UpdateDrcViolationsInModel() const;
     void UpdateParserViolationsInModel() const;
     void UpdateLexerViolationsInModel() const;
     void SetupViolationsView();
+
+    static void AddViolation(
+        QStandardItem& rootItem,
+        const std::string& code, 
+        VisualLinkerScript::Models::ESeverityCode severity, 
+        const std::string& description, 
+        uint32_t lineNumber, 
+        uint32_t columnIndex,
+        const std::string& offendingCode);
+
+    // Editor Actions
+    void ApplyEditorActions(VisualLinkerScript::SharedPtrVector<VisualLinkerScript::Components::LinkerScriptSession::EditorAction::SEditorActionBase> actions) const;
+    void InitiateDeferredProcessing();
+    void DeferredContentProcessingAction();
+    void EditorContentUpdated();
     void SetupEditor();
 
     // Find related

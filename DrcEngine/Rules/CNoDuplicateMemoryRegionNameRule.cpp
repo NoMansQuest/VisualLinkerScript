@@ -4,9 +4,9 @@
 #include "../../Helpers.h"
 #include "../DrcCommons.h"
 #include "../CDrcManager.h"
+#include "DrcEngine/CCorrectiveAction.h"
 #include "DrcEngine/CDrcViolation.h"
 #include "DrcEngine/EDrcViolationCode.h"
-#include "Models/Intervention/CIntervention.h"
 
 REGISTER_DRC_RULE(CNoDuplicateMemoryRegionNameRule)
 
@@ -59,7 +59,7 @@ SharedPtrVector<CViolationBase> CNoDuplicateMemoryRegionNameRule::PerformCheck(c
 	            subItemErrorMessage,
 	            subItemStatement->ObjectPath(),
 	            SharedPtrVector<CDrcViolation>(),
-	            std::shared_ptr<Intervention::CIntervention>(nullptr),
+	            std::shared_ptr<CCorrectiveAction>(nullptr),
 	            EDrcViolationCode::DuplicateNameForMemoryStatement,
                 ESeverityCode::Error));
         }
@@ -74,7 +74,7 @@ SharedPtrVector<CViolationBase> CNoDuplicateMemoryRegionNameRule::PerformCheck(c
             errorMessage,
             memoryStatementToInspect->Result()->ObjectPath(),
             std::move(subitems),
-            std::shared_ptr<Intervention::CIntervention>(nullptr),
+            std::shared_ptr<CCorrectiveAction>(nullptr),
             EDrcViolationCode::DuplicateNameForMemoryStatement,
             ESeverityCode::Error));
 

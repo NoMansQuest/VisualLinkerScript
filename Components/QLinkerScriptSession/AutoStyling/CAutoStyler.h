@@ -4,32 +4,26 @@
 #include <memory>
 #include <vector>
 #include "Helpers.h"
+#include "Components/QChromeTab/QChromeTabButton.h"
+#include "Components/QLinkerScriptSession/EditorAction/SEditorActionBase.h"
 
-struct SStylerActionBase;
-namespace VisualLinkerScript::Models::Raw
+namespace VisualLinkerScript::Models
 {
-	class CRawFile;
+	class CLinkerScriptFile;
 }
 
 namespace VisualLinkerScript::Components::LinkerScriptSession::AutoStyling
 {
 	class CAutoStyler
 	{
+	public:
 		/// @brief When text is expected to be inserted (either through key-press or 'Paste')
-		SharedPtrVector<SStylerActionBase> TextInsertionRequested(
-			std::shared_ptr<Models::Raw::CRawFile> lexedScript,
-			std::string text, 
+		static SharedPtrVector<EditorAction::SEditorActionBase> ProcessKeyboardEvent(
+			const std::shared_ptr<Models::CLinkerScriptFile>& linkerScriptFile,
+			const QKeyEvent& keyEvent,
+			uint32_t absolutePosition,
 			uint32_t lineNumber, 
-			uint32_t columnIndex);
-
-		/// @brief When text is expected to be removed (either through pressing 'Delete' or 'Cut' action)
-		SharedPtrVector<SStylerActionBase> TextRemovalRequested(
-			std::shared_ptr<Models::Raw::CRawFile> lexedScript,			
-			uint32_t startLineNumber,
-			uint32_t startColumnIndex,
-			uint32_t endLineNumber,
-			uint32_t endColumnIndex);
-				
+			uint32_t columnIndex);				
 	};	
 }
 

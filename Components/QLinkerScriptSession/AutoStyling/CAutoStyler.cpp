@@ -1,167 +1,496 @@
 #include "CAutoStyler.h"
-
+#include "Models/CLinkerScriptFile.h"
+#include "Models/Raw/CRawEntry.h"
 #include <qlogging.h>
+#include <stack>
+
+#include "Components/QLinkerScriptSession/EditorAction/SEditorAddContent.h"
+#include "Components/QLinkerScriptSession/EditorAction/SEditorAddEmptyLine.h"
+#include "Components/QLinkerScriptSession/EditorAction/SEditorSetCaretPosition.h"
+#include "Components/QLinkerScriptSession/EditorAction/SEditorSetLineContent.h"
+
+const int TabSize = 4;
 
 using namespace VisualLinkerScript;
-using namespace VisualLinkerScript::Components::LinkerScriptSession::AutoStyling;
 using namespace VisualLinkerScript::Models::Raw;
+using namespace VisualLinkerScript::Components::LinkerScriptSession::AutoStyling;
+using namespace VisualLinkerScript::Components::LinkerScriptSession::EditorAction;
 
-SharedPtrVector<SStylerActionBase> CAutoStyler::TextInsertionRequested(
-	std::shared_ptr<CRawFile> lexedScript,
-	std::string text,
-	uint32_t lineNumber,
-	uint32_t columnIndex)
+bool HasNonWhitespaceBeforeCurlyBracket(const std::string& str, uint32_t backwardStartingIndex);
+
+void ProcessLineFeed(
+    const std::shared_ptr<Models::CLinkerScriptFile>& linkerScriptFile, 
+    const uint32_t absolutePosition, 
+    const uint32_t lineNumber, 
+    const uint32_t columnIndex, 
+    SharedPtrVector<SEditorActionBase>& actionsToPerform);
+
+CRawEntry PositionDropTest(
+    const std::shared_ptr<Models::CLinkerScriptFile>& linkerScriptFile, 
+    const uint32_t absoluteCharacterPosition);
+
+CRawEntry PrecedingBracketOpen(
+    const std::shared_ptr<Models::CLinkerScriptFile>& linkerScriptFile,
+    const uint32_t absoluteCharacterPosition);
+
+CRawEntry PrecedingBracketOpenOnLine(
+    const std::shared_ptr<Models::CLinkerScriptFile>& linkerScriptFile, 
+    uint32_t line, 
+    const uint32_t absoluteCharacterPosition);
+
+CRawEntry PrecedingImmediateBracketOpenOnLine(
+    const std::shared_ptr<Models::CLinkerScriptFile>& linkerScriptFile,
+    uint32_t line,
+    const uint32_t absoluteCharacterPosition);
+
+CRawEntry SucceedingBracketClose(
+    const std::shared_ptr<Models::CLinkerScriptFile>& linkerScriptFile,
+    const uint32_t absoluteCharacterPosition);
+
+CRawEntry SucceedingBracketCloseOnLine(
+    const std::shared_ptr<Models::CLinkerScriptFile>& linkerScriptFile, 
+    uint32_t line, 
+    const uint32_t absoluteCharacterPosition);
+
+CRawEntry SucceedingImmediateBracketCloseOnLine(
+    const std::shared_ptr<Models::CLinkerScriptFile>& linkerScriptFile,
+    uint32_t line,
+    const uint32_t absoluteCharacterPosition);
+
+uint32_t LeadingWhiteSpaces(const std::string& stringToInspect);
+
+SharedPtrVector<SEditorActionBase> CAutoStyler::ProcessKeyboardEvent(
+	const std::shared_ptr<Models::CLinkerScriptFile>& linkerScriptFile,
+    const QKeyEvent& keyEvent,
+	const uint32_t absolutePosition,
+    const uint32_t lineNumber,
+    const uint32_t columnIndex)
 {
-    /*
-    const auto absoluteCharPosition = this->m_scintilla->positionFromLineIndex(lineNumber, index);
-    const auto entryContainingCharacter = PositionDropTest(this->m_lexedLinkerScript, absoluteCharPosition);
+    SharedPtrVector<SEditorActionBase> actionsToPerform;
+    const auto entryContainingCharacter = PositionDropTest(linkerScriptFile, absolutePosition);
 
-    qDebug() << "Character '" << charAdded << "' added on line " << lineNumber << " index " << index << " - Absolute Position: " << absoluteCharPosition << Qt::endl;
-    qDebug() << "RawEntry encapsulating the position: '" << static_cast<int>(entryContainingCharacter.EntryType()) << Qt::endl;
-    const auto indentationData = this->m_lexedLinkerScript->IndentationData().at(lineNumber);
-    const auto textAtLine = this->m_scintilla->text(lineNumber);
-
-    // All actions performed by this module are atomic and should be undone with a single call.
-    this->m_scintilla->beginUndoAction();
-
-    if (charAdded == '\n')
+    switch (keyEvent.key())
     {
-        const auto encapsulatingEntry = PositionDropTest(this->m_lexedLinkerScript, absoluteCharPosition);
-        if (encapsulatingEntry.EntryType() == RawEntryType::Comment)
+    	case Qt::Key_Return:
+    	case Qt::Key_Enter:
+    	{
+            ProcessLineFeed(linkerScriptFile, absolutePosition, lineNumber, columnIndex, actionsToPerform);
+            break;
+    	}
+
+    	case Qt::Key_ParenLeft: // '('
+    	{
+            const auto insertAction = std::make_shared<SEditorAddContent>(lineNumber, columnIndex, std::string("()"));
+            const auto moveCursorAction = std::make_shared<SEditorSetCaretPosition>(lineNumber, columnIndex + 1);
+            actionsToPerform.emplace_back(std::static_pointer_cast<SEditorActionBase>(insertAction));
+            actionsToPerform.emplace_back(std::static_pointer_cast<SEditorActionBase>(moveCursorAction));
+            break;
+    	}
+
+        case Qt::Key_BraceLeft: // '{'
         {
-            auto newLineContent = std::string(4 * indentationData.IndentationDepth(), ' ');
-            if (indentationData.CommentLinePrefixing())
-            {
-                newLineContent += " *";
-            }
-            this->m_scintilla->insertAt(QString::fromStdString(newLineContent), lineNumber, 0);
-            this->m_scintilla->setCursorPosition(lineNumber, newLineContent.length());
+            const auto insertAction = std::make_shared<SEditorAddContent>(lineNumber, columnIndex, std::string("{}"));
+            const auto moveCursorAction = std::make_shared<SEditorSetCaretPosition>(lineNumber, columnIndex + 1);
+            actionsToPerform.emplace_back(std::static_pointer_cast<SEditorActionBase>(insertAction));
+            actionsToPerform.emplace_back(std::static_pointer_cast<SEditorActionBase>(moveCursorAction));
+            break;
         }
-        else if (encapsulatingEntry.EntryType() == RawEntryType::String)
+
+        case Qt::Key_BraceRight: // '}'
         {
-            auto newLineContent = std::string(4 * indentationData.IndentationDepth(), ' ');
-            if (indentationData.CommentLinePrefixing())
-            {
-                newLineContent += " *";
-            }
-            this->m_scintilla->insertAt(QString::fromStdString(newLineContent), lineNumber, 0);
-            this->m_scintilla->setCursorPosition(lineNumber, newLineContent.length());
+            /*
+            if (HasNonWhitespaceBeforeCurlyBracket(textAtLine.toStdString(), index - 1))
+	        {
+	            return; // No action is taken.
+	        }
+	        const auto newLineContent = std::string(4 * indentationData.IndentationDepth(), ' ') + "}";
+	        this->m_scintilla->setLineText(QString::fromStdString(newLineContent), lineNumber);
+	        this->m_scintilla->setCursorPosition(lineNumber, newLineContent.length());
+            */
+            break;
         }
-        else if (encapsulatingEntry.EntryType() == RawEntryType::NotPresent)
+
+        case Qt::Key_QuoteDbl: // Double quotation (")
         {
-            // NOTE: When we receive the next-line character, the text is already going to be broken between two lines.
-            //       That has to be considered.
-            // Note: The current line is the line post new-line character insertion.
-            const auto bracketOpen = PrecedingBracketOpenOnLine(this->m_lexedLinkerScript, lineNumber - 1, absoluteCharPosition);
-            const auto bracketClose = SupersedingBracketCloseOnLine(this->m_lexedLinkerScript, lineNumber, absoluteCharPosition);
+            const auto insertAction = std::make_shared<SEditorAddContent>(lineNumber, columnIndex, std::string("\"\""));
+            const auto moveCursorAction = std::make_shared<SEditorSetCaretPosition>(lineNumber, columnIndex + 1);
+            actionsToPerform.emplace_back(std::static_pointer_cast<SEditorActionBase>(insertAction));
+            actionsToPerform.emplace_back(std::static_pointer_cast<SEditorActionBase>(moveCursorAction));
+            break;
+        }
 
-            if ((bracketOpen.EntryType() != RawEntryType::NotPresent) && (bracketClose.EntryType() != RawEntryType::NotPresent))
+    	default:
+            break;
+    }
+       
+
+	return actionsToPerform;
+}
+
+void ProcessLineFeed(
+    const std::shared_ptr<Models::CLinkerScriptFile>& linkerScriptFile,
+    const uint32_t absolutePosition,
+    const uint32_t lineNumber,
+    const uint32_t columnIndex,
+    SharedPtrVector<SEditorActionBase>& actionsToPerform)
+{
+    // Edge case: In case of no text present, no action is to be undertaken.
+    if (linkerScriptFile->Content().empty())
+    {
+        return;
+    }
+
+    const auto textAtCurrentLine = linkerScriptFile->Lines().size() > lineNumber ? linkerScriptFile->Lines().at(lineNumber) : std::string("");
+    const auto encapsulatingEntry = PositionDropTest(linkerScriptFile, absolutePosition);
+    const auto indentationData = linkerScriptFile->IndentationData()[lineNumber];    
+
+    if (encapsulatingEntry.EntryType() == RawEntryType::Comment)
+    {
+        auto newLineContent = "\n" + std::string(TabSize * indentationData.IndentationDepth(), ' ');
+        if (indentationData.CommentLinePrefixing())
+        {
+            newLineContent += " *";
+        }
+        const auto insertAction = std::make_shared<SEditorAddContent>(lineNumber, columnIndex, newLineContent);
+        const auto moveCursorAction = std::make_shared<SEditorSetCaretPosition>(lineNumber + 1, newLineContent.length() - 1);
+        actionsToPerform.emplace_back(std::static_pointer_cast<SEditorActionBase>(insertAction));
+        actionsToPerform.emplace_back(std::static_pointer_cast<SEditorActionBase>(moveCursorAction));
+    }
+    else if (encapsulatingEntry.EntryType() == RawEntryType::String)
+    {
+        auto newLineContent = "\n" + std::string(TabSize * indentationData.IndentationDepth(), ' ');
+        if (indentationData.CommentLinePrefixing())
+        {
+            newLineContent += " *";
+        }
+
+        const auto insertAction = std::make_shared<SEditorAddContent>(lineNumber, columnIndex, newLineContent);
+        const auto moveCursorAction = std::make_shared<SEditorSetCaretPosition>(lineNumber + 1, newLineContent.length() - 1);
+        actionsToPerform.emplace_back(std::static_pointer_cast<SEditorActionBase>(insertAction));
+        actionsToPerform.emplace_back(std::static_pointer_cast<SEditorActionBase>(moveCursorAction));
+    }
+    else if (!encapsulatingEntry.IsPresent())
+    {
+        // NOTE: When we receive the next-line character, the text is already going to be broken between two lines.
+        //       That has to be considered.
+        // Note: The current line is the line post new-line character insertion.
+        const auto sameLineBracketOpen = PrecedingBracketOpenOnLine(linkerScriptFile, lineNumber, absolutePosition);
+        const auto sameLineBracketClose = SucceedingBracketCloseOnLine(linkerScriptFile, lineNumber, absolutePosition);
+        
+        if (sameLineBracketOpen.IsPresent() && sameLineBracketClose.IsPresent())
+        {
+            // Get immediate succeeding or preceding bracket opens
+            const auto newLinePadding = sameLineBracketOpen.IsPresent() ? std::string(sameLineBracketOpen.StartIndexInLine() + TabSize, ' ') : "";
+            const auto immediateBracketOpen = PrecedingImmediateBracketOpenOnLine(linkerScriptFile, lineNumber, absolutePosition);
+            const auto immediateBracketClose = SucceedingImmediateBracketCloseOnLine(linkerScriptFile, lineNumber, absolutePosition);            
+
+            if (immediateBracketOpen.IsPresent() || immediateBracketClose.IsPresent())
             {
-                // Extract text in between
-                int bracketOpenLineNumber, bracketOpenIndex;
-                this->m_scintilla->lineIndexFromPosition(bracketOpen.StartPosition(), &bracketOpenLineNumber, &bracketOpenIndex);
+                // We're positioned just after bracket overture or just before bracket closure. Apply the whole game.
+                const auto contentLength = sameLineBracketClose.StartPosition() - sameLineBracketOpen.StartPosition() - 1;
+                const auto encapsulatingText = linkerScriptFile->Content().substr(sameLineBracketOpen.StartPosition() + 1, contentLength);
 
-                const auto contentLength = bracketClose.StartPosition() - bracketOpen.StartPosition() - 1;
-                const auto bracketOpenToCaretTextLength = absoluteCharPosition - bracketOpen.StartPosition() - 1;
-                const auto caretToBracketCloseTextLength = bracketClose.StartPosition() - absoluteCharPosition;
-                const auto encapsulatingText = this->m_scintilla->text().mid(bracketOpen.StartPosition() + 1, contentLength);
-                const auto bracketOpenToCaretText = this->m_scintilla->text().mid(bracketOpen.StartPosition() + 1, bracketOpenToCaretTextLength).toStdString();
-                const auto caretToBracketCloseText = this->m_scintilla->text().mid(absoluteCharPosition, caretToBracketCloseTextLength).toStdString();
+                const auto bracketClosePadding = std::string(sameLineBracketOpen.StartIndexInLine(), ' ');                
+                const auto bracketOpenLineText = StringRTrim(linkerScriptFile->Lines().at(sameLineBracketOpen.StartLineNumber()).substr(0, sameLineBracketOpen.StartIndexInLine() + 1));
+                const auto trimmedContent = StringTrim(textAtCurrentLine.substr(sameLineBracketOpen.StartIndexInLine() + 1, sameLineBracketClose.StartIndexInLine() - sameLineBracketOpen.StartIndexInLine() - 1));
+                const auto newLineText = newLinePadding + trimmedContent;
+                const auto bracketCloseText = bracketClosePadding + StringLTrim(textAtCurrentLine.substr(sameLineBracketClose.StartIndexInLine()));
 
-                const auto bracketClosePadding = std::string(4 * indentationData.IndentationDepth(), ' ');
-                const auto newLinePadding = std::string(4 * (indentationData.IndentationDepth() + 1), ' ');
-                const auto bracketOpenLineText = this->m_scintilla->text(bracketOpenLineNumber).mid(0, bracketOpenIndex + 1).toStdString();
-                const auto newLineText = newLinePadding + bracketOpenToCaretText + caretToBracketCloseText;
-                const auto bracketCloseText = bracketClosePadding + this->m_scintilla->text(lineNumber).toStdString();
+                auto addLineAction = std::make_shared<SEditorAddEmptyLine>(lineNumber, 0); // We'll use this twice
+                auto setBracketOpenLineText = std::make_shared<SEditorSetLineContent>(lineNumber, 0, bracketOpenLineText);
+                auto setNewLineText = std::make_shared<SEditorSetLineContent>(lineNumber + 1, 0, newLineText);
+                auto setBracketCloseLineText = std::make_shared<SEditorSetLineContent>(lineNumber + 2, 0, bracketCloseText);
 
-                this->m_scintilla->insertAt(QString("\n"), lineNumber, index);
-                this->m_scintilla->setLineText(QString::fromStdString(newLineText), lineNumber);
-                this->m_scintilla->setLineText(QString::fromStdString(bracketOpenLineText), lineNumber - 1);
-                this->m_scintilla->setLineText(QString::fromStdString(bracketCloseText), lineNumber + 1);
-                this->m_scintilla->setCursorPosition(lineNumber, newLineText.length() - 1);
+                auto newCaretPosition =newLineText.length() - 1;
+                auto setCaretPositionAction = std::make_shared<SEditorSetCaretPosition>(lineNumber + 1, newCaretPosition);
 
-            }
-            else if (bracketOpen.EntryType() != RawEntryType::NotPresent)
-            {
-                auto leadingWhiteSpaceCount = LeadingWhiteSpaces(textAtLine.toStdString());
-                auto minimumWhiteSpaceCount = (4 * (indentationData.IndentationDepth()));
-                auto whiteSpacesToAdd = leadingWhiteSpaceCount > minimumWhiteSpaceCount ? 0 : minimumWhiteSpaceCount - leadingWhiteSpaceCount;
-                auto newLinePadding = std::string(whiteSpacesToAdd > 0 ? whiteSpacesToAdd : 0, ' ');
-                this->m_scintilla->insertAt(QString::fromStdString(newLinePadding), lineNumber, 0);
-                this->m_scintilla->setCursorPosition(lineNumber, newLinePadding.length());
-            }
-            else if (bracketClose.EntryType() != RawEntryType::NotPresent)
-            {
-                auto leadingWhiteSpaceCount = LeadingWhiteSpaces(textAtLine.toStdString());
-                auto minimumWhiteSpaceCount = (4 * (indentationData.IndentationDepth()));
-                auto whiteSpacesToAdd = leadingWhiteSpaceCount > minimumWhiteSpaceCount ? 0 : minimumWhiteSpaceCount - leadingWhiteSpaceCount;
-                auto newLinePadding = std::string(whiteSpacesToAdd > 0 ? whiteSpacesToAdd : 0, ' ');
-                this->m_scintilla->insertAt(QString::fromStdString(newLinePadding), lineNumber, 0);
-                this->m_scintilla->setCursorPosition(lineNumber, newLinePadding.length());
+                actionsToPerform.emplace_back(std::static_pointer_cast<SEditorActionBase>(addLineAction));
+                actionsToPerform.emplace_back(std::static_pointer_cast<SEditorActionBase>(addLineAction));
+                actionsToPerform.emplace_back(std::static_pointer_cast<SEditorActionBase>(setBracketOpenLineText));
+                actionsToPerform.emplace_back(std::static_pointer_cast<SEditorActionBase>(setNewLineText));
+                actionsToPerform.emplace_back(std::static_pointer_cast<SEditorActionBase>(setBracketCloseLineText));
+                actionsToPerform.emplace_back(std::static_pointer_cast<SEditorActionBase>(setCaretPositionAction));                
             }
             else
             {
-                auto linePadCount = (4 * (indentationData.IndentationDepth()));
-                auto newLinePadding = std::string(linePadCount, ' ');
-                auto newText = newLinePadding + textAtLine.trimmed().toStdString();
-                this->m_scintilla->setLineText(QString::fromStdString(newText), lineNumber);
-                this->m_scintilla->setCursorPosition(lineNumber, newLinePadding.length());
+	            // We're somewhere in the middle of the code block. Only apply indentation
+                const auto bracketOpenLineText = StringRTrim(linkerScriptFile->Lines().at(sameLineBracketOpen.StartLineNumber()).substr(0, sameLineBracketOpen.StartIndexInLine() + 1));
+                const auto newLineText = newLinePadding + StringRTrim(textAtCurrentLine).substr(columnIndex);
+
+                auto addLineAction = std::make_shared<SEditorAddEmptyLine>(lineNumber, 0); 
+                auto setBracketOpenLineText = std::make_shared<SEditorSetLineContent>(lineNumber, 0, bracketOpenLineText);
+                auto setNewLineText = std::make_shared<SEditorSetLineContent>(lineNumber + 1, 0, newLineText);
+                auto setCaretPositionAction = std::make_shared<SEditorSetCaretPosition>(lineNumber + 1, newLinePadding.length());
+
+                actionsToPerform.emplace_back(std::static_pointer_cast<SEditorActionBase>(addLineAction));
+                actionsToPerform.emplace_back(std::static_pointer_cast<SEditorActionBase>(setBracketOpenLineText));
+                actionsToPerform.emplace_back(std::static_pointer_cast<SEditorActionBase>(setNewLineText));
+                actionsToPerform.emplace_back(std::static_pointer_cast<SEditorActionBase>(setCaretPositionAction));
+            }
+        }
+        else if (sameLineBracketOpen.IsPresent())
+        {
+            const auto newLinePadding = sameLineBracketOpen.IsPresent() ? std::string(sameLineBracketOpen.StartIndexInLine() + TabSize, ' ') : "";
+            const auto trimmedContent = StringTrim(textAtCurrentLine.substr(sameLineBracketOpen.StartIndexInLine() + 1));
+            const auto newLineText = newLinePadding + trimmedContent;
+            const auto bracketOpenLineText = StringRTrim(linkerScriptFile->Lines().at(sameLineBracketOpen.StartLineNumber()).substr(0, sameLineBracketOpen.StartIndexInLine() + 1));
+
+            auto addLineAction = std::make_shared<SEditorAddEmptyLine>(lineNumber, 0);
+            auto setBracketOpenLineText = std::make_shared<SEditorSetLineContent>(lineNumber, 0, bracketOpenLineText);
+            auto setNewLineText = std::make_shared<SEditorSetLineContent>(lineNumber + 1, 0, newLineText);
+            auto setCaretPositionAction = std::make_shared<SEditorSetCaretPosition>(lineNumber + 1, newLineText.length());
+            actionsToPerform.emplace_back(std::static_pointer_cast<SEditorActionBase>(addLineAction));
+            actionsToPerform.emplace_back(std::static_pointer_cast<SEditorActionBase>(setBracketOpenLineText));
+            actionsToPerform.emplace_back(std::static_pointer_cast<SEditorActionBase>(setNewLineText));
+            actionsToPerform.emplace_back(std::static_pointer_cast<SEditorActionBase>(setCaretPositionAction));
+        }
+        else if (sameLineBracketClose.IsPresent())
+        {
+            /*
+            auto leadingWhiteSpaceCount = LeadingWhiteSpaces(textAtLine.toStdString());
+            auto minimumWhiteSpaceCount = (4 * (indentationData.IndentationDepth()));
+            auto whiteSpacesToAdd = leadingWhiteSpaceCount > minimumWhiteSpaceCount ? 0 : minimumWhiteSpaceCount - leadingWhiteSpaceCount;
+            auto newLinePadding = std::string(whiteSpacesToAdd > 0 ? whiteSpacesToAdd : 0, ' ');
+            this->m_scintilla->insertAt(QString::fromStdString(newLinePadding), lineNumber, 0);
+            this->m_scintilla->setCursorPosition(lineNumber, newLinePadding.length());*/
+        }
+        else
+        {
+            // Neither bracket-open nor bracket-close is present on the same line.
+            // We need to find the previous bracket-open to get the padding info.
+            const auto precedingBracketOpen = PrecedingBracketOpen(linkerScriptFile, absolutePosition);
+            const auto trimmedContent = StringTrim(textAtCurrentLine.substr(columnIndex));
+            const auto newLineText = (precedingBracketOpen.IsPresent() ? std::string(precedingBracketOpen.StartIndexInLine() + TabSize, ' ') : "") + trimmedContent;
+            const auto contentStayingInLine = StringRTrim(textAtCurrentLine.substr(0, columnIndex));
+
+            auto addLineAction = std::make_shared<SEditorAddEmptyLine>(lineNumber, 0);
+            auto setSameLineText = std::make_shared<SEditorSetLineContent>(lineNumber, 0, contentStayingInLine);
+            auto setNewLineText = std::make_shared<SEditorSetLineContent>(lineNumber + 1, 0, newLineText);
+            auto setCaretPositionAction = std::make_shared<SEditorSetCaretPosition>(lineNumber + 1, newLineText.length());
+            actionsToPerform.emplace_back(std::static_pointer_cast<SEditorActionBase>(addLineAction));
+            actionsToPerform.emplace_back(std::static_pointer_cast<SEditorActionBase>(setSameLineText));
+            actionsToPerform.emplace_back(std::static_pointer_cast<SEditorActionBase>(setNewLineText));
+            actionsToPerform.emplace_back(std::static_pointer_cast<SEditorActionBase>(setCaretPositionAction));
+        }
+    }
+}
+
+bool HasNonWhitespaceBeforeCurlyBracket(const std::string& str, uint32_t backwardStartingIndex)
+{
+    // Check characters before the curly-bracket
+    if (str[backwardStartingIndex] != '}')
+    {
+        throw std::exception("Starting index should be a closing curly bracket");
+    }
+
+    if (backwardStartingIndex == 0)
+    {
+        return false; // We're the first character of the line anyway.
+    }
+
+    auto hoveringIndex = backwardStartingIndex - 1;
+    do
+    {
+        if (!std::isspace(static_cast<unsigned char>(str[hoveringIndex]))) {
+            return true;
+        }
+        --backwardStartingIndex;
+    } while (backwardStartingIndex > 0);
+
+    // No non-whitespace characters found before the curly-bracket
+    return false;
+}
+
+CRawEntry PositionDropTest(const std::shared_ptr<Models::CLinkerScriptFile>& linkerScriptFile, const uint32_t absoluteCharacterPosition)
+{
+    for (const auto& entry : linkerScriptFile->LexedContent())
+    {
+        if ((absoluteCharacterPosition > entry.StartPosition() + 1) && absoluteCharacterPosition < entry.StartPosition() + entry.Length())
+        {
+            return entry;
+        }
+    }
+
+    return CRawEntry(); // Not-Present entry (i.e. nothing found).
+}
+
+CRawEntry PrecedingBracketOpen(const std::shared_ptr<Models::CLinkerScriptFile>& linkerScriptFile,const uint32_t absoluteCharacterPosition)
+{
+    CRawEntry candidate;
+    std::stack<CRawEntry> bracketStack;
+    for (const auto& entry : linkerScriptFile->LexedContent())
+    {
+        if (entry.StartPosition() < absoluteCharacterPosition)
+        {
+            if (entry.EntryType() == RawEntryType::BracketOpen)
+            {
+                bracketStack.push(entry);
+            }
+            else if (entry.EntryType() == RawEntryType::BracketClose)
+            {
+                if (!bracketStack.empty())
+                {
+                    bracketStack.pop();
+                }
+            }
+        }        
+
+        if (entry.StartPosition() > absoluteCharacterPosition)
+        {
+            break;
+        }
+    }
+
+    return !bracketStack.empty() ? bracketStack.top() : CRawEntry();
+}
+
+
+CRawEntry PrecedingBracketOpenOnLine(const std::shared_ptr<Models::CLinkerScriptFile>& linkerScriptFile, uint32_t line, const uint32_t absoluteCharacterPosition)
+{
+    CRawEntry candidate;
+    std::stack<CRawEntry> bracketStack;
+    for (const auto& entry : linkerScriptFile->LexedContent())
+    {
+        if (entry.StartPosition() < absoluteCharacterPosition &&
+            entry.StartLineNumber() == line)
+        {
+            if (entry.EntryType() == RawEntryType::BracketOpen)
+            {
+                bracketStack.push(entry);
+            }
+            else if (entry.EntryType() == RawEntryType::BracketClose)
+            {
+                if (!bracketStack.empty())
+                {
+                    bracketStack.pop();
+                }
+            }
+        }
+
+        if (entry.StartPosition() > absoluteCharacterPosition)
+        {
+            break;
+        }
+    }
+
+    return !bracketStack.empty() ? bracketStack.top() : CRawEntry();
+}
+
+CRawEntry PrecedingImmediateBracketOpenOnLine(const std::shared_ptr<Models::CLinkerScriptFile>& linkerScriptFile, uint32_t line, const uint32_t absoluteCharacterPosition)
+{
+    CRawEntry candidate;
+    for (const auto& entry : linkerScriptFile->LexedContent())
+    {
+        if (entry.StartLineNumber() == line && entry.StartPosition() < absoluteCharacterPosition)
+        {
+            candidate = (entry.EntryType() == RawEntryType::BracketOpen) ? entry : CRawEntry();
+        }
+
+        if (entry.StartPosition() > absoluteCharacterPosition)
+        {
+            break;
+        }
+    }
+
+    return candidate;
+}
+
+CRawEntry SucceedingBracketCloseOnLine(const std::shared_ptr<Models::CLinkerScriptFile>& linkerScriptFile, uint32_t line, const uint32_t absoluteCharacterPosition)
+{
+    std::stack<CRawEntry> entriesStack;
+    for (const auto& entry : linkerScriptFile->LexedContent())
+    {
+        if (entry.StartLineNumber() == line && entry.StartPosition() >= absoluteCharacterPosition)
+        {
+            if (entry.EntryType() == RawEntryType::BracketOpen)
+            {
+                entriesStack.push(entry);
+            }
+            else if (entry.EntryType() == RawEntryType::BracketClose)
+            {
+                if (!entriesStack.empty())
+                {
+                    entriesStack.pop();
+                }
+                else
+                {
+                    return entry;
+                }
+            }
+        }
+
+        if (entry.StartLineNumber() > line)
+        {
+            break;
+        }
+    }
+
+    return CRawEntry();
+}
+
+CRawEntry SucceedingBracketClose(const std::shared_ptr<Models::CLinkerScriptFile>& linkerScriptFile, const uint32_t absoluteCharacterPosition)
+{
+    std::stack<CRawEntry> entriesStack;
+    for (const auto& entry : linkerScriptFile->LexedContent())
+    {
+        if (entry.StartPosition() >= absoluteCharacterPosition)
+        {
+            if (entry.EntryType() == RawEntryType::BracketOpen)
+            {
+                entriesStack.push(entry);
+            }
+            else if (entry.EntryType() == RawEntryType::BracketClose)
+            {
+                if (!entriesStack.empty())
+                {
+                    entriesStack.pop();
+                }
+                else
+                {
+                    return entry;
+                }
             }
         }
     }
 
-    if (charAdded == '(')
-    {
-        const auto contentToInsert = std::string(")");
-        this->m_scintilla->insertAt(QString::fromStdString(contentToInsert), lineNumber, index);
-        this->m_scintilla->setCursorPosition(lineNumber, index);
-    }
-
-    if (charAdded == '(')
-    {
-        const auto contentToInsert = std::string(")");
-        this->m_scintilla->insertAt(QString::fromStdString(contentToInsert), lineNumber, index);
-        this->m_scintilla->setCursorPosition(lineNumber, index);
-    }
-
-    if (charAdded == '\"')
-    {
-        const auto contentToInsert = std::string("\"");
-        this->m_scintilla->insertAt(QString::fromStdString(contentToInsert), lineNumber, index);
-        this->m_scintilla->setCursorPosition(lineNumber, index);
-    }
-
-    if (charAdded == '{')
-    {
-        const auto contentToInsert = std::string("}");
-        this->m_scintilla->insertAt(QString::fromStdString(contentToInsert), lineNumber, index);
-        this->m_scintilla->setCursorPosition(lineNumber, index);
-    }
-
-    if (charAdded == '}')
-    {
-        if (HasNonWhitespaceBeforeCurlyBracket(textAtLine.toStdString(), index - 1))
-        {
-            return; // No action is taken.
-        }
-        const auto newLineContent = std::string(4 * indentationData.IndentationDepth(), ' ') + "}";
-        this->m_scintilla->setLineText(QString::fromStdString(newLineContent), lineNumber);
-        this->m_scintilla->setCursorPosition(lineNumber, newLineContent.length());
-    }
-
-    //auto lineType = this->m_scintilla->line
-    this->m_scintilla->endUndoAction();
-    */
-
-	return SharedPtrVector<SStylerActionBase>();
+    return CRawEntry();
 }
 
-SharedPtrVector<SStylerActionBase> CAutoStyler::TextRemovalRequested(
-	std::shared_ptr<CRawFile> lexedScript,
-	uint32_t startLineNumber,
-	uint32_t startColumnIndex,
-	uint32_t endLineNumber,
-	uint32_t endColumnIndex)
+CRawEntry SucceedingImmediateBracketCloseOnLine(const std::shared_ptr<Models::CLinkerScriptFile>& linkerScriptFile, uint32_t line, const uint32_t absoluteCharacterPosition)
 {
-    return SharedPtrVector<SStylerActionBase>();
+    for (const auto& entry : linkerScriptFile->LexedContent())
+    {
+        if (entry.StartLineNumber() == line && entry.StartPosition() >= absoluteCharacterPosition)
+        {
+	        if (entry.EntryType() == RawEntryType::BracketClose)
+	        {
+                return entry;
+	        }
+            return CRawEntry();
+        }
+    }
+
+    return CRawEntry();
+}
+
+
+uint32_t LeadingWhiteSpaces(const std::string& stringToInspect)
+{
+    uint32_t count = 0;
+    for (int hover = 0; hover < stringToInspect.length(); hover++)
+    {
+        if (stringToInspect[hover] == ' ')
+        {
+            count++;
+        }
+        else if (stringToInspect[hover] == '\t')
+        {
+            count += 4;
+        }
+        else
+        {
+            break;
+        }
+    }
+    return count;
 }

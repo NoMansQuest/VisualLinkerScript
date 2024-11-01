@@ -209,18 +209,21 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Components\QLinkerScriptSession\AutoStyling\CAutoStyler.cpp" />
-    <ClCompile Include="Components\QLinkerScriptSession\AutoStyling\SStylerRemoveLine.h" />
-    <ClCompile Include="Components\QLinkerScriptSession\AutoStyling\SStylerReplaceLine.h" />
-    <ClCompile Include="Components\QLinkerScriptSession\AutoStyling\SStylerSelectText.h" />
+    <ClCompile Include="Components\QLinkerScriptSession\EditorAction\SEditorRemoveLine.h" />
+    <ClCompile Include="Components\QLinkerScriptSession\EditorAction\SEditorReplaceContent.h" />
+    <ClCompile Include="Components\QLinkerScriptSession\EditorAction\SEditorSelectText.h" />
     <ClCompile Include="Components\InputDialogs\QLabelAssistedInput.cpp" />
     <ClCompile Include="Components\InputDialogs\QListAssistedInput.cpp" />
     <ClCompile Include="Components\QFlatCheckBox\QFlatCheckBox.cpp" />
     <ClCompile Include="Components\QLinkerScriptSession\CustomComponents\QIssuesTreeView.cpp" />
+    <ClCompile Include="Components\QLinkerScriptSession\EditorAction\SEditorSetCaretPosition.h" />
+    <ClCompile Include="Components\QLinkerScriptSession\EditorAction\SEditorSetLineContent.h" />
     <ClCompile Include="Components\QManualSizeGrip\QManualSizeGrip.cpp" />
     <ClCompile Include="Components\QScintilla\scintilla\lexlib\Accessor.cpp" />
     <ClCompile Include="Components\QScintilla\scintilla\src\AutoComplete.cpp" />
     <ClCompile Include="Components\MemoryVisualizer\Rendering\CArrowsRenderer.cpp" />
     <ClCompile Include="Components\QScintilla\VlsScintilla.cpp" />
+    <ClCompile Include="DrcEngine\CCorrectiveAction.h" />
     <ClCompile Include="DrcEngine\EDrcViolationCode.cpp" />
     <ClCompile Include="MD5\MD5.cpp" />
     <ClCompile Include="ParsingEngine\ELexerViolationCode.cpp" />
@@ -361,12 +364,15 @@
     <QtMoc Include="Components\QFlatCheckBox\QFlatCheckBox.h" />
     <QtMoc Include="Components\InputDialogs\QLabelAssistedInput.h" />
     <ClInclude Include="Components\QLinkerScriptSession\AutoStyling\CAutoStyler.h" />
-    <ClInclude Include="Components\QLinkerScriptSession\AutoStyling\SStylerActionBase.h" />
-    <ClInclude Include="Components\QLinkerScriptSession\AutoStyling\SStylerAddContent.h" />
-    <ClInclude Include="Components\QLinkerScriptSession\AutoStyling\SStylerRemoveContent.h" />
+    <ClInclude Include="Components\QLinkerScriptSession\EditorAction\EEditorActionType.h" />
+    <ClInclude Include="Components\QLinkerScriptSession\EditorAction\SEditorActionBase.h" />
+    <ClInclude Include="Components\QLinkerScriptSession\EditorAction\SEditorAddContent.h" />
+    <ClInclude Include="Components\QLinkerScriptSession\EditorAction\SEditorAddEmptyLine.h" />
+    <ClInclude Include="Components\QLinkerScriptSession\EditorAction\SEditorRemoveContent.h" />
     <ClInclude Include="Components\InputDialogs\QListAssistedInput.h" />
     <QtMoc Include="Components\QManualSizeGrip\QManualSizeGrip.h" />
     <QtMoc Include="Components\QLinkerScriptSession\CustomComponents\QIssuesTreeView.h" />
+    <ClInclude Include="Components\QLinkerScriptSession\EditorAction\SEditorShowAutoCompletion.h" />
     <ClInclude Include="Components\QScintilla\scintilla\lexlib\Accessor.h" />
     <ClInclude Include="Compiler\ExpressionEvaluation\ArithmeticOperationType.h" />
     <ClInclude Include="Components\QScintilla\scintilla\src\AutoComplete.h" />
@@ -377,8 +383,6 @@
     <ClInclude Include="MD5\MD5_loc.h" />
     <ClInclude Include="Models\CComment.h" />
     <ClInclude Include="Models\ESeverityCode.h" />
-    <ClInclude Include="Models\Intervention\CActionBase.h" />
-    <ClInclude Include="Models\Intervention\CAddTextAction.h" />
     <ClInclude Include="Compiler\ExpressionEvaluation\CArithmeticResultOp.h" />
     <ClInclude Include="Components\MemoryVisualizer\Models\CArrowObject.h" />
     <ClInclude Include="Components\MemoryVisualizer\Rendering\CArrowsRenderer.h" />
@@ -429,7 +433,6 @@
     <ClInclude Include="ParsingEngine\SubParsers\CInputSectionStatementParser.h" />
     <ClInclude Include="Models\CInputSectionTargetSection.h" />
     <ClInclude Include="Models\CInputSectionWildcardWord.h" />
-    <ClInclude Include="Models\Intervention\CIntervention.h" />
     <ClInclude Include="ParsingEngine\CLinkerScriptLexer.h" />
     <ClInclude Include="ParsingEngine\CLexerException.h" />
     <ClInclude Include="Models\CParsedContentBase.h" />
@@ -473,7 +476,6 @@
     <ClInclude Include="Models\Raw\CRawEntry.h" />
     <ClInclude Include="Models\Raw\CRawFile.h" />
     <ClInclude Include="Messaging\UserInitiated\CRedoRequest.h" />
-    <ClInclude Include="Models\Intervention\CRemoveTextAction.h" />
     <ClInclude Include="Compiler\ExpressionEvaluation\CResultBase.h" />
     <ClInclude Include="Messaging\UserInitiated\CSaveFileRequest.h" />
     <ClInclude Include="ParsingEngine\SubParsers\CScopedRegionParser.h" />

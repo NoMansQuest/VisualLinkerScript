@@ -63,3 +63,28 @@ bool VisualLinkerScript::ReadFileContent(const std::string& filePath, std::strin
     file.close();
     return true;
 }
+
+std::string VisualLinkerScript::StringLTrim(const std::string& sourceString)
+{
+    auto start = std::find_if_not(sourceString.begin(), sourceString.end(), [](unsigned char ch) {
+        return std::isspace(ch);
+        });
+
+    return std::string(start, sourceString.end());
+}
+
+std::string VisualLinkerScript::StringRTrim(const std::string& sourceString)
+{
+    auto end = std::find_if_not(sourceString.rbegin(), sourceString.rend(), [](unsigned char ch) {
+        return std::isspace(ch);
+        });
+
+    return std::string(sourceString.begin(), end.base());
+}
+
+
+std::string VisualLinkerScript::StringTrim(const std::string& sourceString)
+{
+    return StringRTrim(StringLTrim(sourceString));
+}
+

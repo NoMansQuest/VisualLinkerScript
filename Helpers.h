@@ -68,6 +68,10 @@ namespace VisualLinkerScript
     template <typename T>
     using SharedPtrVector = std::vector<std::shared_ptr<T>>;
 
+    /// @brief Type widely used across the code-base
+    template <typename T>
+    using UniquePtrVector = std::vector<std::unique_ptr<T>>;
+
     /// @brief Merges 'vectorToAdd' into 'mainVector'
     template <typename T>
     void FuseVectors(std::vector<T>& mainVector, const std::vector<T>& vectorToAdd) {
@@ -143,6 +147,15 @@ namespace VisualLinkerScript
 
     /// @brief Searches for a given string in a vector to see if it is present.
     bool StringIn(const std::string& sourceString, const std::vector<std::string>& listToCheck, bool caseSensitive = true);
+
+    /// @brief Performs L-Trim on a string and returns trimmed string.
+    std::string StringLTrim(const std::string& sourceString);
+
+    /// @brief Performs R-Trim on a string and returns trimmed string.
+    std::string StringRTrim(const std::string& sourceString);
+
+    /// @brief Performs left and right trim on a string and returns trimmed string.
+    std::string StringTrim(const std::string& sourceString);
 
     /// @brief Splits a string based on a given character.
     std::vector<std::string> StringSplit(const std::string& sourceString, char seperator);
