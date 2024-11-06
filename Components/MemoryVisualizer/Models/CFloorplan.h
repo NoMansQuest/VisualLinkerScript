@@ -2,27 +2,23 @@
 #define CFLOORPLAN_H__
 
 #include <vector>
-#include "CContentBase.h"
-#include "CLmaToVmaArrow.h"
 
-/// @brief Represents a Linker-Script object.
-class CFloorplan
+namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 {
-// Member fields
-private:                
-    std::vector<CContentBase> m_content;
-    std::vector<CLmaToVmaArrow> m_arrows;
+    class CMemorySection;
 
-public:
-    /// @brief Memory content
-    const std::vector<CContentBase>& Content() {
-        return this->m_content;
-    }
+    /// @brief Represents a Linker-Script object.
+    class CFloorPlan
+    {
+        DECLARE_READONLY_PROPERTY(SharedPtrVector<CMemorySection>, MemorySections)
 
-    /// @brief Arrows
-    const std::vector<CLmaToVmaArrow>& Arrows() {
-        return this->m_arrows;
-    }
-};
+    public:
+        /// @brief Default constructor.
+        CFloorPlan() :
+			m_MemorySections(SharedPtrVector<CMemorySection>())
+        {}
+
+    };
+}
 
 #endif // CFLOORPLAN_H__

@@ -1,6 +1,5 @@
-#ifndef EINSERTOBJECTTYPE_H__
-#define EINSERTOBJECTTYPE_H__
-
+#ifndef EINSERT_OBJECT_TYPE_H__
+#define EINSERT_OBJECT_TYPE_H__
 
 /// @brief Type of object user is asking to insert
 enum class EInsertObjectType
@@ -12,4 +11,4 @@ enum class EInsertObjectType
     SectionOutput,
 };
 
-#endif // EINSERTOBJECTTYPE_H
+#endif // EINSERT_OBJECT_TYPE_H__

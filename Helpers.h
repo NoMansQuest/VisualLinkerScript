@@ -26,7 +26,7 @@
         propType m_##propName;\
                         \
     public:\
-        propType propName(){\
+        propType propName() const{\
             return m_##propName;\
         }\
          \
@@ -40,7 +40,7 @@
         propType m_##propName;\
                         \
     public:\
-        propType propName(){\
+        propType propName() const {\
             return m_##propName;\
         }
 
@@ -50,7 +50,7 @@
         propType m_##propName;\
                         \
     public:\
-        virtual propType propName(){\
+        virtual propType propName() const{\
             return m_##propName;\
         }\
          \

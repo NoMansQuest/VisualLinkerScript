@@ -33,7 +33,7 @@ namespace
     QColor colorVividBlue(185,156,214);
     QColor colorYellow(255,215,4);
     QColor colorVividRed(237,28,36);
-    QColor colorDarkPaper(22,22,22); // Equals to 'Level0' : #ff161616
+    QColor colorDarkPaper(22,22,22); 
 }
 
 // The ctor.

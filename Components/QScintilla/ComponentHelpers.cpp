@@ -59,9 +59,3 @@ void QScintilla::SetComponentStyles(QsciScintilla& target)
     // Set Lexer
     //target.setLexer()
 }
-
-void QScintilla::SetTextEditorStyles(QsciScintilla& target)
-{
-    UNREFERENCED_PARAMETER(target); // TODO: Fix this later on.
-}
-

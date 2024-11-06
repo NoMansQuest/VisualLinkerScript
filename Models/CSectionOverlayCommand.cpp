@@ -46,28 +46,28 @@ const std::string CSectionOverlayCommand::ToDebugInfo(uint32_t depth, const CLin
 
     content += std::string(depth, ' ') + " -- PreColon content: \n";
 
-    for (auto subContent : this->PreColonContent())
+    for (const auto subContent : this->PreColonContent())
     {
         content += subContent->ToDebugInfo(depth + 4, linkerScriptFile) + "\n";
     }
 
     content += std::string(depth, ' ') + " -- PostColon content: \n";
 
-    for (auto subContent : this->PostColonContent())
+    for (const auto& subContent : this->PostColonContent())
     {
         content += subContent->ToDebugInfo(depth + 4, linkerScriptFile) + "\n";
     }
 
     content += std::string(depth, ' ') + " -- Inner content: \n";
 
-    for (auto subContent : this->InnerContent())
+    for (const auto& subContent : this->InnerContent())
     {
         content += subContent->ToDebugInfo(depth + 4, linkerScriptFile) + "\n";
     }
 
     content += std::string(depth, ' ') + " -- Ending content: \n";
 
-    for (auto subContent : this->EndingContent())
+    for (const auto& subContent : this->EndingContent())
     {
         content += subContent->ToDebugInfo(depth + 4, linkerScriptFile) + "\n";
 

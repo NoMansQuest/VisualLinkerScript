@@ -1,4 +1,5 @@
 @baseBackground = #ff0a0a0a
+@levelM1 = #ff101010
 @level0 = #ff1f1f1f
 @level1 = #ff272727
 @level2 = #ff353535

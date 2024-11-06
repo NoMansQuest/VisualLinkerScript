@@ -27,9 +27,24 @@ class QLinkerScriptSession : public QWidget
 {
     Q_OBJECT
 
+public:
+    /// @brief End-of-line styles
+    enum class EEndOfLineStyle
+    {
+        LF,
+        CRLF
+    };
+
+    Q_ENUM(EEndOfLineStyle)
+    Q_PROPERTY(EEndOfLineStyle EndOfLineStyle READ EndOfLineStyle WRITE SetEndOfLineStyle NOTIFY evEndOfLineStyleChanged)
+	Q_PROPERTY(uint32_t EditorLineNumber READ EditorLineNumber NOTIFY evEditorCoordinateChanged)
+	Q_PROPERTY(uint32_t EditorColumnIndex READ EditorColumnIndex NOTIFY evEditorCoordinateChanged)
+    Q_PROPERTY(uint32_t EditorAbsolutePosition READ EditorAbsolutePosition NOTIFY evEditorCoordinateChanged)
+
 private:
     uint32_t m_sessionId;
     uint32_t m_sessionsTabIndex;
+    EEndOfLineStyle m_endOfLineStyle;
     std::shared_ptr<VisualLinkerScript::Models::CLinkerScriptFile> m_linkerScriptFile;
 
 public:
@@ -109,20 +124,30 @@ public:
     /// @brief Reports back the linker script content.
     [[nodiscard]] std::shared_ptr<VisualLinkerScript::Models::CLinkerScriptFile> LinkerScriptFile() const;
 
+    /// @brief Reports back the end-of-line style
+    [[nodiscard]] EEndOfLineStyle EndOfLineStyle() const { return this->m_endOfLineStyle; }
+
+    /// @brief Reports back the line number the caret is on
+    [[nodiscard]] uint32_t EditorLineNumber() const;
+
+    /// @brief Reports back the column index the caret is on
+    [[nodiscard]] uint32_t EditorColumnIndex() const;
+
+    /// @brief Reports back the absolute position the caret is on
+    [[nodiscard]] uint32_t EditAbsolutePosition() const;
+
+    /// @brief Sets the end-of-line style
+    void SetEndOfLineStyle(EEndOfLineStyle newEndOfLineStyle)
+    {
+        if (this->m_endOfLineStyle != newEndOfLineStyle)
+        {
+			this->m_endOfLineStyle = newEndOfLineStyle;
+            emit this->evEndOfLineStyleChanged(this->m_sessionId);
+        }
+    }
+
     /// @brief Updates content of the linker-script file. Consequently, it updates the editor and triggers an analysis.
     void UpdateContent(const std::string& newContent);
-
-    /// TODO: DISCARD IF POSSIBLE
-    /// @brief Returns back the memory visualizer widget
-    QMemoryVisualizer* MemoryVisualizerWidget() const { return this->m_memoryVisualizer; }
-
-    /// TODO: DISCARD IF POSSIBLE
-    /// @brief Returns back the Scintilla Editor. 
-    QsciScintilla* ScintillaEditor() const { return this->m_scintilla; }
-
-    /// TODO: DISCARD IF POSSIBLE
-    /// @brief Returns back the issues tree-view. 
-    QIssuesTreeView* IssuesTreeView() const { return this->m_issuesTreeView; }
 
     /// @breif Make the search dialog appear.
     void ShowSearchPopup() const;
@@ -138,6 +163,9 @@ signals:
     void evCut(uint32_t sessionId);
     void evCopy(uint32_t sessionId);
     void evPaste(uint32_t sessionId);
+    void evEndOfLineStyleChanged(uint32_t sessionId);
+    void evEditorLineNumberChanged(uint32_t sessionId);
+    void evEditorColumnIndexChanged(uint32_t sessionId);
 
     void evSessionFileInfoChanged(void);
     void evTextPositionChanged(uint32_t sessionId, int line, int index);

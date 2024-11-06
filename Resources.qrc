@@ -21,5 +21,8 @@
         <file>Images/error-sign-icon.svg</file>
         <file>Images/info-sign-icon.svg</file>
         <file>Images/warning-sign-icon.svg</file>
+        <file>Images/zoom_in_icon.svg</file>
+        <file>Images/zoom_out_icon.svg</file>
+        <file>Images/zoom_to_content_icon.svg</file>
     </qresource>
 </RCC>

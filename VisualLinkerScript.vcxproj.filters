@@ -53,9 +53,6 @@
     <ClCompile Include="Components\QScintilla\scintilla\src\AutoComplete.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Components\MemoryVisualizer\Rendering\CArrowsRenderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ParsingEngine\SubParsers\CAssignmentParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -93,9 +90,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ParsingEngine\SubParsers\CFunctionParser.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Components\MemoryVisualizer\CGraphicsProcessor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DrcEngine\Rules\CIncludeRecursionGuard.cpp">
@@ -137,9 +131,6 @@
     <ClCompile Include="ParsingEngine\CLinkerScriptParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Components\MemoryVisualizer\Rendering\CMemoryObjectRenderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Models\CMemoryRegion.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -155,13 +146,7 @@
     <ClCompile Include="ParsingEngine\SubParsers\CMemoryStatementAttributeParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Components\MemoryVisualizer\CMouseInteractivity.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="DrcEngine\Rules\CNoDuplicateMemoryRegionNameRule.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Components\MemoryVisualizer\Rendering\COverlapObjectRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Models\CPhdrsRegion.cpp">
@@ -173,13 +158,7 @@
     <ClCompile Include="Models\CPhdrsStatement.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Components\MemoryVisualizer\Placement\CPlacementEngine.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Models\CProcedureCall.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Components\MemoryVisualizer\Rendering\CSectionObjectRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Models\CSectionOutputCommand.cpp">
@@ -206,16 +185,10 @@
     <ClCompile Include="ParsingEngine\SubParsers\CSectionsRegionParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Components\MemoryVisualizer\Rendering\CStatementRenderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ParsingEngine\SubParsers\CSubParserBase.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DrcEngine\Rules\CSymbolsDefinedInAdvanceRule.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Components\MemoryVisualizer\Rendering\CTooltipRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ParsingEngine\SubParsers\CVersionRegionContentParser.cpp">
@@ -329,7 +302,7 @@
     <ClCompile Include="Components\QScintilla\scintilla\src\MarginView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Components\MemoryVisualizer\ModelTranslator.cpp">
+    <ClCompile Include="Components\MemoryVisualizer\CModelTranslator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Components\QScintilla\scintilla\src\PerLine.cpp">
@@ -500,6 +473,9 @@
     <ClCompile Include="DrcEngine\CCorrectiveAction.h">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="Components\MemoryVisualizer\QMemoryLayoutRender.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Components\QScintilla\scintilla\lexlib\Accessor.h">
@@ -512,12 +488,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Compiler\ExpressionEvaluation\CArithmeticResultOp.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\MemoryVisualizer\Models\CArrowObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\MemoryVisualizer\Rendering\CArrowsRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ParsingEngine\SubParsers\CAssignmentParser.h">
@@ -568,9 +538,6 @@
     <ClInclude Include="DrcEngine\Rules\CEntryIsDefinedRule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Components\MemoryVisualizer\Models\CEntryPoint.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Compiler\ExpressionEvaluation\CEvaluatableBase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -604,7 +571,7 @@
     <ClInclude Include="Messaging\UserInitiated\CFindRequest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Components\MemoryVisualizer\Models\CFloorplan.h">
+    <ClInclude Include="Components\MemoryVisualizer\Models\CFloorPlan.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Models\CFunctionCall.h">
@@ -614,9 +581,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ParsingEngine\SubParsers\CFunctionParser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\MemoryVisualizer\CGraphicsProcessor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Models\CIncludeCommand.h">
@@ -667,12 +631,6 @@
     <ClInclude Include="QueryEngine\CLinq.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Components\MemoryVisualizer\Models\CLmaToVmaArrow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\MemoryVisualizer\Models\CLmaToVmaArrowCoordinates.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Messaging\UserInitiated\CLoadMappingFileRequest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -688,10 +646,7 @@
     <ClInclude Include="Components\MemoryVisualizer\Models\CMemoryLocationIndicator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Components\MemoryVisualizer\Models\CMemoryObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\MemoryVisualizer\Rendering\CMemoryObjectRenderer.h">
+    <ClInclude Include="Components\MemoryVisualizer\Models\CMemorySection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Models\CMemoryRegion.h">
@@ -706,7 +661,7 @@
     <ClInclude Include="ParsingEngine\SubParsers\CMemoryRegionParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Components\MemoryVisualizer\Models\CMemoryStatement.h">
+    <ClInclude Include="Components\MemoryVisualizer\Models\CSectionDefinition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Models\CMemoryStatement.h">
@@ -716,9 +671,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ParsingEngine\SubParsers\CMemoryStatementAttributeParser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\MemoryVisualizer\CMouseInteractivity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DrcEngine\Rules\CNoDuplicateMemoryRegionNameRule.h">
@@ -733,13 +685,10 @@
     <ClInclude Include="Messaging\UserInitiated\COpenFileRequest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Components\MemoryVisualizer\Rendering\COverlapObjectRenderer.h">
+    <ClInclude Include="Components\MemoryVisualizer\Models\COverlayStatement.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Components\MemoryVisualizer\Models\COverlayObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\MemoryVisualizer\Models\COverlaySectionObject.h">
+    <ClInclude Include="Components\MemoryVisualizer\Models\COverlaySectionStatement.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Models\CParameterSeparator.h">
@@ -758,9 +707,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Models\CPhdrsStatement.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\MemoryVisualizer\Placement\CPlacementEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Models\CProcedureCall.h">
@@ -793,10 +739,7 @@
     <ClInclude Include="ParsingEngine\SubParsers\CScopedRegionParser.tpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Components\MemoryVisualizer\Models\CSectionObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\MemoryVisualizer\Rendering\CSectionObjectRenderer.h">
+    <ClInclude Include="Components\MemoryVisualizer\Models\CSectionOutput.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Models\CSectionOutputAtLmaRegion.h">
@@ -850,18 +793,6 @@
     <ClInclude Include="Messaging\UserInitiated\CShowAboutRequest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Components\MemoryVisualizer\Models\CSizableObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\MemoryVisualizer\Models\CSizeIndicator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\MemoryVisualizer\Models\CStatementObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\MemoryVisualizer\Rendering\CStatementRenderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Models\CStringEntry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -878,9 +809,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Components\MemoryVisualizer\Models\CTooltip.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\MemoryVisualizer\Rendering\CTooltipRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Messaging\UserInitiated\CUndoRequest.h">
@@ -1042,7 +970,7 @@
     <ClInclude Include="Components\QScintilla\scintilla\src\MarginView.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Components\MemoryVisualizer\ModelTranslator.h">
+    <ClInclude Include="Components\MemoryVisualizer\CModelTranslator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Components\QScintilla\scintilla\lexlib\OptionSet.h">
@@ -1273,6 +1201,9 @@
     <ClInclude Include="Components\QLinkerScriptSession\EditorAction\SEditorAddEmptyLine.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
+    <ClInclude Include="Components\MemoryVisualizer\Models\CSectionDefinitionBase.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="release\moc_predefs.h.cbt">
@@ -1312,6 +1243,9 @@
       <Filter>Generated Files</Filter>
     </QtMoc>
     <QtMoc Include="Components\QLinkerScriptSession\CustomComponents\QIssuesTreeView.h">
+      <Filter>Generated Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Components\MemoryVisualizer\QMemoryLayoutRender.h">
       <Filter>Generated Files</Filter>
     </QtMoc>
   </ItemGroup>

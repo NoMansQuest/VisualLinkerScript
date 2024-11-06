@@ -277,7 +277,6 @@ QsciScintilla {
     background: @level4;
 }
 
-
 /*
  *
  * QChromeTabWidget and QChromTabButton
@@ -376,6 +375,33 @@ QSearchPopup[HasFocus="false"] {
     border-bottom: 4px solid @DialogBackground;
 }
 
+/*
+ * QLineEdit
+ */
+QLineEdit {
+    border: none;
+    background-color: @DialogBackground; 
+    color: #fffafafa;
+    selection-background-color: #ff121212;
+}
+
+/*
+ * QMemoryVisualizer
+ */
+QMemoryVisualizer {
+    border: none;
+    background-color: @levelM1;
+}
+
+
+/*
+ * QMemoryLayoutRender
+ */
+QMemoryLayoutRender {
+    border: none;
+    background-color: @levelM1;
+}
+
 
 /*
  * QTreeView styling
@@ -388,13 +414,13 @@ QTreeView {
     border: 1px solid #444444; /* Optional border around the QTreeView */
 }
 
-    QTreeView::header {
-        background-color: @paperBackground; /* Header background color */
-        color: #d0d0d0; /* Header text color */
-        min-height: 10px; /* Set minimum header height */
-        padding: 2px; /* Adjust padding if necessary */
-        font-size: 12px; /* You can also reduce the font size to make it smaller */
-    }
+QTreeView::header {
+    background-color: @paperBackground; /* Header background color */
+    color: #d0d0d0; /* Header text color */
+    min-height: 10px; /* Set minimum header height */
+    padding: 2px; /* Adjust padding if necessary */
+    font-size: 12px; /* You can also reduce the font size to make it smaller */
+}
 
 QHeaderView::section {
     background-color: @paperBackground; /* Section background color */

@@ -71,6 +71,28 @@ static QIcon GetIconForSeverity(const ESeverityCode severity)
     }
 }
 
+uint32_t QLinkerScriptSession::EditorLineNumber() const
+{
+    int line, column;
+    this->m_scintilla->getCursorPosition(&line, &column);
+    return line + 1;
+}
+
+uint32_t QLinkerScriptSession::EditorColumnIndex() const
+{
+    int line, column;
+    this->m_scintilla->getCursorPosition(&line, &column);
+    return column;
+}
+
+uint32_t QLinkerScriptSession::EditAbsolutePosition() const
+{
+    int line, column;
+    this->m_scintilla->getCursorPosition(&line, &column);
+    return static_cast<uint32_t>(this->m_scintilla->positionFromLineIndex(line, column));
+}
+
+
 void QLinkerScriptSession::BuildUserInterface()
 {
     // Setup UI.
