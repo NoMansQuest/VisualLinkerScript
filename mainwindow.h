@@ -12,13 +12,14 @@
 #include <QHBoxLayout>
 #include <memory>
 
-
+class QLinkerScriptSession;
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
 class QChromeTabWidget;
 class QLinkerScriptManager;
+class QJumpToLineDialog;
 
 class MainWindow : public QMainWindow
 {
@@ -40,12 +41,17 @@ private:
     QPushButton* m_statusBarPositionButton;
     std::unique_ptr<QLinkerScriptManager> m_linkerScriptManager;
 
+    QJumpToLineDialog* m_jumpToLineDialog;
+
 private:
     void SaveLastUsedDirectory(const QString& directory);
     QString GetLastUsedDirectory(void);
+    void SubscribeToLinkerScriptSessionEvents(std::shared_ptr<QLinkerScriptSession> linkerScriptSession);
+    void UnsubscribeFromLinkerScriptSessionEvents(std::shared_ptr<QLinkerScriptSession> linkerScriptSession);
+    void UpdateLineNumberAndColumnIndex(uint32_t lineNumber, uint32_t columnIndex);
 
 private slots:
-    void ContentRegionTabCollectionUpdated(void);
+    void ContentRegionTabCollectionUpdated(void) const;
 
     void MenuActionExit(bool checked);
     void MenuActionNewFile(void);
@@ -70,6 +76,14 @@ private slots:
     void StatusBarLineEndingButtonPressed(void);
     void StatusBarPositionButtonPressed(void);
 
+    void OnEditorCursorUpdated(uint32_t linkerScriptSessionId);
+    void OnActiveTabChanged(std::optional<uint32_t> activeTab);
+    void OnJumpToLineRequest(uint32_t newLine) const;
+
+    void EditorActionShowJumpToLine() const;
+    void EditorActionShowEolSelector();
+    void EditorActionShowEncodingSelector();
+
 signals:
     void evNewFileRequested(void);
     void evNewFileFromTemplateRequested(QString templateName);
@@ -91,6 +105,8 @@ signals:
 private:    
     void BuildUserInterface(void);
     void BuildUserInterfaceForStatusBar(void);
+    void BuildDialogs(void);
     void InitializeLinkerScriptManager(void);
+    std::shared_ptr<QLinkerScriptSession> ActiveLinkerScriptSession() const;
 };
 #endif // MAINWINDOW_H

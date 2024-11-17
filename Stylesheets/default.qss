@@ -361,18 +361,26 @@ QChromeTabButton[IsActiveTab="true"][IsHovering="true"] QLabel {
 }
 
 /*
- * QSearchPopup
+ * QSearchPopup, QJumpToLineDialog
  */
-QSearchPopup {
-    background-color: @DialogBackground;    
+QSearchPopup, QJumpToLineDialog {
+    background-color: @DialogBackground;
 }
 
-QSearchPopup[HasFocus="true"] {
+QSearchPopup[HasFocus="true"], QJumpToLineDialog[HasFocus="true"] {
     border-bottom: 4px solid @PurpleRibbon;
 }
 
-QSearchPopup[HasFocus="false"] {
+QSearchPopup[HasFocus="false"], QJumpToLineDialog[HasFocus="false"] {
     border-bottom: 4px solid @DialogBackground;
+}
+
+/*
+ * QJumpToLineDialog
+ */
+QJumpToLineDialog {
+    background-color: @DialogBackground;
+    border: 1px solid @PurpleRibbon;
 }
 
 /*
@@ -380,9 +388,10 @@ QSearchPopup[HasFocus="false"] {
  */
 QLineEdit {
     border: none;
-    background-color: @DialogBackground; 
+    background-color: @DialogBackground;
     color: #fffafafa;
-    selection-background-color: #ff121212;
+    selection-background-color: #ff4f4f4f;
+    selection-color: #fffafafa;
 }
 
 /*
@@ -392,16 +401,6 @@ QMemoryVisualizer {
     border: none;
     background-color: @levelM1;
 }
-
-
-/*
- * QMemoryLayoutRender
- */
-QMemoryLayoutRender {
-    border: none;
-    background-color: @levelM1;
-}
-
 
 /*
  * QTreeView styling
@@ -434,39 +433,6 @@ QTreeView::branch {
     background-color: @paperBackground;
 }
    
-/*
-QTreeView::item {
-    background-color: @paperBackground; 
-    outline: none;   
-    color: #ffd0d0d0; 
-    border: none;
-    padding: 1px;
-    height: 20px;
-}
-
-QTreeView::item:focus {
-    border: none;
-    outline: none;
-}
-
-QTreeView::item:hover {
-    cursor: pointer;
-    background-color: #ff3a3a3a;
-    color: #d0d0d0;
-}
-
-QTreeView::item:selected:!active {
-    background-color: #ff666666; 
-    color: #e0e0e0;
-}
-
-QTreeView::item:selected {
-    outline: none;
-    background-color: #ff505050;
-    color: #e0e0e0;
-}
-    */
-
 QHeaderView::section {
     background-color: #ff3a3a3a;
     color: #ffd0d0d0;

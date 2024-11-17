@@ -1,27 +1,8 @@
 #include "QMemoryVisualizer.h"
-
 #include <qboxlayout.h>
 #include <qguiapplication.h>
-#include <QPainter>
-#include <QPushButton>
-#include <QTextEdit>
-
 #include "QMemoryLayoutRender.h"
 #include "LinkerScriptManager/QLinkerScriptManager.h"
-
-// Helper functions
-namespace
-{
-	double CalculateFontSizeForHeight(const QWidget* targetWidget, const double desiredHeightMilliMeters)
-	{
-        const auto widgetPosition = targetWidget->mapToGlobal(QPoint(0, 0));
-        const auto screen = QGuiApplication::screenAt(widgetPosition);
-        const double dpi = screen->logicalDotsPerInch();
-        const double heightInInches = desiredHeightMilliMeters / 25.4; // 1 inch = 25.4 mm
-        const double heightInPixels = heightInInches * dpi;
-        return heightInPixels * 72 / dpi;
-	}
-}
 
 void QMemoryVisualizer::BuildInterface()
 {
@@ -34,10 +15,20 @@ void QMemoryVisualizer::BuildInterface()
     this->m_verticalScrollBar = new QScrollBar(Qt::Vertical);
     this->m_verticalScrollBar->setFixedWidth(13);
     this->m_verticalScrollBar->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+    this->m_verticalScrollBar->setMaximum(1500);
+    this->m_verticalScrollBar->setMinimum(-1500);
+    this->m_verticalScrollBar->setValue(0);
+    this->m_verticalScrollBar->setPageStep(100);
+    this->m_verticalScrollBar->setSingleStep(10);
 
     this->m_horizontalScrollBar = new QScrollBar(Qt::Horizontal);
     this->m_horizontalScrollBar->setFixedHeight(13);    
-    this->m_horizontalScrollBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);    
+    this->m_horizontalScrollBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    this->m_horizontalScrollBar->setMaximum(1500);
+    this->m_horizontalScrollBar->setMinimum(-1500);
+    this->m_horizontalScrollBar->setValue(0);
+    this->m_horizontalScrollBar->setPageStep(100);
+    this->m_horizontalScrollBar->setSingleStep(10);
 
     this->m_zoomInButton = new QPushButton();
     this->m_zoomInButton->setFixedWidth(20);
@@ -73,7 +64,7 @@ void QMemoryVisualizer::BuildInterface()
 	this->m_rendererAndVScrollHolderLayout->addWidget(this->m_memoryLayoutRender, 1);
     this->m_rendererAndVScrollHolderLayout->addWidget(this->m_verticalScrollBar, 0);
     this->m_rendererAndVScrollHolderLayout->setSpacing(2);
-    this->m_rendererAndVScrollHolderLayout->setContentsMargins(0, 0, 0, 0);
+    this->m_rendererAndVScrollHolderLayout->setContentsMargins(0, 0, 0, 0);    
 
     this->m_hScrollHousingLayout->addSpacing(7);
     this->m_hScrollHousingLayout->addWidget(this->m_horizontalScrollBar, 1);
@@ -93,5 +84,34 @@ void QMemoryVisualizer::BuildInterface()
     this->m_masterLayout->addLayout(this->m_hScrollAndButtonsHolderLayout, 0);
     this->m_masterLayout->setContentsMargins(0, 0, 0, 0);
 
+
+    QObject::connect(this->m_memoryLayoutRender, &QMemoryLayoutRender::evMouseWheel, this, &QMemoryVisualizer::OnMouseWheel);
+
     this->setLayout(this->m_masterLayout);
 }
+
+void QMemoryVisualizer::CalculateAndUpdateModelGeometry()
+{
+	
+}
+
+void QMemoryVisualizer::SetModel(SharedPtrVector<CMemorySection>&& memorySections)
+{
+    this->m_memorySections = std::move(memorySections);
+    this->CalculateAndUpdateModelGeometry();
+    this->RequestRedraw();    
+}
+
+void QMemoryVisualizer::RequestRedraw() const
+{
+    this->m_memoryLayoutRender->repaint();
+}
+
+void QMemoryVisualizer::OnMouseWheel(int xSteps, int ySteps) const
+{
+    this->m_horizontalScrollBar->scroll(xSteps * this->m_horizontalScrollBar->singleStep(), 0);
+    this->m_verticalScrollBar->scroll(0, ySteps * this->m_verticalScrollBar->singleStep());
+}
+
+
+

@@ -46,15 +46,13 @@ public:
     uint32_t GetSessionsCount() const { return this->m_sessions.size(); }
 
     /// @brief Returns the session based on the given index.
-    std::shared_ptr<QLinkerScriptSession> GetSession(uint32_t sessionIndex) { return this->m_sessions.at(sessionIndex); }
+    std::shared_ptr<QLinkerScriptSession> GetSession(uint32_t sessionIndex) const;
 
     /// @brief Create a new session for an 'untitled' linker script.
     std::shared_ptr<QLinkerScriptSession> CreateSessionForUntitled(void);
 
     /// @brief Creates a new session based on an existing file on the disk
     std::shared_ptr<QLinkerScriptSession> CreateSessionForExistingFile(std::shared_ptr<Models::CLinkerScriptFile> linkerScriptFile);
-
-protected:
 };
 
 #endif // end of "QLINKERSCRIPT_MANAGER_H__"

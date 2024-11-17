@@ -476,6 +476,12 @@
     <ClCompile Include="Components\MemoryVisualizer\QMemoryLayoutRender.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="Components\InputDialogs\QJumpToLineDialog.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\MemoryVisualizer\Models\COverlaySectionOutput.h">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Components\QScintilla\scintilla\lexlib\Accessor.h">
@@ -1246,6 +1252,9 @@
       <Filter>Generated Files</Filter>
     </QtMoc>
     <QtMoc Include="Components\MemoryVisualizer\QMemoryLayoutRender.h">
+      <Filter>Generated Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Components\InputDialogs\QJumpToLineDialog.h">
       <Filter>Generated Files</Filter>
     </QtMoc>
   </ItemGroup>

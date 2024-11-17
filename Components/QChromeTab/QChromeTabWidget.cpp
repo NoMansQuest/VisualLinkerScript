@@ -35,7 +35,7 @@ void QChromeTabWidget::BuildUserInterface()
     this->m_currentTabId.reset();    
 }
 
-uint32_t QChromeTabWidget::AddTab(std::shared_ptr<QWidget> associatedWidget, bool isFixed)
+uint32_t QChromeTabWidget::AddTab(const std::shared_ptr<QWidget>& associatedWidget, bool isFixed)
 {
     auto tabId = this->m_tabIdCounter++;
     auto tabHeader = std::shared_ptr<QChromeTabButton>(new QChromeTabButton(tabId, isFixed, this->m_scrollAreaForTabButtons));    
@@ -62,19 +62,19 @@ uint32_t QChromeTabWidget::AddTab(std::shared_ptr<QWidget> associatedWidget, boo
     return tabId;
 }
 
-void QChromeTabWidget::RemoveTab(uint32_t tabToRemove)
+void QChromeTabWidget::RemoveTab(uint32_t tabId)
 {
-    auto iterator = this->m_tabs.find(tabToRemove);
+    auto iterator = this->m_tabs.find(tabId);
     if (iterator == this->m_tabs.end())
     {
-        throw std::out_of_range("'tabToRemove' out of range.");
+        throw std::out_of_range("'tabId' out of range.");
     }
 
     this->m_tabButtonsHLayout->removeWidget(iterator->second.first.get());
     this->m_stackedRegionLayout->removeWidget(iterator->second.second.get());
     this->m_tabs.erase(iterator);
 
-    if (this->m_currentTabId.has_value() && this->m_currentTabId.value() == tabToRemove)
+    if (this->m_currentTabId.has_value() && this->m_currentTabId.value() == tabId)
     {
         if (!this->m_tabs.empty())
         {
@@ -90,17 +90,17 @@ void QChromeTabWidget::RemoveTab(uint32_t tabToRemove)
     emit this->evTabsCollectionUpdated();
 }
 
-void QChromeTabWidget::NavigateToTab(uint32_t tabToNavigateTo)
+void QChromeTabWidget::NavigateToTab(uint32_t tabId)
 {
-    if (this->m_currentTabId.has_value() && this->m_currentTabId.value() == tabToNavigateTo)
+    if (this->m_currentTabId.has_value() && this->m_currentTabId.value() == tabId)
     {
         return; // Ignore request, we're already on that tab
     }
 
-    auto iteratorTabToNavigateTo = this->m_tabs.find(tabToNavigateTo);
+    auto iteratorTabToNavigateTo = this->m_tabs.find(tabId);
     if (iteratorTabToNavigateTo == this->m_tabs.end())
     {
-        throw std::out_of_range("'tabToNavigateTo' out of range.");
+        throw std::out_of_range("'tabId' out of range.");
     }
 
     if  (this->m_currentTabId.has_value())
@@ -114,39 +114,39 @@ void QChromeTabWidget::NavigateToTab(uint32_t tabToNavigateTo)
         iterator->second.first->SetActiveTab(false);
     }
 
-    for (auto entry : this->m_tabs)
+    for (const auto entry : this->m_tabs)
     {
-        entry.second.second->setVisible((entry.first == tabToNavigateTo));
+        entry.second.second->setVisible((entry.first == tabId));
     }
     
     iteratorTabToNavigateTo->second.first->SetActiveTab(true);
-    this->m_currentTabId = tabToNavigateTo;
-    emit this->evActiveTabChanged(tabToNavigateTo);
+    this->m_currentTabId = tabId;
+    emit this->evActiveTabChanged(tabId);
 }
 
-void QChromeTabWidget::SetTabToolTip(uint32_t targetTab, QString toolTip)
+void QChromeTabWidget::SetTabToolTip(const uint32_t tabId, const QString& toolTip)
 {
-    auto iterator = this->m_tabs.find(targetTab);
+    auto iterator = this->m_tabs.find(tabId);
     if (iterator == this->m_tabs.end())
     {
-        throw std::out_of_range("'targetTab' out of range.");
+        throw std::out_of_range("'tabId' out of range.");
     }
 
     iterator->second.first->SetToolTip(toolTip);
 }
 
-void QChromeTabWidget::SetTabTitle(uint32_t targetTab, QString title)
+void QChromeTabWidget::SetTabTitle(const uint32_t tabId, const QString& title)
 {
-    auto iterator = this->m_tabs.find(targetTab);
+    auto iterator = this->m_tabs.find(tabId);
     if (iterator == this->m_tabs.end())
     {
-        throw std::out_of_range("'targetTab' out of range.");
+        throw std::out_of_range("'tabId' out of range.");
     }
 
     iterator->second.first->SetDisplayTitle(title);
 }
 
-void QChromeTabWidget::SetTabClosurePolicy(uint32_t targetTabId, bool isClosureAllowed)
+void QChromeTabWidget::SetTabClosurePolicy(const uint32_t targetTabId, const bool isClosureAllowed)
 {
     auto iterator = this->m_tabs.find(targetTabId);
     if (iterator == this->m_tabs.end())
@@ -157,18 +157,18 @@ void QChromeTabWidget::SetTabClosurePolicy(uint32_t targetTabId, bool isClosureA
     iterator->second.first->SetTabFixedState(!isClosureAllowed);
 }
 
-std::shared_ptr<QWidget> QChromeTabWidget::GetTabContent(uint32_t targetTab)
+std::shared_ptr<QWidget> QChromeTabWidget::GetTabContent(uint32_t tabId) const
 {
-    auto iterator = this->m_tabs.find(targetTab);
+    auto iterator = this->m_tabs.find(tabId);
     if (iterator == this->m_tabs.end())
     {
-        throw std::out_of_range("'targetTab' out of range.");
+        throw std::out_of_range("'tabId' out of range.");
     }
 
     return iterator->second.second;
 }
 
-std::vector<uint32_t> QChromeTabWidget::Tabs()
+std::vector<uint32_t> QChromeTabWidget::Tabs() const
 {
     std::vector<uint32_t> tabIds;
     for (const auto& entry : this->m_tabs) {
@@ -177,7 +177,16 @@ std::vector<uint32_t> QChromeTabWidget::Tabs()
     return tabIds;
 }
 
-std::optional<uint32_t> QChromeTabWidget::CurrentTab()
+std::optional<uint32_t> QChromeTabWidget::CurrentTabId() const
 {
     return this->m_currentTabId;
+}
+
+std::shared_ptr<QWidget> QChromeTabWidget::CurrentTab() const
+{
+    if (this->m_currentTabId.has_value())
+    {
+		return this->GetTabContent(this->m_currentTabId.value());	    
+    }
+    return nullptr;
 }

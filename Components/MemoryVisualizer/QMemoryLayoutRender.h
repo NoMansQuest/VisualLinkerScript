@@ -5,8 +5,18 @@
 #include <QWidget>
 #include <QPaintEvent>
 
+#include "Helpers.h"
+
+namespace VisualLinkerScript::Components::MemoryVisualizer::Models
+{
+	class CMemorySection;
+}
+
 class QTextEdit;
 class QPushButton;
+
+using namespace VisualLinkerScript;
+using namespace VisualLinkerScript::Components::MemoryVisualizer::Models;
 
 /// @brief Linker Script Memory Layout Visualizer
 class QMemoryLayoutRender : public QFrame
@@ -15,6 +25,11 @@ class QMemoryLayoutRender : public QFrame
 
 private:
     void BuildInterface();
+    void RedrawDoubleBuffer();
+
+    QPixmap m_doubleBuffer;
+    SharedPtrVector<CMemorySection> m_model;
+
 
 public:
     /// @brief Default constructor
@@ -24,17 +39,24 @@ public:
         this->BuildInterface();
     }
 
-    QSize sizeHint() const override {
-        return QSize(50, 50);  // Default size hint (width, height)
+    /// @brief Return the hinted size of the object.
+    [[nodiscard]] QSize sizeHint() const override {
+        return {50, 50};  // Default size hint (width, height)
     }
 
+    /// @brief Updates the model for this render.
+    void SetModel(const SharedPtrVector<CMemorySection>& model);
+
 protected:
-    /// @brief Overridden Paint-Event, which is where our painting takes place.
-    virtual void paintEvent(QPaintEvent* paintEvent) override;
+    void resizeEvent(QResizeEvent* event) override;    
+    void paintEvent(QPaintEvent* paintEvent) override;
+    void wheelEvent(QWheelEvent* event) override;
 
 signals:
+    void evMouseWheel(int xSteps, int ySteps);
+    void evMoveScreen(int xMovement, int yMovement);
 
-public slots:
+public slots:    
 
 };
 

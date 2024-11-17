@@ -29,7 +29,6 @@ std::shared_ptr<QLinkerScriptSession> QLinkerScriptManager::CreateSessionForUnti
     return newSession;
 }
 
-/// @brief Creates a new session based on an existing file on the disk
 std::shared_ptr<QLinkerScriptSession> QLinkerScriptManager::CreateSessionForExistingFile(std::shared_ptr<Models::CLinkerScriptFile> linkerScriptFile)
 {
     auto newSessionId = this->m_sessionIdHolder++;
@@ -39,7 +38,17 @@ std::shared_ptr<QLinkerScriptSession> QLinkerScriptManager::CreateSessionForExis
     return newSession;
 }
 
-void QLinkerScriptManager::CloseButtonPressed(uint32_t tabId)
+std::shared_ptr<QLinkerScriptSession> QLinkerScriptManager::GetSession(uint32_t sessionId) const
+{
+    for (const auto& element : this->m_sessions) {
+        if (element->SessionId() == sessionId) {
+            return element;  // Return the element if the property is set
+        }
+    }
+    return nullptr;
+}
+
+void QLinkerScriptManager::CloseButtonPressed(const uint32_t tabId)
 {
     auto iterator = std::find_if(this->m_sessions.begin(), this->m_sessions.end(), [=](const std::shared_ptr<QLinkerScriptSession>& entry)
         {

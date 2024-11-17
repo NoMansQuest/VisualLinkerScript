@@ -208,6 +208,13 @@
     </QtUic>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Components\InputDialogs\QJumpToLineDialog.cpp">
+      <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">input</DynamicSource>
+      <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).moc</QtMocFileName>
+      <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Release|x64'">input</DynamicSource>
+      <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).moc</QtMocFileName>
+    </ClCompile>
+    <ClCompile Include="Components\MemoryVisualizer\Models\COverlaySectionOutput.h" />
     <ClCompile Include="Components\MemoryVisualizer\QMemoryLayoutRender.cpp" />
     <ClCompile Include="Components\QLinkerScriptSession\AutoStyling\CAutoStyler.cpp" />
     <ClCompile Include="Components\QLinkerScriptSession\EditorAction\SEditorRemoveLine.h" />
@@ -355,6 +362,7 @@
   <ItemGroup>
     <QtMoc Include="Components\QFlatCheckBox\QFlatCheckBox.h" />
     <QtMoc Include="Components\InputDialogs\QLabelAssistedInput.h" />
+    <QtMoc Include="Components\InputDialogs\QJumpToLineDialog.h" />
     <ClInclude Include="Components\MemoryVisualizer\Models\CSectionDefinitionBase.h" />
     <QtMoc Include="Components\MemoryVisualizer\QMemoryLayoutRender.h" />
     <ClInclude Include="Components\QLinkerScriptSession\AutoStyling\CAutoStyler.h" />

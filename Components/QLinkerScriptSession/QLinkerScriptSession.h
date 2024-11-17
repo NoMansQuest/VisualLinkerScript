@@ -37,9 +37,9 @@ public:
 
     Q_ENUM(EEndOfLineStyle)
     Q_PROPERTY(EEndOfLineStyle EndOfLineStyle READ EndOfLineStyle WRITE SetEndOfLineStyle NOTIFY evEndOfLineStyleChanged)
-	Q_PROPERTY(uint32_t EditorLineNumber READ EditorLineNumber NOTIFY evEditorCoordinateChanged)
-	Q_PROPERTY(uint32_t EditorColumnIndex READ EditorColumnIndex NOTIFY evEditorCoordinateChanged)
-    Q_PROPERTY(uint32_t EditorAbsolutePosition READ EditorAbsolutePosition NOTIFY evEditorCoordinateChanged)
+	Q_PROPERTY(uint32_t EditorLineNumber READ EditorLineNumber NOTIFY evEditorCursorChanged)
+	Q_PROPERTY(uint32_t EditorColumnIndex READ EditorColumnIndex NOTIFY evEditorCursorChanged)
+    Q_PROPERTY(uint32_t EditorAbsolutePosition READ EditorAbsolutePosition NOTIFY evEditorCursorChanged)
 
 private:
     uint32_t m_sessionId;
@@ -130,11 +130,14 @@ public:
     /// @brief Reports back the line number the caret is on
     [[nodiscard]] uint32_t EditorLineNumber() const;
 
+    /// @brief Reports back the total number of lines currently present in the editor
+    [[nodiscard]] uint32_t EditorTotalLines() const;
+
     /// @brief Reports back the column index the caret is on
     [[nodiscard]] uint32_t EditorColumnIndex() const;
 
     /// @brief Reports back the absolute position the caret is on
-    [[nodiscard]] uint32_t EditAbsolutePosition() const;
+    [[nodiscard]] uint32_t EditorAbsolutePosition() const;
 
     /// @brief Sets the end-of-line style
     void SetEndOfLineStyle(EEndOfLineStyle newEndOfLineStyle)
@@ -146,8 +149,14 @@ public:
         }
     }
 
+    /// @brief Retrieves the session ID of this session.
+    uint32_t SessionId() const { return this->m_sessionId; }
+
+    /// @brief Requests the editor to jump to a specific line
+    void JumpToLine(uint32_t lineNumber) const;
+
     /// @brief Updates content of the linker-script file. Consequently, it updates the editor and triggers an analysis.
-    void UpdateContent(const std::string& newContent);
+    void UpdateContent(const std::string& newContent) const;
 
     /// @breif Make the search dialog appear.
     void ShowSearchPopup() const;
@@ -164,8 +173,7 @@ signals:
     void evCopy(uint32_t sessionId);
     void evPaste(uint32_t sessionId);
     void evEndOfLineStyleChanged(uint32_t sessionId);
-    void evEditorLineNumberChanged(uint32_t sessionId);
-    void evEditorColumnIndexChanged(uint32_t sessionId);
+    void evEditorCursorChanged(uint32_t sessionId);
 
     void evSessionFileInfoChanged(void);
     void evTextPositionChanged(uint32_t sessionId, int line, int index);
@@ -182,6 +190,7 @@ signals:
 
 public slots:
 
+    void OnEditorCursorPositionChanged(int line, int column);
     void OnSearchReplaceRequested(
         const QString& searchText,
         const QString& replaceWith,

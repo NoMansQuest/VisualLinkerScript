@@ -38,31 +38,34 @@ public:
 
 public:
     /// @brief Add the tab to the list
-    uint32_t AddTab(std::shared_ptr<QWidget> associatedWidget, bool isFixed = false);
+    uint32_t AddTab(const std::shared_ptr<QWidget>& associatedWidget, bool isFixed = false);
 
     /// @brief Remove the given tab.
-    void RemoveTab(uint32_t tabToRemove);
+    void RemoveTab(uint32_t tabId);
 
     /// @brief Navigate to the selected tab and have it activated.
-    void NavigateToTab(uint32_t tabToNavigateTo);
+    void NavigateToTab(uint32_t tabId);
 
     /// @brief Updates tab's tool tip
-    void SetTabToolTip(uint32_t targetTab, QString toolTip);
+    void SetTabToolTip(uint32_t tabId, const QString& toolTip);
 
     /// @brief Updates tab's title
-    void SetTabTitle(uint32_t targetTab, QString title);
+    void SetTabTitle(uint32_t tabId, const QString& title);
 
     /// @brief Updates a given tabs closure policy.
     void SetTabClosurePolicy(uint32_t targetTabId, bool isClosureAllowed);
 
     /// @brief Returns associated content of a given tab.
-    std::shared_ptr<QWidget> GetTabContent(uint32_t targetTab);
+    std::shared_ptr<QWidget> GetTabContent(uint32_t tabId) const;
 
     /// @brief Returns back a list of all the present tabs.
-    std::vector<uint32_t> Tabs();
+    std::vector<uint32_t> Tabs() const;
 
     /// @brief Reports back the current active tab.
-    std::optional<uint32_t> CurrentTab();
+    std::optional<uint32_t> CurrentTabId() const;
+
+    /// @brief Reports back the current active tab content.
+    std::shared_ptr<QWidget> CurrentTab() const;
 
     /// @brief Returns the available number of tabs.
     uint32_t TabCount() const { return this->m_tabs.size(); }

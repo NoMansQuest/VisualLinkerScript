@@ -6,8 +6,12 @@
 #include <QPaintEvent>
 #include <QScrollBar>
 
-#include "EInsertObjectType.h"
-#include "SBackendResponse.h"
+#include "Helpers.h"
+
+namespace VisualLinkerScript::Components::MemoryVisualizer::Models
+{
+	class CMemorySection;
+}
 
 class QLineEdit;
 class QHBoxLayout;
@@ -16,12 +20,14 @@ class QMemoryLayoutRender;
 class QTextEdit;
 class QPushButton;
 
+using namespace VisualLinkerScript;
+using namespace VisualLinkerScript::Components::MemoryVisualizer::Models;
+
 /// @brief Linker Script Memory Layout Visualizer
 class QMemoryVisualizer final : public QFrame
 {
     Q_OBJECT
 
-private:
     QPushButton* m_zoomInButton;
     QPushButton* m_zoomOutButton;
     QPushButton* m_zoomToContent;
@@ -35,6 +41,7 @@ private:
     QHBoxLayout* m_hScrollAndButtonsHolderLayout;
     QVBoxLayout* m_hScrollHousingLayout;
 
+    SharedPtrVector<CMemorySection> m_memorySections;
 
     void BuildInterface();
 
@@ -46,9 +53,17 @@ public:
         this->BuildInterface();
     }
 
+    /// @brief Update memory sections (i.e. the content of this component).
+    void SetModel(SharedPtrVector<CMemorySection>&& memorySections);
+
+private:
+    void CalculateAndUpdateModelGeometry();
+    void RequestRedraw() const;
+
 signals:
 
-public slots:
+private slots:
+    void OnMouseWheel(int xSteps, int ySteps) const;
 
 };
 

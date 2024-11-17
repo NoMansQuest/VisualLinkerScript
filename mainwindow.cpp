@@ -1,22 +1,15 @@
 #include <QFile>
 #include <memory>
 #include <QString>
-#include <QTabWidget>
-#include <QFileInfo>
-#include <QMessageBox>
-
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "qscrollbar.h"
 #include "QElapsedTimer.h"
-#include "Components/QScintilla/ComponentHelpers.h"
+#include "Components/InputDialogs/QJumpToLineDialog.h"
 #include "Components/QScintilla/src/Qsci/qscilexerlinkerscript.h"
-#include "Components/QScintilla/src/Qsci/qsciscintilla.h"
-#include "Components/QSearchPopup/QSearchPopup.h"
 #include "Components/QChromeTab/QChromeTabWidget.h"
 #include "Components/QLinkerScriptSession/QLinkerScriptSession.h"
 #include "LinkerScriptManager/QLinkerScriptManager.h"
-#include "ParsingEngine/CLinkerScriptLexer.h"
 #include "ParsingEngine/CLinkerScriptParser.h"
 #include "Messaging/CEventAggregator.h"
 #include "Messaging/UserInitiated/COpenFileRequest.h"
@@ -33,6 +26,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);    
     this->BuildUserInterface();
+    this->BuildDialogs();
     this->InitializeLinkerScriptManager();   
 
     // Subscribe to events
@@ -55,6 +49,13 @@ void MainWindow::BuildUserInterface()
     this->setContentsMargins(0, 0, 0, 0);
     this->setCentralWidget(this->m_contentTabRegion); 
     QObject::connect(this->m_contentTabRegion, &QChromeTabWidget::evTabsCollectionUpdated, this, &MainWindow::ContentRegionTabCollectionUpdated);
+    QObject::connect(this->m_contentTabRegion, &QChromeTabWidget::evActiveTabChanged, this, &MainWindow::OnActiveTabChanged);
+}
+
+void MainWindow::BuildDialogs()
+{
+    this->m_jumpToLineDialog = new QJumpToLineDialog(this);
+    QObject::connect(this->m_jumpToLineDialog, &QJumpToLineDialog::evNavigateToLine, this, &MainWindow::OnJumpToLineRequest);
 }
 
 void MainWindow::InitializeLinkerScriptManager()
@@ -65,10 +66,28 @@ void MainWindow::InitializeLinkerScriptManager()
     auto linkerScriptSession = this->m_linkerScriptManager->CreateSessionForUntitled();
     auto tabId = this->m_contentTabRegion->AddTab(linkerScriptSession, false);    
     auto formattedFileName = StringFormat("*%s", linkerScriptSession->LinkerScriptFile()->FileName().c_str());
-    this->m_contentTabRegion->SetTabTitle(tabId, QString::fromStdString(formattedFileName));    
+    this->m_contentTabRegion->SetTabTitle(tabId, QString::fromStdString(formattedFileName));
+    this->SubscribeToLinkerScriptSessionEvents(linkerScriptSession);
 }
 
-void MainWindow::ContentRegionTabCollectionUpdated()
+
+void MainWindow::OnEditorCursorUpdated(uint32_t linkerScriptSessionId)
+{   
+    if (this->ActiveLinkerScriptSession() != nullptr && this->ActiveLinkerScriptSession()->SessionId() == linkerScriptSessionId)
+    {
+	    auto correspondingSession = this->m_linkerScriptManager->GetSession(linkerScriptSessionId);
+	    auto columnIndex = correspondingSession->EditorColumnIndex();
+	    auto lineNumber = correspondingSession->EditorLineNumber();
+        this->UpdateLineNumberAndColumnIndex(lineNumber, columnIndex);
+    }
+}
+
+std::shared_ptr<QLinkerScriptSession> MainWindow::ActiveLinkerScriptSession() const
+{
+    return std::dynamic_pointer_cast<QLinkerScriptSession>(this->m_contentTabRegion->CurrentTab());    
+}
+
+void MainWindow::ContentRegionTabCollectionUpdated() const
 {
     if (this->m_contentTabRegion->TabCount() == 1)
     {
@@ -80,6 +99,21 @@ void MainWindow::ContentRegionTabCollectionUpdated()
     {
         this->m_contentTabRegion->SetTabClosurePolicy(tabId, true);
     }
+}
+
+void MainWindow::OnActiveTabChanged(std::optional<uint32_t> activeTab)
+{    
+    auto currentSession = std::dynamic_pointer_cast<QLinkerScriptSession>(this->m_contentTabRegion->CurrentTab());
+    if (currentSession != nullptr)
+    {        
+        auto columnIndex = currentSession->EditorColumnIndex();
+        auto lineNumber = currentSession->EditorLineNumber();
+        this->UpdateLineNumberAndColumnIndex(lineNumber, columnIndex);
+    }
+    else
+    {
+        this->UpdateLineNumberAndColumnIndex(0,0);
+    }    
 }
 
 void MainWindow::SaveLastUsedDirectory(const QString& directory) {
@@ -108,6 +142,17 @@ void MainWindow::BuildUserInterfaceForStatusBar()
 	this->statusBar()->addPermanentWidget(this->m_statusBarEncodingButton, 0);
 	this->statusBar()->addPermanentWidget(this->m_statusBarLineEndingButton, 0);
 	this->statusBar()->addPermanentWidget(this->m_statusBarPositionButton, 0);
+
+    QObject::connect(this->m_statusBarLineColumnButton, &QPushButton::clicked, this, &MainWindow::EditorActionShowJumpToLine);
+}
+
+void MainWindow::OnJumpToLineRequest(const uint32_t newLine) const
+{
+    auto currentSession = std::dynamic_pointer_cast<QLinkerScriptSession>(this->m_contentTabRegion->CurrentTab());
+    if (currentSession != nullptr)
+    {
+        currentSession->JumpToLine(newLine);
+    }
 }
 
 void MainWindow::MenuActionExit(bool checked)
@@ -122,6 +167,7 @@ void MainWindow::MenuActionNewFile()
     auto formattedFileName = StringFormat("*%s", linkerScriptSession->LinkerScriptFile()->FileName().c_str());
     this->m_contentTabRegion->SetTabTitle(tabId, QString::fromStdString(formattedFileName));
     this->m_contentTabRegion->NavigateToTab(tabId);
+    this->SubscribeToLinkerScriptSessionEvents(linkerScriptSession);
 }
 
 void MainWindow::MenuActionOpenFile()
@@ -164,7 +210,8 @@ void MainWindow::MenuActionOpenFile()
     linkerScriptSession->UpdateContent(fileContent);
     auto tabId = this->m_contentTabRegion->AddTab(linkerScriptSession, false);        
     this->m_contentTabRegion->SetTabTitle(tabId, QString::fromStdString(linkerScriptFile->FileName()));
-    this->m_contentTabRegion->NavigateToTab(tabId);    
+    this->m_contentTabRegion->NavigateToTab(tabId);
+    this->SubscribeToLinkerScriptSessionEvents(linkerScriptSession);
 }
 
 void MainWindow::MenuActionSaveFile()
@@ -214,12 +261,12 @@ void MainWindow::MenuActionRedo()
 
 void MainWindow::MenuActionFindReplace()
 {
-    if (!this->m_contentTabRegion->CurrentTab().has_value())
+    if (!this->m_contentTabRegion->CurrentTabId().has_value())
     {
         return; // We should not have been activated anyway;
     }
 
-    auto currentTabId = this->m_contentTabRegion->CurrentTab().value();
+    auto currentTabId = this->m_contentTabRegion->CurrentTabId().value();
     auto session = std::dynamic_pointer_cast<QLinkerScriptSession>(this->m_contentTabRegion->GetTabContent(currentTabId));
     session->ShowSearchPopup();
 }
@@ -262,6 +309,41 @@ void MainWindow::StatusBarLineEndingButtonPressed()
 void MainWindow::StatusBarPositionButtonPressed()
 {
 
+}
+
+void MainWindow::EditorActionShowJumpToLine() const
+{
+	const auto currentSession = std::dynamic_pointer_cast<QLinkerScriptSession>(this->m_contentTabRegion->CurrentTab());
+    this->m_jumpToLineDialog->setRange(currentSession->EditorTotalLines(), currentSession->EditorLineNumber());
+    this->m_jumpToLineDialog->move(this->m_statusBarLineColumnButton->mapToGlobal(QPoint(0, -1)));
+    this->m_jumpToLineDialog->show();
+    this->m_jumpToLineDialog->activateWindow();
+    this->m_jumpToLineDialog->setFocusToTextEdit();
+}
+
+void MainWindow::EditorActionShowEolSelector()
+{
+	
+}
+
+void MainWindow::EditorActionShowEncodingSelector()
+{
+	
+}
+
+void MainWindow::SubscribeToLinkerScriptSessionEvents(std::shared_ptr<QLinkerScriptSession> linkerScriptSession)
+{
+    QObject::connect(linkerScriptSession.get(), &QLinkerScriptSession::evEditorCursorChanged, this, &MainWindow::OnEditorCursorUpdated);
+}
+
+void MainWindow::UnsubscribeFromLinkerScriptSessionEvents(std::shared_ptr<QLinkerScriptSession> linkerScriptSession)
+{
+    QObject::disconnect(linkerScriptSession.get(), &QLinkerScriptSession::evEditorCursorChanged, this, &MainWindow::OnEditorCursorUpdated);
+}
+
+void MainWindow::UpdateLineNumberAndColumnIndex(uint32_t lineNumber, uint32_t columnIndex)
+{
+    this->m_statusBarLineColumnButton->setText("Ln " + QString::number(lineNumber) + ", Col " + QString::number(columnIndex));
 }
 
 // Build Scintilla Editor

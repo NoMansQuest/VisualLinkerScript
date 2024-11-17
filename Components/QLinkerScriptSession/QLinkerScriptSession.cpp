@@ -78,6 +78,11 @@ uint32_t QLinkerScriptSession::EditorLineNumber() const
     return line + 1;
 }
 
+uint32_t QLinkerScriptSession::EditorTotalLines() const
+{
+    return static_cast<uint32_t>(this->m_scintilla->lines());
+}
+
 uint32_t QLinkerScriptSession::EditorColumnIndex() const
 {
     int line, column;
@@ -85,7 +90,7 @@ uint32_t QLinkerScriptSession::EditorColumnIndex() const
     return column;
 }
 
-uint32_t QLinkerScriptSession::EditAbsolutePosition() const
+uint32_t QLinkerScriptSession::EditorAbsolutePosition() const
 {
     int line, column;
     this->m_scintilla->getCursorPosition(&line, &column);
@@ -134,7 +139,8 @@ void QLinkerScriptSession::BuildUserInterface()
     this->m_scintilla->setIndicatorForegroundColor(QColor::fromRgb(0xff, 0xff, 0xff, 0x1F), static_cast<int>(Indicators::IndicatorFind));
     QObject::connect(this->m_scintilla, &QsciScintilla::textChanged, this, &QLinkerScriptSession::EditorContentUpdated);
     QObject::connect(this->m_scintilla, &QsciScintilla::SCN_CHARADDED, this, &QLinkerScriptSession::OnCharAddedToEditor);
-    QObject::connect(this->m_scintilla, &QsciScintilla::resized, this, &QLinkerScriptSession::OnEditorResize);    
+    QObject::connect(this->m_scintilla, &QsciScintilla::resized, this, &QLinkerScriptSession::OnEditorResize);
+    QObject::connect(this->m_scintilla, &QsciScintilla::cursorPositionChanged, this, &QLinkerScriptSession::OnEditorCursorPositionChanged);
 
     // Connect search popup signals
     QObject::connect(this->m_searchPopup, &QSearchPopup::evSearchReplaceRequested, this, &QLinkerScriptSession::OnSearchReplaceRequested);
@@ -202,7 +208,12 @@ void QLinkerScriptSession::OnEditorResize() const
     this->PositionSearchPopup();
 }
 
-void QLinkerScriptSession::UpdateContent(const std::string& newContent)
+void QLinkerScriptSession::OnEditorCursorPositionChanged(int line, int column)
+{
+    emit this->evEditorCursorChanged(this->m_sessionId);
+}
+
+void QLinkerScriptSession::UpdateContent(const std::string& newContent) const
 {
     this->m_scintilla->setText(QString::fromStdString(newContent));
 }
@@ -694,6 +705,21 @@ void QLinkerScriptSession::OnCharAddedToEditor(const int charAdded) const
 
     // TODO: To be implemented in full.
 }
+
+void QLinkerScriptSession::JumpToLine(uint32_t lineNumber) const
+{
+    if (static_cast<int>(lineNumber - 1) >= this->m_scintilla->lines())
+    {
+        return;
+    }
+
+    this->m_scintilla->setSelection(
+        static_cast<int>(lineNumber) - 1, 0,
+        static_cast<int>(lineNumber) - 1, 0);
+    this->m_scintilla->ensureLineVisible(static_cast<int>(lineNumber));
+    this->m_scintilla->setFocus(Qt::FocusReason::OtherFocusReason);
+}
+
 
 
 std::vector<SearchMatchResult> SearchForContent(
