@@ -4,15 +4,15 @@
 #include <vector>
 #include <string>
 #include <cstdint>
+
+#include "CAddressedContent.h"
 #include "../../../Helpers.h"
-#include "CContentBase.h"
 #include "COverlaySectionStatement.h"
-#include "CSectionDefinitionBase.h"
 
 namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 {
     /// @brief Represents an 'Overlay' object found in "SECTION"
-    class COverlayStatement : CSectionDefinitionBase
+    class COverlayStatement : public CAddressedContent
     {       
         DECLARE_READONLY_PROPERTY(SharedPtrVector<COverlaySectionStatement>, Sections)
 
@@ -21,8 +21,7 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 
     public:
         /// @brief Default constructor.
-        COverlayStatement(bool isExternal) :
-            CSectionDefinitionBase(isExternal),
+        COverlayStatement() :            
 			m_Sections(SharedPtrVector<COverlaySectionStatement>())
         {	        
         }

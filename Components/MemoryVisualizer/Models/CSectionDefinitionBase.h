@@ -5,15 +5,15 @@
 #include <string>
 #include <cstdint>
 
-#include "CContentBase.h"
+#include "CAddressedContent.h"
 #include "../../../Helpers.h"
 
 namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 {
     /// @brief Represents a Memory-Statement.
-    class CSectionDefinitionBase : public CContentBase
-    {    
-	    DECLARE_STANDARD_PROPERTY(std::string, Title)
+    class CSectionDefinitionBase : public CAddressedContent
+    {
+        DECLARE_READONLY_PROPERTY(std::string, Title)
 	    DECLARE_STANDARD_PROPERTY(std::string, FillExpression)
         DECLARE_STANDARD_PROPERTY(std::vector<std::string>, ProgramHeaders)
 
@@ -22,9 +22,15 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 
     public:
         /// @brief Default constructor
-        CSectionDefinitionBase(bool isExternal)
-            : CContentBase(true, isExternal)
-        {}
+        CSectionDefinitionBase(
+            std::string title, 
+            std::string fillExpression, 
+            const std::vector<std::string>& programHeaders)
+		    : m_Title(std::move(title)),
+		      m_FillExpression(std::move(fillExpression)),
+		      m_ProgramHeaders(programHeaders)
+	    {
+	    }
     };
 }
 

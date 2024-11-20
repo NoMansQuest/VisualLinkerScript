@@ -215,6 +215,7 @@
       <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).moc</QtMocFileName>
     </ClCompile>
     <ClCompile Include="Components\MemoryVisualizer\Models\COverlaySectionOutput.h" />
+    <ClCompile Include="Components\MemoryVisualizer\Models\SLineF.h" />
     <ClCompile Include="Components\MemoryVisualizer\QMemoryLayoutRender.cpp" />
     <ClCompile Include="Components\QLinkerScriptSession\AutoStyling\CAutoStyler.cpp" />
     <ClCompile Include="Components\QLinkerScriptSession\EditorAction\SEditorRemoveLine.h" />
@@ -363,6 +364,7 @@
     <QtMoc Include="Components\QFlatCheckBox\QFlatCheckBox.h" />
     <QtMoc Include="Components\InputDialogs\QLabelAssistedInput.h" />
     <QtMoc Include="Components\InputDialogs\QJumpToLineDialog.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Models\CAddressedContent.h" />
     <ClInclude Include="Components\MemoryVisualizer\Models\CSectionDefinitionBase.h" />
     <QtMoc Include="Components\MemoryVisualizer\QMemoryLayoutRender.h" />
     <ClInclude Include="Components\QLinkerScriptSession\AutoStyling\CAutoStyler.h" />
@@ -393,15 +395,11 @@
     <ClInclude Include="ParsingEngine\SubParsers\CAssignmentProcedureParser.h" />
     <ClInclude Include="Models\CAssignmentProcedureStatement.h" />
     <ClInclude Include="Models\CAssignmentStatement.h" />
-    <ClInclude Include="Components\MemoryVisualizer\Models\CButton.h" />
     <ClInclude Include="Messaging\UserInitiated\CCloseFileRequest.h" />
-    <ClInclude Include="Components\MemoryVisualizer\Models\CComboBox.h" />
     <ClInclude Include="ParsingEngine\SubParsers\CCommandParser.h" />
     <ClInclude Include="Compiler\CCompiler.h" />
     <ClInclude Include="Compiler\ExpressionEvaluation\CCompoundResult.h" />
-    <ClInclude Include="Components\MemoryVisualizer\Models\CContentBase.h" />
     <ClInclude Include="DrcEngine\Rules\CDirectivesDeclaredOnlyOnceRule.h" />
-    <ClInclude Include="Components\MemoryVisualizer\Models\CDragState.h" />
     <ClInclude Include="DrcEngine\CDrcManager.h" />
     <ClInclude Include="DrcEngine\CDrcViolation.h" />
     <ClInclude Include="DrcEngine\Rules\CEntryIsDefinedRule.h" />
@@ -440,13 +438,12 @@
     <ClInclude Include="DrcEngine\Rules\CLocationCounterCannotGoBackwardsRule.h" />
     <ClInclude Include="ParsingEngine\CLinkerScriptParser.h" />
     <ClInclude Include="ParsingEngine\CMasterParserException.h" />
-    <ClInclude Include="Components\MemoryVisualizer\Models\CMemoryLocationIndicator.h" />
     <ClInclude Include="Components\MemoryVisualizer\Models\CMemorySection.h" />
     <ClInclude Include="Models\CMemoryRegion.h" />
     <ClInclude Include="ParsingEngine\SubParsers\CMemoryRegionContentParser.h" />
     <ClInclude Include="DrcEngine\Rules\CMemoryRegionDefinedOnlyOnceRule.h" />
     <ClInclude Include="ParsingEngine\SubParsers\CMemoryRegionParser.h" />
-    <ClInclude Include="Components\MemoryVisualizer\Models\CSectionDefinition.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Models\CSectionStatement.h" />
     <ClInclude Include="Models\CMemoryStatement.h" />
     <ClInclude Include="Models\CMemoryStatementAttribute.h" />
     <ClInclude Include="ParsingEngine\SubParsers\CMemoryStatementAttributeParser.h" />

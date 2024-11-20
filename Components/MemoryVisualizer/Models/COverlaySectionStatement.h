@@ -7,18 +7,19 @@
 namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 {
 	/// @brief Represents a 'Section' object found under 'Overlay' frames.
-	class COverlaySectionStatement : CContentBase
+	class COverlaySectionStatement
 	{
 		DECLARE_READONLY_PROPERTY(std::string, Name)
-		DECLARE_READONLY_PROPERTY(SharedPtrVector<COverlaySectionOutput>, ChildOutputs)
+		DECLARE_READONLY_PROPERTY(SharedPtrVector<COverlaySectionOutput>, ChildContent)
 
 	protected:
 		~COverlaySectionStatement() = default;
 
 	public:
 		// @brief Default constructor
-		COverlaySectionStatement(bool isExternal):
-			CContentBase(false, isExternal)
+		COverlaySectionStatement(std::string name, const SharedPtrVector<COverlaySectionOutput>& childContent)
+			: m_Name(std::move(name)),
+			  m_ChildContent(childContent)
 		{}
 	};
 }

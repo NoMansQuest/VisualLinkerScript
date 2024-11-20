@@ -1,42 +1,43 @@
 #ifndef SRECTANGLEF_H__
 #define SRECTANGLEF_H__
 
-#include <vector>
-#include <string>
-#include <cstdint>
 #include "SPointF.h"
 
-
 /// @brief Rectangle-F used across the model
-struct SRectangleF {
-    float X = 0.0f;
-    float Y = 0.0f;
-    float Width = 0.0f;
-    float Height = 0.0f;
+struct SRectangleF
+{
+    DECLARE_READONLY_PROPERTY(double, Left)
+    DECLARE_READONLY_PROPERTY(double, Top)
+    DECLARE_READONLY_PROPERTY(double, Width)
+    DECLARE_READONLY_PROPERTY(double, Height)
 
-    /// @brief Returns the 'Left' position of the rectangle
-    float Left() {
-        return this->X;
-    }
+    /// @brief Default constructor;
+    SRectangleF() : SRectangleF(0, 0, 0, 0)
+    {}
 
-    /// @brief Returns the 'Right' position of the rectangle 
-    float Right() {
-        return this->Y + this->Width;
-    }
-
-    /// @brief Returns the 'Top' position of the rectangle
-    float Top() {
-        return this->Y;
-    }
-
-    /// @brief Reports the 'Bottom' position of the rectangle
-    float Bottom() {
-        return this->Y + this->Height;
+    /// @brief Parameterized constructor;
+    SRectangleF(
+        const double left,
+        const double top,
+        const double width,
+        const double height)
+    {
+        this->m_Height = height;
+        this->m_Width = width;
+        this->m_Left = left;
+        this->m_Top = top;
     }
 
     /// @brief Returns the center point of the rectangle
-    SPointF Center() {
-        return SPointF{ this->X + (this->Width / 2.0f), this->Y + (this->Height / 2.0f) };
+    [[nodiscard]] SPointF Center() const
+	{
+        return SPointF{ this->Left() + (this->Width() / 2.0f), this->Top() + (this->Height() / 2.0f)};
+    }
+
+    /// @brief Derives an offset rectangle
+    [[nodiscard]] SRectangleF Offset(const double dx, const double dy) const 
+    {
+        return { this->Left() + dx, this->Top() + dy, this->Width(), this->Height() };
     }
 };    
 

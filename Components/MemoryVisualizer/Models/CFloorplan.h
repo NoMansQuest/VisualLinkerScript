@@ -14,8 +14,8 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 
     public:
         /// @brief Default constructor.
-        CFloorPlan() :
-			m_MemorySections(SharedPtrVector<CMemorySection>())
+        CFloorPlan(const SharedPtrVector<CMemorySection>& memorySections)
+    		: m_MemorySections(memorySections)
         {}
 
     };

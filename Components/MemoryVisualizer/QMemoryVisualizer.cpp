@@ -4,6 +4,9 @@
 #include "QMemoryLayoutRender.h"
 #include "LinkerScriptManager/QLinkerScriptManager.h"
 
+#define FORCE_RANGE(value, upper, lower) ((value > upper) ? upper : (value < lower) ? lower : value)
+
+
 void QMemoryVisualizer::BuildInterface()
 {
     this->m_masterLayout = new QVBoxLayout();
@@ -107,11 +110,10 @@ void QMemoryVisualizer::RequestRedraw() const
     this->m_memoryLayoutRender->repaint();
 }
 
-void QMemoryVisualizer::OnMouseWheel(int xSteps, int ySteps) const
+void QMemoryVisualizer::OnMouseWheel(const int xSteps, const int ySteps) const
 {
-    this->m_horizontalScrollBar->scroll(xSteps * this->m_horizontalScrollBar->singleStep(), 0);
-    this->m_verticalScrollBar->scroll(0, ySteps * this->m_verticalScrollBar->singleStep());
+    auto newHScrollValue = FORCE_RANGE(this->m_horizontalScrollBar->value() - xSteps, this->m_horizontalScrollBar->maximum(), this->m_horizontalScrollBar->minimum());
+    auto newVScrollValue = FORCE_RANGE(this->m_verticalScrollBar->value() - ySteps, this->m_verticalScrollBar->maximum(), this->m_verticalScrollBar->minimum());
+    this->m_horizontalScrollBar->setValue(newHScrollValue);
+    this->m_verticalScrollBar->setValue(newVScrollValue);
 }
-
-
-

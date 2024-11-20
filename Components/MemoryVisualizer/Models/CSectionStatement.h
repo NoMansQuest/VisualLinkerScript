@@ -7,17 +7,22 @@
 namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 {
     /// @brief Represents a Memory-Statement.
-    class CGenericSectionDefinition : public CSectionDefinitionBase
+    class CSectionStatement : public CSectionDefinitionBase
     {
         DECLARE_READONLY_PROPERTY(SharedPtrVector<CSectionOutput>, ChildOutputs)
 
     protected:
-        ~CGenericSectionDefinition() = default;
+        ~CSectionStatement() = default;
 
     public:
         /// @brief Default constructor
-        CGenericSectionDefinition(bool isExternal)
-            : CSectionDefinitionBase(isExternal)
+        CSectionStatement(
+				std::string title, 
+				std::string fillExpression, 
+	            const std::vector<std::string>& programHeaders, 
+	            const SharedPtrVector<CSectionOutput>& childOutputs) :
+    		CSectionDefinitionBase(std::move(title), std::move(fillExpression), programHeaders),
+    		m_ChildOutputs(childOutputs)
         {}
     };
 }

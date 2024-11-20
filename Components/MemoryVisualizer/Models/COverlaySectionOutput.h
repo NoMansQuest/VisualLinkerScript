@@ -1,13 +1,12 @@
 #ifndef COVERLAY_SECTION_OUTPUT_H__
 #define COVERLAY_SECTION_OUTPUT_H__
 
-#include "CContentBase.h"
 #include "Helpers.h"
 
 namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 {
 	/// @brief Represents an 'Overlap' object found in "OVERLAY" statements.
-	class COverlaySectionOutput : CContentBase
+	class COverlaySectionOutput
 	{
 		DECLARE_READONLY_PROPERTY(std::string, Content)
 
@@ -15,9 +14,10 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 		~COverlaySectionOutput() = default;
 
 	public:
+
 		/// @brief Default constructor.
-		COverlaySectionOutput(bool isExternal) :
-			CContentBase(true, isExternal)
+		COverlaySectionOutput(std::string content)
+			: m_Content(std::move(content))
 		{}
 	};
 }

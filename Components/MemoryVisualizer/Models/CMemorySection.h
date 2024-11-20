@@ -5,14 +5,13 @@
 #include <string>
 #include <cstdint>
 
-#include "CContentBase.h"
 #include "CSectionDefinitionBase.h"
 #include "../../../Helpers.h"
 
 namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 {
     /// @brief Represents a Memory-Object.
-    class CMemorySection : public CContentBase
+    class CMemorySection 
     {
 	    DECLARE_STANDARD_PROPERTY(std::string, Title)
 	    DECLARE_READONLY_PROPERTY(SharedPtrVector<CSectionDefinitionBase>, ChildContent)
@@ -22,8 +21,9 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 
     public:
         /// @brief Default constructor
-        CMemorySection(bool isExternal)
-            : CContentBase(false, isExternal)
+        CMemorySection(std::string title, const SharedPtrVector<CSectionDefinitionBase>& childContent)
+	        : m_Title(std::move(title)),
+              m_ChildContent(childContent)
         {}
     };
 }

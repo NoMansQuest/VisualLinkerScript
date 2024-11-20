@@ -482,6 +482,9 @@
     <ClCompile Include="Components\MemoryVisualizer\Models\COverlaySectionOutput.h">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="Components\MemoryVisualizer\Models\SLineF.h">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Components\QScintilla\scintilla\lexlib\Accessor.h">
@@ -508,13 +511,7 @@
     <ClInclude Include="Models\CAssignmentStatement.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Components\MemoryVisualizer\Models\CButton.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Messaging\UserInitiated\CCloseFileRequest.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\MemoryVisualizer\Models\CComboBox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ParsingEngine\SubParsers\CCommandParser.h">
@@ -526,13 +523,7 @@
     <ClInclude Include="Compiler\ExpressionEvaluation\CCompoundResult.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Components\MemoryVisualizer\Models\CContentBase.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="DrcEngine\Rules\CDirectivesDeclaredOnlyOnceRule.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\MemoryVisualizer\Models\CDragState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DrcEngine\CDrcManager.h">
@@ -649,9 +640,6 @@
     <ClInclude Include="ParsingEngine\CMasterParserException.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Components\MemoryVisualizer\Models\CMemoryLocationIndicator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Components\MemoryVisualizer\Models\CMemorySection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -667,7 +655,7 @@
     <ClInclude Include="ParsingEngine\SubParsers\CMemoryRegionParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Components\MemoryVisualizer\Models\CSectionDefinition.h">
+    <ClInclude Include="Components\MemoryVisualizer\Models\CSectionStatement.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Models\CMemoryStatement.h">
@@ -1208,6 +1196,9 @@
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="Components\MemoryVisualizer\Models\CSectionDefinitionBase.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\MemoryVisualizer\Models\CAddressedContent.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>
