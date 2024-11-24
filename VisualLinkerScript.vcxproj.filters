@@ -485,6 +485,12 @@
     <ClCompile Include="Components\MemoryVisualizer\Models\SLineF.h">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="Components\MemoryVisualizer\Models\CFloorPlan.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\MemoryVisualizer\Models\CMemorySection.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Components\QScintilla\scintilla\lexlib\Accessor.h">
@@ -1021,10 +1027,10 @@
     <ClInclude Include="Components\MemoryVisualizer\SBackendResponse.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Components\MemoryVisualizer\Models\SPointF.h">
+    <ClInclude Include="Components\MemoryVisualizer\Models\SMetricPointF.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Components\MemoryVisualizer\Models\SRectangleF.h">
+    <ClInclude Include="Components\MemoryVisualizer\Models\SMetricRectangleF.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Components\QScintilla\src\SciAccessibility.h">
@@ -1198,7 +1204,28 @@
     <ClInclude Include="Components\MemoryVisualizer\Models\CSectionDefinitionBase.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
-    <ClInclude Include="Components\MemoryVisualizer\Models\CAddressedContent.h">
+    <ClInclude Include="Components\MemoryVisualizer\Models\CAddressedRegion.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\MemoryVisualizer\Models\SMetricSizeF.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\MemoryVisualizer\Models\CProgramHeader.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\MemoryVisualizer\Models\CFillExpression.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\MemoryVisualizer\Models\SModelSelectionRange.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\MemoryVisualizer\Models\CModelMappedObject.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\MemoryVisualizer\Models\CInteractiveObject.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\MemoryVisualizer\Models\SPixelSizeF.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -5,32 +5,43 @@
 #include <string>
 #include <cstdint>
 
-#include "CAddressedContent.h"
+#include "CAddressedRegion.h"
 #include "../../../Helpers.h"
+
+class CProgramHeader;
 
 namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 {
     /// @brief Represents a Memory-Statement.
-    class CSectionDefinitionBase : public CAddressedContent
+    class CSectionDefinitionBase : public CAddressedRegion
     {
         DECLARE_READONLY_PROPERTY(std::string, Title)
+        DECLARE_STANDARD_PROPERTY(SMetricRectangleF, HeaderArea) // This is the green (or other colored) area visually on top of the section
+        DECLARE_STANDARD_PROPERTY(SMetricRectangleF, TitleArea)
 	    DECLARE_STANDARD_PROPERTY(std::string, FillExpression)
-        DECLARE_STANDARD_PROPERTY(std::vector<std::string>, ProgramHeaders)
+        DECLARE_STANDARD_PROPERTY(std::vector<CProgramHeader>, ProgramHeaders)
 
-    protected:
-        ~CSectionDefinitionBase() = default;
-
-    public:
         /// @brief Default constructor
         CSectionDefinitionBase(
-            std::string title, 
-            std::string fillExpression, 
-            const std::vector<std::string>& programHeaders)
-		    : m_Title(std::move(title)),
-		      m_FillExpression(std::move(fillExpression)),
-		      m_ProgramHeaders(programHeaders)
-	    {
-	    }
+	            std::string title, 
+	            std::string fillExpression, 
+	            const std::vector<CProgramHeader>& programHeaders,
+				const uint32_t inModelStartPosition,
+				const uint32_t inModelLength,
+				const bool startAddressKnown,
+				const bool endAddressKnown,
+				const bool memorySizeKnown) :			
+			 CAddressedRegion(inModelStartPosition, inModelLength, startAddressKnown, endAddressKnown, memorySizeKnown),
+		     m_Title(std::move(title)),
+		     m_FillExpression(std::move(fillExpression)),
+		     m_ProgramHeaders(programHeaders)
+	    {}
+
+        /// @copydoc CAddressedRegion::CalculateDesiredSize
+        SMetricSizeF CalculateDesiredSize(const QFontMetrics& fontMetrics) override;
+
+        /// @copydoc CAddressedRegion::SetGeometry
+        void SetGeometry(SMetricRectangleF allocatedArea) override;
     };
 }
 

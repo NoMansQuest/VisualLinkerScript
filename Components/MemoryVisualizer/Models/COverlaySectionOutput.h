@@ -5,20 +5,27 @@
 
 namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 {
-	/// @brief Represents an 'Overlap' object found in "OVERLAY" statements.
-	class COverlaySectionOutput
+	/// @brief Represents an 'Overlay' section found in "OVERLAY" statements.
+	class COverlaySectionOutput : public CAddressedRegion
 	{
 		DECLARE_READONLY_PROPERTY(std::string, Content)
 
-	protected:
-		~COverlaySectionOutput() = default;
-
-	public:
-
 		/// @brief Default constructor.
-		COverlaySectionOutput(std::string content)
-			: m_Content(std::move(content))
+		COverlaySectionOutput(std::string content,
+				const uint32_t inModelStartPosition,
+				const uint32_t inModelLength,
+				const bool startAddressKnown,
+				const bool endAddressKnown,
+				const bool memorySizeKnown) :
+			CAddressedRegion(inModelStartPosition, inModelLength, startAddressKnown, endAddressKnown, memorySizeKnown),
+			m_Content(std::move(content))
 		{}
+
+		/// @copydoc CAddressedRegion::CalculateDesiredSize
+		SMetricSizeF CalculateDesiredSize(const QFontMetrics& fontMetrics) override;
+
+		/// @copydoc CAddressedRegion::SetGeometry
+		void SetGeometry(SMetricRectangleF allocatedArea) override;
 	};
 }
 

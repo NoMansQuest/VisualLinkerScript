@@ -214,6 +214,8 @@
       <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Release|x64'">input</DynamicSource>
       <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).moc</QtMocFileName>
     </ClCompile>
+    <ClCompile Include="Components\MemoryVisualizer\Models\CFloorPlan.cpp" />
+    <ClCompile Include="Components\MemoryVisualizer\Models\CMemorySection.cpp" />
     <ClCompile Include="Components\MemoryVisualizer\Models\COverlaySectionOutput.h" />
     <ClCompile Include="Components\MemoryVisualizer\Models\SLineF.h" />
     <ClCompile Include="Components\MemoryVisualizer\QMemoryLayoutRender.cpp" />
@@ -364,9 +366,16 @@
     <QtMoc Include="Components\QFlatCheckBox\QFlatCheckBox.h" />
     <QtMoc Include="Components\InputDialogs\QLabelAssistedInput.h" />
     <QtMoc Include="Components\InputDialogs\QJumpToLineDialog.h" />
-    <ClInclude Include="Components\MemoryVisualizer\Models\CAddressedContent.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Models\CAddressedRegion.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Models\CFillExpression.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Models\CInteractiveObject.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Models\CProgramHeader.h" />
     <ClInclude Include="Components\MemoryVisualizer\Models\CSectionDefinitionBase.h" />
     <QtMoc Include="Components\MemoryVisualizer\QMemoryLayoutRender.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Models\CModelMappedObject.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Models\SModelSelectionRange.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Models\SMetricSizeF.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Models\SPixelSizeF.h" />
     <ClInclude Include="Components\QLinkerScriptSession\AutoStyling\CAutoStyler.h" />
     <ClInclude Include="Components\QLinkerScriptSession\EditorAction\EEditorActionType.h" />
     <ClInclude Include="Components\QLinkerScriptSession\EditorAction\SEditorActionBase.h" />
@@ -573,8 +582,8 @@
     <ClInclude Include="Models\Raw\RawEntryType.h" />
     <ClInclude Include="Components\QScintilla\scintilla\src\RunStyles.h" />
     <ClInclude Include="Components\MemoryVisualizer\SBackendResponse.h" />
-    <ClInclude Include="Components\MemoryVisualizer\Models\SPointF.h" />
-    <ClInclude Include="Components\MemoryVisualizer\Models\SRectangleF.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Models\SMetricPointF.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Models\SMetricRectangleF.h" />
     <ClInclude Include="Components\QScintilla\src\SciAccessibility.h" />
     <QtMoc Include="Components\QScintilla\src\SciClasses.h">
     </QtMoc>

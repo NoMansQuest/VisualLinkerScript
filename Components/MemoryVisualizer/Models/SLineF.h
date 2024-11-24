@@ -1,8 +1,8 @@
 #ifndef SLINE_H__
 #define SLINE_H__
 
-#include "Helpers.h"
-#include "SPointF.h"
+#include "../../../Helpers.h"
+#include "SMetricPointF.h"
 
 /// @brief Line-F used across the model
 struct SLineF
@@ -13,7 +13,7 @@ struct SLineF
     DECLARE_READONLY_PROPERTY(double, EndY)
 
     /// @brief Returns the center point of the rectangle
-    [[nodiscard]] SPointF Center() const
+    [[nodiscard]] SMetricPointF Center() const
     {
         return { (this->StartX() + this->EndX()) / 2.0f, (this->StartY() + this->EndY()) / 2.0f };
     }

@@ -6,25 +6,38 @@
 #include <cstdint>
 
 #include "CSectionDefinitionBase.h"
-#include "../../../Helpers.h"
+#include "../../Helpers.h"
 
 namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 {
     /// @brief Represents a Memory-Object.
-    class CMemorySection 
+    class CMemorySection : CAddressedRegion
     {
-	    DECLARE_STANDARD_PROPERTY(std::string, Title)
+        DECLARE_READONLY_PROPERTY(std::string, Title)
+        DECLARE_READONLY_PROPERTY(std::string, MemorySizeText)
 	    DECLARE_READONLY_PROPERTY(SharedPtrVector<CSectionDefinitionBase>, ChildContent)
 
-    protected:
-        ~CMemorySection() = default;
+        DECLARE_STANDARD_PROPERTY(SMetricRectangleF, TitleArea)
+        DECLARE_STANDARD_PROPERTY(SMetricRectangleF, MemorySizeTextArea)
 
-    public:
         /// @brief Default constructor
-        CMemorySection(std::string title, const SharedPtrVector<CSectionDefinitionBase>& childContent)
-	        : m_Title(std::move(title)),
+        CMemorySection(
+				std::string title,
+				std::string memorySizeText,
+				const SharedPtrVector<CSectionDefinitionBase>& childContent,
+		        const uint32_t inModelStartPosition,
+		        const uint32_t inModelLength) :
+			  CAddressedRegion(inModelStartPosition, inModelLength, true, true, true),
+	          m_Title(std::move(title)),
+    		  m_MemorySizeText(std::move(memorySizeText)),
               m_ChildContent(childContent)
         {}
+
+        /// @copydoc CAddressedRegion::CalculateDesiredSize
+        SMetricSizeF CalculateDesiredSize(const QFontMetrics& fontMetrics) override;
+
+        /// @copydoc CAddressedRegion::SetGeometry
+        void SetGeometry(SMetricRectangleF allocatedArea) override;
     };
 }
 

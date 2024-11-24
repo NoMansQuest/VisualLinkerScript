@@ -10,26 +10,7 @@ namespace
 	constexpr QColor colorGrid(0x20, 0x20, 0x20);
     constexpr QColor colorBorder(0x30, 0x30, 0x30);
 
-    qreal getFontSizeFromMetric(const QWidget* targetWidget, const double desiredHeightMilliMeters)
-    {
-        const auto widgetPosition = targetWidget->mapToGlobal(QPoint(0, 0));
-        const auto screen = QGuiApplication::screenAt(widgetPosition);
-        const double dpi = screen->logicalDotsPerInch();
-        const double heightInInches = desiredHeightMilliMeters / 25.4; // 1 inch = 25.4 mm
-        const double heightInPixels = heightInInches * dpi;
-        return heightInPixels * 72 / dpi;
-    }
 
-    qreal getPixelsInMetric(const QWidget* targetWidget, const double desiredSizeInMilliMeters)
-    {
-        if (!targetWidget->screen()) {
-            qWarning("No screen provided!");
-            return 0.0;
-        }
-
-        double dpi = targetWidget->screen()->physicalDotsPerInch();
-        return (dpi / 25.4) * desiredSizeInMilliMeters;
-    }
 };
 
 void QMemoryLayoutRender::BuildInterface()

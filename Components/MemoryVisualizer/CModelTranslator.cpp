@@ -11,7 +11,6 @@ std::shared_ptr<CFloorPlan> CModelTranslator::TranslateToFloorPlan(const CLinker
         lsFile->
 
     }*/
-
     return translatedFloorPlan;
 }
 

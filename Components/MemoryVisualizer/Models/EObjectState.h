@@ -1,7 +1,7 @@
 #ifndef OBJECTSTATE_H__
 #define OBJECTSTATE_H__
 
-/// @brief This enum represenst various states a UI object
+/// @brief This enum represents various states a UI object
 ///        (be it a Load-Mapper arrow, a model or an indicator)
 ///        could find itself in.
 enum class EObjectState {

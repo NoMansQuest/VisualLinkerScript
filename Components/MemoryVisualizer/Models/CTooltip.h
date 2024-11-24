@@ -12,7 +12,7 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
     {
     private:
         std::string m_toolTipContent = "";
-        SPointF m_showingCoordinates;
+        SMetricPointF m_showingCoordinates;
         uint64_t m_appearanceTimestampInMilliseconds = 0;
         uint64_t m_displayDurationInMilliseconds = 0;
         bool m_isShowing = false;
@@ -30,7 +30,7 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
         }
 
         /// @brief Coordinates of the cursor where Tool-Tip began showing
-        SPointF ShowingCoordinates() {
+        SMetricPointF ShowingCoordinates() {
             return this->m_showingCoordinates;
         }
 
@@ -61,7 +61,7 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 
         /// @brief Signals the system to start showing the tool-tip. 
         /// @param timestamp 
-        void StartShowing(uint64_t timestampInMilliseconds, SPointF cursorCoordinates) {
+        void StartShowing(uint64_t timestampInMilliseconds, SMetricPointF cursorCoordinates) {
             this->m_showingCoordinates = cursorCoordinates;
             this->m_appearanceTimestampInMilliseconds = timestampInMilliseconds;
         }

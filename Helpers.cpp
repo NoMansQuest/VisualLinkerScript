@@ -1,10 +1,12 @@
 #include "Helpers.h"
 #include <functional>
 #include <QFile>
+#include <qguiapplication.h>
 #include <string>
 #include <QTextStream>
 
 using namespace VisualLinkerScript;
+
 
 /// @brief Compares strings
 bool VisualLinkerScript::StringEquals(const std::string& a,
@@ -62,6 +64,27 @@ bool VisualLinkerScript::ReadFileContent(const std::string& filePath, std::strin
     fileContent = in.readAll().toStdString();
     file.close();
     return true;
+}
+
+qreal VisualLinkerScript::GetFontSizeFromMetric(const QWidget* targetWidget, double desiredHeightMilliMeters)
+{
+    const auto widgetPosition = targetWidget->mapToGlobal(QPoint(0, 0));
+    const auto screen = QGuiApplication::screenAt(widgetPosition);
+    const double dpi = screen->logicalDotsPerInch();
+    const double heightInInches = desiredHeightMilliMeters / 25.4; // 1 inch = 25.4 mm
+    const double heightInPixels = heightInInches * dpi;
+    return heightInPixels * 72 / dpi;
+}
+
+qreal VisualLinkerScript::GetPixelsInMetric(const QWidget* targetWidget, double desiredSizeInMilliMeters)
+{
+    if (!targetWidget->screen()) {
+        qWarning("No screen provided!");
+        return 0.0;
+    }
+
+    double dpi = targetWidget->screen()->physicalDotsPerInch();
+    return (dpi / 25.4) * desiredSizeInMilliMeters;
 }
 
 std::string VisualLinkerScript::StringLTrim(const std::string& sourceString)

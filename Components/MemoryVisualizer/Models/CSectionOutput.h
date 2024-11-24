@@ -2,25 +2,38 @@
 #define CSECTION_OUTPUT_H__
 
 #include "Helpers.h"
-#include "SRectangleF.h"
+#include "SMetricRectangleF.h"
 
 namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 {
 	/// @brief Represents an 'Overlap' object found in "SECTION"
-	class CSectionOutput
+	class CSectionOutput : public CAddressedRegion
 	{		
 		DECLARE_READONLY_PROPERTY(std::string, Content)
-		DECLARE_STANDARD_PROPERTY(SRectangleF, BodyArea)
 
-	protected:
-		~CSectionOutput() = default;
-
-	public:
 		/// @brief Default constructor.
-		explicit CSectionOutput(std::string content) :
+		explicit CSectionOutput(
+				std::string content, 
+				const uint32_t inModelStartPosition, 
+				const uint32_t inModelLength, 
+				const bool startAddressKnown,
+				const bool endAddressKnown,
+				const bool memorySizeKnown) :
+			CAddressedRegion(
+				inModelStartPosition,
+				inModelLength,
+				startAddressKnown,
+				endAddressKnown,
+				memorySizeKnown),
 			m_Content(std::move(content))
 		{}
+
+		/// @copydoc CAddressedRegion::CalculateDesiredSize
+		SMetricSizeF CalculateDesiredSize(const QFontMetrics& fontMetrics) override;
+
+		/// @copydoc CAddressedRegion::SetGeometry
+		void SetGeometry(SMetricRectangleF allocatedArea) override;
 	};
 }
 
-#endif // CSECTION_OUTPUT_H__s
+#endif // CSECTION_OUTPUT_H__

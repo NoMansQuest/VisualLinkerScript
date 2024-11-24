@@ -3,6 +3,11 @@
 
 #include <vector>
 
+#include "SMetricSizeF.h"
+
+struct SMetricRectangleF;
+class QFontMetrics;
+
 namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 {
     class CMemorySection;
@@ -18,6 +23,12 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
     		: m_MemorySections(memorySections)
         {}
 
+    public:
+        /// @brief Calculate the minimum amount of space this region would need.
+        SMetricSizeF CalculateDesiredSize(const QFontMetrics& fontMetrics) const;
+
+        /// @brief Updates the coordinates of all involved objects based on the given allocated area.
+        void SetGeometry(SMetricRectangleF allocatedArea);
     };
 }
 

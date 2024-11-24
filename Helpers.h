@@ -7,6 +7,9 @@
 #include <cstdint>
 #include <vector>
 #include <functional>
+#include <qglobal.h>
+
+#include "Components/QChromeTab/QChromeTabWidget.h"
 
 /// @brief This does the "nameof" expression in c#
 #define NAMEOF(x) #x
@@ -175,6 +178,13 @@ namespace VisualLinkerScript
         std::snprintf( buf.get(), size, format.c_str(), args ... );
         return std::string( buf.get(), buf.get() + size - 1 );
     }
+
+    /// @brief Self-explanatory .
+    qreal GetFontSizeFromMetric(const QWidget* targetWidget, double desiredHeightMilliMeters);
+
+    /// @brief Self-explanatory .
+    qreal GetPixelsInMetric(const QWidget* targetWidget, double desiredSizeInMilliMeters);
+
 };
 
 #endif // HELPERS_H__

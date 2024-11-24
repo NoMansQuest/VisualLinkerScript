@@ -11,17 +11,26 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
     {
         DECLARE_READONLY_PROPERTY(SharedPtrVector<CSectionOutput>, ChildOutputs)
 
-    protected:
-        ~CSectionStatement() = default;
-
-    public:
         /// @brief Default constructor
         CSectionStatement(
-				std::string title, 
-				std::string fillExpression, 
-	            const std::vector<std::string>& programHeaders, 
-	            const SharedPtrVector<CSectionOutput>& childOutputs) :
-    		CSectionDefinitionBase(std::move(title), std::move(fillExpression), programHeaders),
+				const std::string& title, 
+				const std::string& fillExpression, 
+	            const std::vector<CProgramHeader>& programHeaders, 
+	            const SharedPtrVector<CSectionOutput>& childOutputs, 
+				const bool inModelStartPosition,
+				const bool inModelLength,
+				const bool startAddressKnown,
+				const bool endAddressKnown,
+				const bool memorySizeKnown) :
+    		CSectionDefinitionBase(
+                title, 
+                fillExpression, 
+                programHeaders, 
+                inModelStartPosition, 
+                inModelLength, 
+                startAddressKnown, 
+                endAddressKnown, 
+                memorySizeKnown),
     		m_ChildOutputs(childOutputs)
         {}
     };
