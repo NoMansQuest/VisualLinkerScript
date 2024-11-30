@@ -34,7 +34,7 @@ jobs:
       # Checkout the repository
       #
       - name: Checkout repository and submodules
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           submodules: recursive
 
@@ -42,7 +42,7 @@ jobs:
       # Install Qt
       #
       - name: Install Qt
-        uses: jurplel/install-qt-action@v3
+        uses: jurplel/install-qt-action@v4
           
       #
       # Install additional dependencies, stolen from:
@@ -96,7 +96,7 @@ jobs:
       # Checkout the repository
       #
       - name: Checkout repository and submodules
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           submodules: recursive
 
@@ -104,7 +104,7 @@ jobs:
       # Install Qt
       #
       - name: Install Qt
-        uses: jurplel/install-qt-action@v2
+        uses: jurplel/install-qt-action@v4
       
       #
       # Compile application
@@ -149,7 +149,7 @@ jobs:
       # Checkout the repository
       #
       - name: Checkout repository and submodules
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           submodules: recursive
       
@@ -166,7 +166,7 @@ jobs:
       # Install Qt
       #
       - name: Install Qt
-        uses: jurplel/install-qt-action@v2
+        uses: jurplel/install-qt-action@v4
           
       #
       # Install NSIS
