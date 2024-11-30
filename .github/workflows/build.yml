@@ -1,0 +1,62 @@
+name: Build VisualLinkerScript Project
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        qt_version: ['5.15.2']
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v2
+      with:
+        version: ${{ matrix.qt_version }}
+        host: ${{ matrix.os == 'windows-latest' && 'windows' || matrix.os == 'macos-latest' && 'mac' || 'linux' }}
+        target: 'desktop'
+
+    - name: Set up build environment (Linux only)
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential libgl1-mesa-dev
+
+    - name: Set up build environment (Windows only)
+      if: runner.os == 'Windows'
+      run: |
+        choco install cmake ninja -y
+
+    - name: Set up build environment (macOS only)
+      if: runner.os == 'macOS'
+      run: |
+        brew install cmake ninja
+
+    - name: Build with qmake
+      run: |
+        mkdir build
+        cd build
+        qmake ../
+        cmake --build . -- -j$(nproc)
+
+    # TODO: Activate when tests are necessary
+    #- name: Run tests
+    #  run: |
+    #    cd build
+    #    ./test_suite # Replace with your test executable name
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-${{ matrix.os }}
+        path: build/
