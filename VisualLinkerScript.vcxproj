@@ -214,9 +214,16 @@
       <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Release|x64'">input</DynamicSource>
       <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).moc</QtMocFileName>
     </ClCompile>
+    <ClCompile Include="Components\MemoryVisualizer\Models\CFillExpressionButton.cpp" />
     <ClCompile Include="Components\MemoryVisualizer\Models\CFloorPlan.cpp" />
     <ClCompile Include="Components\MemoryVisualizer\Models\CMemorySection.cpp" />
+    <ClCompile Include="Components\MemoryVisualizer\Models\COverlaySectionOutput.cpp" />
     <ClCompile Include="Components\MemoryVisualizer\Models\COverlaySectionOutput.h" />
+    <ClCompile Include="Components\MemoryVisualizer\Models\COverlaySectionStatement.cpp" />
+    <ClCompile Include="Components\MemoryVisualizer\Models\COverlayStatement.cpp" />
+    <ClCompile Include="Components\MemoryVisualizer\Models\CProgramHeaderButton.cpp" />
+    <ClCompile Include="Components\MemoryVisualizer\Models\CSectionOutput.cpp" />
+    <ClCompile Include="Components\MemoryVisualizer\Models\CSectionStatement.cpp" />
     <ClCompile Include="Components\MemoryVisualizer\Models\SLineF.h" />
     <ClCompile Include="Components\MemoryVisualizer\QMemoryLayoutRender.cpp" />
     <ClCompile Include="Components\QLinkerScriptSession\AutoStyling\CAutoStyler.cpp" />
@@ -367,9 +374,9 @@
     <QtMoc Include="Components\InputDialogs\QLabelAssistedInput.h" />
     <QtMoc Include="Components\InputDialogs\QJumpToLineDialog.h" />
     <ClInclude Include="Components\MemoryVisualizer\Models\CAddressedRegion.h" />
-    <ClInclude Include="Components\MemoryVisualizer\Models\CFillExpression.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Models\CFillExpressionButton.h" />
     <ClInclude Include="Components\MemoryVisualizer\Models\CInteractiveObject.h" />
-    <ClInclude Include="Components\MemoryVisualizer\Models\CProgramHeader.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Models\CProgramHeaderButton.h" />
     <ClInclude Include="Components\MemoryVisualizer\Models\CSectionDefinitionBase.h" />
     <QtMoc Include="Components\MemoryVisualizer\QMemoryLayoutRender.h" />
     <ClInclude Include="Components\MemoryVisualizer\Models\CModelMappedObject.h" />

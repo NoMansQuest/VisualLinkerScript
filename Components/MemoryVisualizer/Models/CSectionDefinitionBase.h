@@ -6,9 +6,9 @@
 #include <cstdint>
 
 #include "CAddressedRegion.h"
+#include "CFillExpressionButton.h"
+#include "CProgramHeaderButton.h"
 #include "../../../Helpers.h"
-
-class CProgramHeader;
 
 namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 {
@@ -18,14 +18,14 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
         DECLARE_READONLY_PROPERTY(std::string, Title)
         DECLARE_STANDARD_PROPERTY(SMetricRectangleF, HeaderArea) // This is the green (or other colored) area visually on top of the section
         DECLARE_STANDARD_PROPERTY(SMetricRectangleF, TitleArea)
-	    DECLARE_STANDARD_PROPERTY(std::string, FillExpression)
-        DECLARE_STANDARD_PROPERTY(std::vector<CProgramHeader>, ProgramHeaders)
+	    DECLARE_STANDARD_PROPERTY(CFillExpressionButton, FillExpression)
+        DECLARE_STANDARD_PROPERTY(std::vector<CProgramHeaderButton>, ProgramHeaders)
 
         /// @brief Default constructor
         CSectionDefinitionBase(
-	            std::string title, 
-	            std::string fillExpression, 
-	            const std::vector<CProgramHeader>& programHeaders,
+	            std::string title,
+	            CFillExpressionButton fillExpression, 
+	            const std::vector<CProgramHeaderButton>& programHeaders,
 				const uint32_t inModelStartPosition,
 				const uint32_t inModelLength,
 				const bool startAddressKnown,
@@ -38,7 +38,9 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 	    {}
 
         /// @copydoc CAddressedRegion::CalculateDesiredSize
-        SMetricSizeF CalculateDesiredSize(const QFontMetrics& fontMetrics) override;
+		SMetricSizeF CalculateDesiredSize(
+			const QFontMetrics& fontMetricsSmall,
+			const QFontMetrics& fontMetricsLarge) override;
 
         /// @copydoc CAddressedRegion::SetGeometry
         void SetGeometry(SMetricRectangleF allocatedArea) override;

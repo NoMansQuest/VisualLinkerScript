@@ -66,7 +66,7 @@ bool VisualLinkerScript::ReadFileContent(const std::string& filePath, std::strin
     return true;
 }
 
-qreal VisualLinkerScript::GetFontSizeFromMetric(const QWidget* targetWidget, double desiredHeightMilliMeters)
+qreal Graphical::GetFontSizeFromMetric(const QWidget* targetWidget, double desiredHeightMilliMeters)
 {
     const auto widgetPosition = targetWidget->mapToGlobal(QPoint(0, 0));
     const auto screen = QGuiApplication::screenAt(widgetPosition);
@@ -76,7 +76,7 @@ qreal VisualLinkerScript::GetFontSizeFromMetric(const QWidget* targetWidget, dou
     return heightInPixels * 72 / dpi;
 }
 
-qreal VisualLinkerScript::GetPixelsInMetric(const QWidget* targetWidget, double desiredSizeInMilliMeters)
+qreal Graphical::GetPixelsInMetric(const QWidget* targetWidget, double desiredSizeInMilliMeters)
 {
     if (!targetWidget->screen()) {
         qWarning("No screen provided!");
@@ -85,6 +85,22 @@ qreal VisualLinkerScript::GetPixelsInMetric(const QWidget* targetWidget, double 
 
     double dpi = targetWidget->screen()->physicalDotsPerInch();
     return (dpi / 25.4) * desiredSizeInMilliMeters;
+}
+
+qreal Graphical::GetMetricFromPixels(const QWidget* targetWidget, const double desiredSizeInPixels)
+{
+    if (!targetWidget->screen()) {
+        qWarning("No screen provided!");
+        return 0.0;
+    }
+
+    double dpi = targetWidget->screen()->physicalDotsPerInch();
+    return (desiredSizeInPixels / dpi) * 25.4;
+}
+
+qreal Graphical::GetTextWidth(const std::string& stringToMeasure, const QFontMetrics& fontMetrics)
+{    
+    return fontMetrics.horizontalAdvance(QString::fromStdString(stringToMeasure));
 }
 
 std::string VisualLinkerScript::StringLTrim(const std::string& sourceString)

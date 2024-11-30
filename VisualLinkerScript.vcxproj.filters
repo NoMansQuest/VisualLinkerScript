@@ -491,6 +491,27 @@
     <ClCompile Include="Components\MemoryVisualizer\Models\CMemorySection.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="Components\MemoryVisualizer\Models\CSectionStatement.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\MemoryVisualizer\Models\CSectionOutput.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\MemoryVisualizer\Models\COverlaySectionOutput.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\MemoryVisualizer\Models\COverlaySectionStatement.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\MemoryVisualizer\Models\COverlayStatement.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\MemoryVisualizer\Models\CProgramHeaderButton.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\MemoryVisualizer\Models\CFillExpressionButton.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Components\QScintilla\scintilla\lexlib\Accessor.h">
@@ -1210,10 +1231,10 @@
     <ClInclude Include="Components\MemoryVisualizer\Models\SMetricSizeF.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
-    <ClInclude Include="Components\MemoryVisualizer\Models\CProgramHeader.h">
+    <ClInclude Include="Components\MemoryVisualizer\Models\CProgramHeaderButton.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
-    <ClInclude Include="Components\MemoryVisualizer\Models\CFillExpression.h">
+    <ClInclude Include="Components\MemoryVisualizer\Models\CFillExpressionButton.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="Components\MemoryVisualizer\Models\SModelSelectionRange.h">

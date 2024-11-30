@@ -4,10 +4,10 @@
 #include <vector>
 #include <string>
 #include <cstdint>
-
-#include "CAddressedRegion.h"
 #include "COverlaySectionStatement.h"
 #include "../../../Helpers.h"
+#include "CProgramHeaderButton.h"
+#include "CFillExpressionButton.h"
 
 namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 {
@@ -20,8 +20,8 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
         /// @brief Default constructor.    	
         COverlayStatement(
 				SharedPtrVector<COverlaySectionStatement> childSections,
-				const std::string& fillExpression,
-	            const std::vector<CProgramHeader>& programHeaders,
+				const CFillExpressionButton& fillExpression,
+	            const std::vector<CProgramHeaderButton>& programHeaders,
 	            const uint32_t inModelStartPosition,
 	            const uint32_t inModelLength,
 	            const bool startAddressKnown,
@@ -40,7 +40,9 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
         {}
 
         /// @copydoc CAddressedRegion::CalculateDesiredSize
-        SMetricSizeF CalculateDesiredSize(const QFontMetrics& fontMetrics) override;
+        SMetricSizeF CalculateDesiredSize(
+            const QFontMetrics& fontMetricsSmall,
+            const QFontMetrics& fontMetricsLarge) override;
 
         /// @copydoc CAddressedRegion::SetGeometry
         void SetGeometry(SMetricRectangleF allocatedArea) override;

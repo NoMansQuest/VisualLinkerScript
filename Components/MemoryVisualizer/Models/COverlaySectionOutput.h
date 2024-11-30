@@ -1,7 +1,10 @@
 #ifndef COVERLAY_SECTION_OUTPUT_H__
 #define COVERLAY_SECTION_OUTPUT_H__
 
+#include "CAddressedRegion.h"
 #include "Helpers.h"
+#include "SMetricRectangleF.h"
+#include "SMetricSizeF.h"
 
 namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 {
@@ -22,7 +25,9 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 		{}
 
 		/// @copydoc CAddressedRegion::CalculateDesiredSize
-		SMetricSizeF CalculateDesiredSize(const QFontMetrics& fontMetrics) override;
+		SMetricSizeF CalculateDesiredSize(
+			const QFontMetrics& fontMetricsSmall,
+			const QFontMetrics& fontMetricsLarge) override;
 
 		/// @copydoc CAddressedRegion::SetGeometry
 		void SetGeometry(SMetricRectangleF allocatedArea) override;

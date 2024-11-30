@@ -3,6 +3,8 @@
 
 #include "CSectionDefinitionBase.h"
 #include "CSectionOutput.h"
+#include "CProgramHeaderButton.h"
+#include "CFillExpressionButton.h"
 
 namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 {
@@ -14,8 +16,8 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
         /// @brief Default constructor
         CSectionStatement(
 				const std::string& title, 
-				const std::string& fillExpression, 
-	            const std::vector<CProgramHeader>& programHeaders, 
+				const CFillExpressionButton& fillExpression, 
+	            const std::vector<CProgramHeaderButton>& programHeaders, 
 	            const SharedPtrVector<CSectionOutput>& childOutputs, 
 				const bool inModelStartPosition,
 				const bool inModelLength,
@@ -33,6 +35,15 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
                 memorySizeKnown),
     		m_ChildOutputs(childOutputs)
         {}
+
+
+        /// @copydoc CAddressedRegion::CalculateDesiredSize
+        SMetricSizeF CalculateDesiredSize(
+            const QFontMetrics& fontMetricsSmall,
+            const QFontMetrics& fontMetricsLarge) override;
+
+        /// @copydoc CAddressedRegion::SetGeometry
+        void SetGeometry(SMetricRectangleF allocatedArea) override;
     };
 }
 

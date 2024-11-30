@@ -5,10 +5,12 @@
 
 using namespace VisualLinkerScript::Components::MemoryVisualizer::Models;
 
-#define SPACE_BETWEEN_MEMORY_REGIONS_MM 10
-#define MAX(a, b) ((a > b) ? a : b)
+constexpr double SpaceBetweenMemoryRegionsMm = 10;
+constexpr double Max(const double a, const double b) { return a > b ? a : b;  }
 
-SMetricSizeF CFloorPlan::CalculateDesiredSize(const QFontMetrics& fontMetrics) const
+SMetricSizeF CFloorPlan::CalculateDesiredSize(
+	const QFontMetrics& fontMetricsSmall,
+	const QFontMetrics& fontMetricsLarge) const
 {
 	/*
 	QFont font("Tahoma, DejaVu Sans", 12); 
@@ -24,19 +26,14 @@ SMetricSizeF CFloorPlan::CalculateDesiredSize(const QFontMetrics& fontMetrics) c
 	double maxWidthObserved = 0;
 	double maxHeightObserved = 0;
 
-	for (const auto memorySection& : this->m_MemorySections)
+	for (const auto memorySection : this->m_MemorySections)
 	{
-		auto calculatedSize = memorySection->CalculateDesiredSize(fontMetrics);
-		maxWidthObserved = MAX(maxWidthObserved, calculatedSize.CX());
-		maxHeightObserved = MAX(maxHeightObserved, calculatedSize.CY());
+		auto calculatedSize = memorySection->CalculateDesiredSize(fontMetricsSmall, fontMetricsLarge);
+		maxWidthObserved = Max(maxWidthObserved, calculatedSize.CX());
+		maxHeightObserved = Max(maxHeightObserved, calculatedSize.CY());
 	}
 
 	return SMetricSizeF(
 		maxWidthObserved,
-		((this->m_MemorySections.size() - 1) * SPACE_BETWEEN_MEMORY_REGIONS_MM) + maxHeightObserved);		
-}
-
-void CFloorPlan::SetGeometry(SMetricRectangleF allocatedArea)
-{
-	// No action undertaken. The floor plan itself is not displayed on the screen.
+		((this->m_MemorySections.size() - 1) * SpaceBetweenMemoryRegionsMm) + maxHeightObserved);		
 }

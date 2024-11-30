@@ -15,14 +15,30 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 		DECLARE_READONLY_PROPERTY(std::string, fillExpression)
 		DECLARE_READONLY_PROPERTY(std::string, loadRegion)
 
+	public:
 		// @brief Default constructor
-		COverlaySectionStatement(std::string name, const SharedPtrVector<COverlaySectionOutput>& childContent)
-			: m_Name(std::move(name)),
+		COverlaySectionStatement(
+				std::string name, 
+				const SharedPtrVector<COverlaySectionOutput>& childContent,
+				const uint32_t inModelStartPosition,
+				const uint32_t inModelLength,
+				const bool startAddressKnown,
+				const bool endAddressKnown,
+				const bool memorySizeKnown)
+			: CAddressedRegion(
+				inModelStartPosition,
+				inModelLength,
+				startAddressKnown, 
+				endAddressKnown, 
+				memorySizeKnown),
+			  m_Name(std::move(name)),
 			  m_ChildContent(childContent)
 		{}
 
 		/// @copydoc CAddressedRegion::CalculateDesiredSize
-		SMetricSizeF CalculateDesiredSize(const QFontMetrics& fontMetrics) override;
+		SMetricSizeF CalculateDesiredSize(
+			const QFontMetrics& fontMetricsSmall,
+			const QFontMetrics& fontMetricsLarge) override;
 
 		/// @copydoc CAddressedRegion::SetGeometry
 		void SetGeometry(SMetricRectangleF allocatedArea) override;

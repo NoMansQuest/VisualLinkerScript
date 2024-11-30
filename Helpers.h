@@ -179,11 +179,20 @@ namespace VisualLinkerScript
         return std::string( buf.get(), buf.get() + size - 1 );
     }
 
-    /// @brief Self-explanatory .
-    qreal GetFontSizeFromMetric(const QWidget* targetWidget, double desiredHeightMilliMeters);
+    namespace Graphical
+    {
+        /// @brief Self-explanatory .
+        qreal GetFontSizeFromMetric(const QWidget* targetWidget, double desiredHeightMilliMeters);
 
-    /// @brief Self-explanatory .
-    qreal GetPixelsInMetric(const QWidget* targetWidget, double desiredSizeInMilliMeters);
+        /// @brief Self-explanatory .
+        qreal GetPixelsInMetric(const QWidget* targetWidget, double desiredSizeInMilliMeters);
+
+        /// @brief Self-explanatory .
+        qreal GetMetricFromPixels(const QWidget* targetWidget, double desiredSizeInPixels);
+
+        /// @brief Returns the width of the text (single-lined).
+        qreal GetTextWidth(const std::string& stringToMeasure, const QFontMetrics& fontMetrics);
+    }
 
 };
 

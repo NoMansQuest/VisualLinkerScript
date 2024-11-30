@@ -11,7 +11,7 @@
 namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 {
     /// @brief Represents a Memory-Object.
-    class CMemorySection : CAddressedRegion
+    class CMemorySection : public CAddressedRegion
     {
         DECLARE_READONLY_PROPERTY(std::string, Title)
         DECLARE_READONLY_PROPERTY(std::string, MemorySizeText)
@@ -34,7 +34,9 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
         {}
 
         /// @copydoc CAddressedRegion::CalculateDesiredSize
-        SMetricSizeF CalculateDesiredSize(const QFontMetrics& fontMetrics) override;
+        SMetricSizeF CalculateDesiredSize(
+            const QFontMetrics& fontMetricsSmall,
+            const QFontMetrics& fontMetricsLarge) override;
 
         /// @copydoc CAddressedRegion::SetGeometry
         void SetGeometry(SMetricRectangleF allocatedArea) override;

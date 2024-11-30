@@ -5,7 +5,7 @@ using namespace VisualLinkerScript::Components::MemoryVisualizer;
 /// @copydoc
 std::shared_ptr<CFloorPlan> CModelTranslator::TranslateToFloorPlan(const CLinkerScriptFile& linkerScriptFile)
 {
-    auto translatedFloorPlan = std::make_shared<Models::CFloorPlan>();
+    auto translatedFloorPlan = std::make_shared<Models::CFloorPlan>(SharedPtrVector<CMemorySection>());
     /*
     for (auto lsFile : linkerScriptFiles) {
         lsFile->

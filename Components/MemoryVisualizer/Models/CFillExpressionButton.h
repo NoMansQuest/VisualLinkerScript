@@ -11,29 +11,29 @@ class QFontMetrics;
 
 namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 {
-	using namespace VisualLinkerScript::Models::Raw;
-
 	/// @brief Represents an 'FillExpression' object, found in many places
-	class CFillExpression : CModelMappedObject
+	class CFillExpressionButton : public CModelMappedObject
 	{
+		DECLARE_READONLY_PROPERTY(bool, Defined)
 		DECLARE_READONLY_PROPERTY(std::string, FillExpression)
 		DECLARE_STANDARD_PROPERTY(SMetricRectangleF, FillExpressionArea)
 
-	protected:
-		~CFillExpression() = default;
-
 	public:
 		/// @brief Default constructor.
-		explicit CFillExpression(
+		CFillExpressionButton(
+				const bool defined,
 				std::string fillExpression, 
-				const CRawEntry& associatedRawEntry) :
-			m_FillExpression(std::move(fillExpression)),
-			m_AssociatedRawEntry(associatedRawEntry)
+				const uint32_t inModelStartPosition,
+				const uint32_t inModelLength) :
+			CModelMappedObject(inModelStartPosition, inModelLength),
+			m_Defined(defined),
+			m_FillExpression(std::move(fillExpression))
 		{}
 
-	public:
 		/// Calculates the size of the area needed by the program header
-		SMetricSizeF CalculateDesiredSize(const QFontMetrics& fontMetrics);
+		SMetricSizeF CalculateDesiredSize(
+			const QFontMetrics& fontMetricsSmall,
+			const QFontMetrics& fontMetricsLarge) const;
 
 		/// Sets the allocated area where the program-header must be drawn.
 		void SetGeometry(SMetricRectangleF allocatedArea);

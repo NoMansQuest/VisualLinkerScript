@@ -13,13 +13,13 @@ class QFontMetrics;
 namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 {
 	/// @brief Represents an 'ProgramHeader' object, found in many places
-	class CProgramHeader : public CModelMappedObject, public CInteractiveObject
+	class CProgramHeaderButton : public CModelMappedObject, public CInteractiveObject
 	{
 		DECLARE_READONLY_PROPERTY(std::string, ProgramHeader)		
 		DECLARE_STANDARD_PROPERTY(SMetricRectangleF, ProgramHeaderArea)
 
 		/// @brief Default constructor.
-		explicit CProgramHeader(
+		CProgramHeaderButton(
 				std::string programHeader, 
 				const uint32_t inModelStartPosition, 
 				const uint32_t inModelLength) :
@@ -28,7 +28,9 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 		{}
 
 		/// Calculates the size of the area needed by the program header
-		SMetricSizeF CalculateDesiredSize(const QFontMetrics& fontMetrics);
+		SMetricSizeF CalculateDesiredSize(
+			const QFontMetrics& fontMetricsSmall,
+			const QFontMetrics& fontMetricsLarge) const;
 
 		/// Sets the allocated area where the program-header must be drawn.
 		void SetGeometry(SMetricRectangleF allocatedArea);

@@ -35,7 +35,7 @@ void QMemoryLayoutRender::RedrawDoubleBuffer()
     QPixmap newBuffer(size());
     QPainter painter(&newBuffer);
 
-    auto pixelsPer5mm = getPixelsInMetric(this, 5);
+    auto pixelsPer5mm = Graphical::GetPixelsInMetric(this, 5);
     auto lastXPos = size().width() - 1;
     auto lastYPos = size().height() - 1;
 

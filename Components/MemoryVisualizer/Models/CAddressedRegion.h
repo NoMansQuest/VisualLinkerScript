@@ -51,7 +51,9 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
         {}
 
         /// @brief Calculate the minimum amount of space this region would need.
-        virtual SMetricSizeF CalculateDesiredSize(const QFontMetrics& fontMetrics) = 0;
+        virtual SMetricSizeF CalculateDesiredSize(
+            const QFontMetrics& fontMetricsSmall,
+            const QFontMetrics& fontMetricsLarge) = 0;
 
         /// @brief Updates the coordinates of all involved objects based on the given allocated area.
         virtual void SetGeometry(SMetricRectangleF allocatedArea) = 0;

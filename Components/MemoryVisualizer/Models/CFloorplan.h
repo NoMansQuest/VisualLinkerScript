@@ -4,14 +4,13 @@
 #include <vector>
 
 #include "SMetricSizeF.h"
+#include "CMemorySection.h"
 
 struct SMetricRectangleF;
 class QFontMetrics;
 
 namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 {
-    class CMemorySection;
-
     /// @brief Represents a Linker-Script object.
     class CFloorPlan
     {
@@ -25,10 +24,9 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 
     public:
         /// @brief Calculate the minimum amount of space this region would need.
-        SMetricSizeF CalculateDesiredSize(const QFontMetrics& fontMetrics) const;
-
-        /// @brief Updates the coordinates of all involved objects based on the given allocated area.
-        void SetGeometry(SMetricRectangleF allocatedArea);
+        SMetricSizeF CalculateDesiredSize(
+            const QFontMetrics& fontMetricsSmall,
+            const QFontMetrics& fontMetricsLarge) const;
     };
 }
 
