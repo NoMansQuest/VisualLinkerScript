@@ -12,20 +12,35 @@ SMetricSizeF COverlaySectionStatement::CalculateDesiredSize(
 
 	// Top memory label
 	auto sectionStatementLabel = Graphical::GetTextWidth(this->Name(), fontMetricsSmall);
-	double calculatedWidth = (sectionStatementLabel * 1.5);
+	double calculatedContentWidth = (sectionStatementLabel * 1.5);
 	double calculatedHeight = minimumMemoryBoxHeight;
+
+	double minimumWidth = sectionStatementLabel;
+
+	if (!this->ProgramHeaders().empty())
+	{
+		for (const auto& programHeader : this->ProgramHeaders())
+		{
+			minimumWidth += programHeader.CalculateDesiredSize(fontMetricsSmall, fontMetricsLarge).CX();
+		}
+	}
+
+	if (this->FillExpression().Defined())
+	{
+		minimumWidth += this->FillExpression().CalculateDesiredSize(fontMetricsSmall, fontMetricsLarge).CX();
+	}
 
 	if (!this->m_ChildContent.empty())
 	{
-		for (const auto child : this->m_ChildContent)
+		for (const auto& child : this->m_ChildContent)
 		{
 			auto childDesiredSize = child->CalculateDesiredSize(fontMetricsSmall, fontMetricsLarge);
-			calculatedWidth = std::max(calculatedWidth, childDesiredSize.CX());
+			calculatedContentWidth = std::max(calculatedContentWidth, childDesiredSize.CX());
 			calculatedHeight += childDesiredSize.CY();
 		}
 	}
 
-	return SMetricSizeF(calculatedWidth, calculatedHeight);
+	return SMetricSizeF(std::max(calculatedContentWidth, minimumWidth), calculatedHeight);
 }
 
 void COverlaySectionStatement::SetGeometry(SMetricRectangleF allocatedArea)
