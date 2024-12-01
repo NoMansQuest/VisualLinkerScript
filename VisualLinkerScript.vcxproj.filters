@@ -65,9 +65,6 @@
     <ClCompile Include="Models\CAssignmentStatement.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Compiler\CCompiler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="DrcEngine\Rules\CDirectivesDeclaredOnlyOnceRule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -78,9 +75,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Models\CExpression.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Compiler\ExpressionEvaluation\CExpressionEvaluator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ParsingEngine\SubParsers\CExpressionParser.cpp">
@@ -517,13 +511,7 @@
     <ClInclude Include="Components\QScintilla\scintilla\lexlib\Accessor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Compiler\ExpressionEvaluation\ArithmeticOperationType.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Components\QScintilla\scintilla\src\AutoComplete.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Compiler\ExpressionEvaluation\CArithmeticResultOp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ParsingEngine\SubParsers\CAssignmentParser.h">
@@ -544,12 +532,6 @@
     <ClInclude Include="ParsingEngine\SubParsers\CCommandParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Compiler\CCompiler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Compiler\ExpressionEvaluation\CCompoundResult.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="DrcEngine\Rules\CDirectivesDeclaredOnlyOnceRule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -562,16 +544,10 @@
     <ClInclude Include="DrcEngine\Rules\CEntryIsDefinedRule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Compiler\ExpressionEvaluation\CEvaluatableBase.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Messaging\CEventAggregator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Models\CExpression.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Compiler\ExpressionEvaluation\CExpressionEvaluator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Models\CExpressionNumber.h">
@@ -599,9 +575,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Models\CFunctionCall.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Compiler\FunctionEvaluation\CFunctionEvaluatorBase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ParsingEngine\SubParsers\CFunctionParser.h">
@@ -700,9 +673,6 @@
     <ClInclude Include="Messaging\General\CNotifyUserEvent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Compiler\ExpressionEvaluation\CNumericResult.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Messaging\UserInitiated\COpenFileRequest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -733,9 +703,6 @@
     <ClInclude Include="Models\CProcedureCall.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Compiler\ProcedureExecution\CProcedureExecutorBase.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Messaging\CPubSubEvent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -746,9 +713,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Messaging\UserInitiated\CRedoRequest.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Compiler\ExpressionEvaluation\CResultBase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Messaging\UserInitiated\CSaveFileRequest.h">
@@ -821,9 +785,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Models\CSymbol.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Compiler\ExpressionEvaluation\CSymbolResult.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DrcEngine\Rules\CSymbolsDefinedInAdvanceRule.h">
@@ -932,9 +893,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Components\QScintilla\scintilla\src\ElapsedPeriod.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Compiler\ExpressionEvaluation\EvaluationResultType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Components\QScintilla\scintilla\src\ExternalLexer.h">

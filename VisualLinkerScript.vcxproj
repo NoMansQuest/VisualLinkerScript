@@ -248,12 +248,10 @@
     <ClCompile Include="ParsingEngine\SubParsers\CAssignmentProcedureParser.cpp" />
     <ClCompile Include="Models\CAssignmentProcedureStatement.cpp" />
     <ClCompile Include="Models\CAssignmentStatement.cpp" />
-    <ClCompile Include="Compiler\CCompiler.cpp" />
     <ClCompile Include="DrcEngine\Rules\CDirectivesDeclaredOnlyOnceRule.cpp" />
     <ClCompile Include="DrcEngine\CDrcManager.cpp" />
     <ClCompile Include="DrcEngine\Rules\CEntryIsDefinedRule.cpp" />
     <ClCompile Include="Models\CExpression.cpp" />
-    <ClCompile Include="Compiler\ExpressionEvaluation\CExpressionEvaluator.cpp" />
     <ClCompile Include="ParsingEngine\SubParsers\CExpressionParser.cpp" />
     <ClCompile Include="Models\CFunctionCall.cpp" />
     <ClCompile Include="ParsingEngine\SubParsers\CFunctionParser.cpp" />
@@ -394,7 +392,6 @@
     <QtMoc Include="Components\QLinkerScriptSession\CustomComponents\QIssuesTreeView.h" />
     <ClInclude Include="Components\QLinkerScriptSession\EditorAction\SEditorShowAutoCompletion.h" />
     <ClInclude Include="Components\QScintilla\scintilla\lexlib\Accessor.h" />
-    <ClInclude Include="Compiler\ExpressionEvaluation\ArithmeticOperationType.h" />
     <ClInclude Include="Components\QScintilla\scintilla\src\AutoComplete.h" />
     <ClInclude Include="Components\QScintilla\VlsScintilla.h" />
     <ClInclude Include="Components\QSearchPopup\SearchPerimeterTypeEnum.h" />
@@ -403,7 +400,6 @@
     <ClInclude Include="MD5\MD5_loc.h" />
     <ClInclude Include="Models\CComment.h" />
     <ClInclude Include="Models\ESeverityCode.h" />
-    <ClInclude Include="Compiler\ExpressionEvaluation\CArithmeticResultOp.h" />
     <ClInclude Include="Models\CIndentationInfo.h" />
     <ClInclude Include="ParsingEngine\CLexerViolation.h" />
     <ClInclude Include="ParsingEngine\ELexerViolationCode.h" />
@@ -413,16 +409,12 @@
     <ClInclude Include="Models\CAssignmentStatement.h" />
     <ClInclude Include="Messaging\UserInitiated\CCloseFileRequest.h" />
     <ClInclude Include="ParsingEngine\SubParsers\CCommandParser.h" />
-    <ClInclude Include="Compiler\CCompiler.h" />
-    <ClInclude Include="Compiler\ExpressionEvaluation\CCompoundResult.h" />
     <ClInclude Include="DrcEngine\Rules\CDirectivesDeclaredOnlyOnceRule.h" />
     <ClInclude Include="DrcEngine\CDrcManager.h" />
     <ClInclude Include="DrcEngine\CDrcViolation.h" />
     <ClInclude Include="DrcEngine\Rules\CEntryIsDefinedRule.h" />
-    <ClInclude Include="Compiler\ExpressionEvaluation\CEvaluatableBase.h" />
     <ClInclude Include="Messaging\CEventAggregator.h" />
     <ClInclude Include="Models\CExpression.h" />
-    <ClInclude Include="Compiler\ExpressionEvaluation\CExpressionEvaluator.h" />
     <ClInclude Include="Models\CExpressionNumber.h" />
     <ClInclude Include="Models\CExpressionOperator.h" />
     <ClInclude Include="ParsingEngine\SubParsers\CExpressionParser.h" />
@@ -432,7 +424,6 @@
     <ClInclude Include="Messaging\UserInitiated\CFindRequest.h" />
     <ClInclude Include="Components\MemoryVisualizer\Composition\CFloorPlan.h" />
     <ClInclude Include="Models\CFunctionCall.h" />
-    <ClInclude Include="Compiler\FunctionEvaluation\CFunctionEvaluatorBase.h" />
     <ClInclude Include="ParsingEngine\SubParsers\CFunctionParser.h" />
     <ClInclude Include="Models\CIncludeCommand.h" />
     <ClInclude Include="DrcEngine\Rules\CIncludeRecursionGuard.h" />
@@ -465,7 +456,6 @@
     <ClInclude Include="ParsingEngine\SubParsers\CMemoryStatementAttributeParser.h" />
     <ClInclude Include="DrcEngine\Rules\CNoDuplicateMemoryRegionNameRule.h" />
     <ClInclude Include="Messaging\General\CNotifyUserEvent.h" />
-    <ClInclude Include="Compiler\ExpressionEvaluation\CNumericResult.h" />
     <ClInclude Include="Messaging\UserInitiated\COpenFileRequest.h" />
     <ClInclude Include="Components\MemoryVisualizer\Composition\COverlayStatement.h" />
     <ClInclude Include="Components\MemoryVisualizer\Composition\COverlaySectionStatement.h" />
@@ -476,12 +466,10 @@
     <ClInclude Include="ParsingEngine\SubParsers\CPhdrsRegionParser.h" />
     <ClInclude Include="Models\CPhdrsStatement.h" />
     <ClInclude Include="Models\CProcedureCall.h" />
-    <ClInclude Include="Compiler\ProcedureExecution\CProcedureExecutorBase.h" />
     <ClInclude Include="Messaging\CPubSubEvent.h" />
     <ClInclude Include="Models\Raw\CRawEntry.h" />
     <ClInclude Include="Models\Raw\CRawFile.h" />
     <ClInclude Include="Messaging\UserInitiated\CRedoRequest.h" />
-    <ClInclude Include="Compiler\ExpressionEvaluation\CResultBase.h" />
     <ClInclude Include="Messaging\UserInitiated\CSaveFileRequest.h" />
     <ClInclude Include="ParsingEngine\SubParsers\CScopedRegionParser.h" />
     <ClInclude Include="ParsingEngine\SubParsers\CScopedRegionParser.tpp" />
@@ -506,7 +494,6 @@
     <ClInclude Include="Models\CStringEntry.h" />
     <ClInclude Include="ParsingEngine\SubParsers\CSubParserBase.h" />
     <ClInclude Include="Models\CSymbol.h" />
-    <ClInclude Include="Compiler\ExpressionEvaluation\CSymbolResult.h" />
     <ClInclude Include="DrcEngine\Rules\CSymbolsDefinedInAdvanceRule.h" />
     <ClInclude Include="Components\MemoryVisualizer\Composition\CTooltip.h" />
     <ClInclude Include="Messaging\UserInitiated\CUndoRequest.h" />
@@ -543,7 +530,6 @@
     <ClInclude Include="Components\QScintilla\scintilla\src\EditView.h" />
     <ClInclude Include="Components\QScintilla\scintilla\src\Editor.h" />
     <ClInclude Include="Components\QScintilla\scintilla\src\ElapsedPeriod.h" />
-    <ClInclude Include="Compiler\ExpressionEvaluation\EvaluationResultType.h" />
     <ClInclude Include="Components\QScintilla\scintilla\src\ExternalLexer.h" />
     <ClInclude Include="Components\QScintilla\scintilla\src\FontQuality.h" />
     <ClInclude Include="Helpers.h" />

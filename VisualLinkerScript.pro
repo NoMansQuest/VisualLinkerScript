@@ -10,8 +10,6 @@ CONFIG += c++17
 
 # The 'sources' tag is auto-generated from template
 SOURCES += \
-    Compiler\ExpressionEvaluation\CExpressionEvaluator.cpp \
-    Compiler\CCompiler.cpp \
     Components\InputDialogs\QJumpToLineDialog.cpp \
     Components\InputDialogs\QLabelAssistedInput.cpp \
     Components\InputDialogs\QListAssistedInput.cpp \
@@ -160,18 +158,6 @@ SOURCES += \
 
 # The 'headers' tag is auto-generated from template
 HEADERS += \
-    Compiler\ExpressionEvaluation\ArithmeticOperationType.h \
-    Compiler\ExpressionEvaluation\CArithmeticResultOp.h \
-    Compiler\ExpressionEvaluation\CCompoundResult.h \
-    Compiler\ExpressionEvaluation\CEvaluatableBase.h \
-    Compiler\ExpressionEvaluation\CExpressionEvaluator.h \
-    Compiler\ExpressionEvaluation\CNumericResult.h \
-    Compiler\ExpressionEvaluation\CResultBase.h \
-    Compiler\ExpressionEvaluation\CSymbolResult.h \
-    Compiler\ExpressionEvaluation\EvaluationResultType.h \
-    Compiler\FunctionEvaluation\CFunctionEvaluatorBase.h \
-    Compiler\ProcedureExecution\CProcedureExecutorBase.h \
-    Compiler\CCompiler.h \
     Components\InputDialogs\QJumpToLineDialog.h \
     Components\InputDialogs\QLabelAssistedInput.h \
     Components\InputDialogs\QListAssistedInput.h \
