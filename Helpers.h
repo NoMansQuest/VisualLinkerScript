@@ -182,16 +182,16 @@ namespace VisualLinkerScript
     namespace Graphical
     {
         /// @brief Self-explanatory .
-        qreal GetFontSizeFromMetric(const QWidget* targetWidget, double desiredHeightMilliMeters);
+        qreal GetFontSizeFromMetric(double dpiY, double desiredHeightMilliMeters);
 
         /// @brief Self-explanatory .
-        qreal GetPixelsInMetric(const QWidget* targetWidget, double desiredSizeInMilliMeters);
+        qreal GetPixelsInMetric(double dpi, double desiredSizeInMilliMeters);
 
         /// @brief Self-explanatory .
-        qreal GetMetricFromPixels(const QWidget* targetWidget, double desiredSizeInPixels);
+        qreal GetMetricFromPixels(double dpi, double desiredSizeInPixels);
 
         /// @brief Returns the width of the text (single-lined).
-        qreal GetTextWidth(const std::string& stringToMeasure, const QFontMetrics& fontMetrics);
+        qreal GetTextWidthInPixels(const std::string& stringToMeasure, const QFontMetrics& fontMetrics);
     }
 
 };

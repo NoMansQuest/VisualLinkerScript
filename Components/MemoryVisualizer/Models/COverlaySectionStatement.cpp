@@ -4,6 +4,8 @@ using namespace VisualLinkerScript;
 using namespace VisualLinkerScript::Components::MemoryVisualizer::Models;
 
 SMetricSizeF COverlaySectionStatement::CalculateDesiredSize(
+	const double dpiX,
+	const double dpiY,
 	const QFontMetrics& fontMetricsSmall,
 	const QFontMetrics& fontMetricsLarge)
 {
@@ -11,7 +13,7 @@ SMetricSizeF COverlaySectionStatement::CalculateDesiredSize(
 	double minimumMemoryBoxHeight = 4 + 4; // 4mm header + 4mm empty boxy content
 
 	// Top memory label
-	auto sectionStatementLabel = Graphical::GetTextWidth(this->Name(), fontMetricsSmall);
+	auto sectionStatementLabel = Graphical::GetTextWidthInPixels(this->Name(), fontMetricsSmall);
 	double calculatedContentWidth = (sectionStatementLabel * 1.5);
 	double calculatedHeight = minimumMemoryBoxHeight;
 
@@ -21,20 +23,20 @@ SMetricSizeF COverlaySectionStatement::CalculateDesiredSize(
 	{
 		for (const auto& programHeader : this->ProgramHeaders())
 		{
-			minimumWidth += programHeader.CalculateDesiredSize(fontMetricsSmall, fontMetricsLarge).CX();
+			minimumWidth += programHeader.CalculateDesiredSize(dpiX, dpiY, fontMetricsSmall, fontMetricsLarge).CX();
 		}
 	}
 
 	if (this->FillExpression().Defined())
 	{
-		minimumWidth += this->FillExpression().CalculateDesiredSize(fontMetricsSmall, fontMetricsLarge).CX();
+		minimumWidth += this->FillExpression().CalculateDesiredSize(dpiX, dpiY, fontMetricsSmall, fontMetricsLarge).CX();
 	}
 
 	if (!this->m_ChildContent.empty())
 	{
 		for (const auto& child : this->m_ChildContent)
 		{
-			auto childDesiredSize = child->CalculateDesiredSize(fontMetricsSmall, fontMetricsLarge);
+			auto childDesiredSize = child->CalculateDesiredSize(dpiX, dpiY, fontMetricsSmall, fontMetricsLarge);
 			calculatedContentWidth = std::max(calculatedContentWidth, childDesiredSize.CX());
 			calculatedHeight += childDesiredSize.CY();
 		}
@@ -43,7 +45,12 @@ SMetricSizeF COverlaySectionStatement::CalculateDesiredSize(
 	return SMetricSizeF(std::max(calculatedContentWidth, minimumWidth), calculatedHeight);
 }
 
-void COverlaySectionStatement::SetGeometry(SMetricRectangleF allocatedArea)
+void COverlaySectionStatement::SetGeometry(
+	SMetricRectangleF allocatedArea,
+	const double dpiX,
+	const double dpiY, 
+	const QFontMetrics& fontMetricsSmall,
+	const QFontMetrics& fontMetricsLarge)
 {
 
 }

@@ -32,6 +32,8 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 
 		/// Calculates the size of the area needed by the program header
 		SMetricSizeF CalculateDesiredSize(
+			const double dpiX,
+			const double dpiY,
 			const QFontMetrics& fontMetricsSmall,
 			const QFontMetrics& fontMetricsLarge) const;
 

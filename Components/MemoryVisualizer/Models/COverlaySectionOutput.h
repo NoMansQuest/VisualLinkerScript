@@ -26,11 +26,19 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 
 		/// @copydoc CAddressedRegion::CalculateDesiredSize
 		SMetricSizeF CalculateDesiredSize(
+			const double dpiX,
+			const double dpiY,
 			const QFontMetrics& fontMetricsSmall,
 			const QFontMetrics& fontMetricsLarge) override;
 
 		/// @copydoc CAddressedRegion::SetGeometry
-		void SetGeometry(SMetricRectangleF allocatedArea) override;
+		void SetGeometry(
+			SMetricRectangleF allocatedArea,
+			const double dpiX,
+			const double dpiY,
+			const QFontMetrics& fontMetricsSmall,
+			const QFontMetrics& fontMetricsLarge
+		) override;
 	};
 }
 

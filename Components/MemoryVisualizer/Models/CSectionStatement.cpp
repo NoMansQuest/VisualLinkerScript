@@ -6,6 +6,8 @@ using namespace VisualLinkerScript;
 using namespace VisualLinkerScript::Components::MemoryVisualizer::Models;
 
 SMetricSizeF CSectionStatement::CalculateDesiredSize(
+	const double dpiX,
+	const double dpiY,
 	const QFontMetrics& fontMetricsSmall,
 	const QFontMetrics& fontMetricsLarge)
 {
@@ -13,17 +15,17 @@ SMetricSizeF CSectionStatement::CalculateDesiredSize(
 	double minimumMemoryBoxHeight = 4 + 4; // 4mm header + 4mm empty boxy content
 
 	// Top memory label
-	auto topMemoryLabel = Graphical::GetTextWidth(this->Title(), fontMetricsSmall);
+	auto topMemoryLabel = Graphical::GetTextWidthInPixels(this->Title(), fontMetricsSmall);
 
 	// Left size address text
-	auto leftAddressTextSize = Graphical::GetTextWidth("0x0000000000000000", fontMetricsSmall);
+	auto leftAddressTextSize = Graphical::GetTextWidthInPixels("0x0000000000000000", fontMetricsSmall);
 	double leftAddressLine = 10; // 10mm = 1mm Space + 8mm Line + 1mm Space
 	double leftSizeTotal = leftAddressTextSize + leftAddressLine;
 
 	// Right side memory size lines
 	double rightSizeLine1 = 5;
 	double rightSizeLine2 = 5; // 5mm
-	double rightSizeText = Graphical::GetTextWidth("4096 Bytes", fontMetricsSmall);
+	double rightSizeText = Graphical::GetTextWidthInPixels("4096 Bytes", fontMetricsSmall);
 	double rightSizeTotal = rightSizeLine1 + rightSizeLine2 + rightSizeText;
 
 	double minimumWidth = leftSizeTotal + rightSizeTotal + (topMemoryLabel * 1.5);
@@ -32,13 +34,13 @@ SMetricSizeF CSectionStatement::CalculateDesiredSize(
 	{
 		for (const auto& programHeader : this->ProgramHeaders())
 		{
-			minimumWidth += programHeader.CalculateDesiredSize(fontMetricsSmall, fontMetricsLarge).CX();
+			minimumWidth += programHeader.CalculateDesiredSize(dpiX, dpiY, fontMetricsSmall, fontMetricsLarge).CX();
 		}
 	}
 
 	if (this->FillExpression().Defined())
 	{
-		minimumWidth += this->FillExpression().CalculateDesiredSize(fontMetricsSmall, fontMetricsLarge).CX();
+		minimumWidth += this->FillExpression().CalculateDesiredSize(dpiX, dpiY, fontMetricsSmall, fontMetricsLarge).CX();
 	}
 
 	double calculatedHeight = minimumMemoryBoxHeight;
@@ -48,7 +50,7 @@ SMetricSizeF CSectionStatement::CalculateDesiredSize(
 	{
 		for (const auto child : this->m_ChildOutputs)
 		{
-			auto childDesiredSize = child->CalculateDesiredSize(fontMetricsSmall, fontMetricsLarge);
+			auto childDesiredSize = child->CalculateDesiredSize(dpiX, dpiY, fontMetricsSmall, fontMetricsLarge);
 			maxContentWidth = std::max(maxContentWidth, childDesiredSize.CX());
 			calculatedHeight += childDesiredSize.CY();
 		}
@@ -57,7 +59,12 @@ SMetricSizeF CSectionStatement::CalculateDesiredSize(
 	return SMetricSizeF( std::max(maxContentWidth, minimumWidth), calculatedHeight);
 }
 
-void CSectionStatement::SetGeometry(SMetricRectangleF allocatedArea)
+void CSectionStatement::SetGeometry(
+		SMetricRectangleF allocatedArea,
+		const double dpiX,
+		const double dpiY, 
+		const QFontMetrics& fontMetricsSmall,
+		const QFontMetrics& fontMetricsLarge)
 {
 
 }

@@ -35,7 +35,19 @@ void QMemoryLayoutRender::RedrawDoubleBuffer()
     QPixmap newBuffer(size());
     QPainter painter(&newBuffer);
 
-    auto pixelsPer5mm = Graphical::GetPixelsInMetric(this, 5);
+    double dpiX = 0;
+	double dpiY = 0;
+    if (!this->screen())
+    {
+        dpiX = this->screen()->physicalDotsPerInchX();
+        dpiY = this->screen()->physicalDotsPerInchY();
+    }
+    else
+    {
+        qWarning("No screen provided!");
+    }
+
+    auto pixelsPer5mm = Graphical::GetPixelsInMetric(dpiX, 5);
     auto lastXPos = size().width() - 1;
     auto lastYPos = size().height() - 1;
 

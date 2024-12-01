@@ -31,6 +31,7 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 
         DECLARE_STANDARD_PROPERTY(SLineF, SizeMarkerUpperConnector)
         DECLARE_STANDARD_PROPERTY(SLineF, SizeMarkerLowerConnector)
+        DECLARE_STANDARD_PROPERTY(SLineF, SizeMarkerCenterConnector)
         DECLARE_STANDARD_PROPERTY(SLineF, SizeMarkerVerticalLine)
         DECLARE_STANDARD_PROPERTY(SLineF, SizeMarkerLabelLine)
         DECLARE_STANDARD_PROPERTY(SMetricRectangleF, SizeMarkerTextArea)
@@ -52,11 +53,18 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 
         /// @brief Calculate the minimum amount of space this region would need.
         virtual SMetricSizeF CalculateDesiredSize(
+            const double dpiX,
+            const double dpiY,
             const QFontMetrics& fontMetricsSmall,
             const QFontMetrics& fontMetricsLarge) = 0;
 
         /// @brief Updates the coordinates of all involved objects based on the given allocated area.
-        virtual void SetGeometry(SMetricRectangleF allocatedArea) = 0;
+        virtual void SetGeometry(
+            SMetricRectangleF allocatedArea,
+            const double dpiX,
+            const double dpiY,
+            const QFontMetrics& fontMetricsSmall,
+            const QFontMetrics& fontMetricsLarge) = 0;
     };
 }
 

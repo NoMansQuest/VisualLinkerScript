@@ -29,11 +29,18 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Models
 
 		/// Calculates the size of the area needed by the program header
 		SMetricSizeF CalculateDesiredSize(
+			const double dpiX,
+			const double dpiY,
 			const QFontMetrics& fontMetricsSmall,
 			const QFontMetrics& fontMetricsLarge) const;
 
 		/// Sets the allocated area where the program-header must be drawn.
-		void SetGeometry(SMetricRectangleF allocatedArea);
+		void SetGeometry(
+			SMetricRectangleF allocatedArea,
+			const double dpiX,
+			const double dpiY,
+			const QFontMetrics& fontMetricsSmall,
+			const QFontMetrics& fontMetricsLarge);
 	};
 }
 

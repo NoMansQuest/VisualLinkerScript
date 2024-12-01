@@ -1,11 +1,19 @@
 #include "CModelTranslator.h"
 
 using namespace VisualLinkerScript::Components::MemoryVisualizer;
+using namespace VisualLinkerScript::Components::MemoryVisualizer::Models;
 
 /// @copydoc
 std::shared_ptr<CFloorPlan> CModelTranslator::TranslateToFloorPlan(const CLinkerScriptFile& linkerScriptFile)
 {
-    auto translatedFloorPlan = std::make_shared<Models::CFloorPlan>(SharedPtrVector<CMemorySection>());
+	/*
+	QFont font("Tahoma, DejaVu Sans", 12);
+	font.setFamily("Arial, Helvetica, sans-serif"); // Specify primary and fallback fonts
+	QFontMetrics fontMetrics(font);
+	*/
+
+    auto translatedFloorPlan = std::make_shared<CFloorPlan>(SharedPtrVector<CMemorySection>());
+
     /*
     for (auto lsFile : linkerScriptFiles) {
         lsFile->
