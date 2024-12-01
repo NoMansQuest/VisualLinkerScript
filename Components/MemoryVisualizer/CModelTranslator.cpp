@@ -1,7 +1,9 @@
 #include "CModelTranslator.h"
 
+#include "Composition/CFloorPlan.h"
+
 using namespace VisualLinkerScript::Components::MemoryVisualizer;
-using namespace VisualLinkerScript::Components::MemoryVisualizer::Models;
+using namespace VisualLinkerScript::Components::MemoryVisualizer::Composition;
 
 /// @copydoc
 std::shared_ptr<CFloorPlan> CModelTranslator::TranslateToFloorPlan(const CLinkerScriptFile& linkerScriptFile)

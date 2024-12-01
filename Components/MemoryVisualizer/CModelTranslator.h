@@ -3,13 +3,17 @@
 
 #include <memory>
 #include "../../Models/CLinkerScriptFile.h"
-#include "Models/CFloorplan.h"
 
 namespace VisualLinkerScript::Components::MemoryVisualizer
 {
+	namespace Composition
+	{
+		class CFloorPlan;
+	}
+
 	using namespace VisualLinkerScript;
 	using namespace VisualLinkerScript::Models;
-	using namespace VisualLinkerScript::Components::MemoryVisualizer::Models;
+	using namespace VisualLinkerScript::Components::MemoryVisualizer::Composition;
 
 	class CModelTranslator
 	{

@@ -7,7 +7,7 @@
 
 #include "Helpers.h"
 
-namespace VisualLinkerScript::Components::MemoryVisualizer::Models
+namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 {
 	class CMemorySection;
 }
@@ -16,7 +16,7 @@ class QTextEdit;
 class QPushButton;
 
 using namespace VisualLinkerScript;
-using namespace VisualLinkerScript::Components::MemoryVisualizer::Models;
+using namespace VisualLinkerScript::Components::MemoryVisualizer::Composition;
 
 /// @brief Linker Script Memory Layout Visualizer
 class QMemoryLayoutRender : public QFrame

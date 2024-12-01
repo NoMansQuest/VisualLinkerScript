@@ -214,17 +214,17 @@
       <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Release|x64'">input</DynamicSource>
       <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).moc</QtMocFileName>
     </ClCompile>
-    <ClCompile Include="Components\MemoryVisualizer\Models\CFillExpressionButton.cpp" />
-    <ClCompile Include="Components\MemoryVisualizer\Models\CFloorPlan.cpp" />
-    <ClCompile Include="Components\MemoryVisualizer\Models\CMemorySection.cpp" />
-    <ClCompile Include="Components\MemoryVisualizer\Models\COverlaySectionOutput.cpp" />
-    <ClCompile Include="Components\MemoryVisualizer\Models\COverlaySectionOutput.h" />
-    <ClCompile Include="Components\MemoryVisualizer\Models\COverlaySectionStatement.cpp" />
-    <ClCompile Include="Components\MemoryVisualizer\Models\COverlayStatement.cpp" />
-    <ClCompile Include="Components\MemoryVisualizer\Models\CProgramHeaderButton.cpp" />
-    <ClCompile Include="Components\MemoryVisualizer\Models\CSectionOutput.cpp" />
-    <ClCompile Include="Components\MemoryVisualizer\Models\CSectionStatement.cpp" />
-    <ClCompile Include="Components\MemoryVisualizer\Models\SLineF.h" />
+    <ClCompile Include="Components\MemoryVisualizer\Composition\CFillExpressionButton.cpp" />
+    <ClCompile Include="Components\MemoryVisualizer\Composition\CFloorPlan.cpp" />
+    <ClCompile Include="Components\MemoryVisualizer\Composition\CMemorySection.cpp" />
+    <ClCompile Include="Components\MemoryVisualizer\Composition\COverlaySectionOutput.cpp" />
+    <ClCompile Include="Components\MemoryVisualizer\Composition\COverlaySectionOutput.h" />
+    <ClCompile Include="Components\MemoryVisualizer\Composition\COverlaySectionStatement.cpp" />
+    <ClCompile Include="Components\MemoryVisualizer\Composition\COverlayStatement.cpp" />
+    <ClCompile Include="Components\MemoryVisualizer\Composition\CProgramHeaderButton.cpp" />
+    <ClCompile Include="Components\MemoryVisualizer\Composition\CSectionOutput.cpp" />
+    <ClCompile Include="Components\MemoryVisualizer\Composition\CSectionStatement.cpp" />
+    <ClCompile Include="Components\MemoryVisualizer\Composition\SLineF.h" />
     <ClCompile Include="Components\MemoryVisualizer\QMemoryLayoutRender.cpp" />
     <ClCompile Include="Components\QLinkerScriptSession\AutoStyling\CAutoStyler.cpp" />
     <ClCompile Include="Components\QLinkerScriptSession\EditorAction\SEditorRemoveLine.h" />
@@ -373,16 +373,16 @@
     <QtMoc Include="Components\QFlatCheckBox\QFlatCheckBox.h" />
     <QtMoc Include="Components\InputDialogs\QLabelAssistedInput.h" />
     <QtMoc Include="Components\InputDialogs\QJumpToLineDialog.h" />
-    <ClInclude Include="Components\MemoryVisualizer\Models\CAddressedRegion.h" />
-    <ClInclude Include="Components\MemoryVisualizer\Models\CFillExpressionButton.h" />
-    <ClInclude Include="Components\MemoryVisualizer\Models\CInteractiveObject.h" />
-    <ClInclude Include="Components\MemoryVisualizer\Models\CProgramHeaderButton.h" />
-    <ClInclude Include="Components\MemoryVisualizer\Models\CSectionDefinitionBase.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Composition\CAddressedRegion.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Composition\CFillExpressionButton.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Composition\CInteractiveObject.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Composition\CProgramHeaderButton.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Composition\CSectionDefinitionBase.h" />
     <QtMoc Include="Components\MemoryVisualizer\QMemoryLayoutRender.h" />
-    <ClInclude Include="Components\MemoryVisualizer\Models\CModelMappedObject.h" />
-    <ClInclude Include="Components\MemoryVisualizer\Models\SModelSelectionRange.h" />
-    <ClInclude Include="Components\MemoryVisualizer\Models\SMetricSizeF.h" />
-    <ClInclude Include="Components\MemoryVisualizer\Models\SPixelSizeF.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Composition\CModelMappedObject.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Composition\SModelSelectionRange.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Composition\SMetricSizeF.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Composition\SPixelSizeF.h" />
     <ClInclude Include="Components\QLinkerScriptSession\AutoStyling\CAutoStyler.h" />
     <ClInclude Include="Components\QLinkerScriptSession\EditorAction\EEditorActionType.h" />
     <ClInclude Include="Components\QLinkerScriptSession\EditorAction\SEditorActionBase.h" />
@@ -430,7 +430,7 @@
     <ClInclude Include="Messaging\LinkerScriptManager\CFileWasOpenedEvent.h" />
     <ClInclude Include="Messaging\UserInitiated\CFindReplaceRequest.h" />
     <ClInclude Include="Messaging\UserInitiated\CFindRequest.h" />
-    <ClInclude Include="Components\MemoryVisualizer\Models\CFloorPlan.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Composition\CFloorPlan.h" />
     <ClInclude Include="Models\CFunctionCall.h" />
     <ClInclude Include="Compiler\FunctionEvaluation\CFunctionEvaluatorBase.h" />
     <ClInclude Include="ParsingEngine\SubParsers\CFunctionParser.h" />
@@ -454,12 +454,12 @@
     <ClInclude Include="DrcEngine\Rules\CLocationCounterCannotGoBackwardsRule.h" />
     <ClInclude Include="ParsingEngine\CLinkerScriptParser.h" />
     <ClInclude Include="ParsingEngine\CMasterParserException.h" />
-    <ClInclude Include="Components\MemoryVisualizer\Models\CMemorySection.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Composition\CMemorySection.h" />
     <ClInclude Include="Models\CMemoryRegion.h" />
     <ClInclude Include="ParsingEngine\SubParsers\CMemoryRegionContentParser.h" />
     <ClInclude Include="DrcEngine\Rules\CMemoryRegionDefinedOnlyOnceRule.h" />
     <ClInclude Include="ParsingEngine\SubParsers\CMemoryRegionParser.h" />
-    <ClInclude Include="Components\MemoryVisualizer\Models\CSectionStatement.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Composition\CSectionStatement.h" />
     <ClInclude Include="Models\CMemoryStatement.h" />
     <ClInclude Include="Models\CMemoryStatementAttribute.h" />
     <ClInclude Include="ParsingEngine\SubParsers\CMemoryStatementAttributeParser.h" />
@@ -467,8 +467,8 @@
     <ClInclude Include="Messaging\General\CNotifyUserEvent.h" />
     <ClInclude Include="Compiler\ExpressionEvaluation\CNumericResult.h" />
     <ClInclude Include="Messaging\UserInitiated\COpenFileRequest.h" />
-    <ClInclude Include="Components\MemoryVisualizer\Models\COverlayStatement.h" />
-    <ClInclude Include="Components\MemoryVisualizer\Models\COverlaySectionStatement.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Composition\COverlayStatement.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Composition\COverlaySectionStatement.h" />
     <ClInclude Include="Models\CParameterSeparator.h" />
     <ClInclude Include="ParsingEngine\CParserViolation.h" />
     <ClInclude Include="Models\CPhdrsRegion.h" />
@@ -485,7 +485,7 @@
     <ClInclude Include="Messaging\UserInitiated\CSaveFileRequest.h" />
     <ClInclude Include="ParsingEngine\SubParsers\CScopedRegionParser.h" />
     <ClInclude Include="ParsingEngine\SubParsers\CScopedRegionParser.tpp" />
-    <ClInclude Include="Components\MemoryVisualizer\Models\CSectionOutput.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Composition\CSectionOutput.h" />
     <ClInclude Include="Models\CSectionOutputAtLmaRegion.h" />
     <ClInclude Include="Models\CSectionOutputCommand.h" />
     <ClInclude Include="ParsingEngine\SubParsers\CSectionOutputCommandParser.h" />
@@ -508,7 +508,7 @@
     <ClInclude Include="Models\CSymbol.h" />
     <ClInclude Include="Compiler\ExpressionEvaluation\CSymbolResult.h" />
     <ClInclude Include="DrcEngine\Rules\CSymbolsDefinedInAdvanceRule.h" />
-    <ClInclude Include="Components\MemoryVisualizer\Models\CTooltip.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Composition\CTooltip.h" />
     <ClInclude Include="Messaging\UserInitiated\CUndoRequest.h" />
     <ClInclude Include="Models\CUnrecognizableContent.h" />
     <ClInclude Include="Models\CVersionNode.h" />
@@ -537,7 +537,7 @@
     <ClInclude Include="DrcEngine\DrcCommons.h" />
     <ClInclude Include="DrcEngine\EDrcViolationCode.h" />
     <ClInclude Include="Components\MemoryVisualizer\EInsertObjectType.h" />
-    <ClInclude Include="Components\MemoryVisualizer\Models\EObjectState.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Composition\EObjectState.h" />
     <ClInclude Include="ParsingEngine\EParserViolationCode.h" />
     <ClInclude Include="Components\QScintilla\scintilla\src\EditModel.h" />
     <ClInclude Include="Components\QScintilla\scintilla\src\EditView.h" />
@@ -589,8 +589,8 @@
     <ClInclude Include="Models\Raw\RawEntryType.h" />
     <ClInclude Include="Components\QScintilla\scintilla\src\RunStyles.h" />
     <ClInclude Include="Components\MemoryVisualizer\SBackendResponse.h" />
-    <ClInclude Include="Components\MemoryVisualizer\Models\SMetricPointF.h" />
-    <ClInclude Include="Components\MemoryVisualizer\Models\SMetricRectangleF.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Composition\SMetricPointF.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Composition\SMetricRectangleF.h" />
     <ClInclude Include="Components\QScintilla\src\SciAccessibility.h" />
     <QtMoc Include="Components\QScintilla\src\SciClasses.h">
     </QtMoc>
