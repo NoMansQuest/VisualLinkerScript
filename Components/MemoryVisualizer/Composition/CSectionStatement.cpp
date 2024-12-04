@@ -5,6 +5,27 @@
 using namespace VisualLinkerScript;
 using namespace VisualLinkerScript::Components::MemoryVisualizer::Composition;
 
+constexpr double marginTextFromHeaderTop = 1;
+constexpr double marginTextFromHeaderBottom = 1;
+constexpr double marginTextFromHeaderLeft = 1;
+
+constexpr double marginSectionOutputFromTop = 1;
+constexpr double marginSectionOutputSpacing = 1;
+constexpr double marginSectionOutputLeft = 1;
+
+constexpr double addressStartConnectingLineLengthMm = 10;
+constexpr double addrssStartTextToLineHSpaceMm = 5;
+constexpr double sizeMarkerFirstLineLengthMm = 5;
+constexpr double sizeMarkerSecondLineLengthMm = 5;
+
+constexpr double programHeaderMarginTop = 0.5;
+constexpr double programHeaderMarginBottom = 0.5;
+constexpr double programHeaderMarginRight = 1;
+constexpr double programHeaderSpacing = 1;
+
+constexpr double headerBoxHeight = 4;
+constexpr double minimumContentAreaHeight = 4;
+
 SMetricSizeF CSectionStatement::CalculateBodySize(
 	const double dpiX,
 	const double dpiY,
@@ -12,20 +33,20 @@ SMetricSizeF CSectionStatement::CalculateBodySize(
 	const QFontMetrics& fontMetricsLarge)
 {
 	// Constants
-	double minimumMemoryBoxHeight = 4 + 4; // 4mm header + 4mm empty boxy content
+	double minimumSectionStatementBoxHeight = headerBoxHeight + minimumContentAreaHeight; // 4mm header + 4mm empty boxy content
 
 	// Top memory label
-	auto topMemoryLabel = Graphical::GetTextWidthInPixels(this->Title(), fontMetricsSmall);
+	auto topMemoryLabel = Graphical::GetMetricFromPixels(dpiX, Graphical::GetTextWidthInPixels(this->Title(), fontMetricsSmall));
 
 	// Left size address text
-	auto leftAddressTextSize = Graphical::GetTextWidthInPixels("0x0000000000000000", fontMetricsSmall);
+	auto leftAddressTextSize = Graphical::GetMetricFromPixels(dpiX, Graphical::GetTextWidthInPixels(this->AddressStartText(), fontMetricsSmall));
 	double leftAddressLine = 10; // 10mm = 1mm Space + 8mm Line + 1mm Space
 	double leftSizeTotal = leftAddressTextSize + leftAddressLine;
 
 	// Right side memory size lines
 	double rightSizeLine1 = 5;
 	double rightSizeLine2 = 5; // 5mm
-	double rightSizeText = Graphical::GetTextWidthInPixels("4096 Bytes", fontMetricsSmall);
+	double rightSizeText = Graphical::GetMetricFromPixels(dpiX, Graphical::GetTextWidthInPixels(this->SizeMarkerText(), fontMetricsSmall));
 	double rightSizeTotal = rightSizeLine1 + rightSizeLine2 + rightSizeText;
 
 	double minimumWidth = leftSizeTotal + rightSizeTotal + (topMemoryLabel * 1.5);
@@ -43,16 +64,18 @@ SMetricSizeF CSectionStatement::CalculateBodySize(
 		minimumWidth += this->FillExpression().CalculateBodySize(dpiX, dpiY, fontMetricsSmall, fontMetricsLarge).CX();
 	}
 
-	double calculatedHeight = minimumMemoryBoxHeight;
+	double calculatedHeight = minimumSectionStatementBoxHeight;
 	double maxContentWidth = 0;
 
 	if (!this->m_ChildOutputs.empty())
 	{
-		for (const auto child : this->m_ChildOutputs)
+		calculatedHeight -= minimumContentAreaHeight + marginSectionOutputFromTop;
+
+		for (const auto& child : this->m_ChildOutputs)
 		{
 			auto childDesiredSize = child->CalculateBodySize(dpiX, dpiY, fontMetricsSmall, fontMetricsLarge);
 			maxContentWidth = std::max(maxContentWidth, childDesiredSize.CX());
-			calculatedHeight += childDesiredSize.CY();
+			calculatedHeight += childDesiredSize.CY() + marginSectionOutputSpacing;
 		}
 	}
 
@@ -65,6 +88,151 @@ void CSectionStatement::SetBodyPosition(
 		const double dpiY, 
 		const QFontMetrics& fontMetricsSmall,
 		const QFontMetrics& fontMetricsLarge)
+{
+	auto calculatedDesiredSize = this->CalculateBodySize(dpiX, dpiY, fontMetricsSmall, fontMetricsLarge);
+	auto currentYHolder = allocatedArea.Top();
+
+	this->SetHeaderArea(SMetricRectangleF(allocatedArea.Left(), currentYHolder, allocatedArea.Width(), headerBoxHeight));
+	
+	auto topLabelRect =
+		SMetricRectangleF(fontMetricsLarge.boundingRect(QString::fromStdString(this->Title())), dpiX, dpiY)
+		.Offset(allocatedArea.Left() + marginTextFromHeaderLeft, this->HeaderArea().Top() + marginTextFromHeaderTop);
+
+	this->SetTitleArea(topLabelRect);
+
+	currentYHolder += headerBoxHeight + marginSectionOutputFromTop;	
+	auto sectionStatementTop = allocatedArea.Top();
+
+	if (!this->m_ChildOutputs.empty())
+	{
+		for (const auto& child : this->m_ChildOutputs)
+		{
+			auto childDesiredSize = child->CalculateBodySize(dpiX, dpiY, fontMetricsSmall, fontMetricsLarge);
+			child->SetBodyPosition(
+				SMetricRectangleF(allocatedArea.Left() + marginSectionOutputLeft, currentYHolder, allocatedArea.Width() - (2*marginSectionOutputLeft) , childDesiredSize.CY()),
+				dpiX,
+				dpiY,
+				fontMetricsSmall,
+				fontMetricsLarge);
+
+			currentYHolder += childDesiredSize.CY() + marginSectionOutputSpacing;
+		}
+	}
+
+	double sectionStatementBottom = currentYHolder;
+	double sectionStatementHeight = sectionStatementBottom - allocatedArea.Top();
+
+	this->SetBodyArea(SMetricRectangleF(allocatedArea.Left(), allocatedArea.Top(), calculatedDesiredSize.CX(), sectionStatementHeight));
+
+	// Set fill-expression and program-headers
+	auto programHeaderTopYPos = allocatedArea.Top() + programHeaderMarginTop;
+	auto programHeaderRightXPos = allocatedArea.Right() - programHeaderMarginRight;
+
+	for (auto programHeader : this->ProgramHeaders())
+	{
+		auto calculatedProgramHeader = programHeader.CalculateBodySize(dpiX, dpiY, fontMetricsSmall, fontMetricsLarge);		
+		programHeader.SetBodyPosition(
+			SMetricRectangleF(
+				programHeaderRightXPos - calculatedProgramHeader.CX(),
+				programHeaderTopYPos,
+				calculatedProgramHeader.CX(),
+				calculatedProgramHeader.CY()),
+			dpiX,
+			dpiY,
+			fontMetricsSmall,
+			fontMetricsLarge);
+
+		programHeaderRightXPos -= calculatedProgramHeader.CX() - programHeaderSpacing;
+	}
+
+	if (this->FillExpression().Defined())
+	{
+		auto calculatedProgramHeader = this->FillExpression().CalculateBodySize(dpiX, dpiY, fontMetricsSmall, fontMetricsLarge);
+		this->FillExpression().SetBodyPosition(
+			SMetricRectangleF(
+				programHeaderRightXPos - calculatedProgramHeader.CX(),
+				programHeaderTopYPos,
+				calculatedProgramHeader.CX(),
+				calculatedProgramHeader.CY()),
+			dpiX,
+			dpiY,
+			fontMetricsSmall,
+			fontMetricsLarge);
+
+		programHeaderRightXPos -= calculatedProgramHeader.CX() - programHeaderSpacing;
+	}
+
+	// Set address start and top markers		
+	auto addressStartTextWidth = Graphical::GetMetricFromPixels(dpiX, fontMetricsSmall.horizontalAdvance(QString::fromStdString(this->AddressStartText())));
+	auto addressEndTextWidth = Graphical::GetMetricFromPixels(dpiX, fontMetricsSmall.horizontalAdvance(QString::fromStdString(this->AddressEndText())));
+	auto sizeMarkerTextWidth = Graphical::GetMetricFromPixels(dpiX, fontMetricsSmall.horizontalAdvance(QString::fromStdString(this->SizeMarkerText())));
+
+	this->SetAddressStartTextArea(
+		SMetricRectangleF(
+			allocatedArea.Left() - addressStartConnectingLineLengthMm - addressStartTextWidth - addrssStartTextToLineHSpaceMm,
+			sectionStatementTop - Graphical::GetMetricFromPixels(dpiY, static_cast<double>(fontMetricsSmall.height()) / 2),
+			addressStartTextWidth,
+			Graphical::GetMetricFromPixels(dpiY, fontMetricsSmall.height())));
+
+	this->SetAddressStartConnectingLine(
+		SLineF(
+			this->AddressEndTextArea().Right() + addressStartConnectingLineLengthMm,
+			this->BodyArea().Top() - Graphical::GetMetricFromPixels(dpiY, static_cast<double>(fontMetricsSmall.height()) / 2),
+			this->BodyArea().Right() + sizeMarkerFirstLineLengthMm,
+			this->BodyArea().Top() - Graphical::GetMetricFromPixels(dpiY, static_cast<double>(fontMetricsSmall.height()) / 2)));
+
+	this->SetAddressEndTextArea(
+		SMetricRectangleF(
+			allocatedArea.Left() - addressStartConnectingLineLengthMm - addressEndTextWidth - addrssStartTextToLineHSpaceMm,
+			sectionStatementTop - Graphical::GetMetricFromPixels(dpiY, static_cast<double>(fontMetricsSmall.height()) / 2),
+			addressEndTextWidth,
+			Graphical::GetMetricFromPixels(dpiY, fontMetricsSmall.height())));
+
+	this->SetAddressEndConnctingLine(
+		SLineF(
+			this->AddressEndTextArea().Right() + addressEndTextWidth,
+			this->BodyArea().Bottom() - Graphical::GetMetricFromPixels(dpiY, static_cast<double>(fontMetricsSmall.height()) / 2),
+			this->BodyArea().Right() + sizeMarkerFirstLineLengthMm,
+			this->BodyArea().Bottom() - Graphical::GetMetricFromPixels(dpiY, static_cast<double>(fontMetricsSmall.height()) / 2)));
+
+	// Set size marker
+	this->SetSizeMarkerTextArea(
+		SMetricRectangleF(
+			this->BodyArea().Right() + sizeMarkerFirstLineLengthMm + sizeMarkerSecondLineLengthMm,
+			sectionStatementTop - Graphical::GetMetricFromPixels(dpiY, static_cast<double>(fontMetricsSmall.height()) / 2),
+			sizeMarkerTextWidth,
+			Graphical::GetMetricFromPixels(dpiY, fontMetricsSmall.height())));
+
+	this->SetSizeMarkerUpperConnector(
+		SLineF(
+			this->BodyArea().Right(),
+			this->BodyArea().Top(),
+			this->BodyArea().Right() + sizeMarkerFirstLineLengthMm,
+			this->BodyArea().Top()));
+
+	this->SetSizeMarkerUpperConnector(
+		SLineF(
+			this->BodyArea().Right(),
+			this->BodyArea().Bottom(),
+			this->BodyArea().Right() + sizeMarkerFirstLineLengthMm,
+			this->BodyArea().Bottom()));
+
+	this->SetSizeMarkerVerticalLine(
+		SLineF(
+			this->BodyArea().Right() + sizeMarkerFirstLineLengthMm,
+			this->BodyArea().Top(),
+			this->BodyArea().Right() + sizeMarkerFirstLineLengthMm,
+			this->BodyArea().Bottom()));
+
+	this->SetSizeMarkerCenterConnector(
+		SLineF(
+			this->BodyArea().Right() + sizeMarkerFirstLineLengthMm,
+			this->BodyArea().Center().Y(),
+			this->BodyArea().Right() + sizeMarkerFirstLineLengthMm + sizeMarkerSecondLineLengthMm,
+			this->BodyArea().Center().Y()));
+}
+
+void CSectionStatement::Paint(const QPainter& painter)
 {
 
 }

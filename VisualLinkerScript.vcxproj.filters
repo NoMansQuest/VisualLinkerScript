@@ -506,6 +506,9 @@
     <ClCompile Include="Components\MemoryVisualizer\Composition\CFillExpressionButton.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="Components\MemoryVisualizer\Composition\CTooltip.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Components\QScintilla\scintilla\lexlib\Accessor.h">
@@ -1205,6 +1208,12 @@
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="Components\MemoryVisualizer\Composition\SPixelSizeF.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\MemoryVisualizer\Composition\CDrawableObjectBase.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\MemoryVisualizer\Composition\CGraphicContext.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>

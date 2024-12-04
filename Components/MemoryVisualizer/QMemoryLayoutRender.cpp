@@ -37,7 +37,7 @@ void QMemoryLayoutRender::RedrawDoubleBuffer()
 
     double dpiX = 0;
 	double dpiY = 0;
-    if (!this->screen())
+    if (this->screen())
     {
         dpiX = this->screen()->physicalDotsPerInchX();
         dpiY = this->screen()->physicalDotsPerInchY();
@@ -45,6 +45,7 @@ void QMemoryLayoutRender::RedrawDoubleBuffer()
     else
     {
         qWarning("No screen provided!");
+        return;
     }
 
     auto pixelsPer5mm = Graphical::GetPixelsInMetric(dpiX, 5);

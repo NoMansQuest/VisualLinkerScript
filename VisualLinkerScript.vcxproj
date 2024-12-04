@@ -224,6 +224,7 @@
     <ClCompile Include="Components\MemoryVisualizer\Composition\CProgramHeaderButton.cpp" />
     <ClCompile Include="Components\MemoryVisualizer\Composition\CSectionOutput.cpp" />
     <ClCompile Include="Components\MemoryVisualizer\Composition\CSectionStatement.cpp" />
+    <ClCompile Include="Components\MemoryVisualizer\Composition\CTooltip.cpp" />
     <ClCompile Include="Components\MemoryVisualizer\Composition\SLineF.h" />
     <ClCompile Include="Components\MemoryVisualizer\QMemoryLayoutRender.cpp" />
     <ClCompile Include="Components\QLinkerScriptSession\AutoStyling\CAutoStyler.cpp" />
@@ -373,11 +374,13 @@
     <QtMoc Include="Components\InputDialogs\QJumpToLineDialog.h" />
     <ClInclude Include="Components\MemoryVisualizer\Composition\CAddressedRegion.h" />
     <ClInclude Include="Components\MemoryVisualizer\Composition\CFillExpressionButton.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Composition\CGraphicContext.h" />
     <ClInclude Include="Components\MemoryVisualizer\Composition\CInteractiveObject.h" />
     <ClInclude Include="Components\MemoryVisualizer\Composition\CProgramHeaderButton.h" />
     <ClInclude Include="Components\MemoryVisualizer\Composition\CSectionDefinitionBase.h" />
     <QtMoc Include="Components\MemoryVisualizer\QMemoryLayoutRender.h" />
     <ClInclude Include="Components\MemoryVisualizer\Composition\CModelMappedObject.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Composition\CDrawableObjectBase.h" />
     <ClInclude Include="Components\MemoryVisualizer\Composition\SModelSelectionRange.h" />
     <ClInclude Include="Components\MemoryVisualizer\Composition\SMetricSizeF.h" />
     <ClInclude Include="Components\MemoryVisualizer\Composition\SPixelSizeF.h" />

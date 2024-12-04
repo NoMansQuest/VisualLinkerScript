@@ -39,6 +39,9 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
             m_OverlaySections(std::move(childSections))
         {}
 
+        /// @copydoc CDrawableObjectBase::Paint
+        void Paint(const QPainter& painter) override;
+
         /// @copydoc CAddressedRegion::CalculateBodySize
         SMetricSizeF CalculateBodySize(
             const double dpiX,

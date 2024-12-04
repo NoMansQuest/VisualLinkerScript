@@ -36,6 +36,8 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
     		m_ChildOutputs(childOutputs)
         {}
 
+        /// @copydoc CDrawableObjectBase::Paint
+        void Paint(const QPainter& painter) override;
 
         /// @copydoc CAddressedRegion::CalculateBodySize
         SMetricSizeF CalculateBodySize(

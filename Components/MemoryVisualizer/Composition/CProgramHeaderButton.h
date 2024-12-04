@@ -1,6 +1,7 @@
 #ifndef CPROGRAM_HEADER_H__
 #define CPROGRAM_HEADER_H__
 
+#include "CDrawableObjectBase.h"
 #include "CInteractiveObject.h"
 #include "CModelMappedObject.h"
 #include "Helpers.h"
@@ -13,19 +14,23 @@ class QFontMetrics;
 namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 {
 	/// @brief Represents an 'ProgramHeader' object, found in many places
-	class CProgramHeaderButton : public CModelMappedObject, public CInteractiveObject
+	class CProgramHeaderButton : public CModelMappedObject, public CInteractiveObject, public CDrawableObjectBase
 	{
-		DECLARE_READONLY_PROPERTY(std::string, ProgramHeader)		
-		DECLARE_STANDARD_PROPERTY(SMetricRectangleF, ProgramHeaderArea)
+		DECLARE_READONLY_PROPERTY(std::string, ProgramHeaderText)		
+		DECLARE_STANDARD_PROPERTY(SMetricRectangleF, ProgramHeaderTextArea)
+		DECLARE_STANDARD_PROPERTY(SMetricRectangleF, BodyArea)
 
 		/// @brief Default constructor.
 		CProgramHeaderButton(
-				std::string programHeader, 
+				std::string programHeaderText, 
 				const uint32_t inModelStartPosition, 
 				const uint32_t inModelLength) :
 			CModelMappedObject(inModelStartPosition, inModelLength),
-			m_ProgramHeader(std::move(programHeader))
+			m_ProgramHeaderText(std::move(programHeaderText))
 		{}
+
+		/// @copydoc CDrawableObjectBase::Paint
+		void Paint(const QPainter& painter) override;
 
 		/// Calculates the size of the area needed by the program header
 		SMetricSizeF CalculateBodySize(
@@ -36,7 +41,7 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 
 		/// Sets the allocated area where the program-header must be drawn.
 		void SetBodyPosition(
-			SMetricRectangleF allocatedArea,
+			const SMetricRectangleF& allocatedArea,
 			const double dpiX,
 			const double dpiY,
 			const QFontMetrics& fontMetricsSmall,

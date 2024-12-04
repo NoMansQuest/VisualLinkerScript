@@ -49,5 +49,7 @@ void CFloorPlan::SetBodyPosition(
 	}
 }
 
+void CFloorPlan::Paint(const QPainter& painter)
+{
 
-
+}

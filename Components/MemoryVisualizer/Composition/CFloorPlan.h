@@ -12,7 +12,7 @@ class QFontMetrics;
 namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 {
     /// @brief Represents a Linker-Script object.
-    class CFloorPlan
+    class CFloorPlan : public CDrawableObjectBase
     {
         DECLARE_READONLY_PROPERTY(SharedPtrVector<CMemorySection>, MemorySections)
 
@@ -24,6 +24,9 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
         {}
 
     public:
+        /// @copydoc CDrawableObjectBase::Paint
+        void Paint(const QPainter& painter) override;
+
         /// @brief Calculate the minimum amount of space this region would need.
         SMetricSizeF CalculateBodySize(
             const double dpiX,

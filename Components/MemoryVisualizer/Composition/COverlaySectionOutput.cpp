@@ -1,8 +1,10 @@
 #include "COverlaySectionOutput.h"
 
-
 using namespace VisualLinkerScript;
 using namespace VisualLinkerScript::Components::MemoryVisualizer::Composition;
+
+constexpr double marginTextToLeftInMm = 1;
+constexpr double marginTextFromTopInMm = 1;
 
 SMetricSizeF COverlaySectionOutput::CalculateBodySize(
 	const double dpiX,
@@ -10,11 +12,13 @@ SMetricSizeF COverlaySectionOutput::CalculateBodySize(
 	const QFontMetrics& fontMetricsSmall,
 	const QFontMetrics& fontMetricsLarge)
 {
-	double minimumMemoryBoxHeight = 1 + 1 + 2; // 1mm top border, 1mm bottom border, 2mm text height	
-	auto contentWidth = Graphical::GetTextWidthInPixels(this->m_Content, fontMetricsSmall);
-	double calculatedWidth = contentWidth * 1.5;
-	double calculatedHeight = minimumMemoryBoxHeight;
-	return SMetricSizeF(calculatedWidth, calculatedHeight);
+	const auto titleBoundingRect = fontMetricsSmall.boundingRect(QString::fromStdString(this->Content()));
+	const auto titleBoundingRectMetric = SMetricRectangleF(titleBoundingRect, dpiX, dpiY);	
+	const double calculatedWidth = titleBoundingRectMetric.Width() * 1.5;
+	const double calculatedHeight = titleBoundingRectMetric.Height();
+	return SMetricSizeF(
+		calculatedWidth + (2 * marginTextToLeftInMm),
+		calculatedHeight + (2 * marginTextFromTopInMm));
 }
 
 void COverlaySectionOutput::SetBodyPosition(
@@ -23,6 +27,15 @@ void COverlaySectionOutput::SetBodyPosition(
 	const double dpiY, 
 	const QFontMetrics& fontMetricsSmall,
 	const QFontMetrics& fontMetricsLarge)
+{
+	this->SetBodyArea(allocatedArea);
+	auto titleBoundingRect = fontMetricsSmall.boundingRect(QString::fromStdString(this->Content()));
+	auto titleBoundingRectMetric = SMetricRectangleF(titleBoundingRect, dpiX, dpiY);
+	auto alignedBoundingRectMetric = titleBoundingRectMetric.Offset(allocatedArea.Left() + marginTextToLeftInMm, allocatedArea.Top() + marginTextFromTopInMm);
+	this->SetContentArea(alignedBoundingRectMetric);
+}
+
+void COverlaySectionOutput::Paint(const QPainter& painter)
 {
 
 }

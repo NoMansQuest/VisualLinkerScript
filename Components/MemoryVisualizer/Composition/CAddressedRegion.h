@@ -5,6 +5,7 @@
 #include <string>
 #include <cstdint>
 
+#include "CDrawableObjectBase.h"
 #include "CInteractiveObject.h"
 #include "CModelMappedObject.h"
 #include "SLineF.h"
@@ -16,7 +17,7 @@ class QFontMetrics;
 namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 {
     /// @brief Represents an object that holds a start, end and size.
-    class CAddressedRegion : public CModelMappedObject, public CInteractiveObject
+    class CAddressedRegion : public CModelMappedObject, public CInteractiveObject, public CDrawableObjectBase
     {
         DECLARE_READONLY_PROPERTY(bool, StartAddressKnown)
         DECLARE_READONLY_PROPERTY(bool, EndAddressKnown)
@@ -36,6 +37,7 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
         DECLARE_STANDARD_PROPERTY(SLineF, SizeMarkerLabelLine)
         DECLARE_STANDARD_PROPERTY(SMetricRectangleF, SizeMarkerTextArea)
         DECLARE_STANDARD_PROPERTY(std::string, SizeMarkerText)
+
         DECLARE_STANDARD_PROPERTY(SMetricRectangleF, BodyArea)
 
         /// @brief Default constructor

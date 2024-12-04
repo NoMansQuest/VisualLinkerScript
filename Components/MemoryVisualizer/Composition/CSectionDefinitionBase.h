@@ -16,8 +16,8 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
     class CSectionDefinitionBase : public CAddressedRegion
     {
         DECLARE_READONLY_PROPERTY(std::string, Title)
-        DECLARE_STANDARD_PROPERTY(SMetricRectangleF, HeaderArea) // This is the green (or other colored) area visually on top of the section
         DECLARE_STANDARD_PROPERTY(SMetricRectangleF, TitleArea)
+        DECLARE_STANDARD_PROPERTY(SMetricRectangleF, HeaderArea)
 	    DECLARE_STANDARD_PROPERTY(CFillExpressionButton, FillExpression)
         DECLARE_STANDARD_PROPERTY(std::vector<CProgramHeaderButton>, ProgramHeaders)
 

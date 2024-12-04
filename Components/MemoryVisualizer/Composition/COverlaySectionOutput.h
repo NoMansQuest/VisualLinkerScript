@@ -12,6 +12,7 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 	class COverlaySectionOutput : public CAddressedRegion
 	{
 		DECLARE_READONLY_PROPERTY(std::string, Content)
+		DECLARE_STANDARD_PROPERTY(SMetricRectangleF, ContentArea)
 
 		/// @brief Default constructor.
 		COverlaySectionOutput(std::string content,
@@ -23,6 +24,9 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 			CAddressedRegion(inModelStartPosition, inModelLength, startAddressKnown, endAddressKnown, memorySizeKnown),
 			m_Content(std::move(content))
 		{}
+
+		/// @copydoc CDrawableObjectBase::Paint
+		void Paint(const QPainter& painter) override;
 
 		/// @copydoc CAddressedRegion::CalculateBodySize
 		SMetricSizeF CalculateBodySize(

@@ -12,6 +12,7 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 	class CSectionOutput : public CAddressedRegion
 	{		
 		DECLARE_READONLY_PROPERTY(std::string, Content)
+		DECLARE_STANDARD_PROPERTY(SMetricRectangleF, ContentArea)
 
 		/// @brief Default constructor.
 		explicit CSectionOutput(
@@ -29,6 +30,9 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 				memorySizeKnown),
 			m_Content(std::move(content))
 		{}
+
+		/// @copydoc CDrawableObjectBase::Paint
+		void Paint(const QPainter& painter) override;
 
 		/// @copydoc CAddressedRegion::CalculateBodySize
 		SMetricSizeF CalculateBodySize(

@@ -9,7 +9,9 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 	/// @brief Represents a 'Section' object found under 'Overlay' frames.
 	class COverlaySectionStatement : public CAddressedRegion
 	{
-		DECLARE_READONLY_PROPERTY(std::string, Name)
+		DECLARE_READONLY_PROPERTY(std::string, Title)
+		DECLARE_STANDARD_PROPERTY(SMetricRectangleF, TitleArea)
+		DECLARE_STANDARD_PROPERTY(SMetricRectangleF, HeaderArea)
 		DECLARE_READONLY_PROPERTY(SharedPtrVector<COverlaySectionOutput>, ChildContent)
 		DECLARE_READONLY_PROPERTY(std::vector<CProgramHeaderButton>, ProgramHeaders)
 		DECLARE_READONLY_PROPERTY(CFillExpressionButton, FillExpression)
@@ -18,7 +20,7 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 	public:
 		// @brief Default constructor
 		COverlaySectionStatement(
-				std::string name,
+				std::string title,
 				const CFillExpressionButton& fillExpression,
 				const std::vector<CProgramHeaderButton>& programHeaders,
 				const SharedPtrVector<COverlaySectionOutput>& childContent,
@@ -33,11 +35,14 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 				  startAddressKnown, 
 				  endAddressKnown, 
 				  memorySizeKnown),
-			  m_Name(std::move(name)),
+			  m_Title(std::move(title)),
 			  m_ChildContent(childContent),
 			  m_ProgramHeaders(programHeaders),
 			  m_FillExpression(fillExpression)
 		{}
+
+		/// @copydoc CDrawableObjectBase::Paint
+		void Paint(const QPainter& painter) override;
 
 		/// @copydoc CAddressedRegion::CalculateBodySize
 		SMetricSizeF CalculateBodySize(

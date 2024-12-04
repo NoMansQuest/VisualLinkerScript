@@ -3,24 +3,49 @@
 using namespace VisualLinkerScript;
 using namespace VisualLinkerScript::Components::MemoryVisualizer::Composition;
 
+constexpr double textMarginLeft = 1;
+constexpr double textMarginRight = 1;
+constexpr double textMarginBottom = 1;
+constexpr double textMarginTop = 1;
+
 SMetricSizeF CProgramHeaderButton::CalculateBodySize(
 	const double dpiX,
 	const double dpiY,
 	const QFontMetrics& fontMetricsSmall,
 	const QFontMetrics& fontMetricsLarge) const
 {	
-	auto contentWidth = Graphical::GetTextWidthInPixels(this->m_ProgramHeader, fontMetricsSmall);
-	double calculatedWidth = contentWidth + 1 + 1; // 1mm left margin, 1mm right margin
-	double calculatedHeight = 1 + 2 + 1;  // 1mm top margin, 2mm text, 1mm right margin
+	auto contentSize = fontMetricsSmall.boundingRect(QString::fromStdString(this->m_ProgramHeaderText));
+	auto contentMetricSize = SMetricSizeF(
+		Graphical::GetMetricFromPixels(dpiX, contentSize.width()),
+		Graphical::GetMetricFromPixels(dpiY, contentSize.height()));
+
+	auto calculatedWidth = contentMetricSize.CX() + textMarginLeft + textMarginRight;
+	auto calculatedHeight = textMarginTop + textMarginBottom + contentMetricSize.CY();
 	return SMetricSizeF(calculatedWidth, calculatedHeight);
 }
 
 void CProgramHeaderButton::SetBodyPosition(
-	SMetricRectangleF allocatedArea,
+	const SMetricRectangleF& allocatedArea,
 	const double dpiX,
 	const double dpiY, 
 	const QFontMetrics& fontMetricsSmall,
 	const QFontMetrics& fontMetricsLarge)
+{
+	auto contentSize = fontMetricsSmall.boundingRect(QString::fromStdString(this->m_ProgramHeaderText));
+	auto contentMetricSize = SMetricSizeF(
+		Graphical::GetMetricFromPixels(dpiX, contentSize.width()),
+		Graphical::GetMetricFromPixels(dpiY, contentSize.height()));
+
+	this->SetBodyArea(allocatedArea);
+	this->SetProgramHeaderTextArea(
+		SMetricRectangleF(
+			allocatedArea.Left() + textMarginLeft + (contentMetricSize.CX() / 2),
+			allocatedArea.Top() + textMarginTop + (contentMetricSize.CY() / 2),
+			contentSize.width(),
+			contentSize.height()));
+}
+
+void CProgramHeaderButton::Paint(const QPainter& painter)
 {
 
 }

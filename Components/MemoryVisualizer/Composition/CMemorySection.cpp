@@ -162,3 +162,8 @@ void CMemorySection::SetBodyPosition(
 			this->BodyArea().Right() + sizeMarkerFirstLineLengthMm + sizeMarkerSecondLineLengthMm,
 			this->BodyArea().Center().Y()));
 }
+
+void CMemorySection::Paint(const QPainter& painter)
+{
+
+}
