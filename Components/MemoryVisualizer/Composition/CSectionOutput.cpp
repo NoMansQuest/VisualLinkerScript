@@ -29,9 +29,7 @@ void CSectionOutput::SetBodyPosition(
 	this->SetContentArea(alignedBoundingRectMetric);
 }
 
-void CSectionOutput::Paint(
-	const CGraphicContext& graphicContext,
-	const QPainter& painter)
+void CSectionOutput::Paint(const CGraphicContext& graphicContext, QPainter& painter)
 {
 
 }

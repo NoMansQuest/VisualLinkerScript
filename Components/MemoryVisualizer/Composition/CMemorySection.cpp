@@ -155,9 +155,7 @@ void CMemorySection::SetBodyPosition(const SMetricRectangleF& allocatedArea, con
 			this->BodyArea().Center().Y()));
 }
 
-void CMemorySection::Paint(
-	const CGraphicContext& graphicContext,
-	const QPainter& painter)
+void CMemorySection::Paint(const CGraphicContext& graphicContext, QPainter& painter)
 {
 
 }

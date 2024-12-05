@@ -217,9 +217,7 @@ void CSectionStatement::SetBodyPosition(const SMetricRectangleF& allocatedArea, 
 			this->BodyArea().Center().Y()));
 }
 
-void CSectionStatement::Paint(
-	const CGraphicContext& graphicContext,
-	const QPainter& painter)
+void CSectionStatement::Paint(const CGraphicContext& graphicContext, QPainter& painter)
 {
 
 }

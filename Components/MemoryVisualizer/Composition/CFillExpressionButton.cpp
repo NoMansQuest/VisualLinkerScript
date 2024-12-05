@@ -1,5 +1,6 @@
 #include "CFillExpressionButton.h"
 #include "CGraphicContext.h"
+#include <QPainter>
 
 using namespace VisualLinkerScript;
 using namespace VisualLinkerScript::Components::MemoryVisualizer::Composition;
@@ -39,10 +40,8 @@ void CFillExpressionButton::SetBodyPosition(
 			contentSize.height()));
 }
 
-void CFillExpressionButton::Paint(
-	const CGraphicContext& graphicContext,
-	const QPainter& painter)
-{
+void CFillExpressionButton::Paint(const CGraphicContext& graphicContext, QPainter& painter)
+{	
 	
 }
 

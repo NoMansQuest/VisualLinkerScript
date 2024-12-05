@@ -132,9 +132,7 @@ void COverlaySectionStatement::SetBodyPosition(const SMetricRectangleF& allocate
 	}
 }
 
-void COverlaySectionStatement::Paint(
-	const CGraphicContext& graphicContext,
-	const QPainter& painter)
+void COverlaySectionStatement::Paint(const CGraphicContext& graphicContext, QPainter& painter)
 {
 
 }

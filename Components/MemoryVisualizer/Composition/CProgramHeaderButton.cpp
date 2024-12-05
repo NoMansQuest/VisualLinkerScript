@@ -38,9 +38,7 @@ void CProgramHeaderButton::SetBodyPosition(
 			contentSize.height()));
 }
 
-void CProgramHeaderButton::Paint(
-	const CGraphicContext& graphicContext,
-	const QPainter& painter)
+void CProgramHeaderButton::Paint(const CGraphicContext& graphicContext, QPainter& painter)
 {
 
 }

@@ -2,6 +2,7 @@
 #define CFILL_EXPRESSION_H__
 
 #include "CDrawableObjectBase.h"
+#include "CInteractiveObject.h"
 #include "CModelMappedObject.h"
 #include "Helpers.h"
 #include "SMetricRectangleF.h"
@@ -18,7 +19,10 @@ class QFontMetrics;
 namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 {
 	/// @brief Represents an 'FillExpression' object, found in many places
-	class CFillExpressionButton : public CModelMappedObject, public CDrawableObjectBase
+	class CFillExpressionButton :
+		public CModelMappedObject,
+		public CDrawableObjectBase,
+		public CInteractiveObject
 	{
 		DECLARE_READONLY_PROPERTY(bool, Defined)
 		DECLARE_READONLY_PROPERTY(std::string, FillExpression)
@@ -40,7 +44,7 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 		/// @copydoc CDrawableObjectBase::Paint
 		void Paint(
 			const CGraphicContext& graphicContext,
-			const QPainter& painter) override;
+			QPainter& painter) override;
 
 		/// Calculates the size of the area needed by the program header
 		SMetricSizeF CalculateBodySize(const CGraphicContext& graphicContext) const;

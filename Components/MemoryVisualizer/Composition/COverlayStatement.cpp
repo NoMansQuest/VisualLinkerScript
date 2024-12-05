@@ -229,9 +229,7 @@ void COverlayStatement::SetBodyPosition(const SMetricRectangleF& allocatedArea, 
 			this->BodyArea().Center().Y()));
 }
 
-void COverlayStatement::Paint(
-	const CGraphicContext& graphicContext,
-	const QPainter& painter)
+void COverlayStatement::Paint(const CGraphicContext& graphicContext, QPainter& painter)
 {
 
 }

@@ -18,7 +18,7 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 		/// @brief In charge of drawing the object on the painter.
 		virtual void Paint(
 			const CGraphicContext& graphicContext,
-			const QPainter& painter) = 0;
+			QPainter& painter) = 0;
 	};	
 }
 

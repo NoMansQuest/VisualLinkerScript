@@ -16,7 +16,10 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 	class CGraphicContext;
 
 	/// @brief Represents an 'ProgramHeader' object, found in many places
-	class CProgramHeaderButton : public CModelMappedObject, public CInteractiveObject, public CDrawableObjectBase
+	class CProgramHeaderButton :
+		public CModelMappedObject,
+		public CInteractiveObject,
+		public CDrawableObjectBase
 	{
 		DECLARE_READONLY_PROPERTY(std::string, ProgramHeaderText)		
 		DECLARE_STANDARD_PROPERTY(SMetricRectangleF, ProgramHeaderTextArea)
@@ -34,7 +37,7 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 		/// @copydoc CDrawableObjectBase::Paint
 		void Paint(
 			const CGraphicContext& graphicContext,
-			const QPainter& painter) override;
+			QPainter& painter) override;
 
 		/// Calculates the size of the area needed by the program header
 		SMetricSizeF CalculateBodySize(const CGraphicContext& graphicContext) const;

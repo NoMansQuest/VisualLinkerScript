@@ -17,7 +17,10 @@ class QFontMetrics;
 namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 {
     /// @brief Represents an object that holds a start, end and size.
-    class CAddressedRegion : public CModelMappedObject, public CInteractiveObject, public CDrawableObjectBase
+    class CAddressedRegion :
+		public CModelMappedObject,
+		public CInteractiveObject,
+		public CDrawableObjectBase
     {
         DECLARE_READONLY_PROPERTY(bool, StartAddressKnown)
         DECLARE_READONLY_PROPERTY(bool, EndAddressKnown)

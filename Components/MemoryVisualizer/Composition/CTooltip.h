@@ -5,13 +5,16 @@
 #include <cstdint>
 
 #include "CDrawableObjectBase.h"
+#include "CInteractiveObject.h"
 #include "SMetricPointF.h"
 #include "SMetricPointF.h"
 
 namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 {
     /// @brief Represents a Tool-Tip Object for the visualizer
-    class CTooltip : public CDrawableObjectBase
+    class CTooltip :
+		public CDrawableObjectBase,
+		public CInteractiveObject
     {
     private:
         std::string m_toolTipContent = "";
@@ -25,7 +28,7 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
         /// @copydoc CDrawableObjectBase::Paint
         void Paint(
             const CGraphicContext& graphicContext,
-            const QPainter& painter) override;
+            QPainter& painter) override;
 
     public:
         /// @brief Content of the tool-tip

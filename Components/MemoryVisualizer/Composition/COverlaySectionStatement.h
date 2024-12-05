@@ -44,7 +44,7 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 		/// @copydoc CDrawableObjectBase::Paint
 		void Paint(
 			const CGraphicContext& graphicContext,
-			const QPainter& painter) override;
+			QPainter& painter) override;
 
 		/// @copydoc CAddressedRegion::CalculateBodySize
 		SMetricSizeF CalculateBodySize(const CGraphicContext& graphicContext) const override;

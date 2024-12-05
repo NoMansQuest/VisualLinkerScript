@@ -42,9 +42,7 @@ void CFloorPlan::SetBodyPosition(
 	}
 }
 
-void CFloorPlan::Paint(
-	const CGraphicContext& graphicContext,
-	const QPainter& painter)
+void CFloorPlan::Paint(const CGraphicContext& graphicContext, QPainter& painter)
 {
 
 }

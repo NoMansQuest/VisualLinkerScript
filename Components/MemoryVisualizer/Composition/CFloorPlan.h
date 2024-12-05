@@ -27,7 +27,7 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
         /// @copydoc CDrawableObjectBase::Paint
         void Paint(
             const CGraphicContext& graphicContext,
-            const QPainter& painter) override;
+            QPainter& painter) override;
 
         /// @brief Calculate the minimum amount of space this region would need.
         SMetricSizeF CalculateBodySize(const CGraphicContext& graphicContext) const;

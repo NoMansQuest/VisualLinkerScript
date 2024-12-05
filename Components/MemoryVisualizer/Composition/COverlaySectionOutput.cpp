@@ -26,9 +26,7 @@ void COverlaySectionOutput::SetBodyPosition(const SMetricRectangleF& allocatedAr
 	this->SetContentArea(alignedBoundingRectMetric);
 }
 
-void COverlaySectionOutput::Paint(
-	const CGraphicContext& graphicContext,
-	const QPainter& painter)
+void COverlaySectionOutput::Paint(const CGraphicContext& graphicContext, QPainter& painter)
 {
 
 }

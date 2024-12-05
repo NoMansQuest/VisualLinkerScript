@@ -1216,6 +1216,9 @@
     <ClInclude Include="Components\MemoryVisualizer\Composition\CGraphicContext.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
+    <ClInclude Include="Components\MemoryVisualizer\ColorResources.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="release\moc_predefs.h.cbt">

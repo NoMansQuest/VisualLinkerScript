@@ -376,6 +376,7 @@
     <ClInclude Include="Components\MemoryVisualizer\Composition\CFillExpressionButton.h" />
     <ClInclude Include="Components\MemoryVisualizer\Composition\CGraphicContext.h" />
     <ClInclude Include="Components\MemoryVisualizer\Composition\CInteractiveObject.h" />
+    <ClInclude Include="Components\MemoryVisualizer\ColorResources.h" />
     <ClInclude Include="Components\MemoryVisualizer\Composition\CProgramHeaderButton.h" />
     <ClInclude Include="Components\MemoryVisualizer\Composition\CSectionDefinitionBase.h" />
     <QtMoc Include="Components\MemoryVisualizer\QMemoryLayoutRender.h" />
