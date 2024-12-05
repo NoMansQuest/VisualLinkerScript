@@ -6,7 +6,7 @@
 
 #include "CDrawableObjectBase.h"
 #include "SMetricPointF.h"
-#include "SPointF.h"
+#include "SMetricPointF.h"
 
 namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 {
@@ -23,7 +23,9 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 
     public:
         /// @copydoc CDrawableObjectBase::Paint
-        void Paint(const QPainter& painter) override;
+        void Paint(
+            const CGraphicContext& graphicContext,
+            const QPainter& painter) override;
 
     public:
         /// @brief Content of the tool-tip

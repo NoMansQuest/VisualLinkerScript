@@ -8,6 +8,8 @@
 
 namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 {
+	class CGraphicContext;
+
 	/// @brief Represents an 'Overlay' section found in "OVERLAY" statements.
 	class COverlaySectionOutput : public CAddressedRegion
 	{
@@ -26,23 +28,15 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 		{}
 
 		/// @copydoc CDrawableObjectBase::Paint
-		void Paint(const QPainter& painter) override;
+		void Paint(
+			const CGraphicContext& graphicContext,
+			const QPainter& painter) override;
 
 		/// @copydoc CAddressedRegion::CalculateBodySize
-		SMetricSizeF CalculateBodySize(
-			const double dpiX,
-			const double dpiY,
-			const QFontMetrics& fontMetricsSmall,
-			const QFontMetrics& fontMetricsLarge) override;
+		SMetricSizeF CalculateBodySize(const CGraphicContext& graphicContext) const override;
 
 		/// @copydoc CAddressedRegion::SetBodyPosition
-		void SetBodyPosition(
-			SMetricRectangleF allocatedArea,
-			const double dpiX,
-			const double dpiY,
-			const QFontMetrics& fontMetricsSmall,
-			const QFontMetrics& fontMetricsLarge
-		) override;
+		void SetBodyPosition(const SMetricRectangleF& allocatedArea, const CGraphicContext& graphicContext) override;
 	};
 }
 

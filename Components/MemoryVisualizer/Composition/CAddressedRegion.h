@@ -54,19 +54,10 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
         {}
 
         /// @brief Calculate the minimum amount of space this region would need.
-        virtual SMetricSizeF CalculateBodySize(
-            const double dpiX,
-            const double dpiY,
-            const QFontMetrics& fontMetricsSmall,
-            const QFontMetrics& fontMetricsLarge) = 0;
+        virtual SMetricSizeF CalculateBodySize(const CGraphicContext& graphicContext) const = 0;
 
         /// @brief Updates the coordinates of all involved objects based on the given allocated area.
-        virtual void SetBodyPosition(
-            SMetricRectangleF allocatedArea,
-            const double dpiX,
-            const double dpiY,
-            const QFontMetrics& fontMetricsSmall,
-            const QFontMetrics& fontMetricsLarge) = 0;
+        virtual void SetBodyPosition(const SMetricRectangleF& allocatedArea, const CGraphicContext& graphicContext) = 0;
     };
 }
 

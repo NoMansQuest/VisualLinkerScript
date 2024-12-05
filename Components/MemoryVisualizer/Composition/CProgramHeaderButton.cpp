@@ -8,16 +8,12 @@ constexpr double textMarginRight = 1;
 constexpr double textMarginBottom = 1;
 constexpr double textMarginTop = 1;
 
-SMetricSizeF CProgramHeaderButton::CalculateBodySize(
-	const double dpiX,
-	const double dpiY,
-	const QFontMetrics& fontMetricsSmall,
-	const QFontMetrics& fontMetricsLarge) const
+SMetricSizeF CProgramHeaderButton::CalculateBodySize(const CGraphicContext& graphicContext) const
 {	
-	auto contentSize = fontMetricsSmall.boundingRect(QString::fromStdString(this->m_ProgramHeaderText));
+	auto contentSize = graphicContext.FontMetricsSmall().boundingRect(QString::fromStdString(this->m_ProgramHeaderText));
 	auto contentMetricSize = SMetricSizeF(
-		Graphical::GetMetricFromPixels(dpiX, contentSize.width()),
-		Graphical::GetMetricFromPixels(dpiY, contentSize.height()));
+		Graphical::GetMetricFromPixels(graphicContext.DpiX(), contentSize.width()),
+		Graphical::GetMetricFromPixels(graphicContext.DpiY(), contentSize.height()));
 
 	auto calculatedWidth = contentMetricSize.CX() + textMarginLeft + textMarginRight;
 	auto calculatedHeight = textMarginTop + textMarginBottom + contentMetricSize.CY();
@@ -26,15 +22,12 @@ SMetricSizeF CProgramHeaderButton::CalculateBodySize(
 
 void CProgramHeaderButton::SetBodyPosition(
 	const SMetricRectangleF& allocatedArea,
-	const double dpiX,
-	const double dpiY, 
-	const QFontMetrics& fontMetricsSmall,
-	const QFontMetrics& fontMetricsLarge)
+	const CGraphicContext& graphicContext)
 {
-	auto contentSize = fontMetricsSmall.boundingRect(QString::fromStdString(this->m_ProgramHeaderText));
+	auto contentSize = graphicContext.FontMetricsSmall().boundingRect(QString::fromStdString(this->m_ProgramHeaderText));
 	auto contentMetricSize = SMetricSizeF(
-		Graphical::GetMetricFromPixels(dpiX, contentSize.width()),
-		Graphical::GetMetricFromPixels(dpiY, contentSize.height()));
+		Graphical::GetMetricFromPixels(graphicContext.DpiX(), contentSize.width()),
+		Graphical::GetMetricFromPixels(graphicContext.DpiY(), contentSize.height()));
 
 	this->SetBodyArea(allocatedArea);
 	this->SetProgramHeaderTextArea(
@@ -45,7 +38,9 @@ void CProgramHeaderButton::SetBodyPosition(
 			contentSize.height()));
 }
 
-void CProgramHeaderButton::Paint(const QPainter& painter)
+void CProgramHeaderButton::Paint(
+	const CGraphicContext& graphicContext,
+	const QPainter& painter)
 {
 
 }

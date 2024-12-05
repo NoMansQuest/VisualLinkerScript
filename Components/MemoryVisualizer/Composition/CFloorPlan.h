@@ -25,23 +25,16 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 
     public:
         /// @copydoc CDrawableObjectBase::Paint
-        void Paint(const QPainter& painter) override;
+        void Paint(
+            const CGraphicContext& graphicContext,
+            const QPainter& painter) override;
 
         /// @brief Calculate the minimum amount of space this region would need.
-        SMetricSizeF CalculateBodySize(
-            const double dpiX,
-            const double dpiY,
-            const QFontMetrics& fontMetricsSmall,
-            const QFontMetrics& fontMetricsLarge) const;
+        SMetricSizeF CalculateBodySize(const CGraphicContext& graphicContext) const;
 
         /// @brief Sets the geometry of the floor-plan. We'll cascade this down to
         ///        child memory sections.
-        void SetBodyPosition(
-            const SMetricRectangleF& allocatedArea,
-            const double dpiX,
-            const double dpiY,
-            const QFontMetrics& fontMetricsSmall,
-            const QFontMetrics& fontMetricsLarge) const;
+        void SetBodyPosition(const SMetricRectangleF& allocatedArea, const CGraphicContext& graphicContext) const;
     };
 }
 

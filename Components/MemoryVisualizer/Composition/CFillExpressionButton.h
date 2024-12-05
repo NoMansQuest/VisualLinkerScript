@@ -8,6 +8,11 @@
 #include "SMetricSizeF.h"
 #include "Models/Raw/CRawEntry.h"
 
+namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
+{
+	class CGraphicContext;
+}
+
 class QFontMetrics;
 
 namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
@@ -33,22 +38,15 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 		{}
 	
 		/// @copydoc CDrawableObjectBase::Paint
-		void Paint(const QPainter& painter) override;
+		void Paint(
+			const CGraphicContext& graphicContext,
+			const QPainter& painter) override;
 
 		/// Calculates the size of the area needed by the program header
-		SMetricSizeF CalculateBodySize(
-			const double dpiX,
-			const double dpiY,
-			const QFontMetrics& fontMetricsSmall,
-			const QFontMetrics& fontMetricsLarge) const;
+		SMetricSizeF CalculateBodySize(const CGraphicContext& graphicContext) const;
 
 		/// Sets the allocated area where the program-header must be drawn.
-		void SetBodyPosition(
-			const SMetricRectangleF& allocatedArea,
-			const double dpiX,
-			const double dpiY,
-			const QFontMetrics& fontMetricsSmall,
-			const QFontMetrics& fontMetricsLarge);
+		void SetBodyPosition(const SMetricRectangleF& allocatedArea, const CGraphicContext& graphicContext);
 	};
 }
 

@@ -27,24 +27,20 @@ constexpr double headerBoxHeight = 4;
 constexpr double minimumContentAreaHeight = 4;
 
 
-SMetricSizeF COverlayStatement::CalculateBodySize(
-	const double dpiX,
-	const double dpiY,
-	const QFontMetrics& fontMetricsSmall,
-	const QFontMetrics& fontMetricsLarge)
+SMetricSizeF COverlayStatement::CalculateBodySize(const CGraphicContext& graphicContext) const
 {
 	// Constants
 	double minimumMemoryBoxHeight = headerBoxHeight + minimumContentAreaHeight;
 
 	// Top memory label
-	auto topMemoryLabel = Graphical::GetTextWidthInPixels(this->Title(), fontMetricsSmall);
+	auto topMemoryLabel = Graphical::GetTextWidthInPixels(this->Title(), graphicContext.FontMetricsSmall());
 
 	// Left size address text
-	auto addressTextSize = Graphical::GetMetricFromPixels(dpiX, Graphical::GetTextWidthInPixels(this->AddressStartText(), fontMetricsSmall));
+	auto addressTextSize = Graphical::GetMetricFromPixels(graphicContext.DpiX(), Graphical::GetTextWidthInPixels(this->AddressStartText(), graphicContext.FontMetricsSmall()));
 	double leftSizeTotal = addressTextSize + addressStartConnectingLineLengthMm;
 
 	// Right side memory size lines	
-	double sizeMarkerTextWidth = Graphical::GetMetricFromPixels(dpiX, Graphical::GetTextWidthInPixels(this->SizeMarkerText(), fontMetricsSmall));
+	double sizeMarkerTextWidth = Graphical::GetMetricFromPixels(graphicContext.DpiX(), Graphical::GetTextWidthInPixels(this->SizeMarkerText(), graphicContext.FontMetricsSmall()));
 	double rightSizeTotal = sizeMarkerFirstLineLengthMm + sizeMarkerSecondLineLengthMm + sizeMarkerTextWidth;
 
 	double minimumWidth = leftSizeTotal + rightSizeTotal + (topMemoryLabel * 1.5);
@@ -53,13 +49,13 @@ SMetricSizeF COverlayStatement::CalculateBodySize(
 	{
 		for (const auto& programHeader : this->ProgramHeaders())
 		{
-			minimumWidth += programHeader.CalculateBodySize(dpiX, dpiY, fontMetricsSmall, fontMetricsLarge).CX();
+			minimumWidth += programHeader.CalculateBodySize(graphicContext).CX();
 		}
 	}
 
 	if (this->FillExpression().Defined())
 	{
-		minimumWidth += this->FillExpression().CalculateBodySize(dpiX, dpiY, fontMetricsSmall, fontMetricsLarge).CX();
+		minimumWidth += this->FillExpression().CalculateBodySize(graphicContext).CX();
 	}
 
 	double maxContentHeight = 0;	
@@ -71,7 +67,7 @@ SMetricSizeF COverlayStatement::CalculateBodySize(
 
 		for (const auto& overlaySection : this->m_OverlaySections)
 		{
-			auto childDesiredSize = overlaySection->CalculateBodySize(dpiX, dpiY, fontMetricsSmall, fontMetricsLarge);
+			auto childDesiredSize = overlaySection->CalculateBodySize(graphicContext);
 			maxContentWidth = std::max(maxContentWidth, childDesiredSize.CX()); // 1mm spacing			
 			maxContentHeight = childDesiredSize.CY() > maxContentHeight ? childDesiredSize.CY() : maxContentHeight;
 		}
@@ -86,20 +82,15 @@ SMetricSizeF COverlayStatement::CalculateBodySize(
 		minimumMemoryBoxHeight + maxContentHeight);
 }
 
-void COverlayStatement::SetBodyPosition(
-	SMetricRectangleF allocatedArea,
-	const double dpiX,
-	const double dpiY,
-	const QFontMetrics& fontMetricsSmall,
-	const QFontMetrics& fontMetricsLarge)
+void COverlayStatement::SetBodyPosition(const SMetricRectangleF& allocatedArea, const CGraphicContext& graphicContext)
 {
-	auto calculatedDesiredSize = this->CalculateBodySize(dpiX, dpiY, fontMetricsSmall, fontMetricsLarge);
+	auto calculatedDesiredSize = this->CalculateBodySize(graphicContext);
 	auto currentYHolder = allocatedArea.Top();
 
 	this->SetHeaderArea(SMetricRectangleF(allocatedArea.Left(), currentYHolder, allocatedArea.Width(), headerBoxHeight));
 
 	auto topLabelRect =
-		SMetricRectangleF(fontMetricsLarge.boundingRect(QString::fromStdString(this->Title())), dpiX, dpiY)
+		SMetricRectangleF(graphicContext.FontMetricsSmall().boundingRect(QString::fromStdString(this->Title())), graphicContext.DpiX(), graphicContext.DpiY())
 		.Offset(allocatedArea.Left() + marginTextFromHeaderLeft, this->HeaderArea().Top() + marginTextFromHeaderTop);
 
 	this->SetTitleArea(topLabelRect);
@@ -115,20 +106,17 @@ void COverlayStatement::SetBodyPosition(
 
 		for (const auto& overlaySection : this->m_OverlaySections)
 		{
-			auto childDesiredSize = overlaySection->CalculateBodySize(dpiX, dpiY, fontMetricsSmall, fontMetricsLarge);
+			auto childDesiredSize = overlaySection->CalculateBodySize(graphicContext);
 			maxContentWidth = std::max(maxContentWidth, childDesiredSize.CX()); // 1mm spacing						
 		}
 
 		for (const auto& overlaySection : this->m_OverlaySections)
 		{
-			auto childDesiredSize = overlaySection->CalculateBodySize(dpiX, dpiY, fontMetricsSmall, fontMetricsLarge);
+			auto childDesiredSize = overlaySection->CalculateBodySize(graphicContext);
 			maxDetectedHeight = std::max(maxDetectedHeight, childDesiredSize.CY());
 			overlaySection->SetBodyPosition(
 				SMetricRectangleF(currentXHolder, currentYHolder, maxContentWidth, childDesiredSize.CY()),
-				dpiX,
-				dpiY,
-				fontMetricsSmall,
-				fontMetricsLarge);
+				graphicContext);
 
 			currentXHolder += maxContentWidth + marginSectionOutputSpacing;
 		}
@@ -147,76 +135,70 @@ void COverlayStatement::SetBodyPosition(
 
 	for (auto programHeader : this->ProgramHeaders())
 	{
-		auto calculatedProgramHeader = programHeader.CalculateBodySize(dpiX, dpiY, fontMetricsSmall, fontMetricsLarge);
+		auto calculatedProgramHeader = programHeader.CalculateBodySize(graphicContext);
 		programHeader.SetBodyPosition(
 				SMetricRectangleF(
 				programHeaderRightXPos - calculatedProgramHeader.CX(),
 				programHeaderTopYPos,
 				calculatedProgramHeader.CX(),
 				calculatedProgramHeader.CY()),
-				dpiX,
-				dpiY,
-				fontMetricsSmall,
-				fontMetricsLarge);
+				graphicContext);
 
 		programHeaderRightXPos -= calculatedProgramHeader.CX() - programHeaderSpacing;
 	}
 
 	if (this->FillExpression().Defined())
 	{
-		auto calculatedProgramHeader = this->FillExpression().CalculateBodySize(dpiX, dpiY, fontMetricsSmall, fontMetricsLarge);
+		auto calculatedProgramHeader = this->FillExpression().CalculateBodySize(graphicContext);
 		this->FillExpression().SetBodyPosition(
 				SMetricRectangleF(
 				programHeaderRightXPos - calculatedProgramHeader.CX(),
 				programHeaderTopYPos,
 				calculatedProgramHeader.CX(),
 				calculatedProgramHeader.CY()),
-				dpiX,
-				dpiY,
-				fontMetricsSmall,
-				fontMetricsLarge);		
+				graphicContext);
 	}
 
 	// Set address start and top markers		
-	auto addressStartTextWidth = Graphical::GetMetricFromPixels(dpiX, fontMetricsSmall.horizontalAdvance(QString::fromStdString(this->AddressStartText())));
-	auto addressEndTextWidth = Graphical::GetMetricFromPixels(dpiX, fontMetricsSmall.horizontalAdvance(QString::fromStdString(this->AddressEndText())));
-	auto sizeMarkerTextWidth = Graphical::GetMetricFromPixels(dpiX, fontMetricsSmall.horizontalAdvance(QString::fromStdString(this->SizeMarkerText())));
+	auto addressStartTextWidth = Graphical::GetMetricFromPixels(graphicContext.DpiX(), graphicContext.FontMetricsSmall().horizontalAdvance(QString::fromStdString(this->AddressStartText())));
+	auto addressEndTextWidth = Graphical::GetMetricFromPixels(graphicContext.DpiX(), graphicContext.FontMetricsSmall().horizontalAdvance(QString::fromStdString(this->AddressEndText())));
+	auto sizeMarkerTextWidth = Graphical::GetMetricFromPixels(graphicContext.DpiX(), graphicContext.FontMetricsSmall().horizontalAdvance(QString::fromStdString(this->SizeMarkerText())));
 
 	this->SetAddressStartTextArea(
 		SMetricRectangleF(
 			allocatedArea.Left() - addressStartConnectingLineLengthMm - addressStartTextWidth - addressStartTextToLineHSpaceMm,
-			sectionStatementTop - Graphical::GetMetricFromPixels(dpiY, static_cast<double>(fontMetricsSmall.height()) / 2),
+			sectionStatementTop - Graphical::GetMetricFromPixels(graphicContext.DpiY(), static_cast<double>(graphicContext.FontMetricsSmall().height()) / 2),
 			addressStartTextWidth,
-			Graphical::GetMetricFromPixels(dpiY, fontMetricsSmall.height())));
+			Graphical::GetMetricFromPixels(graphicContext.DpiY(), graphicContext.FontMetricsSmall().height())));
 
 	this->SetAddressStartConnectingLine(
 		SLineF(
 			this->AddressEndTextArea().Right() + addressStartConnectingLineLengthMm,
-			this->BodyArea().Top() - Graphical::GetMetricFromPixels(dpiY, static_cast<double>(fontMetricsSmall.height()) / 2),
+			this->BodyArea().Top() - Graphical::GetMetricFromPixels(graphicContext.DpiY(), static_cast<double>(graphicContext.FontMetricsSmall().height()) / 2),
 			this->BodyArea().Right() + sizeMarkerFirstLineLengthMm,
-			this->BodyArea().Top() - Graphical::GetMetricFromPixels(dpiY, static_cast<double>(fontMetricsSmall.height()) / 2)));
+			this->BodyArea().Top() - Graphical::GetMetricFromPixels(graphicContext.DpiY(), static_cast<double>(graphicContext.FontMetricsSmall().height()) / 2)));
 
 	this->SetAddressEndTextArea(
 		SMetricRectangleF(
 			allocatedArea.Left() - addressStartConnectingLineLengthMm - addressEndTextWidth - addressStartTextToLineHSpaceMm,
-			sectionStatementTop - Graphical::GetMetricFromPixels(dpiY, static_cast<double>(fontMetricsSmall.height()) / 2),
+			sectionStatementTop - Graphical::GetMetricFromPixels(graphicContext.DpiY(), static_cast<double>(graphicContext.FontMetricsSmall().height()) / 2),
 			addressEndTextWidth,
-			Graphical::GetMetricFromPixels(dpiY, fontMetricsSmall.height())));
+			Graphical::GetMetricFromPixels(graphicContext.DpiY(), graphicContext.FontMetricsSmall().height())));
 
 	this->SetAddressEndConnctingLine(
 		SLineF(
 			this->AddressEndTextArea().Right() + addressEndTextWidth,
-			this->BodyArea().Bottom() - Graphical::GetMetricFromPixels(dpiY, static_cast<double>(fontMetricsSmall.height()) / 2),
+			this->BodyArea().Bottom() - Graphical::GetMetricFromPixels(graphicContext.DpiY(), static_cast<double>(graphicContext.FontMetricsSmall().height()) / 2),
 			this->BodyArea().Right() + sizeMarkerFirstLineLengthMm,
-			this->BodyArea().Bottom() - Graphical::GetMetricFromPixels(dpiY, static_cast<double>(fontMetricsSmall.height()) / 2)));
+			this->BodyArea().Bottom() - Graphical::GetMetricFromPixels(graphicContext.DpiY(), static_cast<double>(graphicContext.FontMetricsSmall().height()) / 2)));
 
 	// Set size marker
 	this->SetSizeMarkerTextArea(
 		SMetricRectangleF(
 			this->BodyArea().Right() + sizeMarkerFirstLineLengthMm + sizeMarkerSecondLineLengthMm,
-			sectionStatementTop - Graphical::GetMetricFromPixels(dpiY, static_cast<double>(fontMetricsSmall.height()) / 2),
+			sectionStatementTop - Graphical::GetMetricFromPixels(graphicContext.DpiY(), static_cast<double>(graphicContext.FontMetricsSmall().height()) / 2),
 			sizeMarkerTextWidth,
-			Graphical::GetMetricFromPixels(dpiY, fontMetricsSmall.height())));
+			Graphical::GetMetricFromPixels(graphicContext.DpiY(), graphicContext.FontMetricsSmall().height())));
 
 	this->SetSizeMarkerUpperConnector(
 		SLineF(
@@ -247,7 +229,9 @@ void COverlayStatement::SetBodyPosition(
 			this->BodyArea().Center().Y()));
 }
 
-void COverlayStatement::Paint(const QPainter& painter)
+void COverlayStatement::Paint(
+	const CGraphicContext& graphicContext,
+	const QPainter& painter)
 {
 
 }

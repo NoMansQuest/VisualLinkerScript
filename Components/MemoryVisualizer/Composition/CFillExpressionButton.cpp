@@ -1,4 +1,5 @@
 #include "CFillExpressionButton.h"
+#include "CGraphicContext.h"
 
 using namespace VisualLinkerScript;
 using namespace VisualLinkerScript::Components::MemoryVisualizer::Composition;
@@ -8,33 +9,26 @@ constexpr double textMarginRight = 1;
 constexpr double textMarginBottom = 1;
 constexpr double textMarginTop = 1;
 
-SMetricSizeF CFillExpressionButton::CalculateBodySize(
-	const double dpiX,
-	const double dpiY,
-	const QFontMetrics& fontMetricsSmall,
-	const QFontMetrics& fontMetricsLarge) const
+SMetricSizeF CFillExpressionButton::CalculateBodySize(const CGraphicContext& graphicContext) const
 {
-	auto contentSize = fontMetricsSmall.boundingRect(QString::fromStdString(this->m_FillExpression));
-	auto contentMetricSize = SMetricSizeF(
-		Graphical::GetMetricFromPixels(dpiX, contentSize.width()),
-		Graphical::GetMetricFromPixels(dpiY, contentSize.height()));
+	const auto contentSize = graphicContext.FontMetricsSmall().boundingRect(QString::fromStdString(this->m_FillExpression));
+	const auto contentMetricSize = SMetricSizeF(
+		Graphical::GetMetricFromPixels(graphicContext.DpiX(), contentSize.width()),
+		Graphical::GetMetricFromPixels(graphicContext.DpiY(), contentSize.height()));
 
-	auto calculatedWidth = contentMetricSize.CX() + textMarginLeft + textMarginRight;
-	auto calculatedHeight = textMarginTop + textMarginBottom + contentMetricSize.CY();
+	const auto calculatedWidth = contentMetricSize.CX() + textMarginLeft + textMarginRight;
+	const auto calculatedHeight = textMarginTop + textMarginBottom + contentMetricSize.CY();
 	return SMetricSizeF(calculatedWidth, calculatedHeight);
 }
 
 void CFillExpressionButton::SetBodyPosition(
 	const SMetricRectangleF& allocatedArea,
-	const double dpiX,
-	const double dpiY,
-	const QFontMetrics& fontMetricsSmall,
-	const QFontMetrics& fontMetricsLarge)
+	const CGraphicContext& graphicContext)
 {
-	auto contentSize = fontMetricsSmall.boundingRect(QString::fromStdString(this->m_FillExpression));
-	auto contentMetricSize = SMetricSizeF(
-		Graphical::GetMetricFromPixels(dpiX, contentSize.width()),
-		Graphical::GetMetricFromPixels(dpiY, contentSize.height()));
+	const auto contentSize = graphicContext.FontMetricsSmall().boundingRect(QString::fromStdString(this->m_FillExpression));
+	const auto contentMetricSize = SMetricSizeF(
+		Graphical::GetMetricFromPixels(graphicContext.DpiX(), contentSize.width()),
+		Graphical::GetMetricFromPixels(graphicContext.DpiY(), contentSize.height()));
 
 	this->SetBodyArea(allocatedArea);
 	this->SetFillExpressionArea(
@@ -45,7 +39,9 @@ void CFillExpressionButton::SetBodyPosition(
 			contentSize.height()));
 }
 
-void CFillExpressionButton::Paint(const QPainter& painter)
+void CFillExpressionButton::Paint(
+	const CGraphicContext& graphicContext,
+	const QPainter& painter)
 {
 	
 }

@@ -1,5 +1,6 @@
 #ifndef CDRAWABLE_OBJECT_BASE_H__
 #define CDRAWABLE_OBJECT_BASE_H__
+#include "CGraphicContext.h"
 
 class QPainter;
 
@@ -15,7 +16,9 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 		virtual ~CDrawableObjectBase() = default;
 
 		/// @brief In charge of drawing the object on the painter.
-		virtual void Paint(const QPainter& painter) = 0;
+		virtual void Paint(
+			const CGraphicContext& graphicContext,
+			const QPainter& painter) = 0;
 	};	
 }
 

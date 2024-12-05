@@ -20,7 +20,6 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 
 		/// @brief Default constructor.
 		explicit CInteractiveObject() = default;
-
 	};
 }
 

@@ -24,30 +24,26 @@ constexpr double programHeaderSpacing = 1;
 constexpr double headerBoxHeight = 4;
 constexpr double minimumContentAreaHeight = 4;
 
-SMetricSizeF COverlaySectionStatement::CalculateBodySize(
-	const double dpiX,
-	const double dpiY,
-	const QFontMetrics& fontMetricsSmall,
-	const QFontMetrics& fontMetricsLarge)
+SMetricSizeF COverlaySectionStatement::CalculateBodySize(const CGraphicContext& graphicContext) const
 {
 	// Constants
 	double minimumSectionStatementBoxHeight = headerBoxHeight + minimumContentAreaHeight; // 4mm header + 4mm empty boxy content
 
 	// Top memory label
-	auto topMemoryLabel = Graphical::GetMetricFromPixels(dpiX, Graphical::GetTextWidthInPixels(this->Title(), fontMetricsSmall));
+	auto topMemoryLabel = Graphical::GetMetricFromPixels(graphicContext.DpiX(), Graphical::GetTextWidthInPixels(this->Title(), graphicContext.FontMetricsSmall()));
 	double minimumWidth = topMemoryLabel * 1.5;
 
 	if (!this->ProgramHeaders().empty())
 	{
 		for (const auto& programHeader : this->ProgramHeaders())
 		{
-			minimumWidth += programHeader.CalculateBodySize(dpiX, dpiY, fontMetricsSmall, fontMetricsLarge).CX();
+			minimumWidth += programHeader.CalculateBodySize(graphicContext).CX();
 		}
 	}
 
 	if (this->FillExpression().Defined())
 	{
-		minimumWidth += this->FillExpression().CalculateBodySize(dpiX, dpiY, fontMetricsSmall, fontMetricsLarge).CX();
+		minimumWidth += this->FillExpression().CalculateBodySize(graphicContext).CX();
 	}
 
 	double calculatedHeight = minimumSectionStatementBoxHeight;
@@ -59,7 +55,7 @@ SMetricSizeF COverlaySectionStatement::CalculateBodySize(
 
 		for (const auto& child : this->m_ChildContent)
 		{
-			auto childDesiredSize = child->CalculateBodySize(dpiX, dpiY, fontMetricsSmall, fontMetricsLarge);
+			auto childDesiredSize = child->CalculateBodySize(graphicContext);
 			maxContentWidth = std::max(maxContentWidth, childDesiredSize.CX());
 			calculatedHeight += childDesiredSize.CY() + marginSectionOutputSpacing;
 		}
@@ -68,20 +64,15 @@ SMetricSizeF COverlaySectionStatement::CalculateBodySize(
 	return SMetricSizeF(std::max(maxContentWidth, minimumWidth), calculatedHeight);
 }
 
-void COverlaySectionStatement::SetBodyPosition(
-	SMetricRectangleF allocatedArea,
-	const double dpiX,
-	const double dpiY, 
-	const QFontMetrics& fontMetricsSmall,
-	const QFontMetrics& fontMetricsLarge)
+void COverlaySectionStatement::SetBodyPosition(const SMetricRectangleF& allocatedArea, const CGraphicContext& graphicContext)
 {
-	auto calculatedDesiredSize = this->CalculateBodySize(dpiX, dpiY, fontMetricsSmall, fontMetricsLarge);
+	auto calculatedDesiredSize = this->CalculateBodySize(graphicContext);
 	auto currentYHolder = allocatedArea.Top();
 
 	this->SetHeaderArea(SMetricRectangleF(allocatedArea.Left(), currentYHolder, allocatedArea.Width(), headerBoxHeight));
 
 	auto topLabelRect =
-		SMetricRectangleF(fontMetricsLarge.boundingRect(QString::fromStdString(this->Title())), dpiX, dpiY)
+		SMetricRectangleF(graphicContext.FontMetricsLarge().boundingRect(QString::fromStdString(this->Title())), graphicContext.DpiX(), graphicContext.DpiY())
 		.Offset(allocatedArea.Left() + marginTextFromHeaderLeft, this->HeaderArea().Top() + marginTextFromHeaderTop);
 
 	this->SetTitleArea(topLabelRect);
@@ -93,14 +84,14 @@ void COverlaySectionStatement::SetBodyPosition(
 	{
 		for (const auto& child : this->m_ChildContent)
 		{
-			auto childDesiredSize = child->CalculateBodySize(dpiX, dpiY, fontMetricsSmall, fontMetricsLarge);
-			child->SetBodyPosition(
-				SMetricRectangleF(allocatedArea.Left() + marginSectionOutputLeft, currentYHolder, allocatedArea.Width() - (2 * marginSectionOutputLeft), childDesiredSize.CY()),
-				dpiX,
-				dpiY,
-				fontMetricsSmall,
-				fontMetricsLarge);
+			auto childDesiredSize = child->CalculateBodySize(graphicContext);
+			auto childAllocatedArea = SMetricRectangleF(
+				allocatedArea.Left() + marginSectionOutputLeft,
+				currentYHolder, 
+				allocatedArea.Width() - (2 * marginSectionOutputLeft),
+				childDesiredSize.CY());
 
+			child->SetBodyPosition(childAllocatedArea, graphicContext);
 			currentYHolder += childDesiredSize.CY() + marginSectionOutputSpacing;
 		}
 	}
@@ -116,40 +107,34 @@ void COverlaySectionStatement::SetBodyPosition(
 
 	for (auto programHeader : this->ProgramHeaders())
 	{
-		auto calculatedProgramHeader = programHeader.CalculateBodySize(dpiX, dpiY, fontMetricsSmall, fontMetricsLarge);
-		programHeader.SetBodyPosition(
-			SMetricRectangleF(
-				programHeaderRightXPos - calculatedProgramHeader.CX(),
-				programHeaderTopYPos,
-				calculatedProgramHeader.CX(),
-				calculatedProgramHeader.CY()),
-			dpiX,
-			dpiY,
-			fontMetricsSmall,
-			fontMetricsLarge);
+		auto calculatedProgramHeader = programHeader.CalculateBodySize(graphicContext);
+		auto programHeaderAllocatedArea = SMetricRectangleF(
+			programHeaderRightXPos - calculatedProgramHeader.CX(),
+			programHeaderTopYPos,
+			calculatedProgramHeader.CX(),
+			calculatedProgramHeader.CY());
 
+		programHeader.SetBodyPosition(programHeaderAllocatedArea, graphicContext);
 		programHeaderRightXPos -= calculatedProgramHeader.CX() - programHeaderSpacing;
 	}
 
 	if (this->FillExpression().Defined())
 	{
-		auto calculatedProgramHeader = this->FillExpression().CalculateBodySize(dpiX, dpiY, fontMetricsSmall, fontMetricsLarge);
-		this->FillExpression().SetBodyPosition(
-			SMetricRectangleF(
-				programHeaderRightXPos - calculatedProgramHeader.CX(),
-				programHeaderTopYPos,
-				calculatedProgramHeader.CX(),
-				calculatedProgramHeader.CY()),
-			dpiX,
-			dpiY,
-			fontMetricsSmall,
-			fontMetricsLarge);
+		auto calculatedProgramHeader = this->FillExpression().CalculateBodySize(graphicContext);
+		auto fillExpressionAllocatedArea = SMetricRectangleF(
+			programHeaderRightXPos - calculatedProgramHeader.CX(),
+			programHeaderTopYPos,
+			calculatedProgramHeader.CX(),
+			calculatedProgramHeader.CY());
 
+		this->FillExpression().SetBodyPosition(fillExpressionAllocatedArea, graphicContext);
 		programHeaderRightXPos -= calculatedProgramHeader.CX() - programHeaderSpacing;
 	}
 }
 
-void COverlaySectionStatement::Paint(const QPainter& painter)
+void COverlaySectionStatement::Paint(
+	const CGraphicContext& graphicContext,
+	const QPainter& painter)
 {
 
 }

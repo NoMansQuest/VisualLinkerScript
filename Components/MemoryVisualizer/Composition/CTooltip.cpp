@@ -2,7 +2,9 @@
 
 using namespace VisualLinkerScript::Components::MemoryVisualizer::Composition;
 
-void CTooltip::Paint(const QPainter& painter)
+void CTooltip::Paint(
+	const CGraphicContext& graphicContext,
+	const QPainter& painter)
 {
-	// To be implemented
+
 }
