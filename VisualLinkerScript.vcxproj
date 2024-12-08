@@ -216,7 +216,7 @@
     </ClCompile>
     <ClCompile Include="Components\MemoryVisualizer\Composition\CFillExpressionButton.cpp" />
     <ClCompile Include="Components\MemoryVisualizer\Composition\CFloorPlan.cpp" />
-    <ClCompile Include="Components\MemoryVisualizer\Composition\CMemorySection.cpp" />
+    <ClCompile Include="Components\MemoryVisualizer\Composition\CMemoryRegion.cpp" />
     <ClCompile Include="Components\MemoryVisualizer\Composition\COverlaySectionOutput.cpp" />
     <ClCompile Include="Components\MemoryVisualizer\Composition\COverlaySectionOutput.h" />
     <ClCompile Include="Components\MemoryVisualizer\Composition\COverlaySectionStatement.cpp" />
@@ -449,7 +449,7 @@
     <ClInclude Include="DrcEngine\Rules\CLocationCounterCannotGoBackwardsRule.h" />
     <ClInclude Include="ParsingEngine\CLinkerScriptParser.h" />
     <ClInclude Include="ParsingEngine\CMasterParserException.h" />
-    <ClInclude Include="Components\MemoryVisualizer\Composition\CMemorySection.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Composition\CMemoryRegion.h" />
     <ClInclude Include="Models\CMemoryRegion.h" />
     <ClInclude Include="ParsingEngine\SubParsers\CMemoryRegionContentParser.h" />
     <ClInclude Include="DrcEngine\Rules\CMemoryRegionDefinedOnlyOnceRule.h" />

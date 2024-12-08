@@ -98,7 +98,7 @@ void QMemoryVisualizer::CalculateAndUpdateModelGeometry()
 	
 }
 
-void QMemoryVisualizer::SetModel(SharedPtrVector<CMemorySection>&& memorySections)
+void QMemoryVisualizer::SetModel(SharedPtrVector<CMemoryRegion>&& memorySections)
 {
     this->m_memorySections = std::move(memorySections);
     this->CalculateAndUpdateModelGeometry();

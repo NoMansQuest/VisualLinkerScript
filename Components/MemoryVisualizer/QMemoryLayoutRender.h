@@ -9,7 +9,7 @@
 
 namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 {
-	class CMemorySection;
+	class CMemoryRegion;
 }
 
 class QTextEdit;
@@ -26,9 +26,10 @@ class QMemoryLayoutRender : public QFrame
 private:
     void BuildInterface();
     void RedrawDoubleBuffer();
+    void DrawGrids(QPainter& painter, double dpiX, double dpiY) const;
 
     QPixmap m_doubleBuffer;
-    SharedPtrVector<CMemorySection> m_model;
+    SharedPtrVector<CMemoryRegion> m_model;
 
 
 public:
@@ -45,7 +46,7 @@ public:
     }
 
     /// @brief Updates the model for this render.
-    void SetModel(const SharedPtrVector<CMemorySection>& model);
+    void SetModel(const SharedPtrVector<CMemoryRegion>& model);
 
 protected:
     void resizeEvent(QResizeEvent* event) override;    

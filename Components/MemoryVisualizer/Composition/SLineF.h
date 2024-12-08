@@ -3,6 +3,7 @@
 
 #include "../../../Helpers.h"
 #include "SMetricPointF.h"
+#include "CGraphicContext.h"
 
 namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 {
@@ -43,6 +44,18 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
             this->m_StartY = startY;
             this->m_EndX = endX;
             this->m_EndY = endY;
+        }
+
+        /// @brief Get starting point in QPointF (in pixels, not metric anymore)
+        [[nodiscard]] QPointF ToStartQPointF(const CGraphicContext& graphicContext) const
+        {
+            return { this->StartX() * graphicContext.DpiX(), this->StartY() * graphicContext.DpiY() };
+        }
+
+        /// @brief Get ending point in QPointF (in pixels, not metric anymore)
+        [[nodiscard]] QPointF ToEndQPointF(const CGraphicContext& graphicContext) const
+        {
+            return { this->EndX() * graphicContext.DpiX(), this->EndY() * graphicContext.DpiY() };
         }
     };
 }

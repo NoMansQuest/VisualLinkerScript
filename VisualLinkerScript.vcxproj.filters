@@ -482,7 +482,7 @@
     <ClCompile Include="Components\MemoryVisualizer\Composition\CFloorPlan.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="Components\MemoryVisualizer\Composition\CMemorySection.cpp">
+    <ClCompile Include="Components\MemoryVisualizer\Composition\CMemoryRegion.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="Components\MemoryVisualizer\Composition\CSectionStatement.cpp">
@@ -643,7 +643,7 @@
     <ClInclude Include="ParsingEngine\CMasterParserException.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Components\MemoryVisualizer\Composition\CMemorySection.h">
+    <ClInclude Include="Components\MemoryVisualizer\Composition\CMemoryRegion.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Models\CMemoryRegion.h">

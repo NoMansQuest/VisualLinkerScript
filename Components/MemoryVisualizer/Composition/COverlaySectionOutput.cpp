@@ -1,5 +1,7 @@
 #include "COverlaySectionOutput.h"
 
+#include "Components/MemoryVisualizer/ColorResources.h"
+
 using namespace VisualLinkerScript;
 using namespace VisualLinkerScript::Components::MemoryVisualizer::Composition;
 
@@ -28,5 +30,17 @@ void COverlaySectionOutput::SetBodyPosition(const SMetricRectangleF& allocatedAr
 
 void COverlaySectionOutput::Paint(const CGraphicContext& graphicContext, QPainter& painter)
 {
+	// NOTE: For OverlaySectionOutput, we use 'SectionOutput' style (they're the same in essence).
 
+	// Draw surrounding rectangle
+	painter.setPen(QPen(QColor::fromRgb(Colors::SectionOutputClickBorderColor), 1, Qt::SolidLine, Qt::FlatCap, Qt::BevelJoin));
+	painter.fillRect(this->BodyArea().ConvertToQRect(graphicContext), QBrush(QColor::fromRgba(Colors::SectionOutputDefaultBackgroundColor), Qt::SolidPattern));
+	painter.drawRect(this->BodyArea().ConvertToQRect(graphicContext));
+
+	// Draw section name
+	painter.setFont(graphicContext.FontSmall());
+	painter.drawText(
+		this->ContentArea().ConvertToQRect(graphicContext),
+		Qt::AlignHCenter | Qt::AlignVCenter,
+		QString::fromStdString(this->Content()));
 }

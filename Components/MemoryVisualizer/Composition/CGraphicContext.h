@@ -15,7 +15,9 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 		QFontMetrics m_fontMetricsSmall;
 		QFontMetrics m_fontMetricsLarge;
 		QFont m_fontSmall;
+		QFont m_fontSmallBold;
 		QFont m_fontLarge;
+		QFont m_fontLargeBold;
 
 	public:
 		/// @brief Default constructor
@@ -23,13 +25,17 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 				double dpiX, 
 				double dpiY, 
 				const QFont& fontSmall,
-				const QFont& fontLarge) :
+				const QFont& fontSmallBold,
+				const QFont& fontLarge,
+				const QFont& fontLargeBold) :
 			m_dpiX(dpiX),
 			m_dpiY(dpiY),
 			m_fontMetricsSmall(QFontMetrics(fontSmall)),
 			m_fontMetricsLarge(QFontMetrics(fontLarge)),
 			m_fontSmall(fontSmall),
-			m_fontLarge(fontLarge)
+			m_fontSmallBold(fontSmallBold),
+			m_fontLarge(fontLarge),
+			m_fontLargeBold(fontLargeBold)
 		{}
 	
 		///	@brief Reports back the DPI-X.
@@ -47,8 +53,14 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 		///	@brief Reports back the small font.
 		QFont FontSmall() const { return this->m_fontSmall; }
 
+		///	@brief Reports back the small font in bold.
+		QFont FontSmallBold() const { return this->m_fontSmall; }
+
 		///	@brief Reports back the large font.
 		QFont FontLarge() const { return this->m_fontLarge; }
+
+		///	@brief Reports back the large font in bold.
+		QFont FontLargeBold() const { return this->m_fontLargeBold; }
 	};
 }
 

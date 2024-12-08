@@ -1,7 +1,7 @@
 #include "CFloorPlan.h"
 #include <QFont>
 #include <QFontMetrics>
-#include "CMemorySection.h"
+#include "CMemoryRegion.h"
 
 using namespace VisualLinkerScript::Components::MemoryVisualizer::Composition;
 
@@ -10,7 +10,7 @@ constexpr double Max(const double a, const double b) { return a > b ? a : b;  }
 
 SMetricSizeF CFloorPlan::CalculateBodySize(const CGraphicContext& graphicContext) const
 {
-	if (this->m_MemorySections.empty())
+	if (this->m_MemoryRegions.empty())
 	{
 		return { 0, 0 };
 	}
@@ -18,14 +18,14 @@ SMetricSizeF CFloorPlan::CalculateBodySize(const CGraphicContext& graphicContext
 	double maxWidthObserved = 0;
 	double calculatedHeight = 0;
 
-	for (const auto& memorySection : this->m_MemorySections)
+	for (const auto& memorySection : this->m_MemoryRegions)
 	{
 		auto calculatedSize = memorySection->CalculateBodySize(graphicContext);
 		maxWidthObserved = Max(maxWidthObserved, calculatedSize.CX());
 		calculatedHeight += calculatedSize.CY() + SpaceBetweenMemoryRegionsMm;
 	}
 
-	return SMetricSizeF(maxWidthObserved, calculatedHeight);
+	return { maxWidthObserved, calculatedHeight };
 }
 
 void CFloorPlan::SetBodyPosition(
@@ -33,7 +33,7 @@ void CFloorPlan::SetBodyPosition(
 	const CGraphicContext& graphicContext) const
 {
 	double currentPositionHolder = allocatedArea.Top();
-	for (const auto& memorySection : this->m_MemorySections)
+	for (const auto& memorySection : this->m_MemoryRegions)
 	{
 		auto calculatedSize = memorySection->CalculateBodySize(graphicContext);
 		SMetricRectangleF area(allocatedArea.Left(), currentPositionHolder, calculatedSize.CX(), calculatedSize.CY());
@@ -42,7 +42,12 @@ void CFloorPlan::SetBodyPosition(
 	}
 }
 
-void CFloorPlan::Paint(const CGraphicContext& graphicContext, QPainter& painter)
+void CFloorPlan::Paint(
+	const CGraphicContext& graphicContext, 
+	QPainter& painter)
 {
-
+	for (const auto& memoryRegion : this->MemoryRegions())
+	{
+		memoryRegion->Paint(graphicContext, painter);
+	}
 }

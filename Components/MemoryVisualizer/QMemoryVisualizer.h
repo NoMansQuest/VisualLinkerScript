@@ -10,7 +10,7 @@
 
 namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 {
-	class CMemorySection;
+	class CMemoryRegion;
 }
 
 class QLineEdit;
@@ -41,7 +41,7 @@ class QMemoryVisualizer final : public QFrame
     QHBoxLayout* m_hScrollAndButtonsHolderLayout;
     QVBoxLayout* m_hScrollHousingLayout;
 
-    SharedPtrVector<CMemorySection> m_memorySections;
+    SharedPtrVector<CMemoryRegion> m_memorySections;
 
     void BuildInterface();
 
@@ -54,7 +54,7 @@ public:
     }
 
     /// @brief Update memory sections (i.e. the content of this component).
-    void SetModel(SharedPtrVector<CMemorySection>&& memorySections);
+    void SetModel(SharedPtrVector<CMemoryRegion>&& memorySections);
 
 private:
     void CalculateAndUpdateModelGeometry();

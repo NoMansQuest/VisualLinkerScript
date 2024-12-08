@@ -1,4 +1,6 @@
-#include "CMemorySection.h"
+#include "CMemoryRegion.h"
+
+#include "Components/MemoryVisualizer/ColorResources.h"
 
 using namespace VisualLinkerScript;
 using namespace VisualLinkerScript::Components::MemoryVisualizer::Composition;
@@ -12,7 +14,7 @@ constexpr double addrssStartTextToLineHSpaceMm = 5;
 constexpr double sizeMarkerFirstLineLengthMm = 40;
 constexpr double sizeMarkerSecondLineLengthMm = 5;
 
-SMetricSizeF CMemorySection::CalculateBodySize(const CGraphicContext& graphicContext) const
+SMetricSizeF CMemoryRegion::CalculateBodySize(const CGraphicContext& graphicContext) const
 {	
 	// Constants
 	double minimumMemoryBoxHeight = 10 + 2; // 14mm minimum memory box height. 4mm Text Label + 2mm Space + 0.5mm Border + 7mm Empty Space + 0.5mm border
@@ -21,13 +23,13 @@ SMetricSizeF CMemorySection::CalculateBodySize(const CGraphicContext& graphicCon
 	auto topMemoryLabel = Graphical::GetTextWidthInPixels("Memory Size: 16382 KB", graphicContext.FontMetricsLarge());
 
 	// Left size address text
-	auto leftAddressTextSize = Graphical::GetTextWidthInPixels("0x0000000000000000", graphicContext.FontMetricsSmall());
+	double leftAddressTextSize = Graphical::GetTextWidthInPixels("0x0000000000000000", graphicContext.FontMetricsSmall());
 	double leftAddressLine = addressStartConnectingLineLengthMm; // 10mm = 1mm Space + 8mm Line + 1mm Space
 	double leftSizeTotal = leftAddressTextSize + leftAddressLine;
 
 	// Right side memory size lines
 	double rightSizeLine1 = sizeMarkerFirstLineLengthMm; 
-	double rightSizeLine2 = sizeMarkerSecondLineLengthMm; 
+	double rightSizeLine2 = sizeMarkerSecondLineLengthMm;
 	double rightSizeText = Graphical::GetTextWidthInPixels("4096 Bytes", graphicContext.FontMetricsSmall());
 	double rightSizeTotal = rightSizeLine1 + rightSizeLine2 + rightSizeText;
 		
@@ -44,10 +46,10 @@ SMetricSizeF CMemorySection::CalculateBodySize(const CGraphicContext& graphicCon
 		}
 	}
 
-	return SMetricSizeF(calculatedWidth, calculatedHeight);
+	return { calculatedWidth, calculatedHeight };
 }
 
-void CMemorySection::SetBodyPosition(const SMetricRectangleF& allocatedArea, const CGraphicContext& graphicContext) 
+void CMemoryRegion::SetBodyPosition(const SMetricRectangleF& allocatedArea, const CGraphicContext& graphicContext) 
 {
 	auto calculatedDesiredSize = this->CalculateBodySize(graphicContext);
 	auto currentYHolder = allocatedArea.Top();
@@ -155,7 +157,86 @@ void CMemorySection::SetBodyPosition(const SMetricRectangleF& allocatedArea, con
 			this->BodyArea().Center().Y()));
 }
 
-void CMemorySection::Paint(const CGraphicContext& graphicContext, QPainter& painter)
+void CMemoryRegion::Paint(const CGraphicContext& graphicContext, QPainter& painter)
 {
+	// Draw header & size
+	painter.setFont(graphicContext.FontLarge());
+	painter.setPen(QPen(QColor::fromRgb(Colors::MemoryRegionDefaultForeColor)));
+	
+	painter.drawText(
+		this->TitleArea().ConvertToQRect(graphicContext), 
+		Qt::AlignHCenter | Qt::AlignVCenter,
+		QString::fromStdString(this->Title()));
 
+	painter.setFont(graphicContext.FontLargeBold());
+	painter.drawText(
+		this->MemorySizeTextArea().ConvertToQRect(graphicContext),
+		Qt::AlignHCenter | Qt::AlignVCenter,
+		QString::fromStdString(this->MemorySizeText()));
+
+	// Draw surrounding rectangle
+	painter.setPen(QPen(QColor::fromRgb(Colors::MemoryRegionDefaultBorderColor), 2, Qt::DotLine, Qt::FlatCap, Qt::BevelJoin));
+	painter.fillRect(this->BodyArea().ConvertToQRect(graphicContext), QBrush(QColor::fromRgba(Colors::MemoryRegionDefaultBackgroundColor), Qt::SolidPattern));
+	painter.drawRect(this->BodyArea().ConvertToQRect(graphicContext));
+
+	// Draw Start and Stop address markers
+	if (this->StartAddressKnown())
+	{
+		painter.setFont(graphicContext.FontSmall());
+		painter.setPen(QColor::fromRgba(Colors::AddressMarkerTextColor));
+		painter.drawText(
+			this->AddressStartTextArea().ConvertToQRect(graphicContext),
+			Qt::AlignHCenter | Qt::AlignVCenter,
+			QString::fromStdString(this->AddressStartText()));
+
+		painter.setPen(QColor::fromRgba(Colors::AddressMarkerLineColor));
+		painter.drawLine(
+			this->AddressStartConnectingLine().ToStartQPointF(graphicContext),
+			this->AddressStartConnectingLine().ToEndQPointF(graphicContext));
+	}
+
+	// Draw End and Stop address markers
+	if (this->EndAddressKnown())
+	{
+		painter.setFont(graphicContext.FontSmall());
+		painter.setPen(QColor::fromRgba(Colors::AddressMarkerTextColor));
+		painter.drawText(
+			this->AddressEndTextArea().ConvertToQRect(graphicContext),
+			Qt::AlignHCenter | Qt::AlignVCenter,
+			QString::fromStdString(this->AddressStartText()));
+
+		painter.setPen(QColor::fromRgba(Colors::AddressMarkerLineColor));
+		painter.drawLine(
+			this->AddressEndConnctingLine().ToStartQPointF(graphicContext),
+			this->AddressEndConnctingLine().ToEndQPointF(graphicContext));
+	}
+
+	// Draw the 'Size' marker (on the right side)
+	// In case of memory regions, their size is always known
+	painter.setFont(graphicContext.FontSmall());
+	painter.setPen(QColor::fromRgba(Colors::SizeMarkerTextColor));
+	painter.drawText(
+		this->SizeMarkerTextArea().ConvertToQRect(graphicContext),
+		Qt::AlignHCenter | Qt::AlignVCenter,
+		QString::fromStdString(this->SizeMarkerText()));
+
+	painter.setPen(QColor::fromRgba(Colors::SizeMarkerLineColor));
+	painter.drawLine(
+		this->SizeMarkerLowerConnector().ToStartQPointF(graphicContext),
+		this->SizeMarkerLowerConnector().ToEndQPointF(graphicContext));
+
+	painter.drawLine(
+		this->SizeMarkerUpperConnector().ToStartQPointF(graphicContext),
+		this->SizeMarkerUpperConnector().ToEndQPointF(graphicContext));
+
+	painter.drawLine(
+		this->SizeMarkerCenterConnector().ToStartQPointF(graphicContext),
+		this->SizeMarkerCenterConnector().ToEndQPointF(graphicContext));
+
+
+	// Draw all children
+	for (const auto& childContent : this->ChildContent())
+	{
+		childContent->Paint(graphicContext, painter);
+	}
 }

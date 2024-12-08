@@ -11,7 +11,7 @@
 namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 {
     /// @brief Represents a Memory-Object.
-    class CMemorySection : public CAddressedRegion
+    class CMemoryRegion : public CAddressedRegion
     {
         DECLARE_READONLY_PROPERTY(std::string, Title)
         DECLARE_READONLY_PROPERTY(std::string, MemorySizeText)
@@ -21,7 +21,7 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
         DECLARE_STANDARD_PROPERTY(SMetricRectangleF, MemorySizeTextArea)
 
         /// @brief Default constructor
-        CMemorySection(
+        CMemoryRegion(
 				std::string title,
 				std::string memorySizeText,
 				const SharedPtrVector<CSectionDefinitionBase>& childContent,
@@ -42,7 +42,7 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
         SMetricSizeF CalculateBodySize(const CGraphicContext& graphicContext) const override;
 
         /// @copydoc CAddressedRegion::SetBodyPosition
-        void SetBodyPosition(const SMetricRectangleF& allocatedArea, const CGraphicContext& graphicContext) override;
+        void SetBodyPosition(const SMetricRectangleF& allocatedArea, const CGraphicContext& graphicContext) override;        
     };
 }
 
