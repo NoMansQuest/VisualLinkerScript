@@ -40,7 +40,7 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 
         /// @copydoc CAddressedRegion::CalculateBodySize
         SMetricSizeF CalculateBodySize(const CGraphicContext& graphicContext) const override;
-
+        
         /// @copydoc CAddressedRegion::SetBodyPosition
         void SetBodyPosition(const SMetricRectangleF& allocatedArea, const CGraphicContext& graphicContext) override;        
     };

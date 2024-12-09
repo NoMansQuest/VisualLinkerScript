@@ -7,6 +7,7 @@ using namespace VisualLinkerScript::Components::MemoryVisualizer::Composition;
 
 constexpr double marginTextToLeftInMm = 1;
 constexpr double marginTextFromTopInMm = 1;
+constexpr double sizeMarkerFirstLineLengthMm = 0;
 
 SMetricSizeF COverlaySectionOutput::CalculateBodySize(const CGraphicContext& graphicContext) const
 {
@@ -31,11 +32,10 @@ void COverlaySectionOutput::SetBodyPosition(const SMetricRectangleF& allocatedAr
 void COverlaySectionOutput::Paint(const CGraphicContext& graphicContext, QPainter& painter)
 {
 	// NOTE: For OverlaySectionOutput, we use 'SectionOutput' style (they're the same in essence).
-
-	// Draw surrounding rectangle
-	painter.setPen(QPen(QColor::fromRgb(Colors::SectionOutputClickBorderColor), 1, Qt::SolidLine, Qt::FlatCap, Qt::BevelJoin));
-	painter.fillRect(this->BodyArea().ConvertToQRect(graphicContext), QBrush(QColor::fromRgba(Colors::SectionOutputDefaultBackgroundColor), Qt::SolidPattern));
-	painter.drawRect(this->BodyArea().ConvertToQRect(graphicContext));
+	// Draw the addressed region
+	const auto borderPen = QPen(QColor::fromRgb(Colors::SectionOutputClickBorderColor), 1, Qt::SolidLine, Qt::FlatCap, Qt::BevelJoin);
+	const auto fillBrush = QBrush(QColor::fromRgba(Colors::SectionOutputDefaultBackgroundColor), Qt::SolidPattern);
+	this->PaintAddressedRegion(graphicContext, painter, borderPen, fillBrush);
 
 	// Draw section name
 	painter.setFont(graphicContext.FontSmall());

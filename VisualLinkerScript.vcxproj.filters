@@ -509,6 +509,9 @@
     <ClCompile Include="Components\MemoryVisualizer\Composition\CTooltip.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="Components\MemoryVisualizer\Composition\CAddressedRegion.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Components\QScintilla\scintilla\lexlib\Accessor.h">

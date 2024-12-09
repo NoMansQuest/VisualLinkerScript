@@ -1,17 +1,10 @@
 #include "QMemoryLayoutRender.h"
-#include <qguiapplication.h>
 #include <QPainter>
+#include "ColorResources.h"
 
 
-// Helper functions
-namespace
-{
-	constexpr QColor colorLevelM1(0x10, 0x10, 0x10);
-	constexpr QColor colorGrid(0x20, 0x20, 0x20);
-    constexpr QColor colorBorder(0x30, 0x30, 0x30);
+using namespace VisualLinkerScript::Components::MemoryVisualizer;
 
-
-};
 
 void QMemoryLayoutRender::BuildInterface()
 {
@@ -49,11 +42,10 @@ void QMemoryLayoutRender::RedrawDoubleBuffer()
     }
 
     // Draw background color
-    newBuffer.fill(colorLevelM1);
+    newBuffer.fill(Colors::ViewBackgroundColor);
 
     // Draw grids
     this->DrawGrids(painter, dpiX, dpiY);
-
 
     // Set new buffer to current buffer.
     this->m_doubleBuffer = newBuffer;
@@ -66,7 +58,7 @@ void QMemoryLayoutRender::DrawGrids(QPainter& painter, double dpiX, double dpiY)
     auto lastYPos = size().height() - 1;
 
 
-    painter.setPen(QPen(QColor(colorGrid), 1));
+    painter.setPen(QPen(QColor::fromRgb(VisualLinkerScript::Components::MemoryVisualizer::Colors::ViewBackgroundGridColor), 1));
     for (qreal xHover = 0; xHover <= lastXPos; xHover += pixelsPer5mm)
     {
         painter.drawLine(QPointF(xHover, (qreal)0), QPointF(xHover, lastYPos));
@@ -77,7 +69,7 @@ void QMemoryLayoutRender::DrawGrids(QPainter& painter, double dpiX, double dpiY)
         painter.drawLine(QPointF(0, (qreal)yHover), QPointF(lastXPos, yHover));
     }
 
-    painter.setPen(QPen(QColor(colorBorder), 1));
+    painter.setPen(QPen( QColor::fromRgba(Colors::ViewBackgroundBorderColor), 1));
     painter.drawLine(0, 0, lastXPos, 0);
     painter.drawLine(0, 0, 0, lastYPos);
     painter.drawLine(lastXPos, lastYPos, lastXPos, 0);

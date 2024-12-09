@@ -61,6 +61,17 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 
         /// @brief Updates the coordinates of all involved objects based on the given allocated area.
         virtual void SetBodyPosition(const SMetricRectangleF& allocatedArea, const CGraphicContext& graphicContext) = 0;
+
+    protected:
+        /// @brief Sets size and marker positions.
+        void SetSizeAndAddressMarkerPosition();
+
+        /// @brief Draws body-area, size-marker and address-marker
+        void PaintAddressedRegion(
+            const CGraphicContext& graphicContext,
+            QPainter& painter,
+            const QPen& bodyBorderPen,
+            const QBrush& bodyFillBrush) const;
     };
 }
 

@@ -128,8 +128,6 @@ void COverlayStatement::SetBodyPosition(const SMetricRectangleF& allocatedArea, 
 	double overlayStatementBottom = currentYHolder;
 	double overlayStatementHeight = overlayStatementBottom - allocatedArea.Top();
 
-	this->SetBodyArea(SMetricRectangleF(allocatedArea.Left(), allocatedArea.Top(), calculatedDesiredSize.CX(), overlayStatementHeight));
-
 	// Set fill-expression and program-headers
 	auto programHeaderTopYPos = allocatedArea.Top() + programHeaderMarginTop;
 	auto programHeaderRightXPos = allocatedArea.Right() - programHeaderMarginRight;
@@ -159,6 +157,9 @@ void COverlayStatement::SetBodyPosition(const SMetricRectangleF& allocatedArea, 
 				calculatedProgramHeader.CY()),
 				graphicContext);
 	}
+
+	// Set the main body area.
+	this->SetBodyArea(SMetricRectangleF(allocatedArea.Left(), allocatedArea.Top(), calculatedDesiredSize.CX(), overlayStatementHeight));
 
 	// Set address start and top markers		
 	auto addressStartTextWidth = Graphical::GetMetricFromPixels(graphicContext.DpiX(), graphicContext.FontMetricsSmall().horizontalAdvance(QString::fromStdString(this->AddressStartText())));
@@ -232,20 +233,17 @@ void COverlayStatement::SetBodyPosition(const SMetricRectangleF& allocatedArea, 
 
 void COverlayStatement::Paint(const CGraphicContext& graphicContext, QPainter& painter)
 {
-	// Draw surrounding rectangle
-	painter.setPen(QPen(QColor::fromRgb(Colors::OverlayStatementClickBorderColor), 1, Qt::SolidLine, Qt::FlatCap, Qt::BevelJoin));
-	painter.fillRect(this->BodyArea().ConvertToQRect(graphicContext), QBrush(QColor::fromRgba(Colors::SectionStatementDefaultBackgroundColor), Qt::SolidPattern));
-	painter.drawRect(this->BodyArea().ConvertToQRect(graphicContext));
+	// Draw the addressed region
+	const auto borderPen = QPen(QColor::fromRgb(Colors::OverlayStatementClickBorderColor), 1, Qt::SolidLine, Qt::FlatCap, Qt::BevelJoin);
+	const auto fillBrush = QBrush(QColor::fromRgba(Colors::SectionStatementDefaultBackgroundColor), Qt::SolidPattern);
+	this->PaintAddressedRegion(graphicContext, painter, borderPen, fillBrush);
 
 	// Draw header	
 	painter.fillRect(this->HeaderArea().ConvertToQRect(graphicContext), QBrush(QColor::fromRgba(Colors::SectionStatementHeaderBackgroundColor), Qt::SolidPattern));
 
 	// Draw section name
 	painter.setFont(graphicContext.FontSmallBold());
-	painter.drawText(
-		this->TitleArea().ConvertToQRect(graphicContext),
-		Qt::AlignHCenter | Qt::AlignVCenter,
-		QString::fromStdString(this->Title()));
+	painter.drawText(this->TitleArea().ConvertToQRect(graphicContext), Qt::AlignHCenter | Qt::AlignVCenter, QString::fromStdString(this->Title()));
 
 	// Draw program headers
 	if (this->FillExpression().Defined())
@@ -257,61 +255,6 @@ void COverlayStatement::Paint(const CGraphicContext& graphicContext, QPainter& p
 	{
 		progHeader.Paint(graphicContext, painter);
 	}
-
-	// Draw Start and Stop address markers
-	if (this->StartAddressKnown())
-	{
-		painter.setFont(graphicContext.FontSmall());
-		painter.setPen(QColor::fromRgba(Colors::AddressMarkerTextColor));
-		painter.drawText(
-			this->AddressStartTextArea().ConvertToQRect(graphicContext),
-			Qt::AlignHCenter | Qt::AlignVCenter,
-			QString::fromStdString(this->AddressStartText()));
-
-		painter.setPen(QColor::fromRgba(Colors::AddressMarkerLineColor));
-		painter.drawLine(
-			this->AddressStartConnectingLine().ToStartQPointF(graphicContext),
-			this->AddressStartConnectingLine().ToEndQPointF(graphicContext));
-	}
-
-	// Draw End and Stop address markers
-	if (this->EndAddressKnown())
-	{
-		painter.setFont(graphicContext.FontSmall());
-		painter.setPen(QColor::fromRgba(Colors::AddressMarkerTextColor));
-		painter.drawText(
-			this->AddressEndTextArea().ConvertToQRect(graphicContext),
-			Qt::AlignHCenter | Qt::AlignVCenter,
-			QString::fromStdString(this->AddressStartText()));
-
-		painter.setPen(QColor::fromRgba(Colors::AddressMarkerLineColor));
-		painter.drawLine(
-			this->AddressEndConnctingLine().ToStartQPointF(graphicContext),
-			this->AddressEndConnctingLine().ToEndQPointF(graphicContext));
-	}
-
-	// Draw the 'Size' marker (on the right side)
-	// In case of memory regions, their size is always known
-	painter.setFont(graphicContext.FontSmall());
-	painter.setPen(QColor::fromRgba(Colors::SizeMarkerTextColor));
-	painter.drawText(
-		this->SizeMarkerTextArea().ConvertToQRect(graphicContext),
-		Qt::AlignHCenter | Qt::AlignVCenter,
-		QString::fromStdString(this->SizeMarkerText()));
-
-	painter.setPen(QColor::fromRgba(Colors::SizeMarkerLineColor));
-	painter.drawLine(
-		this->SizeMarkerLowerConnector().ToStartQPointF(graphicContext),
-		this->SizeMarkerLowerConnector().ToEndQPointF(graphicContext));
-
-	painter.drawLine(
-		this->SizeMarkerUpperConnector().ToStartQPointF(graphicContext),
-		this->SizeMarkerUpperConnector().ToEndQPointF(graphicContext));
-
-	painter.drawLine(
-		this->SizeMarkerCenterConnector().ToStartQPointF(graphicContext),
-		this->SizeMarkerCenterConnector().ToEndQPointF(graphicContext));
-
 
 	// Draw all children
 	for (const auto& childOutput : this->OverlaySections())

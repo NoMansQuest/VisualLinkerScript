@@ -1,5 +1,7 @@
 #include "CProgramHeaderButton.h"
 
+#include "Components/MemoryVisualizer/ColorResources.h"
+
 using namespace VisualLinkerScript;
 using namespace VisualLinkerScript::Components::MemoryVisualizer::Composition;
 
@@ -40,5 +42,39 @@ void CProgramHeaderButton::SetBodyPosition(
 
 void CProgramHeaderButton::Paint(const CGraphicContext& graphicContext, QPainter& painter)
 {
+	QRgb borderColor = qRgba(0, 0, 0, 0);
+	QRgb backgroundColor = qRgba(0, 0, 0, 0);
+	QRgb textColor = qRgba(0, 0, 0, 0);
 
+	if (this->MouseDown())
+	{
+		borderColor = Colors::FillExpressionClickBorderColor;
+		backgroundColor = Colors::FillExpressionClickBackground;
+		textColor = Colors::FillExpressionTextClickForeColor;
+	}
+	else if (this->MouseHovering())
+	{
+		borderColor = Colors::FillExpressionHoverBorderColor;
+		backgroundColor = Colors::FillExpressionHoverBackground;
+		textColor = Colors::FillExpressionTextHoverForeColor;
+	}
+	else
+	{
+		borderColor = Colors::FillExpressionDefaultBorderColor;
+		backgroundColor = Colors::FillExpressionDefaultBackground;
+		textColor = Colors::FillExpressionTextDefaultForeColor;
+	}
+
+	// Draw button background
+	const auto borderPen = QPen(QColor::fromRgb(borderColor), 1, Qt::SolidLine, Qt::FlatCap, Qt::BevelJoin);
+	const auto fillBrush = QBrush(QColor::fromRgba(backgroundColor), Qt::SolidPattern);
+	painter.setPen(borderPen);
+	painter.fillRect(this->BodyArea().ConvertToQRect(graphicContext), fillBrush);
+	painter.drawRect(this->BodyArea().ConvertToQRect(graphicContext));
+
+	// Draw section name
+	const auto textPen = QPen(QColor::fromRgb(textColor));
+	painter.setPen(textPen);
+	painter.setFont(graphicContext.FontSmallBold());
+	painter.drawText(this->BodyArea().ConvertToQRect(graphicContext), Qt::AlignHCenter | Qt::AlignVCenter, QString::fromStdString(this->ProgramHeaderText()));
 }

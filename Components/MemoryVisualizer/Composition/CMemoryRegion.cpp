@@ -1,5 +1,7 @@
 #include "CMemoryRegion.h"
 
+#include "COverlayStatement.h"
+#include "CSectionStatement.h"
 #include "Components/MemoryVisualizer/ColorResources.h"
 
 using namespace VisualLinkerScript;
@@ -174,65 +176,10 @@ void CMemoryRegion::Paint(const CGraphicContext& graphicContext, QPainter& paint
 		Qt::AlignHCenter | Qt::AlignVCenter,
 		QString::fromStdString(this->MemorySizeText()));
 
-	// Draw surrounding rectangle
-	painter.setPen(QPen(QColor::fromRgb(Colors::MemoryRegionDefaultBorderColor), 2, Qt::DotLine, Qt::FlatCap, Qt::BevelJoin));
-	painter.fillRect(this->BodyArea().ConvertToQRect(graphicContext), QBrush(QColor::fromRgba(Colors::MemoryRegionDefaultBackgroundColor), Qt::SolidPattern));
-	painter.drawRect(this->BodyArea().ConvertToQRect(graphicContext));
 
-	// Draw Start and Stop address markers
-	if (this->StartAddressKnown())
-	{
-		painter.setFont(graphicContext.FontSmall());
-		painter.setPen(QColor::fromRgba(Colors::AddressMarkerTextColor));
-		painter.drawText(
-			this->AddressStartTextArea().ConvertToQRect(graphicContext),
-			Qt::AlignHCenter | Qt::AlignVCenter,
-			QString::fromStdString(this->AddressStartText()));
-
-		painter.setPen(QColor::fromRgba(Colors::AddressMarkerLineColor));
-		painter.drawLine(
-			this->AddressStartConnectingLine().ToStartQPointF(graphicContext),
-			this->AddressStartConnectingLine().ToEndQPointF(graphicContext));
-	}
-
-	// Draw End and Stop address markers
-	if (this->EndAddressKnown())
-	{
-		painter.setFont(graphicContext.FontSmall());
-		painter.setPen(QColor::fromRgba(Colors::AddressMarkerTextColor));
-		painter.drawText(
-			this->AddressEndTextArea().ConvertToQRect(graphicContext),
-			Qt::AlignHCenter | Qt::AlignVCenter,
-			QString::fromStdString(this->AddressStartText()));
-
-		painter.setPen(QColor::fromRgba(Colors::AddressMarkerLineColor));
-		painter.drawLine(
-			this->AddressEndConnctingLine().ToStartQPointF(graphicContext),
-			this->AddressEndConnctingLine().ToEndQPointF(graphicContext));
-	}
-
-	// Draw the 'Size' marker (on the right side)
-	// In case of memory regions, their size is always known
-	painter.setFont(graphicContext.FontSmall());
-	painter.setPen(QColor::fromRgba(Colors::SizeMarkerTextColor));
-	painter.drawText(
-		this->SizeMarkerTextArea().ConvertToQRect(graphicContext),
-		Qt::AlignHCenter | Qt::AlignVCenter,
-		QString::fromStdString(this->SizeMarkerText()));
-
-	painter.setPen(QColor::fromRgba(Colors::SizeMarkerLineColor));
-	painter.drawLine(
-		this->SizeMarkerLowerConnector().ToStartQPointF(graphicContext),
-		this->SizeMarkerLowerConnector().ToEndQPointF(graphicContext));
-
-	painter.drawLine(
-		this->SizeMarkerUpperConnector().ToStartQPointF(graphicContext),
-		this->SizeMarkerUpperConnector().ToEndQPointF(graphicContext));
-
-	painter.drawLine(
-		this->SizeMarkerCenterConnector().ToStartQPointF(graphicContext),
-		this->SizeMarkerCenterConnector().ToEndQPointF(graphicContext));
-
+	const auto borderPen = QPen(QColor::fromRgb(Colors::MemoryRegionDefaultBorderColor), 2, Qt::DotLine, Qt::FlatCap, Qt::BevelJoin);
+	const auto fillBrush = QBrush(QColor::fromRgba(Colors::MemoryRegionDefaultBackgroundColor), Qt::SolidPattern);
+	this->PaintAddressedRegion(graphicContext, painter, borderPen, fillBrush);
 
 	// Draw all children
 	for (const auto& childContent : this->ChildContent())

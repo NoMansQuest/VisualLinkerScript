@@ -214,6 +214,7 @@
       <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Release|x64'">input</DynamicSource>
       <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).moc</QtMocFileName>
     </ClCompile>
+    <ClCompile Include="Components\MemoryVisualizer\Composition\CAddressedRegion.cpp" />
     <ClCompile Include="Components\MemoryVisualizer\Composition\CFillExpressionButton.cpp" />
     <ClCompile Include="Components\MemoryVisualizer\Composition\CFloorPlan.cpp" />
     <ClCompile Include="Components\MemoryVisualizer\Composition\CMemoryRegion.cpp" />
