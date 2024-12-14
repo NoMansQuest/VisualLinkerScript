@@ -19,23 +19,23 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 
         /// @brief Default constructor.    	
         COverlayStatement(
-				SharedPtrVector<COverlaySectionStatement> childSections,
 				const CFillExpressionButton& fillExpression,
-	            const std::vector<CProgramHeaderButton>& programHeaders,
+				SharedPtrVector<CProgramHeaderButton> programHeaders,
+				SharedPtrVector<COverlaySectionStatement> childSections,
 	            const uint32_t inModelStartPosition,
 	            const uint32_t inModelLength,
-	            const bool startAddressKnown,
-	            const bool endAddressKnown,
-	            const bool memorySizeKnown) :
+	            const std::string& startAddress,
+	            const std::string& endAddress,
+	            const std::string& memorySize) :
             CSectionDefinitionBase(
                 "",
                 fillExpression,
                 programHeaders,
                 inModelStartPosition,
                 inModelLength,
-                startAddressKnown,
-                endAddressKnown,
-                memorySizeKnown),
+                startAddress,
+                endAddress,
+                memorySize),
             m_OverlaySections(std::move(childSections))
         {}
 
@@ -49,6 +49,10 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 
         /// @copydoc CAddressedRegion::SetBodyPosition
         void SetBodyPosition(const SMetricRectangleF& allocatedArea, const CGraphicContext& graphicContext) override;
+
+    protected:
+        /// @brief Not used for this object
+        int SizeMarkerDepth() override { return 0; }
     };
 }
 

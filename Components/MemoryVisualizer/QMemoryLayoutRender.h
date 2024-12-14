@@ -9,6 +9,7 @@
 
 namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 {
+	class CFloorPlan;
 	class CMemoryRegion;
 }
 
@@ -29,8 +30,11 @@ private:
     void DrawGrids(QPainter& painter, double dpiX, double dpiY) const;
 
     QPixmap m_doubleBuffer;
-    SharedPtrVector<CMemoryRegion> m_model;
+    std::shared_ptr<CFloorPlan> m_model;
 
+    int m_scrollXmm;
+    int m_scrollYmm;
+    double m_zoom;
 
 public:
     /// @brief Default constructor
@@ -46,7 +50,13 @@ public:
     }
 
     /// @brief Updates the model for this render.
-    void SetModel(const SharedPtrVector<CMemoryRegion>& model);
+    void SetModel(const std::shared_ptr<CFloorPlan>& model);
+
+    /// @brief Updates the scroll position (affects drawing).
+    void SetScrollPosition(const int scrollX, const int scrollY);
+
+    /// @brief Updates the scroll position (affects drawing).
+    void SetZoom(const double zoom);
 
 protected:
     void resizeEvent(QResizeEvent* event) override;    
@@ -56,6 +66,7 @@ protected:
 signals:
     void evMouseWheel(int xSteps, int ySteps);
     void evMoveScreen(int xMovement, int yMovement);
+    void evZoomChanged(int zoomDeltaInPercent);
 
 public slots:    
 

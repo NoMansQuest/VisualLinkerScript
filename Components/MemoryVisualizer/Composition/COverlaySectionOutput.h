@@ -19,11 +19,8 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 		/// @brief Default constructor.
 		COverlaySectionOutput(std::string content,
 				const uint32_t inModelStartPosition,
-				const uint32_t inModelLength,
-				const bool startAddressKnown,
-				const bool endAddressKnown,
-				const bool memorySizeKnown) :
-			CAddressedRegion(inModelStartPosition, inModelLength, startAddressKnown, endAddressKnown, memorySizeKnown),
+				const uint32_t inModelLength) :
+			CAddressedRegion(inModelStartPosition, inModelLength, "", "", ""),
 			m_Content(std::move(content))
 		{}
 
@@ -37,6 +34,10 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 
 		/// @copydoc CAddressedRegion::SetBodyPosition
 		void SetBodyPosition(const SMetricRectangleF& allocatedArea, const CGraphicContext& graphicContext) override;
+
+	protected:
+		/// @brief Not used for this object
+		int SizeMarkerDepth() override { return 0; }
 	};
 }
 

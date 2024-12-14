@@ -19,29 +19,23 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
         DECLARE_STANDARD_PROPERTY(SMetricRectangleF, TitleArea)
         DECLARE_STANDARD_PROPERTY(SMetricRectangleF, HeaderArea)
 	    DECLARE_STANDARD_PROPERTY(CFillExpressionButton, FillExpression)
-        DECLARE_STANDARD_PROPERTY(std::vector<CProgramHeaderButton>, ProgramHeaders)
+        DECLARE_STANDARD_PROPERTY(SharedPtrVector<CProgramHeaderButton>, ProgramHeaders)
 
         /// @brief Default constructor
         CSectionDefinitionBase(
 	            std::string title,
 	            CFillExpressionButton fillExpression, 
-	            const std::vector<CProgramHeaderButton>& programHeaders,
+	            const SharedPtrVector<CProgramHeaderButton>& programHeaders,
 				const uint32_t inModelStartPosition,
 				const uint32_t inModelLength,
-				const bool startAddressKnown,
-				const bool endAddressKnown,
-				const bool memorySizeKnown) :			
-			 CAddressedRegion(inModelStartPosition, inModelLength, startAddressKnown, endAddressKnown, memorySizeKnown),
+	            const std::string& startAddress,
+	            const std::string& endAddress,
+	            const std::string& memorySize) :
+			 CAddressedRegion(inModelStartPosition, inModelLength, startAddress, endAddress, memorySize),
 		     m_Title(std::move(title)),
 		     m_FillExpression(std::move(fillExpression)),
 		     m_ProgramHeaders(programHeaders)
 	    {}
-
-        /// @copydoc CAddressedRegion::CalculateBodySize
-		SMetricSizeF CalculateBodySize(const CGraphicContext& graphicContext) const override;
-
-        /// @copydoc CAddressedRegion::SetBodyPosition
-        void SetBodyPosition(const SMetricRectangleF& allocatedArea, const CGraphicContext& graphicContext) override;
     };
 }
 

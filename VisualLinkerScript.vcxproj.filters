@@ -1269,6 +1269,9 @@
     <QtMoc Include="Components\InputDialogs\QJumpToLineDialog.h">
       <Filter>Generated Files</Filter>
     </QtMoc>
+    <QtMoc Include="Components\MemoryVisualizer\QPercentageLineEdit.h">
+      <Filter>Generated Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <None Include="Images\arrow-drop-down-icon.svg" />

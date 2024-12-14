@@ -1,5 +1,5 @@
-#ifndef CGENERIC_SECTION_DEFINITION_H_
-#define CGENERIC_SECTION_DEFINITION_H_
+#ifndef CSECTION_STATEMENT_H__
+#define CSECTION_STATEMENT_H__
 
 #include "CSectionDefinitionBase.h"
 #include "CSectionOutput.h"
@@ -17,22 +17,22 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
         CSectionStatement(
 				const std::string& title, 
 				const CFillExpressionButton& fillExpression, 
-	            const std::vector<CProgramHeaderButton>& programHeaders, 
+	            const SharedPtrVector<CProgramHeaderButton>& programHeaders, 
 	            const SharedPtrVector<CSectionOutput>& childOutputs, 
-				const bool inModelStartPosition,
-				const bool inModelLength,
-				const bool startAddressKnown,
-				const bool endAddressKnown,
-				const bool memorySizeKnown) :
+				const uint32_t inModelStartPosition,
+				const uint32_t inModelLength,
+				const std::string& startAddress,
+				const std::string& endAddress,
+				const std::string& memorySize) :
     		CSectionDefinitionBase(
                 title, 
                 fillExpression, 
                 programHeaders, 
                 inModelStartPosition, 
                 inModelLength, 
-                startAddressKnown, 
-                endAddressKnown, 
-                memorySizeKnown),
+                startAddress, 
+                endAddress, 
+                memorySize),
     		m_ChildOutputs(childOutputs)
         {}
 
@@ -46,7 +46,11 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 
         /// @copydoc CAddressedRegion::SetBodyPosition
         void SetBodyPosition(const SMetricRectangleF& allocatedArea, const CGraphicContext& graphicContext) override;
+
+    protected:
+        /// @brief 5mm spacing (on the right side)
+        int SizeMarkerDepth() override { return 5; }
     };
 }
 
-#endif // CGENERIC_SECTION_DEFINITION_H_
+#endif // CSECTION_STATEMENT_H__

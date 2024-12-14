@@ -2,6 +2,7 @@
 #define SRECTANGLEF_H__
 
 #include "../../Helpers.h"
+#include "CGraphicContext.h"
 #include "SMetricPointF.h"
 
 namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
@@ -45,6 +46,7 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
         {
             this->m_Top = Graphical::GetMetricFromPixels(dpiY, rectangleInPixels.top());
             this->m_Left = Graphical::GetMetricFromPixels(dpiX, rectangleInPixels.left());
+            this->m_Right = Graphical::GetMetricFromPixels(dpiX, rectangleInPixels.right());
             this->m_Height = Graphical::GetMetricFromPixels(dpiY, rectangleInPixels.height());
             this->m_Width = Graphical::GetMetricFromPixels(dpiY, rectangleInPixels.width());
         }

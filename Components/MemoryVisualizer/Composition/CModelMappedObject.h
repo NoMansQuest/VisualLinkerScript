@@ -8,13 +8,13 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
     /// @brief Represents an object that would correspond to a specific text found in the Linker script.
     class CModelMappedObject
     {
-        DECLARE_READONLY_PROPERTY(uint32_t, InModelStartPosition)
-        DECLARE_READONLY_PROPERTY(uint32_t, InModelLength)
+        DECLARE_READONLY_PROPERTY(uint32_t, InLinkerScriptStartPosition)
+        DECLARE_READONLY_PROPERTY(uint32_t, InLinkerScriptLength)
 
         /// @brief Default constructor
-        CModelMappedObject(const uint32_t inModelStartPosition, const uint32_t inModelLength) :
-            m_InModelStartPosition(inModelStartPosition),
-            m_InModelLength(inModelLength)
+        CModelMappedObject(const uint32_t inLinkerScriptStartPosition, const uint32_t inLinkerScriptLength) :
+            m_InLinkerScriptStartPosition(inLinkerScriptStartPosition),
+            m_InLinkerScriptLength(inLinkerScriptLength)
         {}
     };
 }

@@ -5,7 +5,7 @@
 
 using namespace VisualLinkerScript::Components::MemoryVisualizer::Composition;
 
-constexpr double SpaceBetweenMemoryRegionsMm = 10;
+constexpr double SpaceBetweenMemoryRegionsMm = 4;
 constexpr double Max(const double a, const double b) { return a > b ? a : b;  }
 
 SMetricSizeF CFloorPlan::CalculateBodySize(const CGraphicContext& graphicContext) const

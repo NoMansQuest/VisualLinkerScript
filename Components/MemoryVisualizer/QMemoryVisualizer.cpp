@@ -1,11 +1,16 @@
 #include "QMemoryVisualizer.h"
 #include <qboxlayout.h>
 #include <qguiapplication.h>
+
+#include "QPercentageLineEdit.h"
 #include "QMemoryLayoutRender.h"
+#include "Composition/CFloorPlan.h"
+#include "Composition/CMemoryRegion.h"
+#include "Composition/COverlayStatement.h"
+#include "Composition/CSectionStatement.h"
 #include "LinkerScriptManager/QLinkerScriptManager.h"
 
 #define FORCE_RANGE(value, upper, lower) ((value > upper) ? upper : (value < lower) ? lower : value)
-
 
 void QMemoryVisualizer::BuildInterface()
 {
@@ -57,7 +62,7 @@ void QMemoryVisualizer::BuildInterface()
     this->m_zoomToContent->setCursor(Qt::PointingHandCursor);
     this->m_zoomToContent->setToolTip("Zoom to content");
 
-    this->m_currentZoomTextEdit = new QLineEdit("100%");
+    this->m_currentZoomTextEdit = new QPercentageLineEdit();
     this->m_currentZoomTextEdit->setAlignment(Qt::AlignCenter);
     this->m_currentZoomTextEdit->setFixedHeight(20);
     this->m_currentZoomTextEdit->setFixedWidth(50);
@@ -87,21 +92,32 @@ void QMemoryVisualizer::BuildInterface()
     this->m_masterLayout->addLayout(this->m_hScrollAndButtonsHolderLayout, 0);
     this->m_masterLayout->setContentsMargins(0, 0, 0, 0);
 
-
-    QObject::connect(this->m_memoryLayoutRender, &QMemoryLayoutRender::evMouseWheel, this, &QMemoryVisualizer::OnMouseWheel);
-
-    this->setLayout(this->m_masterLayout);
+    QObject::connect(this->m_memoryLayoutRender, &QMemoryLayoutRender::evMouseWheel, this, &QMemoryVisualizer::OnScrollChangeByMouseWheel);
+    QObject::connect(this->m_memoryLayoutRender, &QMemoryLayoutRender::evZoomChanged, this, &QMemoryVisualizer::OnZoomChangedByMouseWheel);
+    QObject::connect(this->m_zoomInButton, &QPushButton::clicked, this, &QMemoryVisualizer::OnZoomIncreaseClicked);
+    QObject::connect(this->m_zoomOutButton, &QPushButton::clicked, this, &QMemoryVisualizer::OnZoomDecreaseClicked);
+    this->setLayout(this->m_masterLayout);        
 }
 
-void QMemoryVisualizer::CalculateAndUpdateModelGeometry()
+void QMemoryVisualizer::CalculateAndUpdateModelGeometry() const
 {
-	
+    if (!this->screen())
+    {
+        throw std::exception("'Screen' turned out null");
+    }
+
+    auto graphicContext = CGraphicContext::Make(this);
+    auto bodySize = this->m_model->CalculateBodySize(graphicContext);
+    auto newLeft =  -(bodySize.CX() / 2);
+    auto newTop = -(bodySize.CY() / 2);
+    SMetricRectangleF repositionedModel(newLeft, newTop, bodySize.CX(), bodySize.CY());
+    this->m_model->SetBodyPosition(repositionedModel, graphicContext);
 }
 
-void QMemoryVisualizer::SetModel(SharedPtrVector<CMemoryRegion>&& memorySections)
+void QMemoryVisualizer::SetModel(const std::shared_ptr<CFloorPlan>& floorPlan)
 {
-    this->m_memorySections = std::move(memorySections);
-    this->CalculateAndUpdateModelGeometry();
+    this->m_model = floorPlan;
+    this->CalculateAndUpdateModelGeometry();    
     this->RequestRedraw();    
 }
 
@@ -110,10 +126,52 @@ void QMemoryVisualizer::RequestRedraw() const
     this->m_memoryLayoutRender->repaint();
 }
 
-void QMemoryVisualizer::OnMouseWheel(const int xSteps, const int ySteps) const
+void QMemoryVisualizer::OnScrollChangeByMouseWheel(const int xSteps, const int ySteps) const
 {
     auto newHScrollValue = FORCE_RANGE(this->m_horizontalScrollBar->value() - xSteps, this->m_horizontalScrollBar->maximum(), this->m_horizontalScrollBar->minimum());
     auto newVScrollValue = FORCE_RANGE(this->m_verticalScrollBar->value() - ySteps, this->m_verticalScrollBar->maximum(), this->m_verticalScrollBar->minimum());
     this->m_horizontalScrollBar->setValue(newHScrollValue);
     this->m_verticalScrollBar->setValue(newVScrollValue);
+}
+
+void QMemoryVisualizer::OnZoomChangedByMouseWheel(int zoomChangeInPercent) const
+{
+    auto previousZoom = this->m_currentZoomTextEdit->Percentage();
+    auto newZoom = std::min(100, std::max(1, this->m_currentZoomTextEdit->Percentage() + zoomChangeInPercent));
+    if (newZoom != previousZoom)
+    {
+        this->m_currentZoomTextEdit->SetPercentage(newZoom);
+    }
+}
+
+void QMemoryVisualizer::OnScrollPositionChange() const
+{
+    this->m_memoryLayoutRender->SetScrollPosition(
+        this->m_horizontalScrollBar->value(), 
+        this->m_verticalScrollBar->value());    
+}
+
+void QMemoryVisualizer::OnZoomIncreaseClicked() const
+{
+    auto previousZoom = this->m_currentZoomTextEdit->Percentage();
+    auto newZoom = std::min(this->m_currentZoomTextEdit->Percentage() + 5, 100);
+    if (newZoom != previousZoom)
+    {
+        this->m_currentZoomTextEdit->SetPercentage(newZoom);
+    }
+}
+
+void QMemoryVisualizer::OnZoomDecreaseClicked() const
+{
+    auto previousZoom = this->m_currentZoomTextEdit->Percentage();
+    auto newZoom = std::max(this->m_currentZoomTextEdit->Percentage() - 5, 1);
+    if (newZoom != previousZoom)
+    {
+        this->m_currentZoomTextEdit->SetPercentage(newZoom);
+    }
+}
+
+void QMemoryVisualizer::OnZoomUpdated() const
+{
+    this->m_memoryLayoutRender->SetZoom((double)this->m_currentZoomTextEdit->Percentage());
 }

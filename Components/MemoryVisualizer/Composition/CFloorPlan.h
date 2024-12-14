@@ -4,9 +4,9 @@
 #include <vector>
 
 #include "SMetricSizeF.h"
+#include "SMetricRectangleF.h"
 #include "CMemoryRegion.h"
 
-struct SMetricRectangleF;
 class QFontMetrics;
 
 namespace VisualLinkerScript::Components::MemoryVisualizer::Composition

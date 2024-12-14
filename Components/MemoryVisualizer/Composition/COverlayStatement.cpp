@@ -50,7 +50,7 @@ SMetricSizeF COverlayStatement::CalculateBodySize(const CGraphicContext& graphic
 	{
 		for (const auto& programHeader : this->ProgramHeaders())
 		{
-			minimumWidth += programHeader.CalculateBodySize(graphicContext).CX();
+			minimumWidth += programHeader->CalculateBodySize(graphicContext).CX();
 		}
 	}
 
@@ -134,8 +134,8 @@ void COverlayStatement::SetBodyPosition(const SMetricRectangleF& allocatedArea, 
 
 	for (auto programHeader : this->ProgramHeaders())
 	{
-		auto calculatedProgramHeader = programHeader.CalculateBodySize(graphicContext);
-		programHeader.SetBodyPosition(
+		auto calculatedProgramHeader = programHeader->CalculateBodySize(graphicContext);
+		programHeader->SetBodyPosition(
 				SMetricRectangleF(
 				programHeaderRightXPos - calculatedProgramHeader.CX(),
 				programHeaderTopYPos,
@@ -253,7 +253,7 @@ void COverlayStatement::Paint(const CGraphicContext& graphicContext, QPainter& p
 
 	for (auto progHeader : this->ProgramHeaders())
 	{
-		progHeader.Paint(graphicContext, painter);
+		progHeader->Paint(graphicContext, painter);
 	}
 
 	// Draw all children

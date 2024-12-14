@@ -1,8 +1,11 @@
 #ifndef CGRAPHIC_CONTEXT_H__
 #define CGRAPHIC_CONTEXT_H__
 
+#include <QWidget>
 #include <QFontMetrics>
 #include <QFont>
+#include <qscreen.h>
+#include "Helpers.h"
 
 namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 {
@@ -61,6 +64,33 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 
 		///	@brief Reports back the large font in bold.
 		QFont FontLargeBold() const { return this->m_fontLargeBold; }
+
+		/// @brief Constructs a GraphicalContext for the given widget
+		static CGraphicContext Make(const QWidget* targetWidget)
+		{
+			auto dpiX = targetWidget->screen()->physicalDotsPerInchX();
+			auto dpiY = targetWidget->screen()->physicalDotsPerInchY();
+
+			auto smallFontSize = Graphical::GetFontSizeFromMetric(dpiY, 2.3);
+			auto largeFontSize = Graphical::GetFontSizeFromMetric(dpiY, 3.5);
+
+			QFont smallFont("Tahoma, DejaVu Sans", smallFontSize);
+			smallFont.setFamily("Arial, Helvetica, sans-serif"); // Specify primary and fallback fonts
+
+			QFont smallFontBold("Tahoma, DejaVu Sans", smallFontSize);
+			smallFontBold.setBold(true);
+			smallFontBold.setFamily("Arial, Helvetica, sans-serif"); // Specify primary and fallback fonts
+
+			QFont largeFont("Tahoma, DejaVu Sans", largeFontSize);
+			largeFont.setFamily("Arial, Helvetica, sans-serif"); // Specify primary and fallback fonts
+
+			QFont largeFontBold("Tahoma, DejaVu Sans", largeFontSize);
+			largeFontBold.setBold(true);
+			largeFontBold.setFamily("Arial, Helvetica, sans-serif"); // Specify primary and fallback fonts
+
+			return CGraphicContext(dpiX, dpiY, smallFont, smallFontBold, largeFont, largeFontBold);
+		}
+
 	};
 }
 

@@ -32,13 +32,19 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 	public:
 		/// @brief Default constructor.
 		CFillExpressionButton(
-				const bool defined,
 				std::string fillExpression, 
 				const uint32_t inModelStartPosition,
 				const uint32_t inModelLength) :
 			CModelMappedObject(inModelStartPosition, inModelLength),
-			m_Defined(defined),
+			m_Defined(true),
 			m_FillExpression(std::move(fillExpression))
+		{}
+
+		/// @brief Undefined constructor
+		CFillExpressionButton() :
+			CModelMappedObject(0, 0),
+			m_Defined(false),
+			m_FillExpression()
 		{}
 	
 		/// @copydoc CDrawableObjectBase::Paint

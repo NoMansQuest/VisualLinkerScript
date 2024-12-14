@@ -3,6 +3,11 @@
 
 using namespace VisualLinkerScript::Components::MemoryVisualizer::Composition;
 
+constexpr double addressStartConnectingLineLengthMm = 10;
+constexpr double addressStartTextToLineHSpaceMm = 5;
+constexpr double sizeMarkerFirstLineLengthMm = 5;
+constexpr double sizeMarkerSecondLineLengthMm = 5;
+
 void CAddressedRegion::PaintAddressedRegion(
     const CGraphicContext& graphicContext,
     QPainter& painter,
@@ -71,7 +76,77 @@ void CAddressedRegion::PaintAddressedRegion(
 }
 
 
-void CAddressedRegion::SetSizeAndAddressMarkerPosition()
+void CAddressedRegion::SetBodyPosition(const SMetricRectangleF& allocatedArea, const CGraphicContext& graphicContext)
 {
-	
+	// Set address start and top markers		
+	auto addressStartTextWidth = Graphical::GetMetricFromPixels(graphicContext.DpiX(), graphicContext.FontMetricsSmall().horizontalAdvance(QString::fromStdString(this->AddressStartText())));
+	auto addressEndTextWidth = Graphical::GetMetricFromPixels(graphicContext.DpiX(), graphicContext.FontMetricsSmall().horizontalAdvance(QString::fromStdString(this->AddressEndText())));
+	auto sizeMarkerTextWidth = Graphical::GetMetricFromPixels(graphicContext.DpiX(), graphicContext.FontMetricsSmall().horizontalAdvance(QString::fromStdString(this->SizeMarkerText())));
+
+	auto smallFontHeightHalf = static_cast<double>(graphicContext.FontMetricsSmall().height()) / 2;
+	auto smallFontHeight = static_cast<double>(graphicContext.FontMetricsSmall().height()) / 2;
+
+	this->SetAddressStartTextArea(
+		SMetricRectangleF(
+			this->BodyArea().Left() - addressStartConnectingLineLengthMm - addressStartTextWidth - addressStartTextToLineHSpaceMm,
+			this->BodyArea().Top() - Graphical::GetMetricFromPixels(graphicContext.DpiY(), smallFontHeightHalf),
+			addressStartTextWidth,
+			Graphical::GetMetricFromPixels(graphicContext.DpiY(), smallFontHeight)));
+
+	this->SetAddressStartConnectingLine(
+		SLineF(
+			this->AddressEndTextArea().Right() + addressStartConnectingLineLengthMm,
+			this->BodyArea().Top() - Graphical::GetMetricFromPixels(graphicContext.DpiY(), smallFontHeightHalf),
+			this->BodyArea().Right() + sizeMarkerFirstLineLengthMm,
+			this->BodyArea().Top() - Graphical::GetMetricFromPixels(graphicContext.DpiY(), smallFontHeightHalf)));
+
+	this->SetAddressEndTextArea(
+		SMetricRectangleF(
+			this->BodyArea().Left() - addressStartConnectingLineLengthMm - addressEndTextWidth - addressStartTextToLineHSpaceMm,
+			this->BodyArea().Top() - Graphical::GetMetricFromPixels(graphicContext.DpiY(), static_cast<double>(graphicContext.FontMetricsSmall().height()) / 2),
+			addressEndTextWidth,
+			Graphical::GetMetricFromPixels(graphicContext.DpiY(), smallFontHeight)));
+
+	this->SetAddressEndConnctingLine(
+		SLineF(
+			this->AddressEndTextArea().Right() + addressEndTextWidth,
+			this->BodyArea().Bottom() - Graphical::GetMetricFromPixels(graphicContext.DpiY(), smallFontHeightHalf),
+			this->BodyArea().Right() + sizeMarkerFirstLineLengthMm,
+			this->BodyArea().Bottom() - Graphical::GetMetricFromPixels(graphicContext.DpiY(), smallFontHeightHalf)));
+
+	// Set size marker
+	this->SetSizeMarkerTextArea(
+		SMetricRectangleF(
+			this->BodyArea().Right() + sizeMarkerFirstLineLengthMm + sizeMarkerSecondLineLengthMm,
+			this->BodyArea().Top() - Graphical::GetMetricFromPixels(graphicContext.DpiY(), smallFontHeightHalf),
+			sizeMarkerTextWidth,
+			Graphical::GetMetricFromPixels(graphicContext.DpiY(), smallFontHeight)));
+
+	this->SetSizeMarkerUpperConnector(
+		SLineF(
+			this->BodyArea().Right(),
+			this->BodyArea().Top(),
+			this->BodyArea().Right() + sizeMarkerFirstLineLengthMm,
+			this->BodyArea().Top()));
+
+	this->SetSizeMarkerUpperConnector(
+		SLineF(
+			this->BodyArea().Right(),
+			this->BodyArea().Bottom(),
+			this->BodyArea().Right() + sizeMarkerFirstLineLengthMm,
+			this->BodyArea().Bottom()));
+
+	this->SetSizeMarkerVerticalLine(
+		SLineF(
+			this->BodyArea().Right() + sizeMarkerFirstLineLengthMm,
+			this->BodyArea().Top(),
+			this->BodyArea().Right() + sizeMarkerFirstLineLengthMm,
+			this->BodyArea().Bottom()));
+
+	this->SetSizeMarkerCenterConnector(
+		SLineF(
+			this->BodyArea().Right() + sizeMarkerFirstLineLengthMm,
+			this->BodyArea().Center().Y(),
+			this->BodyArea().Right() + sizeMarkerFirstLineLengthMm + sizeMarkerSecondLineLengthMm,
+			this->BodyArea().Center().Y()));
 }

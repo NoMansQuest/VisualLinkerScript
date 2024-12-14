@@ -7,6 +7,11 @@
 #include "../../ParsingEngine/CLinkerScriptParser.h"
 #include "../../DrcEngine/CDrcManager.h"
 #include "../../Models/CParsedContentBase.h"
+#include "Components/MemoryVisualizer/Composition/CFloorPlan.h"
+#include "Components/MemoryVisualizer/Composition/COverlayStatement.h"
+#include "Components/MemoryVisualizer/Composition/CSectionDefinitionBase.h"
+#include "Components/MemoryVisualizer/Composition/CSectionStatement.h"
+#include "Components/MemoryVisualizer/Composition/CMemoryRegion.h"
 #include "Components/QChromeTab/QChromeTabWidget.h"
 #include "Components/QSearchPopup/QSearchPopup.h"
 #include "DrcEngine/CDrcViolation.h"
@@ -55,6 +60,9 @@ CRawEntry PositionDropTest(const std::shared_ptr<CRawFile>& rawFile, const uint3
 CRawEntry PrecedingBracketOpenOnLine(const std::shared_ptr<CRawFile>& rawFile, const uint32_t line, const uint32_t absoluteCharacterPosition);
 CRawEntry SupersedingBracketCloseOnLine(const std::shared_ptr<CRawFile>& rawFile, const uint32_t line, const uint32_t absoluteCharacterPosition);
 uint32_t LeadingWhiteSpaces(const std::string& stringToInspect);
+
+/// @brief Create a dummy region to be shown
+std::shared_ptr<CFloorPlan> _MakeDummyModel();
 
 static QIcon GetIconForSeverity(const ESeverityCode severity)
 {
@@ -528,6 +536,8 @@ void QLinkerScriptSession::DeferredContentProcessingAction()
     UpdateLexerViolationsInModel();
     UpdateParserViolationsInModel();
     UpdateDrcViolationsInModel();
+
+    this->m_memoryVisualizer->SetModel(_MakeDummyModel());
 }
 
 void QLinkerScriptSession::InitiateDeferredProcessing()
@@ -802,4 +812,108 @@ std::vector<SearchMatchResult> SearchForContent(
     }
 
     return results;
-};
+}
+
+std::shared_ptr<CFloorPlan> _MakeDummyModel()
+{
+    SharedPtrVector<CMemoryRegion> dummyModel;
+
+    SharedPtrVector<CSectionDefinitionBase> memRegion1Sections =
+    {
+        std::dynamic_pointer_cast<CSectionDefinitionBase>(std::make_shared<CSectionStatement>(".GeneralBypass", CFillExpressionButton(), SharedPtrVector<CProgramHeaderButton> {}, SharedPtrVector<CSectionOutput> {}, 0, 0, "0x1A100", "0x1A200", "256 B")),
+        std::dynamic_pointer_cast<CSectionDefinitionBase>(std::make_shared<CSectionStatement>(".GeneralBSS", CFillExpressionButton(), SharedPtrVector<CProgramHeaderButton> {}, SharedPtrVector<CSectionOutput> {}, 0, 0, "0x1B100", "0x1B200", "256 B")),
+        std::dynamic_pointer_cast<CSectionDefinitionBase>(std::make_shared<CSectionStatement>(".GeneralRO", CFillExpressionButton(), SharedPtrVector<CProgramHeaderButton> {}, SharedPtrVector<CSectionOutput> {}, 0, 0, "0x1C100", "0x1C200", "256 B")),
+    };
+    auto memRegion1 = std::make_shared<CMemoryRegion>("FLASH", "1024 KB", memRegion1Sections, 0, 0, "0x00010000", "0x00020000", "1024 KB");
+
+    SharedPtrVector<CSectionDefinitionBase> memRegion2Sections
+    {
+        std::dynamic_pointer_cast<CSectionDefinitionBase>(
+        std::make_shared<CSectionStatement>(".GeneralBypass", CFillExpressionButton("@0xFFFFFFFF", 0, 0),
+            SharedPtrVector<CProgramHeaderButton> {
+                std::make_shared<CProgramHeaderButton>("PHDR1", 0, 0),
+                std::make_shared<CProgramHeaderButton>("PHDR2", 0, 0),
+                std::make_shared<CProgramHeaderButton>("PHDR3", 0, 0),
+            },
+            SharedPtrVector<CSectionOutput>(),
+            0, 0, "0x10000000", "0x11000000", "16 MB")),
+
+		std::dynamic_pointer_cast<CSectionDefinitionBase>(
+        std::make_shared<CSectionStatement>(
+            ".GeneralBypass", 
+            CFillExpressionButton("@0x80F00000", 0, 0),
+            SharedPtrVector<CProgramHeaderButton> {
+                std::make_shared<CProgramHeaderButton>("PHDR1", 0, 0),
+                std::make_shared<CProgramHeaderButton>("PHDR2", 0, 0),
+                std::make_shared<CProgramHeaderButton>("PHDR3", 0, 0),
+            },
+            SharedPtrVector<CSectionOutput> {
+                std::make_shared<CSectionOutput>("*(.preinit_array*)", 0, 0, "TBD-START", "TBD-END", "TBD-SIZE"),
+                std::make_shared<CSectionOutput>("SORT(*)(.init_array)", 0, 0, "TBD-START", "TBD-END", "TBD-SIZE"),
+                std::make_shared<CSectionOutput>("*(.text)", 0, 0, "TBD-START", "TBD-END", "TBD-SIZE"),
+                std::make_shared<CSectionOutput>("*(.text.*)", 0, 0, "TBD-START", "TBD-END", "TBD-SIZE"),
+                std::make_shared<CSectionOutput>("*(.rodata)", 0, 0, "TBD-START", "TBD-END", "TBD-SIZE"),
+                std::make_shared<CSectionOutput>("*(.rodata.*)", 0, 0, "TBD-START", "TBD-END", "TBD-SIZE"),
+                std::make_shared<CSectionOutput>("*(.eh_frame_hdr)", 0, 0, "TBD-START", "TBD-END", "TBD-SIZE"),
+            },
+            0, 0, "0x1A100", "0x1A200", "256 B")),
+
+        std::dynamic_pointer_cast<CSectionDefinitionBase>(
+        std::make_shared<COverlayStatement>(
+            CFillExpressionButton("@0x80F00000", 0, 0),
+            SharedPtrVector<CProgramHeaderButton> {
+                std::make_shared<CProgramHeaderButton>("PHDR1", 0, 0),
+                std::make_shared<CProgramHeaderButton>("PHDR2", 0, 0),
+                std::make_shared<CProgramHeaderButton>("PHDR3", 0, 0),
+            },
+             SharedPtrVector <COverlaySectionStatement> {
+                std::make_shared<COverlaySectionStatement>(
+                    "Overlay1",
+                    CFillExpressionButton("@0x80F00000", 0, 0),
+                    SharedPtrVector<CProgramHeaderButton> {
+                        std::make_shared<CProgramHeaderButton>("PHDR1", 0, 0)
+                    },
+                    SharedPtrVector<COverlaySectionOutput> {
+                        std::make_shared<COverlaySectionOutput>("*(.text)", 0, 0),
+                        std::make_shared<COverlaySectionOutput>("*(.text.*)", 0, 0),
+                        std::make_shared<COverlaySectionOutput>("*(.rodata)", 0, 0),
+                        std::make_shared<COverlaySectionOutput>("*(.rodata.*)", 0, 0),
+                        std::make_shared<COverlaySectionOutput>("*(.eh_frame_hdr)", 0, 0)
+                    },
+                    0, 0, "TBD-START", "TBD-END", "TBD-SIZE"),
+
+                std::make_shared<COverlaySectionStatement>(
+                    "Overlay2",
+                    CFillExpressionButton("@0x80F00000", 0, 0),
+                    SharedPtrVector<CProgramHeaderButton> {
+                        std::make_shared<CProgramHeaderButton>("PHDR1", 0, 0),
+                        std::make_shared<CProgramHeaderButton>("PHDR2", 0, 0),
+                    },
+                    SharedPtrVector<COverlaySectionOutput> {
+                        std::make_shared<COverlaySectionOutput>("*(.text)", 0, 0),
+                        std::make_shared<COverlaySectionOutput>("*(.text.*)", 0, 0),
+                        std::make_shared<COverlaySectionOutput>("*(.rodata)", 0, 0),
+                        std::make_shared<COverlaySectionOutput>("*(.rodata.*)", 0, 0),
+                        std::make_shared<COverlaySectionOutput>("*(.eh_frame_hdr)", 0, 0),
+                        std::make_shared<COverlaySectionOutput>("*(.text)", 0, 0),
+                        std::make_shared<COverlaySectionOutput>("*(.text.*)", 0, 0),
+                    },
+                    0, 0, "TBD-START", "TBD-END", "TBD-SIZE"),
+            },
+            0, 0, "0x1A100", "0x1A200", "256 B"))
+    };
+
+    auto memRegion2 = std::shared_ptr<CMemoryRegion>(new CMemoryRegion("RAM", "1024 KB", memRegion2Sections, 0, 0,"0x00010000", "0x00020000", "1024 KB"));
+
+    SharedPtrVector<CSectionDefinitionBase> memRegion3Sections =
+    {
+        std::dynamic_pointer_cast<CSectionDefinitionBase>(std::make_shared<CSectionStatement>(".GeneralBypass", CFillExpressionButton(), SharedPtrVector<CProgramHeaderButton> {}, SharedPtrVector<CSectionOutput> {}, 0, 0, "0x1A000", "0x1AF00", "3840 B")),
+        std::dynamic_pointer_cast<CSectionDefinitionBase>(std::make_shared<CSectionStatement>(".GeneralBSS", CFillExpressionButton(), SharedPtrVector<CProgramHeaderButton> {}, SharedPtrVector<CSectionOutput> {}, 0, 0, "0x1B000", "0x1C000", "64 KB")),
+        std::dynamic_pointer_cast<CSectionDefinitionBase>(std::make_shared<CSectionStatement>(".GeneralRO", CFillExpressionButton(), SharedPtrVector<CProgramHeaderButton> {}, SharedPtrVector<CSectionOutput> {}, 0, 0, "0x1D000", "0x1E000", "64 KB")),
+    };
+    auto memRegion3 = std::shared_ptr<CMemoryRegion>(new CMemoryRegion("BOOTLOADER", "64 KB", memRegion3Sections, 0, 0, "0x00010000", "0x00020000", "1024 KB"));
+
+
+    SharedPtrVector<CMemoryRegion> regions = { memRegion1, memRegion2, memRegion3 };
+    return std::make_shared<CFloorPlan>(regions);
+}

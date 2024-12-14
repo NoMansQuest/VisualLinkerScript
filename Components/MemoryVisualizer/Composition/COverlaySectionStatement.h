@@ -13,7 +13,7 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 		DECLARE_STANDARD_PROPERTY(SMetricRectangleF, TitleArea)
 		DECLARE_STANDARD_PROPERTY(SMetricRectangleF, HeaderArea)
 		DECLARE_READONLY_PROPERTY(SharedPtrVector<COverlaySectionOutput>, ChildContent)
-		DECLARE_READONLY_PROPERTY(std::vector<CProgramHeaderButton>, ProgramHeaders)
+		DECLARE_READONLY_PROPERTY(SharedPtrVector<CProgramHeaderButton>, ProgramHeaders)
 		DECLARE_READONLY_PROPERTY(CFillExpressionButton, FillExpression)
 		DECLARE_READONLY_PROPERTY(std::string, LoadRegion)
 
@@ -22,19 +22,19 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 		COverlaySectionStatement(
 				std::string title,
 				const CFillExpressionButton& fillExpression,
-				const std::vector<CProgramHeaderButton>& programHeaders,
+				const SharedPtrVector<CProgramHeaderButton>& programHeaders,
 				const SharedPtrVector<COverlaySectionOutput>& childContent,
 				const uint32_t inModelStartPosition,
 				const uint32_t inModelLength,
-				const bool startAddressKnown,
-				const bool endAddressKnown,
-				const bool memorySizeKnown):
+				const std::string& startAddress,
+				const std::string& endAddress,
+				const std::string& memorySize):
 			  CAddressedRegion(
 				  inModelStartPosition,
 				  inModelLength,
-				  startAddressKnown, 
-				  endAddressKnown, 
-				  memorySizeKnown),
+				  startAddress, 
+				  endAddress, 
+				  memorySize),
 			  m_Title(std::move(title)),
 			  m_ChildContent(childContent),
 			  m_ProgramHeaders(programHeaders),
@@ -51,6 +51,10 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 
 		/// @copydoc CAddressedRegion::SetBodyPosition
 		void SetBodyPosition(const SMetricRectangleF& allocatedArea, const CGraphicContext& graphicContext) override;
+
+	protected:
+		/// @brief Not used for this object
+		int SizeMarkerDepth() override { return 0; }
 	};
 }
 

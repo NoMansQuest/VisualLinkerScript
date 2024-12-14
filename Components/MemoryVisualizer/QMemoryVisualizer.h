@@ -8,8 +8,11 @@
 
 #include "Helpers.h"
 
+class QPercentageLineEdit;
+
 namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 {
+	class CFloorPlan;
 	class CMemoryRegion;
 }
 
@@ -31,9 +34,9 @@ class QMemoryVisualizer final : public QFrame
     QPushButton* m_zoomInButton;
     QPushButton* m_zoomOutButton;
     QPushButton* m_zoomToContent;
-    QLineEdit* m_currentZoomTextEdit;
-    QScrollBar* m_horizontalScrollBar;
-    QScrollBar* m_verticalScrollBar;
+    QScrollBar*  m_horizontalScrollBar;
+    QScrollBar*  m_verticalScrollBar;
+    QPercentageLineEdit* m_currentZoomTextEdit;
     QMemoryLayoutRender* m_memoryLayoutRender;
 
     QVBoxLayout* m_masterLayout;
@@ -41,7 +44,7 @@ class QMemoryVisualizer final : public QFrame
     QHBoxLayout* m_hScrollAndButtonsHolderLayout;
     QVBoxLayout* m_hScrollHousingLayout;
 
-    SharedPtrVector<CMemoryRegion> m_memorySections;
+    std::shared_ptr<CFloorPlan> m_model;
 
     void BuildInterface();
 
@@ -53,18 +56,22 @@ public:
         this->BuildInterface();
     }
 
-    /// @brief Update memory sections (i.e. the content of this component).
-    void SetModel(SharedPtrVector<CMemoryRegion>&& memorySections);
+    /// @brief Update the model (i.e. the content of this component).
+    void SetModel(const std::shared_ptr<CFloorPlan>& floorPlan);
 
 private:
-    void CalculateAndUpdateModelGeometry();
+    void CalculateAndUpdateModelGeometry() const;
     void RequestRedraw() const;
 
 signals:
 
 private slots:
-    void OnMouseWheel(int xSteps, int ySteps) const;
-
+    void OnScrollChangeByMouseWheel(int xSteps, int ySteps) const;
+    void OnZoomChangedByMouseWheel(int zoomChangeInPercent) const;
+    void OnScrollPositionChange() const;
+    void OnZoomIncreaseClicked() const;
+    void OnZoomDecreaseClicked() const;
+    void OnZoomUpdated() const;
 };
 
 

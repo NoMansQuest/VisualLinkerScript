@@ -386,6 +386,7 @@
     <ClInclude Include="Components\MemoryVisualizer\Composition\SModelSelectionRange.h" />
     <ClInclude Include="Components\MemoryVisualizer\Composition\SMetricSizeF.h" />
     <ClInclude Include="Components\MemoryVisualizer\Composition\SPixelSizeF.h" />
+    <QtMoc Include="Components\MemoryVisualizer\QPercentageLineEdit.h" />
     <ClInclude Include="Components\QLinkerScriptSession\AutoStyling\CAutoStyler.h" />
     <ClInclude Include="Components\QLinkerScriptSession\EditorAction\EEditorActionType.h" />
     <ClInclude Include="Components\QLinkerScriptSession\EditorAction\SEditorActionBase.h" />
