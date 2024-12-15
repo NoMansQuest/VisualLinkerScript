@@ -66,10 +66,10 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
         /// @brief Converts this rectangle to a pixel-oriented QRect (intended for drawing)
         [[nodiscard]] QRectF ConvertToQRect(const CGraphicContext& graphicContext) const
         {
-            auto scaledLeft = this->Left() * graphicContext.DpiX();
-            auto scaledRight = this->Right() * graphicContext.DpiX();
-            auto scaledTop = this->Top() * graphicContext.DpiY();
-            auto scaledBottom = this->Bottom() * graphicContext.DpiY();
+            auto scaledLeft = this->Left() * graphicContext.DpmX();
+            auto scaledRight = this->Right() * graphicContext.DpmX();
+            auto scaledTop = this->Top() * graphicContext.DpmY();
+            auto scaledBottom = this->Bottom() * graphicContext.DpmY();
 
             return {scaledLeft, scaledTop, scaledRight - scaledLeft, scaledBottom - scaledTop};
         }

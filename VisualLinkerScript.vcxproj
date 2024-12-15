@@ -57,6 +57,7 @@
     <IntDir>debug\</IntDir>
     <TargetName>VisualLinkerScript</TargetName>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
+    <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>release\</OutDir>

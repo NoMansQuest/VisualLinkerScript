@@ -49,13 +49,13 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
         /// @brief Get starting point in QPointF (in pixels, not metric anymore)
         [[nodiscard]] QPointF ToStartQPointF(const CGraphicContext& graphicContext) const
         {
-            return { this->StartX() * graphicContext.DpiX(), this->StartY() * graphicContext.DpiY() };
+            return { this->StartX() * graphicContext.DpmX(), this->StartY() * graphicContext.DpmY() };
         }
 
         /// @brief Get ending point in QPointF (in pixels, not metric anymore)
         [[nodiscard]] QPointF ToEndQPointF(const CGraphicContext& graphicContext) const
         {
-            return { this->EndX() * graphicContext.DpiX(), this->EndY() * graphicContext.DpiY() };
+            return { this->EndX() * graphicContext.DpmX(), this->EndY() * graphicContext.DpmY() };
         }
     };
 }

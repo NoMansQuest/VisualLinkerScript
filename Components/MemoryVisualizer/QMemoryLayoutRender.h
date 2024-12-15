@@ -32,9 +32,9 @@ private:
     QPixmap m_doubleBuffer;
     std::shared_ptr<CFloorPlan> m_model;
 
-    int m_scrollXmm;
-    int m_scrollYmm;
-    double m_zoom;
+    int m_scrollXmm = 0;
+    int m_scrollYmm = 0;
+    double m_zoom = 1;
 
 public:
     /// @brief Default constructor

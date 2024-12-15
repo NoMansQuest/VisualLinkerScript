@@ -184,6 +184,9 @@ namespace VisualLinkerScript
         /// @brief Self-explanatory .
         qreal GetFontSizeFromMetric(double dpiY, double desiredHeightMilliMeters);
 
+		/// @brief Self-explanatory .
+        qreal GetDpmFromDpi(double dpi);
+
         /// @brief Self-explanatory .
         qreal GetPixelsInMetric(double dpi, double desiredSizeInMilliMeters);
 

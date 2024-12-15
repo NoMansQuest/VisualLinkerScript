@@ -19,7 +19,6 @@ void CAddressedRegion::PaintAddressedRegion(
 	painter.fillRect(this->BodyArea().ConvertToQRect(graphicContext), bodyFillBrush);
 	painter.drawRect(this->BodyArea().ConvertToQRect(graphicContext));
 
-
 	// Draw Start and Stop address markers
 	if (this->StartAddressKnown())
 	{

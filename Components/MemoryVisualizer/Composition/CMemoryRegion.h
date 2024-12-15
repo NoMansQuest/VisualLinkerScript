@@ -132,7 +132,7 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 			this->SetBodyArea(SMetricRectangleF(allocatedArea.Left(), memoryRegionTop, calculatedDesiredSize.CX(), memoryAreaHeight));
 
 			// Set size-marker and address marker
-			// CAddressedRegion::SetBodyPosition(this->BodyArea(), graphicContext);
+            CAddressedRegion::SetBodyPosition(this->BodyArea(), graphicContext);
         }
 
     protected:

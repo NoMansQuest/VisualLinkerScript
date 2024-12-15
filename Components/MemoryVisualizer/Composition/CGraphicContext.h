@@ -47,6 +47,12 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 		///	@brief Reports back the DPI-Y.
 		[[nodiscard]] double DpiY() const { return this->m_dpiY; }
 
+		///	@brief Reports back the DPI-X.
+		[[nodiscard]] double DpmX() const { return Graphical::GetDpmFromDpi(this->m_dpiX); }
+
+		///	@brief Reports back the DPI-Y.
+		[[nodiscard]] double DpmY() const { return Graphical::GetDpmFromDpi(this->m_dpiY); }
+
 		///	@brief Reports back the FontMetrics (small).
 		QFontMetrics FontMetricsSmall() const { return this->m_fontMetricsSmall; }
 

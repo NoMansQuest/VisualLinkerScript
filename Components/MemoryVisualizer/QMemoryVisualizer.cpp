@@ -62,7 +62,7 @@ void QMemoryVisualizer::BuildInterface()
     this->m_zoomToContent->setCursor(Qt::PointingHandCursor);
     this->m_zoomToContent->setToolTip("Zoom to content");
 
-    this->m_currentZoomTextEdit = new QPercentageLineEdit();
+    this->m_currentZoomTextEdit = new QPercentageLineEdit(nullptr, 200);
     this->m_currentZoomTextEdit->setAlignment(Qt::AlignCenter);
     this->m_currentZoomTextEdit->setFixedHeight(20);
     this->m_currentZoomTextEdit->setFixedWidth(50);
@@ -96,6 +96,9 @@ void QMemoryVisualizer::BuildInterface()
     QObject::connect(this->m_memoryLayoutRender, &QMemoryLayoutRender::evZoomChanged, this, &QMemoryVisualizer::OnZoomChangedByMouseWheel);
     QObject::connect(this->m_zoomInButton, &QPushButton::clicked, this, &QMemoryVisualizer::OnZoomIncreaseClicked);
     QObject::connect(this->m_zoomOutButton, &QPushButton::clicked, this, &QMemoryVisualizer::OnZoomDecreaseClicked);
+    QObject::connect(this->m_horizontalScrollBar, &QScrollBar::valueChanged, this, &QMemoryVisualizer::OnScrollPositionChange);
+    QObject::connect(this->m_verticalScrollBar, &QScrollBar::valueChanged, this, &QMemoryVisualizer::OnScrollPositionChange);
+    QObject::connect(this->m_currentZoomTextEdit, &QLineEdit::textChanged, this, &QMemoryVisualizer::OnZoomUpdated);
     this->setLayout(this->m_masterLayout);        
 }
 
@@ -117,6 +120,7 @@ void QMemoryVisualizer::CalculateAndUpdateModelGeometry() const
 void QMemoryVisualizer::SetModel(const std::shared_ptr<CFloorPlan>& floorPlan)
 {
     this->m_model = floorPlan;
+    this->m_memoryLayoutRender->SetModel(floorPlan);
     this->CalculateAndUpdateModelGeometry();    
     this->RequestRedraw();    
 }
@@ -137,7 +141,7 @@ void QMemoryVisualizer::OnScrollChangeByMouseWheel(const int xSteps, const int y
 void QMemoryVisualizer::OnZoomChangedByMouseWheel(int zoomChangeInPercent) const
 {
     auto previousZoom = this->m_currentZoomTextEdit->Percentage();
-    auto newZoom = std::min(100, std::max(1, this->m_currentZoomTextEdit->Percentage() + zoomChangeInPercent));
+    auto newZoom = std::min(200, std::max(1, this->m_currentZoomTextEdit->Percentage() + zoomChangeInPercent));
     if (newZoom != previousZoom)
     {
         this->m_currentZoomTextEdit->SetPercentage(newZoom);
@@ -154,7 +158,7 @@ void QMemoryVisualizer::OnScrollPositionChange() const
 void QMemoryVisualizer::OnZoomIncreaseClicked() const
 {
     auto previousZoom = this->m_currentZoomTextEdit->Percentage();
-    auto newZoom = std::min(this->m_currentZoomTextEdit->Percentage() + 5, 100);
+    auto newZoom = std::min(this->m_currentZoomTextEdit->Percentage() + 5, 200);
     if (newZoom != previousZoom)
     {
         this->m_currentZoomTextEdit->SetPercentage(newZoom);
@@ -173,5 +177,5 @@ void QMemoryVisualizer::OnZoomDecreaseClicked() const
 
 void QMemoryVisualizer::OnZoomUpdated() const
 {
-    this->m_memoryLayoutRender->SetZoom((double)this->m_currentZoomTextEdit->Percentage());
+    this->m_memoryLayoutRender->SetZoom((double)this->m_currentZoomTextEdit->Percentage() / 100);
 }

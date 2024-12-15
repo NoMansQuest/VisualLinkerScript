@@ -5,14 +5,22 @@
 
 using namespace VisualLinkerScript::Components::MemoryVisualizer;
 
+constexpr double logicalAreaTopMm = -1500;
+constexpr double logicalAreaBottomMm = 1500;
+constexpr double logicalAreaLeftMm = -1500;
+constexpr double logicalAreaRight = 1500;
+constexpr double gridUnitSizeMm = 5;
+
 void QMemoryLayoutRender::BuildInterface()
 {
-    this->RedrawDoubleBuffer();    
+    this->RedrawDoubleBuffer();
+    this->repaint();
 }
 
 void QMemoryLayoutRender::resizeEvent(QResizeEvent* event)
 {
     this->RedrawDoubleBuffer();
+    this->repaint();
 }
 
 void QMemoryLayoutRender::paintEvent(QPaintEvent* paintEvent)
@@ -30,17 +38,15 @@ void QMemoryLayoutRender::RedrawDoubleBuffer()
     auto graphicContext = CGraphicContext::Make(this);
 
     // Get scroll positions in pixels
-    auto scrollX_InPixels = Graphical::GetPixelsInMetric(graphicContext.DpiX(), this->m_scrollXmm) * -1;
-    auto scrollY_InPixels = Graphical::GetPixelsInMetric(graphicContext.DpiY(), this->m_scrollYmm) * -1;
+    auto scrollX_InPixels = (qreal)Graphical::GetPixelsInMetric(graphicContext.DpiX(), this->m_scrollXmm) * -1;
+    auto scrollY_InPixels = (qreal)Graphical::GetPixelsInMetric(graphicContext.DpiY(), this->m_scrollYmm) * -1;
 
     // Draw background color
     newBuffer.fill(Colors::ViewBackgroundColor);
 
     // Set scale and translation
     painter.scale(this->m_zoom, this->m_zoom);   
-    painter.translate(
-        scrollX_InPixels + this->width() / 2, 
-        scrollY_InPixels + this->height() / 2);
+    painter.translate(scrollX_InPixels + this->width() / 2, scrollY_InPixels + this->height() / 2);
 
     // Draw grids
     this->DrawGrids(painter, graphicContext.DpiX(), graphicContext.DpiY());
@@ -57,32 +63,47 @@ void QMemoryLayoutRender::RedrawDoubleBuffer()
 
 void QMemoryLayoutRender::DrawGrids(QPainter& painter, double dpiX, double dpiY) const
 {
-    auto pixelsPer5mm = Graphical::GetPixelsInMetric(dpiX, 5);
-    auto lastXPos = size().width() - 1;
-    auto lastYPos = size().height() - 1;
+    auto pixelsPerMmX = Graphical::GetPixelsInMetric(dpiX, 1);
+    auto pixelsPerMmY = Graphical::GetPixelsInMetric(dpiY, 1);
+
+    auto yStartInPixels = logicalAreaTopMm * pixelsPerMmY;
+    auto yEndInPixels = logicalAreaBottomMm * pixelsPerMmY;
+
+    auto xStartInPixels = logicalAreaTopMm * pixelsPerMmY;
+    auto xEndInPixels = logicalAreaBottomMm * pixelsPerMmY;
 
     painter.setPen(QPen(QColor::fromRgb(VisualLinkerScript::Components::MemoryVisualizer::Colors::ViewBackgroundGridColor), 1));
-    for (qreal xHover = 0; xHover <= lastXPos; xHover += pixelsPer5mm)
+    for (qreal xHover = logicalAreaLeftMm; xHover <= logicalAreaRight; xHover += gridUnitSizeMm)
     {
-        painter.drawLine(QPointF(xHover, (qreal)0), QPointF(xHover, lastYPos));
+        auto xInPixels = xHover * pixelsPerMmX;        
+        painter.drawLine(QPointF(xInPixels, yStartInPixels), QPointF(xInPixels, yEndInPixels));
     }
 
-    for (qreal yHover = 0; yHover <= lastYPos; yHover += pixelsPer5mm)
+    for (qreal yHover = logicalAreaTopMm; yHover <= logicalAreaBottomMm; yHover += gridUnitSizeMm)
     {
-        painter.drawLine(QPointF(0, (qreal)yHover), QPointF(lastXPos, yHover));
+        auto yInPixels = yHover * pixelsPerMmY;
+        painter.drawLine(QPointF(xStartInPixels, (qreal)yInPixels), QPointF(xEndInPixels, yInPixels));
     }
 
+    // Draw grid center
+    painter.setPen(QPen(QColor::fromRgb(VisualLinkerScript::Components::MemoryVisualizer::Colors::GridCenterGridColor), 2));
+    painter.drawLine(QPointF(0, yStartInPixels), QPointF(0, yEndInPixels));
+    painter.drawLine(QPointF(xStartInPixels, 0), QPointF(xEndInPixels, 0));
+
+    /*
     painter.setPen(QPen( QColor::fromRgba(Colors::ViewBackgroundBorderColor), 1));
     painter.drawLine(0, 0, lastXPos, 0);
     painter.drawLine(0, 0, 0, lastYPos);
     painter.drawLine(lastXPos, lastYPos, lastXPos, 0);
     painter.drawLine(lastXPos, lastYPos, 0, lastYPos);
+    */
 }
 
 void QMemoryLayoutRender::SetModel(const std::shared_ptr<CFloorPlan>& model)
 {
     this->m_model = model;
     this->RedrawDoubleBuffer();
+    this->repaint();
 }
 
 void QMemoryLayoutRender::wheelEvent(QWheelEvent* event)
@@ -115,7 +136,8 @@ void QMemoryLayoutRender::SetScrollPosition(const int scrollXmm, const int scrol
     this->m_scrollYmm = scrollYmm;
     if (redrawNeeded)
     {
-        this->update();
+        this->RedrawDoubleBuffer();
+        this->repaint();
     }
 }
 
@@ -124,6 +146,7 @@ void QMemoryLayoutRender::SetZoom(const double zoom)
 	if (this->m_zoom != zoom)
 	{
         this->m_zoom = zoom;
-        this->update();
+        this->RedrawDoubleBuffer();
+        this->repaint();
 	}
 }

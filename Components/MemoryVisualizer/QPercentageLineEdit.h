@@ -13,14 +13,16 @@ class QPercentageLineEdit final : public QLineEdit
     Q_OBJECT
 	Q_PROPERTY(int Percentage READ Percentage WRITE SetPercentage NOTIFY PercentageChanged)
 	int m_percentage;
+    int m_upperRange;
 
 public:
 
     /// @brief Default constructor
-    QPercentageLineEdit(QWidget* parent = nullptr)
+    QPercentageLineEdit(QWidget* parent = nullptr, int upperRange = 100)
         : QLineEdit(parent)
-	{        
-        auto validator = new QIntValidator(1, 100, this);
+	{
+        this->m_upperRange = upperRange;
+        auto validator = new QIntValidator(1, upperRange, this);
         setValidator(validator);
         connect(this, &QLineEdit::textChanged, this, &QPercentageLineEdit::OnTextChanged);
         connect(this, &QLineEdit::editingFinished, this, &QPercentageLineEdit::OnEditingFinished);
@@ -36,7 +38,7 @@ public:
 	{
         if (m_percentage != percentage) 
         {
-            m_percentage = qBound(0, percentage, 100);
+            m_percentage = qBound(0, percentage, this->m_upperRange);
             this->UpdateText();
             emit PercentageChanged(m_percentage);
         }

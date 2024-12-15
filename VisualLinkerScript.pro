@@ -13,15 +13,17 @@ SOURCES += \
     Components\InputDialogs\QJumpToLineDialog.cpp \
     Components\InputDialogs\QLabelAssistedInput.cpp \
     Components\InputDialogs\QListAssistedInput.cpp \
+    Components\MemoryVisualizer\Composition\CAddressedRegion.cpp \
     Components\MemoryVisualizer\Composition\CFillExpressionButton.cpp \
     Components\MemoryVisualizer\Composition\CFloorPlan.cpp \
-    Components\MemoryVisualizer\Composition\CMemorySection.cpp \
+    Components\MemoryVisualizer\Composition\CMemoryRegion.cpp \
     Components\MemoryVisualizer\Composition\COverlaySectionOutput.cpp \
     Components\MemoryVisualizer\Composition\COverlaySectionStatement.cpp \
     Components\MemoryVisualizer\Composition\COverlayStatement.cpp \
     Components\MemoryVisualizer\Composition\CProgramHeaderButton.cpp \
     Components\MemoryVisualizer\Composition\CSectionOutput.cpp \
     Components\MemoryVisualizer\Composition\CSectionStatement.cpp \
+    Components\MemoryVisualizer\Composition\CTooltip.cpp \
     Components\MemoryVisualizer\CModelTranslator.cpp \
     Components\MemoryVisualizer\QMemoryLayoutRender.cpp \
     Components\MemoryVisualizer\QMemoryVisualizer.cpp \
@@ -162,10 +164,12 @@ HEADERS += \
     Components\InputDialogs\QLabelAssistedInput.h \
     Components\InputDialogs\QListAssistedInput.h \
     Components\MemoryVisualizer\Composition\CAddressedRegion.h \
+    Components\MemoryVisualizer\Composition\CDrawableObjectBase.h \
     Components\MemoryVisualizer\Composition\CFillExpressionButton.h \
     Components\MemoryVisualizer\Composition\CFloorPlan.h \
+    Components\MemoryVisualizer\Composition\CGraphicContext.h \
     Components\MemoryVisualizer\Composition\CInteractiveObject.h \
-    Components\MemoryVisualizer\Composition\CMemorySection.h \
+    Components\MemoryVisualizer\Composition\CMemoryRegion.h \
     Components\MemoryVisualizer\Composition\CModelMappedObject.h \
     Components\MemoryVisualizer\Composition\COverlaySectionOutput.h \
     Components\MemoryVisualizer\Composition\COverlaySectionStatement.h \
@@ -183,9 +187,11 @@ HEADERS += \
     Components\MemoryVisualizer\Composition\SModelSelectionRange.h \
     Components\MemoryVisualizer\Composition\SPixelSizeF.h \
     Components\MemoryVisualizer\CModelTranslator.h \
+    Components\MemoryVisualizer\ColorResources.h \
     Components\MemoryVisualizer\EInsertObjectType.h \
     Components\MemoryVisualizer\QMemoryLayoutRender.h \
     Components\MemoryVisualizer\QMemoryVisualizer.h \
+    Components\MemoryVisualizer\QPercentageLineEdit.h \
     Components\MemoryVisualizer\SBackendResponse.h \
     Components\QChromeTab\QChromeTabButton.h \
     Components\QChromeTab\QChromeTabWidget.h \
@@ -406,8 +412,7 @@ HEADERS += \
     QueryEngine\QueryCenter.tpp \
     Widgets\QLinkerScriptPanel.h \
     Helpers.h \
-    MainWindow.h \
-    ui_MainWindow.h 
+    MainWindow.h
 
 FORMS += \
     MainWindow.ui

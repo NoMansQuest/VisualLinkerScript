@@ -73,6 +73,12 @@ qreal Graphical::GetFontSizeFromMetric(const double dpiY, const double desiredHe
     return heightInPixels * 72 / dpiY;
 }
 
+qreal Graphical::GetDpmFromDpi(const double dpi)
+{
+    return dpi / 25.4;
+}
+
+
 qreal Graphical::GetPixelsInMetric(const double dpi, const double desiredSizeInMilliMeters)
 {    
     return (dpi / 25.4) * desiredSizeInMilliMeters;

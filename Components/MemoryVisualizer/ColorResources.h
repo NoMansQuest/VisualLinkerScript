@@ -6,7 +6,8 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Colors
 {	
 	// Default background
 	constexpr QRgb ViewBackgroundColor = qRgba(0x18, 0x18, 0x18, 0xff);
-	constexpr QRgb ViewBackgroundGridColor = qRgba(0x20, 0x20, 0x20, 0xff);
+	constexpr QRgb ViewBackgroundGridColor = qRgba(0x25, 0x25, 0x25, 0xff);
+    constexpr QRgb GridCenterGridColor = qRgba(0x2d, 0x26, 0x5d, 0xff);
 	constexpr QRgb ViewBackgroundBorderColor = qRgba(0x30, 0x30, 0x30, 0xff);
 
 	// Address markers
