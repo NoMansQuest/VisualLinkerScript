@@ -81,13 +81,13 @@
     <ClCompile>
       <AdditionalIncludeDirectories>GeneratedFiles\$(ConfigurationName);GeneratedFiles;.;Components\QScintilla\scintilla\include;Components\QScintilla\scintilla\lexlib;Components\QScintilla\scintilla\src;release;/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-Zc:rvalueCast -Zc:inline -Zc:strictStrings -Zc:throwingNew -permissive- -Zc:__cplusplus -Zc:externConstexpr -O0 -utf-8 -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 %(AdditionalOptions)</AdditionalOptions>
-      <AssemblerListingLocation>release\</AssemblerListingLocation>
+      <AssemblerListingLocation>$(IntDir)%(RelativeDir)</AssemblerListingLocation>
       <BrowseInformation>false</BrowseInformation>
       <DebugInformationFormat>None</DebugInformationFormat>
       <DisableSpecificWarnings>4577;4467;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <ExceptionHandling>Sync</ExceptionHandling>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <ObjectFileName>release\</ObjectFileName>
+      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_WINDOWS;UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;SCINTILLA_QT;SCI_LEXER;INCLUDE_DEPRECATED_FEATURES;NDEBUG;QT_NO_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessToFile>false</PreprocessToFile>
@@ -149,13 +149,13 @@
     <ClCompile>
       <AdditionalIncludeDirectories>GeneratedFiles\$(ConfigurationName);GeneratedFiles;.;Components\QScintilla\scintilla\include;Components\QScintilla\scintilla\lexlib;Components\QScintilla\scintilla\src;debug;/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-Zc:rvalueCast -Zc:inline -Zc:strictStrings -Zc:throwingNew -permissive- -Zc:__cplusplus -Zc:externConstexpr -utf-8 -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 %(AdditionalOptions)</AdditionalOptions>
-      <AssemblerListingLocation>debug\</AssemblerListingLocation>
+      <AssemblerListingLocation>$(IntDir)%(RelativeDir)</AssemblerListingLocation>
       <BrowseInformation>false</BrowseInformation>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4577;4467;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <ExceptionHandling>Sync</ExceptionHandling>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <ObjectFileName>debug\</ObjectFileName>
+      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_WINDOWS;UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;SCINTILLA_QT;SCI_LEXER;INCLUDE_DEPRECATED_FEATURES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessToFile>false</PreprocessToFile>
@@ -218,9 +218,8 @@
     <ClCompile Include="Components\MemoryVisualizer\Composition\CAddressedRegion.cpp" />
     <ClCompile Include="Components\MemoryVisualizer\Composition\CFillExpressionButton.cpp" />
     <ClCompile Include="Components\MemoryVisualizer\Composition\CFloorPlan.cpp" />
-    <ClCompile Include="Components\MemoryVisualizer\Composition\CMemoryRegion.cpp" />
+    <ClCompile Include="Components\MemoryVisualizer\Composition\CMemoryRegionBlock.cpp" />
     <ClCompile Include="Components\MemoryVisualizer\Composition\COverlaySectionOutput.cpp" />
-    <ClCompile Include="Components\MemoryVisualizer\Composition\COverlaySectionOutput.h" />
     <ClCompile Include="Components\MemoryVisualizer\Composition\COverlaySectionStatement.cpp" />
     <ClCompile Include="Components\MemoryVisualizer\Composition\COverlayStatement.cpp" />
     <ClCompile Include="Components\MemoryVisualizer\Composition\CProgramHeaderButton.cpp" />
@@ -379,6 +378,7 @@
     <ClInclude Include="Components\MemoryVisualizer\Composition\CGraphicContext.h" />
     <ClInclude Include="Components\MemoryVisualizer\Composition\CInteractiveObject.h" />
     <ClInclude Include="Components\MemoryVisualizer\ColorResources.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Composition\COverlaySectionOutput.h" />
     <ClInclude Include="Components\MemoryVisualizer\Composition\CProgramHeaderButton.h" />
     <ClInclude Include="Components\MemoryVisualizer\Composition\CSectionDefinitionBase.h" />
     <QtMoc Include="Components\MemoryVisualizer\QMemoryLayoutRender.h" />
@@ -452,7 +452,7 @@
     <ClInclude Include="DrcEngine\Rules\CLocationCounterCannotGoBackwardsRule.h" />
     <ClInclude Include="ParsingEngine\CLinkerScriptParser.h" />
     <ClInclude Include="ParsingEngine\CMasterParserException.h" />
-    <ClInclude Include="Components\MemoryVisualizer\Composition\CMemoryRegion.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Composition\CMemoryRegionBlock.h" />
     <ClInclude Include="Models\CMemoryRegion.h" />
     <ClInclude Include="ParsingEngine\SubParsers\CMemoryRegionContentParser.h" />
     <ClInclude Include="DrcEngine\Rules\CMemoryRegionDefinedOnlyOnceRule.h" />

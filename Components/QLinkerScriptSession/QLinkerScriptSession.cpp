@@ -11,7 +11,7 @@
 #include "Components/MemoryVisualizer/Composition/COverlayStatement.h"
 #include "Components/MemoryVisualizer/Composition/CSectionDefinitionBase.h"
 #include "Components/MemoryVisualizer/Composition/CSectionStatement.h"
-#include "Components/MemoryVisualizer/Composition/CMemoryRegion.h"
+#include "Components/MemoryVisualizer/Composition/CMemoryRegionBlock.h"
 #include "Components/QChromeTab/QChromeTabWidget.h"
 #include "Components/QSearchPopup/QSearchPopup.h"
 #include "DrcEngine/CDrcViolation.h"
@@ -816,7 +816,7 @@ std::vector<SearchMatchResult> SearchForContent(
 
 std::shared_ptr<CFloorPlan> _MakeDummyModel()
 {
-    SharedPtrVector<CMemoryRegion> dummyModel;
+    SharedPtrVector<CMemoryRegionBlock> dummyModel;
 
     SharedPtrVector<CSectionDefinitionBase> memRegion1Sections =
     {
@@ -824,7 +824,7 @@ std::shared_ptr<CFloorPlan> _MakeDummyModel()
         std::dynamic_pointer_cast<CSectionDefinitionBase>(std::make_shared<CSectionStatement>(".GeneralBSS", CFillExpressionButton(), SharedPtrVector<CProgramHeaderButton> {}, SharedPtrVector<CSectionOutput> {}, 0, 0, "0x1B100", "0x1B200", "256 B")),
         std::dynamic_pointer_cast<CSectionDefinitionBase>(std::make_shared<CSectionStatement>(".GeneralRO", CFillExpressionButton(), SharedPtrVector<CProgramHeaderButton> {}, SharedPtrVector<CSectionOutput> {}, 0, 0, "0x1C100", "0x1C200", "256 B")),
     };
-    auto memRegion1 = std::make_shared<CMemoryRegion>("FLASH", "1024 KB", memRegion1Sections, 0, 0, "0x00010000", "0x00020000", "1024 KB");
+    auto memRegion1 = std::make_shared<CMemoryRegionBlock>("FLASH", "1024 KB", memRegion1Sections, 0, 0, "0x00010000", "0x00020000", "1024 KB");
 
     SharedPtrVector<CSectionDefinitionBase> memRegion2Sections
     {
@@ -902,8 +902,7 @@ std::shared_ptr<CFloorPlan> _MakeDummyModel()
             },
             0, 0, "0x1A100", "0x1A200", "256 B"))
     };
-
-    auto memRegion2 = std::shared_ptr<CMemoryRegion>(new CMemoryRegion("RAM", "1024 KB", memRegion2Sections, 0, 0,"0x00010000", "0x00020000", "1024 KB"));
+    auto memRegion2 = std::shared_ptr<CMemoryRegionBlock>(new CMemoryRegionBlock("RAM", "1024 KB", memRegion2Sections, 0, 0,"0x00010000", "0x00020000", "1024 KB"));
 
     SharedPtrVector<CSectionDefinitionBase> memRegion3Sections =
     {
@@ -911,9 +910,8 @@ std::shared_ptr<CFloorPlan> _MakeDummyModel()
         std::dynamic_pointer_cast<CSectionDefinitionBase>(std::make_shared<CSectionStatement>(".GeneralBSS", CFillExpressionButton(), SharedPtrVector<CProgramHeaderButton> {}, SharedPtrVector<CSectionOutput> {}, 0, 0, "0x1B000", "0x1C000", "64 KB")),
         std::dynamic_pointer_cast<CSectionDefinitionBase>(std::make_shared<CSectionStatement>(".GeneralRO", CFillExpressionButton(), SharedPtrVector<CProgramHeaderButton> {}, SharedPtrVector<CSectionOutput> {}, 0, 0, "0x1D000", "0x1E000", "64 KB")),
     };
-    auto memRegion3 = std::shared_ptr<CMemoryRegion>(new CMemoryRegion("BOOTLOADER", "64 KB", memRegion3Sections, 0, 0, "0x00010000", "0x00020000", "1024 KB"));
+    auto memRegion3 = std::shared_ptr<CMemoryRegionBlock>(new CMemoryRegionBlock("BOOTLOADER", "64 KB", memRegion3Sections, 0, 0, "0x00010000", "0x00020000", "1024 KB"));
 
-
-    SharedPtrVector<CMemoryRegion> regions = { memRegion1, memRegion2, memRegion3 };
+    SharedPtrVector<CMemoryRegionBlock> regions = { memRegion1, memRegion2, memRegion3 };
     return std::make_shared<CFloorPlan>(regions);
 }

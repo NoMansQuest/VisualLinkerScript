@@ -16,7 +16,7 @@ SOURCES += \
     Components\MemoryVisualizer\Composition\CAddressedRegion.cpp \
     Components\MemoryVisualizer\Composition\CFillExpressionButton.cpp \
     Components\MemoryVisualizer\Composition\CFloorPlan.cpp \
-    Components\MemoryVisualizer\Composition\CMemoryRegion.cpp \
+    Components\MemoryVisualizer\Composition\CMemoryRegionBlock.cpp \
     Components\MemoryVisualizer\Composition\COverlaySectionOutput.cpp \
     Components\MemoryVisualizer\Composition\COverlaySectionStatement.cpp \
     Components\MemoryVisualizer\Composition\COverlayStatement.cpp \
@@ -169,7 +169,7 @@ HEADERS += \
     Components\MemoryVisualizer\Composition\CFloorPlan.h \
     Components\MemoryVisualizer\Composition\CGraphicContext.h \
     Components\MemoryVisualizer\Composition\CInteractiveObject.h \
-    Components\MemoryVisualizer\Composition\CMemoryRegion.h \
+    Components\MemoryVisualizer\Composition\CMemoryRegionBlock.h \
     Components\MemoryVisualizer\Composition\CModelMappedObject.h \
     Components\MemoryVisualizer\Composition\COverlaySectionOutput.h \
     Components\MemoryVisualizer\Composition\COverlaySectionStatement.h \

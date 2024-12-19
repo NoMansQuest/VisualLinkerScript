@@ -24,9 +24,8 @@ constexpr double programHeaderMarginBottom = 0.5;
 constexpr double programHeaderMarginRight = 1;
 constexpr double programHeaderSpacing = 1;
 
-constexpr double headerBoxHeight = 4;
+constexpr double headerBoxHeight = 5;
 constexpr double minimumContentAreaHeight = 4;
-
 
 SMetricSizeF COverlayStatement::CalculateBodySize(const CGraphicContext& graphicContext) const
 {
@@ -44,19 +43,19 @@ SMetricSizeF COverlayStatement::CalculateBodySize(const CGraphicContext& graphic
 	double sizeMarkerTextWidth = Graphical::GetMetricFromPixels(graphicContext.DpiX(), Graphical::GetTextWidthInPixels(this->SizeMarkerText(), graphicContext.FontMetricsSmall()));
 	double rightSizeTotal = sizeMarkerFirstLineLengthMm + sizeMarkerSecondLineLengthMm + sizeMarkerTextWidth;
 
-	double minimumWidth = leftSizeTotal + rightSizeTotal + (topMemoryLabel * 1.5);
+	double minimumVanillaWidth = leftSizeTotal + rightSizeTotal + (topMemoryLabel * 1.5);
 
 	if (!this->ProgramHeaders().empty())
 	{
 		for (const auto& programHeader : this->ProgramHeaders())
 		{
-			minimumWidth += programHeader->CalculateBodySize(graphicContext).CX();
+			minimumVanillaWidth += programHeader->CalculateBodySize(graphicContext).CX();
 		}
 	}
 
 	if (this->FillExpression().Defined())
 	{
-		minimumWidth += this->FillExpression().CalculateBodySize(graphicContext).CX();
+		minimumVanillaWidth += this->FillExpression().CalculateBodySize(graphicContext).CX();
 	}
 
 	double maxContentHeight = 0;	
@@ -79,7 +78,7 @@ SMetricSizeF COverlayStatement::CalculateBodySize(const CGraphicContext& graphic
 	}	
 
 	return SMetricSizeF(
-		finalContentWidthWithMargin > minimumWidth ? finalContentWidthWithMargin : minimumWidth,
+		std::max(finalContentWidthWithMargin , minimumVanillaWidth),
 		minimumMemoryBoxHeight + maxContentHeight);
 }
 
@@ -90,9 +89,12 @@ void COverlayStatement::SetBodyPosition(const SMetricRectangleF& allocatedArea, 
 
 	this->SetHeaderArea(SMetricRectangleF(allocatedArea.Left(), currentYHolder, allocatedArea.Width(), headerBoxHeight));
 
-	auto topLabelRect =
-		SMetricRectangleF(graphicContext.FontMetricsSmall().boundingRect(QString::fromStdString(this->Title())), graphicContext.DpiX(), graphicContext.DpiY())
-		.Offset(allocatedArea.Left() + marginTextFromHeaderLeft, this->HeaderArea().Top() + marginTextFromHeaderTop);
+	auto topLabelBoundsCalculated = SMetricRectangleF(graphicContext.FontMetricsSmall().boundingRect(QString::fromStdString(this->Title())), graphicContext.DpiX(), graphicContext.DpiY());
+	auto topLabelRect = SMetricRectangleF(
+		this->HeaderArea().Left() + marginTextFromHeaderLeft,
+		this->HeaderArea().Top(),
+		topLabelBoundsCalculated.Width(),
+		this->HeaderArea().Height());
 
 	this->SetTitleArea(topLabelRect);
 
@@ -101,25 +103,19 @@ void COverlayStatement::SetBodyPosition(const SMetricRectangleF& allocatedArea, 
 
 	if (!this->m_OverlaySections.empty())
 	{
-		double maxContentWidth = 0;
+		double childStatementWidth = allocatedArea.Width() / this->m_OverlaySections.size();
 		double maxDetectedHeight = 0;
 		double currentXHolder = allocatedArea.Left() + marginSectionOutputLeft;
 
 		for (const auto& overlaySection : this->m_OverlaySections)
 		{
 			auto childDesiredSize = overlaySection->CalculateBodySize(graphicContext);
-			maxContentWidth = std::max(maxContentWidth, childDesiredSize.CX()); // 1mm spacing						
-		}
-
-		for (const auto& overlaySection : this->m_OverlaySections)
-		{
-			auto childDesiredSize = overlaySection->CalculateBodySize(graphicContext);
 			maxDetectedHeight = std::max(maxDetectedHeight, childDesiredSize.CY());
 			overlaySection->SetBodyPosition(
-				SMetricRectangleF(currentXHolder, currentYHolder, maxContentWidth, childDesiredSize.CY()),
+				SMetricRectangleF(currentXHolder, currentYHolder, childStatementWidth - marginSectionOutputSpacing, childDesiredSize.CY()),
 				graphicContext);
 
-			currentXHolder += maxContentWidth + marginSectionOutputSpacing;
+			currentXHolder += childStatementWidth;
 		}
 
 		currentYHolder += maxDetectedHeight + marginSectionOutputFromBottom;
@@ -132,7 +128,7 @@ void COverlayStatement::SetBodyPosition(const SMetricRectangleF& allocatedArea, 
 	auto programHeaderTopYPos = allocatedArea.Top() + programHeaderMarginTop;
 	auto programHeaderRightXPos = allocatedArea.Right() - programHeaderMarginRight;
 
-	for (auto programHeader : this->ProgramHeaders())
+	for (const auto& programHeader : this->ProgramHeaders())
 	{
 		auto calculatedProgramHeader = programHeader->CalculateBodySize(graphicContext);
 		programHeader->SetBodyPosition(
@@ -159,82 +155,16 @@ void COverlayStatement::SetBodyPosition(const SMetricRectangleF& allocatedArea, 
 	}
 
 	// Set the main body area.
-	this->SetBodyArea(SMetricRectangleF(allocatedArea.Left(), allocatedArea.Top(), calculatedDesiredSize.CX(), overlayStatementHeight));
+	this->SetBodyArea(SMetricRectangleF(allocatedArea.Left(), allocatedArea.Top(), allocatedArea.Width(), overlayStatementHeight));
 
 	// Set address start and top markers		
-	auto addressStartTextWidth = Graphical::GetMetricFromPixels(graphicContext.DpiX(), graphicContext.FontMetricsSmall().horizontalAdvance(QString::fromStdString(this->AddressStartText())));
-	auto addressEndTextWidth = Graphical::GetMetricFromPixels(graphicContext.DpiX(), graphicContext.FontMetricsSmall().horizontalAdvance(QString::fromStdString(this->AddressEndText())));
-	auto sizeMarkerTextWidth = Graphical::GetMetricFromPixels(graphicContext.DpiX(), graphicContext.FontMetricsSmall().horizontalAdvance(QString::fromStdString(this->SizeMarkerText())));
-
-	this->SetAddressStartTextArea(
-		SMetricRectangleF(
-			allocatedArea.Left() - addressStartConnectingLineLengthMm - addressStartTextWidth - addressStartTextToLineHSpaceMm,
-			sectionStatementTop - Graphical::GetMetricFromPixels(graphicContext.DpiY(), static_cast<double>(graphicContext.FontMetricsSmall().height()) / 2),
-			addressStartTextWidth,
-			Graphical::GetMetricFromPixels(graphicContext.DpiY(), graphicContext.FontMetricsSmall().height())));
-
-	this->SetAddressStartConnectingLine(
-		SLineF(
-			this->AddressEndTextArea().Right() + addressStartConnectingLineLengthMm,
-			this->BodyArea().Top() - Graphical::GetMetricFromPixels(graphicContext.DpiY(), static_cast<double>(graphicContext.FontMetricsSmall().height()) / 2),
-			this->BodyArea().Right() + sizeMarkerFirstLineLengthMm,
-			this->BodyArea().Top() - Graphical::GetMetricFromPixels(graphicContext.DpiY(), static_cast<double>(graphicContext.FontMetricsSmall().height()) / 2)));
-
-	this->SetAddressEndTextArea(
-		SMetricRectangleF(
-			allocatedArea.Left() - addressStartConnectingLineLengthMm - addressEndTextWidth - addressStartTextToLineHSpaceMm,
-			sectionStatementTop - Graphical::GetMetricFromPixels(graphicContext.DpiY(), static_cast<double>(graphicContext.FontMetricsSmall().height()) / 2),
-			addressEndTextWidth,
-			Graphical::GetMetricFromPixels(graphicContext.DpiY(), graphicContext.FontMetricsSmall().height())));
-
-	this->SetAddressEndConnctingLine(
-		SLineF(
-			this->AddressEndTextArea().Right() + addressEndTextWidth,
-			this->BodyArea().Bottom() - Graphical::GetMetricFromPixels(graphicContext.DpiY(), static_cast<double>(graphicContext.FontMetricsSmall().height()) / 2),
-			this->BodyArea().Right() + sizeMarkerFirstLineLengthMm,
-			this->BodyArea().Bottom() - Graphical::GetMetricFromPixels(graphicContext.DpiY(), static_cast<double>(graphicContext.FontMetricsSmall().height()) / 2)));
-
-	// Set size marker
-	this->SetSizeMarkerTextArea(
-		SMetricRectangleF(
-			this->BodyArea().Right() + sizeMarkerFirstLineLengthMm + sizeMarkerSecondLineLengthMm,
-			sectionStatementTop - Graphical::GetMetricFromPixels(graphicContext.DpiY(), static_cast<double>(graphicContext.FontMetricsSmall().height()) / 2),
-			sizeMarkerTextWidth,
-			Graphical::GetMetricFromPixels(graphicContext.DpiY(), graphicContext.FontMetricsSmall().height())));
-
-	this->SetSizeMarkerUpperConnector(
-		SLineF(
-			this->BodyArea().Right(),
-			this->BodyArea().Top(),
-			this->BodyArea().Right() + sizeMarkerFirstLineLengthMm,
-			this->BodyArea().Top()));
-
-	this->SetSizeMarkerUpperConnector(
-		SLineF(
-			this->BodyArea().Right(),
-			this->BodyArea().Bottom(),
-			this->BodyArea().Right() + sizeMarkerFirstLineLengthMm,
-			this->BodyArea().Bottom()));
-
-	this->SetSizeMarkerVerticalLine(
-		SLineF(
-			this->BodyArea().Right() + sizeMarkerFirstLineLengthMm,
-			this->BodyArea().Top(),
-			this->BodyArea().Right() + sizeMarkerFirstLineLengthMm,
-			this->BodyArea().Bottom()));
-
-	this->SetSizeMarkerCenterConnector(
-		SLineF(
-			this->BodyArea().Right() + sizeMarkerFirstLineLengthMm,
-			this->BodyArea().Center().Y(),
-			this->BodyArea().Right() + sizeMarkerFirstLineLengthMm + sizeMarkerSecondLineLengthMm,
-			this->BodyArea().Center().Y()));
+	CAddressedRegion::SetBodyPosition(this->BodyArea(), graphicContext);
 }
 
 void COverlayStatement::Paint(const CGraphicContext& graphicContext, QPainter& painter)
 {
 	// Draw the addressed region
-	const auto borderPen = QPen(QColor::fromRgb(Colors::OverlayStatementClickBorderColor), 1, Qt::SolidLine, Qt::FlatCap, Qt::BevelJoin);
+	const auto borderPen = QPen(QColor::fromRgba(Colors::OverlayStatementClickBorderColor), 1, Qt::SolidLine, Qt::FlatCap, Qt::BevelJoin);
 	const auto fillBrush = QBrush(QColor::fromRgba(Colors::SectionStatementDefaultBackgroundColor), Qt::SolidPattern);
 	this->PaintAddressedRegion(graphicContext, painter, borderPen, fillBrush);
 
@@ -242,8 +172,9 @@ void COverlayStatement::Paint(const CGraphicContext& graphicContext, QPainter& p
 	painter.fillRect(this->HeaderArea().ConvertToQRect(graphicContext), QBrush(QColor::fromRgba(Colors::SectionStatementHeaderBackgroundColor), Qt::SolidPattern));
 
 	// Draw section name
+	painter.setPen(QColor::fromRgba(Colors::OverlayStatementDefaultForeColor));
 	painter.setFont(graphicContext.FontSmallBold());
-	painter.drawText(this->TitleArea().ConvertToQRect(graphicContext), Qt::AlignHCenter | Qt::AlignVCenter, QString::fromStdString(this->Title()));
+	painter.drawText(this->TitleArea().ConvertToQRect(graphicContext), Qt::AlignLeft | Qt::AlignVCenter, QString::fromStdString(this->Title()));
 
 	// Draw program headers
 	if (this->FillExpression().Defined())

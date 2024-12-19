@@ -1,11 +1,9 @@
 #include "CFloorPlan.h"
-#include <QFont>
-#include <QFontMetrics>
-#include "CMemoryRegion.h"
+#include "CMemoryRegionBlock.h"
 
 using namespace VisualLinkerScript::Components::MemoryVisualizer::Composition;
 
-constexpr double SpaceBetweenMemoryRegionsMm = 4;
+constexpr double SpaceBetweenMemoryRegionsMm = 1;
 constexpr double Max(const double a, const double b) { return a > b ? a : b;  }
 
 SMetricSizeF CFloorPlan::CalculateBodySize(const CGraphicContext& graphicContext) const
@@ -33,10 +31,11 @@ void CFloorPlan::SetBodyPosition(
 	const CGraphicContext& graphicContext) const
 {
 	double currentPositionHolder = allocatedArea.Top();
+	double decidedWidthForAllRegions = this->CalculateBodySize(graphicContext).CX();
 	for (const auto& memorySection : this->m_MemoryRegions)
 	{
 		auto calculatedSize = memorySection->CalculateBodySize(graphicContext);
-		SMetricRectangleF area(allocatedArea.Left(), currentPositionHolder, calculatedSize.CX(), calculatedSize.CY());
+		SMetricRectangleF area(allocatedArea.Left(), currentPositionHolder, decidedWidthForAllRegions, calculatedSize.CY());
 		memorySection->SetBodyPosition(area, graphicContext);
 		currentPositionHolder += area.Height() + SpaceBetweenMemoryRegionsMm;
 	}

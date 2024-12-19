@@ -23,6 +23,7 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
         SMetricRectangleF() : SMetricRectangleF(0, 0, 0, 0)
         {}
 
+
         /// @brief Parameterized constructor;
         SMetricRectangleF(
             const double left,
@@ -40,7 +41,7 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 
         /// @brief Parameterized constructor, taking in QRect.
         SMetricRectangleF(
-            const QRect rectangleInPixels,
+            const QRect& rectangleInPixels,
             const double dpiX,
             const double dpiY)
         {
@@ -49,7 +50,23 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
             this->m_Right = Graphical::GetMetricFromPixels(dpiX, rectangleInPixels.right());
             this->m_Height = Graphical::GetMetricFromPixels(dpiY, rectangleInPixels.height());
             this->m_Width = Graphical::GetMetricFromPixels(dpiY, rectangleInPixels.width());
+            this->m_Bottom = Graphical::GetMetricFromPixels(dpiX, rectangleInPixels.height());
         }
+
+        /// @brief Parameterized constructor, taking in QRect.
+        SMetricRectangleF(
+            const QSize& sizeInPixels,
+            const double dpiX,
+            const double dpiY)
+        {
+            this->m_Top = Graphical::GetMetricFromPixels(dpiY, 0);
+            this->m_Left = Graphical::GetMetricFromPixels(dpiX, 0);
+            this->m_Bottom = Graphical::GetMetricFromPixels(dpiX, sizeInPixels.height());
+            this->m_Right = Graphical::GetMetricFromPixels(dpiX, sizeInPixels.width());
+            this->m_Height = Graphical::GetMetricFromPixels(dpiY, sizeInPixels.height());
+            this->m_Width = Graphical::GetMetricFromPixels(dpiY, sizeInPixels.width());
+        }
+
 
         /// @brief Returns the center point of the rectangle
         [[nodiscard]] SMetricPointF Center() const

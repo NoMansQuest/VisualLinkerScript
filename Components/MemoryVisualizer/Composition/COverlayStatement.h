@@ -28,7 +28,7 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 	            const std::string& endAddress,
 	            const std::string& memorySize) :
             CSectionDefinitionBase(
-                "",
+                "OVERLAY",
                 fillExpression,
                 programHeaders,
                 inModelStartPosition,
@@ -52,7 +52,7 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 
     protected:
         /// @brief Not used for this object
-        int SizeMarkerDepth() override { return 0; }
+        int SizeMarkerDepth() override { return 5; }
     };
 }
 

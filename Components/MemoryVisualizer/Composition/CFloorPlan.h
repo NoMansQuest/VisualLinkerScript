@@ -5,7 +5,7 @@
 
 #include "SMetricSizeF.h"
 #include "SMetricRectangleF.h"
-#include "CMemoryRegion.h"
+#include "CMemoryRegionBlock.h"
 
 class QFontMetrics;
 
@@ -14,12 +14,12 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
     /// @brief Represents a Linker-Script object.
     class CFloorPlan : public CDrawableObjectBase
     {
-        DECLARE_READONLY_PROPERTY(SharedPtrVector<CMemoryRegion>, MemoryRegions)
+        DECLARE_READONLY_PROPERTY(SharedPtrVector<CMemoryRegionBlock>, MemoryRegions)
 
     public:
         /// @brief Default constructor.
         CFloorPlan(
-            const SharedPtrVector<CMemoryRegion>& memorySections) :
+            const SharedPtrVector<CMemoryRegionBlock>& memorySections) :
 				m_MemoryRegions(memorySections)
         {}
 

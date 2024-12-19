@@ -9,8 +9,8 @@ using namespace VisualLinkerScript::Components::MemoryVisualizer::Composition;
 
 constexpr double textMarginLeft = 1;
 constexpr double textMarginRight = 1;
-constexpr double textMarginBottom = 1;
-constexpr double textMarginTop = 1;
+constexpr double textMarginBottom = 0.25;
+constexpr double textMarginTop = 0.25;
 constexpr double sizeMarkerFirstLineLengthMm = 0;
 
 SMetricSizeF CFillExpressionButton::CalculateBodySize(const CGraphicContext& graphicContext) const
@@ -69,14 +69,14 @@ void CFillExpressionButton::Paint(const CGraphicContext& graphicContext, QPainte
 	}
 
 	// Draw button background
-	const auto borderPen = QPen(QColor::fromRgb(borderColor), 1, Qt::SolidLine, Qt::FlatCap, Qt::BevelJoin);
+	const auto borderPen = QPen(QColor::fromRgba(borderColor), 1, Qt::SolidLine, Qt::FlatCap, Qt::BevelJoin);
 	const auto fillBrush = QBrush(QColor::fromRgba(backgroundColor), Qt::SolidPattern);
 	painter.setPen(borderPen);
 	painter.fillRect(this->BodyArea().ConvertToQRect(graphicContext), fillBrush);
 	painter.drawRect(this->BodyArea().ConvertToQRect(graphicContext));
 
 	// Draw section name
-	const auto textPen = QPen(QColor::fromRgb(textColor));
+	const auto textPen = QPen(QColor::fromRgba(textColor));
 	painter.setPen(textPen);
 	painter.setFont(graphicContext.FontSmallBold());
 	painter.drawText(this->BodyArea().ConvertToQRect(graphicContext), Qt::AlignHCenter | Qt::AlignVCenter, QString::fromStdString(this->FillExpression()));

@@ -1,5 +1,4 @@
 #include "COverlaySectionOutput.h"
-
 #include "Components/MemoryVisualizer/ColorResources.h"
 
 using namespace VisualLinkerScript;
@@ -33,7 +32,7 @@ void COverlaySectionOutput::Paint(const CGraphicContext& graphicContext, QPainte
 {
 	// NOTE: For OverlaySectionOutput, we use 'SectionOutput' style (they're the same in essence).
 	// Draw the addressed region
-	const auto borderPen = QPen(QColor::fromRgb(Colors::SectionOutputClickBorderColor), 1, Qt::SolidLine, Qt::FlatCap, Qt::BevelJoin);
+	const auto borderPen = QPen(QColor::fromRgba(Colors::SectionOutputClickBorderColor), 1, Qt::SolidLine, Qt::FlatCap, Qt::BevelJoin);
 	const auto fillBrush = QBrush(QColor::fromRgba(Colors::SectionOutputDefaultBackgroundColor), Qt::SolidPattern);
 	this->PaintAddressedRegion(graphicContext, painter, borderPen, fillBrush);
 

@@ -473,25 +473,19 @@
     <ClCompile Include="Components\InputDialogs\QJumpToLineDialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="Components\MemoryVisualizer\Composition\COverlaySectionOutput.h">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="Components\MemoryVisualizer\Composition\SLineF.h">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="Components\MemoryVisualizer\Composition\CFloorPlan.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="Components\MemoryVisualizer\Composition\CMemoryRegion.cpp">
+    <ClCompile Include="Components\MemoryVisualizer\Composition\CMemoryRegionBlock.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="Components\MemoryVisualizer\Composition\CSectionStatement.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="Components\MemoryVisualizer\Composition\CSectionOutput.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Components\MemoryVisualizer\Composition\COverlaySectionOutput.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="Components\MemoryVisualizer\Composition\COverlaySectionStatement.cpp">
@@ -510,6 +504,9 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="Components\MemoryVisualizer\Composition\CAddressedRegion.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\MemoryVisualizer\Composition\COverlaySectionOutput.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -646,7 +643,7 @@
     <ClInclude Include="ParsingEngine\CMasterParserException.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Components\MemoryVisualizer\Composition\CMemoryRegion.h">
+    <ClInclude Include="Components\MemoryVisualizer\Composition\CMemoryRegionBlock.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Models\CMemoryRegion.h">
@@ -1220,6 +1217,9 @@
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="Components\MemoryVisualizer\ColorResources.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\MemoryVisualizer\Composition\COverlaySectionOutput.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>

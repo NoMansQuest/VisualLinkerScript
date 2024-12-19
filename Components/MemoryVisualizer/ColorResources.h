@@ -5,7 +5,7 @@
 namespace VisualLinkerScript::Components::MemoryVisualizer::Colors
 {	
 	// Default background
-	constexpr QRgb ViewBackgroundColor = qRgba(0x18, 0x18, 0x18, 0xff);
+	constexpr QRgb ViewBackgroundColor = qRgba(0x12, 0x12, 0x12, 0xff);
 	constexpr QRgb ViewBackgroundGridColor = qRgba(0x25, 0x25, 0x25, 0xff);
     constexpr QRgb GridCenterGridColor = qRgba(0x2d, 0x26, 0x5d, 0xff);
 	constexpr QRgb ViewBackgroundBorderColor = qRgba(0x30, 0x30, 0x30, 0xff);
@@ -45,9 +45,9 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Colors
 	constexpr QRgb ProgramHeaderTextClickForeColor = qRgba(0xff, 0xff, 0xff, 0xff);
 
 	// Memory Region
-	constexpr QRgb MemoryRegionDefaultBackgroundColor = qRgba(0xff, 0xff, 0xff, 0x11);
-	constexpr QRgb MemoryRegionHoverBackgroundColor = qRgba(0xff, 0xff, 0xff, 0x20);
-	constexpr QRgb MemoryRegionClickBackgroundColor = qRgba(0xff, 0xff, 0xff, 0x19);
+	constexpr QRgb MemoryRegionDefaultBackgroundColor = qRgba(0x20, 0x20, 0x20, 0xE0);
+	constexpr QRgb MemoryRegionHoverBackgroundColor = qRgba(0x2A, 0x2A, 0x2A, 0xE0);
+	constexpr QRgb MemoryRegionClickBackgroundColor = qRgba(0x25, 0x25, 0x25, 0xE0);
 						 
 	constexpr QRgb MemoryRegionDefaultBorderColor = qRgba(0xff, 0xff, 0xff, 0x20);
 	constexpr QRgb MemoryRegionHoverBorderColor = qRgba(0xff, 0xff, 0xff, 0x20);

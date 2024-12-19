@@ -23,7 +23,7 @@ constexpr double programHeaderMarginBottom = 0.5;
 constexpr double programHeaderMarginRight = 1;
 constexpr double programHeaderSpacing = 1;
 
-constexpr double headerBoxHeight = 4;
+constexpr double headerBoxHeight = 5;
 constexpr double minimumContentAreaHeight = 4;
 
 SMetricSizeF COverlaySectionStatement::CalculateBodySize(const CGraphicContext& graphicContext) const
@@ -77,9 +77,16 @@ void COverlaySectionStatement::SetBodyPosition(const SMetricRectangleF& allocate
 		SMetricRectangleF(graphicContext.FontMetricsLarge().boundingRect(QString::fromStdString(this->Title())), graphicContext.DpiX(), graphicContext.DpiY())
 		.Offset(allocatedArea.Left() + marginTextFromHeaderLeft, this->HeaderArea().Top() + marginTextFromHeaderTop);
 
-	this->SetTitleArea(topLabelRect);
+	auto titleBoundingRect = SMetricRectangleF(graphicContext.FontMetricsLarge().boundingRect(QString::fromStdString(this->Title())), graphicContext.DpiX(), graphicContext.DpiY());
+	auto topLabelRectMetric = SMetricRectangleF(
+		this->HeaderArea().Left() + marginTextFromHeaderLeft,
+		this->HeaderArea().Top(),
+		titleBoundingRect.Width(),
+		this->HeaderArea().Height());
 
-	currentYHolder += headerBoxHeight + marginSectionOutputFromTop;
+	this->SetTitleArea(topLabelRectMetric);
+
+	currentYHolder += headerBoxHeight + marginSectionOutputFromTop;	
 	auto sectionStatementTop = allocatedArea.Top();
 
 	if (!this->m_ChildContent.empty())
@@ -101,7 +108,7 @@ void COverlaySectionStatement::SetBodyPosition(const SMetricRectangleF& allocate
 	double sectionStatementBottom = currentYHolder;
 	double sectionStatementHeight = sectionStatementBottom - allocatedArea.Top();
 
-	this->SetBodyArea(SMetricRectangleF(allocatedArea.Left(), allocatedArea.Top(), calculatedDesiredSize.CX(), sectionStatementHeight));
+	this->SetBodyArea(SMetricRectangleF(allocatedArea.Left(), allocatedArea.Top(), allocatedArea.Width(), sectionStatementHeight));
 
 	// Set fill-expression and program-headers
 	auto programHeaderTopYPos = allocatedArea.Top() + programHeaderMarginTop;
@@ -137,11 +144,12 @@ void COverlaySectionStatement::SetBodyPosition(const SMetricRectangleF& allocate
 void COverlaySectionStatement::Paint(const CGraphicContext& graphicContext, QPainter& painter)
 {
 	// Draw the addressed region
-	const auto borderPen = QPen(QColor::fromRgb(Colors::OverlayStatementDefaultBorderColor), 1, Qt::SolidLine, Qt::FlatCap, Qt::BevelJoin);
+	const auto borderPen = QPen(QColor::fromRgba(Colors::OverlayStatementDefaultBorderColor), 1, Qt::SolidLine, Qt::FlatCap, Qt::BevelJoin);
 	const auto fillBrush = QBrush(QColor::fromRgba(Colors::OverlayStatementDefaultBackgroundColor), Qt::SolidPattern);
 	this->PaintAddressedRegion(graphicContext, painter, borderPen, fillBrush);
 
 	// Draw overlay section name
+	painter.setPen(QColor::fromRgba(Colors::OverlayStatementDefaultForeColor));
 	painter.setFont(graphicContext.FontSmallBold());
 	painter.drawText(
 		this->TitleArea().ConvertToQRect(graphicContext),

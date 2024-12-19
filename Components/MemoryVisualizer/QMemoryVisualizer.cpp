@@ -5,7 +5,7 @@
 #include "QPercentageLineEdit.h"
 #include "QMemoryLayoutRender.h"
 #include "Composition/CFloorPlan.h"
-#include "Composition/CMemoryRegion.h"
+#include "Composition/CMemoryRegionBlock.h"
 #include "Composition/COverlayStatement.h"
 #include "Composition/CSectionStatement.h"
 #include "LinkerScriptManager/QLinkerScriptManager.h"
@@ -120,20 +120,21 @@ void QMemoryVisualizer::CalculateAndUpdateModelGeometry() const
 void QMemoryVisualizer::SetModel(const std::shared_ptr<CFloorPlan>& floorPlan)
 {
     this->m_model = floorPlan;
-    this->m_memoryLayoutRender->SetModel(floorPlan);
     this->CalculateAndUpdateModelGeometry();    
+    this->m_memoryLayoutRender->SetModel(floorPlan);
     this->RequestRedraw();    
 }
 
 void QMemoryVisualizer::RequestRedraw() const
 {
-    this->m_memoryLayoutRender->repaint();
+    this->m_memoryLayoutRender->repaint();    
 }
 
 void QMemoryVisualizer::OnScrollChangeByMouseWheel(const int xSteps, const int ySteps) const
 {
-    auto newHScrollValue = FORCE_RANGE(this->m_horizontalScrollBar->value() - xSteps, this->m_horizontalScrollBar->maximum(), this->m_horizontalScrollBar->minimum());
-    auto newVScrollValue = FORCE_RANGE(this->m_verticalScrollBar->value() - ySteps, this->m_verticalScrollBar->maximum(), this->m_verticalScrollBar->minimum());
+    
+    auto newHScrollValue = FORCE_RANGE(this->m_horizontalScrollBar->value() - (xSteps / 2), this->m_horizontalScrollBar->maximum(), this->m_horizontalScrollBar->minimum());
+    auto newVScrollValue = FORCE_RANGE(this->m_verticalScrollBar->value() - (ySteps / 2), this->m_verticalScrollBar->maximum(), this->m_verticalScrollBar->minimum());
     this->m_horizontalScrollBar->setValue(newHScrollValue);
     this->m_verticalScrollBar->setValue(newVScrollValue);
 }

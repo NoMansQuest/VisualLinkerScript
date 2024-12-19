@@ -13,7 +13,7 @@ class QPercentageLineEdit;
 namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 {
 	class CFloorPlan;
-	class CMemoryRegion;
+	class CMemoryRegionBlock;
 }
 
 class QLineEdit;

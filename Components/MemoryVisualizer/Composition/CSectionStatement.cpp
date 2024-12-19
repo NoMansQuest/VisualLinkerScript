@@ -24,7 +24,7 @@ constexpr double programHeaderMarginBottom = 0.5;
 constexpr double programHeaderMarginRight = 1;
 constexpr double programHeaderSpacing = 1;
 
-constexpr double headerBoxHeight = 4;
+constexpr double headerBoxHeight = 5;
 constexpr double minimumContentAreaHeight = 4;
 
 SMetricSizeF CSectionStatement::CalculateBodySize(const CGraphicContext& graphicContext) const
@@ -86,9 +86,12 @@ void CSectionStatement::SetBodyPosition(const SMetricRectangleF& allocatedArea, 
 
 	this->SetHeaderArea(SMetricRectangleF(allocatedArea.Left(), currentYHolder, allocatedArea.Width(), headerBoxHeight));
 	
-	auto topLabelRect =
-		SMetricRectangleF(graphicContext.FontMetricsSmall().boundingRect(QString::fromStdString(this->Title())), graphicContext.DpiX(), graphicContext.DpiY())
-		.Offset(allocatedArea.Left() + marginTextFromHeaderLeft, this->HeaderArea().Top() + marginTextFromHeaderTop);
+	auto calculatedTopLabelRect = SMetricRectangleF(graphicContext.FontMetricsSmall().size(Qt::TextSingleLine, QString::fromStdString(this->Title())), graphicContext.DpiX(), graphicContext.DpiY());
+	auto topLabelRect = SMetricRectangleF(
+			this->HeaderArea().Left() + marginTextFromHeaderLeft,
+			this->HeaderArea().Top(),
+			calculatedTopLabelRect.Width(),
+			this->HeaderArea().Height());
 
 	this->SetTitleArea(topLabelRect);
 
@@ -111,13 +114,13 @@ void CSectionStatement::SetBodyPosition(const SMetricRectangleF& allocatedArea, 
 	double sectionStatementBottom = currentYHolder;
 	double sectionStatementHeight = sectionStatementBottom - allocatedArea.Top();
 
-	this->SetBodyArea(SMetricRectangleF(allocatedArea.Left(), allocatedArea.Top(), calculatedDesiredSize.CX(), sectionStatementHeight));
+	this->SetBodyArea(SMetricRectangleF(allocatedArea.Left(), allocatedArea.Top(), allocatedArea.Width(), allocatedArea.Height()));
 
 	// Set fill-expression and program-headers
 	auto programHeaderTopYPos = allocatedArea.Top() + programHeaderMarginTop;
 	auto programHeaderRightXPos = allocatedArea.Right() - programHeaderMarginRight;
 
-	for (auto programHeader : this->ProgramHeaders())
+	for (const auto& programHeader : this->ProgramHeaders())
 	{
 		auto calculatedProgramHeader = programHeader->CalculateBodySize(graphicContext);
 		programHeader->SetBodyPosition(
@@ -146,82 +149,13 @@ void CSectionStatement::SetBodyPosition(const SMetricRectangleF& allocatedArea, 
 	}
 
 	// Set address start and top markers		
-	auto addressStartTextWidth = Graphical::GetMetricFromPixels(graphicContext.DpiX(), graphicContext.FontMetricsSmall().horizontalAdvance(QString::fromStdString(this->AddressStartText())));
-	auto addressEndTextWidth = Graphical::GetMetricFromPixels(graphicContext.DpiX(), graphicContext.FontMetricsSmall().horizontalAdvance(QString::fromStdString(this->AddressEndText())));
-	auto sizeMarkerTextWidth = Graphical::GetMetricFromPixels(graphicContext.DpiX(), graphicContext.FontMetricsSmall().horizontalAdvance(QString::fromStdString(this->SizeMarkerText())));
-
-	auto smallFontFullHeight = static_cast<double>(graphicContext.FontMetricsSmall().height());
-	auto smallFontHalfHeight = static_cast<double>(graphicContext.FontMetricsSmall().height()) / 2;
-
-	this->SetAddressStartTextArea(
-		SMetricRectangleF(
-			allocatedArea.Left() - addressStartConnectingLineLengthMm - addressStartTextWidth - addrssStartTextToLineHSpaceMm,
-			sectionStatementTop - Graphical::GetMetricFromPixels(graphicContext.DpiY(), smallFontHalfHeight),
-			addressStartTextWidth,
-			Graphical::GetMetricFromPixels(graphicContext.DpiY(), smallFontFullHeight)));
-
-	this->SetAddressStartConnectingLine(
-		SLineF(
-			this->AddressEndTextArea().Right() + addressStartConnectingLineLengthMm,
-			this->BodyArea().Top() - Graphical::GetMetricFromPixels(graphicContext.DpiY(), smallFontHalfHeight),
-			this->BodyArea().Right() + sizeMarkerFirstLineLengthMm,
-			this->BodyArea().Top() - Graphical::GetMetricFromPixels(graphicContext.DpiY(), smallFontHalfHeight)));
-
-	this->SetAddressEndTextArea(
-		SMetricRectangleF(
-			allocatedArea.Left() - addressStartConnectingLineLengthMm - addressEndTextWidth - addrssStartTextToLineHSpaceMm,
-			sectionStatementTop - Graphical::GetMetricFromPixels(graphicContext.DpiY(), smallFontHalfHeight),
-			addressEndTextWidth,
-			Graphical::GetMetricFromPixels(graphicContext.DpiY(), smallFontFullHeight)));
-
-	this->SetAddressEndConnctingLine(
-		SLineF(
-			this->AddressEndTextArea().Right() + addressEndTextWidth,
-			this->BodyArea().Bottom() - Graphical::GetMetricFromPixels(graphicContext.DpiY(), smallFontHalfHeight),
-			this->BodyArea().Right() + sizeMarkerFirstLineLengthMm,
-			this->BodyArea().Bottom() - Graphical::GetMetricFromPixels(graphicContext.DpiY(), smallFontHalfHeight)));
-
-	// Set size marker
-	this->SetSizeMarkerTextArea(
-		SMetricRectangleF(
-			this->BodyArea().Right() + sizeMarkerFirstLineLengthMm + sizeMarkerSecondLineLengthMm,
-			sectionStatementTop - Graphical::GetMetricFromPixels(graphicContext.DpiY(), smallFontHalfHeight),
-			sizeMarkerTextWidth,
-			Graphical::GetMetricFromPixels(graphicContext.DpiY(), smallFontFullHeight)));
-
-	this->SetSizeMarkerUpperConnector(
-		SLineF(
-			this->BodyArea().Right(),
-			this->BodyArea().Top(),
-			this->BodyArea().Right() + sizeMarkerFirstLineLengthMm,
-			this->BodyArea().Top()));
-
-	this->SetSizeMarkerUpperConnector(
-		SLineF(
-			this->BodyArea().Right(),
-			this->BodyArea().Bottom(),
-			this->BodyArea().Right() + sizeMarkerFirstLineLengthMm,
-			this->BodyArea().Bottom()));
-
-	this->SetSizeMarkerVerticalLine(
-		SLineF(
-			this->BodyArea().Right() + sizeMarkerFirstLineLengthMm,
-			this->BodyArea().Top(),
-			this->BodyArea().Right() + sizeMarkerFirstLineLengthMm,
-			this->BodyArea().Bottom()));
-
-	this->SetSizeMarkerCenterConnector(
-		SLineF(
-			this->BodyArea().Right() + sizeMarkerFirstLineLengthMm,
-			this->BodyArea().Center().Y(),
-			this->BodyArea().Right() + sizeMarkerFirstLineLengthMm + sizeMarkerSecondLineLengthMm,
-			this->BodyArea().Center().Y()));
+	CAddressedRegion::SetBodyPosition(this->BodyArea(), graphicContext);
 }
 
 void CSectionStatement::Paint(const CGraphicContext& graphicContext, QPainter& painter)
 {
 	// Draw the addressed region
-	const auto borderPen = QPen(QColor::fromRgb(Colors::SectionStatementDefaultBorderColor), 1, Qt::SolidLine, Qt::FlatCap, Qt::BevelJoin);
+	const auto borderPen = QPen(QColor::fromRgba(Colors::SectionStatementDefaultBorderColor), 0, Qt::SolidLine, Qt::FlatCap, Qt::BevelJoin);
 	const auto fillBrush = QBrush(QColor::fromRgba(Colors::SectionStatementDefaultBackgroundColor), Qt::SolidPattern);
 	this->PaintAddressedRegion(graphicContext, painter, borderPen, fillBrush);
 
@@ -229,8 +163,10 @@ void CSectionStatement::Paint(const CGraphicContext& graphicContext, QPainter& p
 	painter.fillRect(this->HeaderArea().ConvertToQRect(graphicContext), QBrush(QColor::fromRgba(Colors::SectionStatementHeaderBackgroundColor), Qt::SolidPattern));
 
 	// Draw section name
+	const auto titlePen = QPen(QColor::fromRgba(Colors::SectionStatementDefaultForeColor), 1, Qt::SolidLine, Qt::FlatCap, Qt::BevelJoin);
+	painter.setPen(titlePen);
 	painter.setFont(graphicContext.FontSmallBold());
-	painter.drawText(this->TitleArea().ConvertToQRect(graphicContext), Qt::AlignHCenter | Qt::AlignVCenter, QString::fromStdString(this->Title()));
+	painter.drawText(this->TitleArea().ConvertToQRect(graphicContext), Qt::AlignLeft | Qt::AlignVCenter, QString::fromStdString(this->Title()));
 
 	// Draw program headers
 	if (this->FillExpression().Defined())
@@ -238,7 +174,7 @@ void CSectionStatement::Paint(const CGraphicContext& graphicContext, QPainter& p
 		this->FillExpression().Paint(graphicContext, painter);
 	}
 
-	for (auto progHeader : this->ProgramHeaders())
+	for (const auto& progHeader : this->ProgramHeaders())
 	{
 		progHeader->Paint(graphicContext, painter);
 	}

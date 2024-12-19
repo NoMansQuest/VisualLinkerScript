@@ -22,9 +22,7 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 		public CInteractiveObject,
 		public CDrawableObjectBase
     {
-        DECLARE_READONLY_PROPERTY(std::string, StartAddress)
-        DECLARE_READONLY_PROPERTY(std::string, EndAddress)
-        DECLARE_READONLY_PROPERTY(std::string, MemorySize)        
+   
 
         DECLARE_STANDARD_PROPERTY(SMetricRectangleF, AddressStartTextArea)
         DECLARE_STANDARD_PROPERTY(std::string, AddressStartText)
@@ -51,22 +49,31 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 				std::string endAddress, 
 				std::string memorySize) :
 			CModelMappedObject(inLinkerScriptStartPosition, inLinkerScriptLength),
-			m_StartAddress(std::move(startAddress)),
-			m_EndAddress(std::move(endAddress)),
-			m_MemorySize(std::move(memorySize))
+			m_AddressStartText(std::move(startAddress)),
+			m_AddressEndText(std::move(endAddress)),
+			m_SizeMarkerText(std::move(memorySize))
         {}
 
         /// @brief Calculate the minimum amount of space this region would need.
         virtual SMetricSizeF CalculateBodySize(const CGraphicContext& graphicContext) const = 0;
 
         /// @brief Reports back whether the starting address is known
-        bool StartAddressKnown() const { return !this->m_StartAddress.empty(); }
+        bool StartAddressKnown() const
+        {
+            return this->m_AddressStartText.length() != 0;
+        }
 
         /// @brief Reports back whether the ending address is known
-    	bool EndAddressKnown() const { return !this->m_EndAddress.empty(); }
+    	bool EndAddressKnown() const
+        {
+	        return this->m_AddressEndText.length() != 0;
+        }
 
         /// @brief Reports back whether the size of the region is known
-        bool MemorySizeKnown() const { return !this->m_MemorySize.empty(); }
+        bool MemorySizeKnown() const
+        {
+	        return this->m_SizeMarkerText.length() != 0;
+        }
 
         /// @brief Updates the coordinates of all involved objects based on the given allocated area.
         virtual void SetBodyPosition(const SMetricRectangleF& allocatedArea, const CGraphicContext& graphicContext) = 0;

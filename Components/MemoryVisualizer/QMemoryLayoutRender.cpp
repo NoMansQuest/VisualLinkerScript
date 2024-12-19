@@ -35,6 +35,12 @@ void QMemoryLayoutRender::RedrawDoubleBuffer()
     QPixmap newBuffer(size());
     QPainter painter(&newBuffer);
 
+    painter.setRenderHint(QPainter::TextAntialiasing, true);
+    painter.setRenderHint(QPainter::Antialiasing, true);
+    painter.setRenderHint(QPainter::VerticalSubpixelPositioning, true);
+    painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
+    painter.setRenderHint(QPainter::LosslessImageRendering, true);
+
     auto graphicContext = CGraphicContext::Make(this);
 
     // Get scroll positions in pixels
@@ -72,7 +78,7 @@ void QMemoryLayoutRender::DrawGrids(QPainter& painter, double dpiX, double dpiY)
     auto xStartInPixels = logicalAreaTopMm * pixelsPerMmY;
     auto xEndInPixels = logicalAreaBottomMm * pixelsPerMmY;
 
-    painter.setPen(QPen(QColor::fromRgb(VisualLinkerScript::Components::MemoryVisualizer::Colors::ViewBackgroundGridColor), 1));
+    painter.setPen(QPen(QColor::fromRgba(VisualLinkerScript::Components::MemoryVisualizer::Colors::ViewBackgroundGridColor), 1));
     for (qreal xHover = logicalAreaLeftMm; xHover <= logicalAreaRight; xHover += gridUnitSizeMm)
     {
         auto xInPixels = xHover * pixelsPerMmX;        
@@ -86,7 +92,7 @@ void QMemoryLayoutRender::DrawGrids(QPainter& painter, double dpiX, double dpiY)
     }
 
     // Draw grid center
-    painter.setPen(QPen(QColor::fromRgb(VisualLinkerScript::Components::MemoryVisualizer::Colors::GridCenterGridColor), 2));
+    painter.setPen(QPen(QColor::fromRgba(VisualLinkerScript::Components::MemoryVisualizer::Colors::GridCenterGridColor), 2));
     painter.drawLine(QPointF(0, yStartInPixels), QPointF(0, yEndInPixels));
     painter.drawLine(QPointF(xStartInPixels, 0), QPointF(xEndInPixels, 0));
 
