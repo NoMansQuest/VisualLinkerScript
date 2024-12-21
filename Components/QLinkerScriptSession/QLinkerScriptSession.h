@@ -7,6 +7,7 @@
 #include <memory>
 
 #include "AutoStyling/CAutoStyler.h"
+#include "Components/MemoryVisualizer/QMemoryVisualizer.h"
 #include "Components/QScintilla/ComponentHelpers.h"
 #include "CustomComponents/QIssuesTreeView.h"
 #include "DrcEngine/CDrcManager.h"
@@ -22,9 +23,12 @@ class QMemoryVisualizer;
 class CLinkerScriptSessionFileInfo;
 class QSearchPopup;
 
+using namespace VisualLinkerScript::Components::MemoryVisualizer::Composition;
+
 /// @brief Object representing the full context of a loaded/created linker script file.
 class QLinkerScriptSession : public QWidget
 {
+
     Q_OBJECT
 
 public:
@@ -109,6 +113,9 @@ private:
     uint32_t m_searchSessionActive = false;
     uint32_t m_searchSessionCurrentFocusedEntryStartPosition = 0;
     void ResetFindIndicators(Indicators indicatorToReset) const;
+
+    // Model related operations
+    std::shared_ptr<CFloorPlan> GenerateFloorplan() const;
 
 protected:
     bool eventFilter(QObject* obj, QEvent* event) override;

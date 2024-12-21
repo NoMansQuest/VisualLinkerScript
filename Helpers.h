@@ -69,11 +69,78 @@ namespace VisualLinkerScript
 
     /// @brief Type widely used across the code-base
     template <typename T>
-    using SharedPtrVector = std::vector<std::shared_ptr<T>>;
+    class SharedPtrVector : public std::vector<std::shared_ptr<T>>
+	{
+    public:
+        using BaseType = std::vector<std::shared_ptr<T>>;        
+        using BaseType::BaseType;
 
-    /// @brief Type widely used across the code-base
-    template <typename T>
-    using UniquePtrVector = std::vector<std::unique_ptr<T>>;
+        // Support for C# LINQ 'OfType' call
+        template <typename U>
+        SharedPtrVector<U> OfType() const
+    	{
+            static_assert(std::is_base_of_v<T, U>, "U must be derived from T");
+            SharedPtrVector<U> result;
+            for (const auto& obj : *this) 
+            {
+                if (auto casted = std::dynamic_pointer_cast<U>(obj)) 
+                {
+                    result.push_back(casted);
+                }
+            }
+            return result;
+        }
+
+        // Support for C# LINQ 'Select' call
+        template <typename Func>
+        auto Select(Func&& func) const
+    	{
+            using ResultType = typename std::invoke_result<Func, std::shared_ptr<T>>::type;            
+            static_assert(std::is_same<ResultType, std::shared_ptr<std::decay_t<typename ResultType::element_type>>>::value,
+                "Select function must return std::shared_ptr<U> for some U");
+
+            SharedPtrVector<typename ResultType::element_type> result;
+            for (const auto& obj : *this) 
+            {
+                result.push_back(func(obj));
+            }
+            return result;
+        }
+
+        // Support for C# LINQ 'Where' call
+        template <typename Func>
+        SharedPtrVector<T> Where(Func&& predicate) const {
+            SharedPtrVector<T> result;
+            for (const auto& obj : *this) {
+                if (predicate(obj)) {
+                    result.push_back(obj);
+                }
+            }
+            return result;
+        }
+
+        // Support for C# LINQ 'ForEach' call
+        template <typename Func>
+        void ForEach(Func&& action) const {
+            for (const auto& obj : *this) {
+                action(obj);
+            }
+        }
+
+        // Support for C# LINQ 'SelectMany' call
+        template <typename Func>
+        auto SelectMany(Func&& func) const {
+            using InnerVector = typename std::invoke_result<Func, std::shared_ptr<T>>::type;
+            using InnerType = typename InnerVector::value_type::element_type;
+
+            SharedPtrVector<InnerType> result;
+            for (const auto& obj : *this) {
+                InnerVector inner = func(obj); // Apply the transformation
+                result.insert(result.end(), inner.begin(), inner.end());
+            }
+            return result;
+        }
+    };
 
     /// @brief Merges 'vectorToAdd' into 'mainVector'
     template <typename T>

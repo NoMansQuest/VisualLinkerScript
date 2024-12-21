@@ -10,8 +10,8 @@ constexpr double sizeMarkerFirstLineLengthMm = 0;
 
 SMetricSizeF COverlaySectionOutput::CalculateBodySize(const CGraphicContext& graphicContext) const
 {
-	const auto titleBoundingRect = graphicContext.FontMetricsSmall().boundingRect(QString::fromStdString(this->Content()));
-	const auto titleBoundingRectMetric = SMetricRectangleF(titleBoundingRect, graphicContext.DpiX(), graphicContext.DpiY());
+	const auto titleBoundingSize = graphicContext.FontMetricsSmall().size(Qt::TextSingleLine, QString::fromStdString(this->Content()));
+	const auto titleBoundingRectMetric = SMetricRectangleF(titleBoundingSize, graphicContext.DpiX(), graphicContext.DpiY());
 	const double calculatedWidth = titleBoundingRectMetric.Width() * 1.5;
 	const double calculatedHeight = titleBoundingRectMetric.Height();
 	return SMetricSizeF(
@@ -22,8 +22,8 @@ SMetricSizeF COverlaySectionOutput::CalculateBodySize(const CGraphicContext& gra
 void COverlaySectionOutput::SetBodyPosition(const SMetricRectangleF& allocatedArea, const CGraphicContext& graphicContext)
 {
 	this->SetBodyArea(allocatedArea);
-	auto titleBoundingRect = graphicContext.FontMetricsSmall().boundingRect(QString::fromStdString(this->Content()));
-	auto titleBoundingRectMetric = SMetricRectangleF(titleBoundingRect, graphicContext.DpiX(), graphicContext.DpiY());
+	auto titleBoundingSize = graphicContext.FontMetricsSmall().size(Qt::TextSingleLine, QString::fromStdString(this->Content()));
+	auto titleBoundingRectMetric = SMetricRectangleF(titleBoundingSize, graphicContext.DpiX(), graphicContext.DpiY());
 	auto alignedBoundingRectMetric = titleBoundingRectMetric.Offset(allocatedArea.Left() + marginTextToLeftInMm, allocatedArea.Top() + marginTextFromTopInMm);
 	this->SetContentArea(alignedBoundingRectMetric);
 }
@@ -37,6 +37,7 @@ void COverlaySectionOutput::Paint(const CGraphicContext& graphicContext, QPainte
 	this->PaintAddressedRegion(graphicContext, painter, borderPen, fillBrush);
 
 	// Draw section name
+	painter.setPen(QColor::fromRgba(Colors::SectionOutputClickForeColor));
 	painter.setFont(graphicContext.FontSmall());
 	painter.drawText(
 		this->ContentArea().ConvertToQRect(graphicContext),

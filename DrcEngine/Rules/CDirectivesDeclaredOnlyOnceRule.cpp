@@ -39,7 +39,7 @@ SharedPtrVector<CViolationBase> CDirectivesDeclaredOnlyOnceRule::PerformCheck(co
             foundDirectives.size() > 1) 
         {
              violations.emplace_back(std::static_pointer_cast<CViolationBase>(std::shared_ptr<CDrcViolation>(new CDrcViolation(
-	             std::vector<std::shared_ptr<CParsedContentBase>>(),
+                 SharedPtrVector<CParsedContentBase>(),
 	             this->DrcRuleTitle(),
 	             "Directive is defined more than once.",
 	             EDrcViolationCode::EntryDirectiveDefinedMoreThanOnce,

@@ -14,7 +14,7 @@ namespace VisualLinkerScript::Models
     private:
         CRawEntry m_assignmentOperator;
         CRawEntry m_lValueEntry;
-        std::vector<std::shared_ptr<CParsedContentBase>> m_parsedContent;
+        SharedPtrVector<CParsedContentBase> m_parsedContent;
         CRawEntry m_semicolonEntry;
 
     public:
@@ -22,7 +22,7 @@ namespace VisualLinkerScript::Models
         explicit CAssignmentStatement(const CRawEntry& lValueEntry,
                                       const CRawEntry& assignmentOperator,
                                       const CRawEntry& semicolonEntry,
-                                      const std::vector<std::shared_ptr<CParsedContentBase>>& parsedContent,
+                                      const SharedPtrVector<CParsedContentBase>& parsedContent,
                                       const std::vector<CRawEntry>& rawElements, 
                                       const SharedPtrVector<CViolationBase>& violations)
             : CParsedContentBase(rawElements, violations),

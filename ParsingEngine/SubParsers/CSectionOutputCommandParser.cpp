@@ -74,10 +74,10 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
     CRawEntry bracketOpenEntry;
     CRawEntry bracketCloseEntry;
     CRawEntry noCrossRefsEntry;
-    std::vector<std::shared_ptr<CParsedContentBase>> preColonContent;
-    std::vector<std::shared_ptr<CParsedContentBase>> postColonContent;
-    std::vector<std::shared_ptr<CParsedContentBase>> innerContent;
-    std::vector<std::shared_ptr<CParsedContentBase>> endingContent;
+    SharedPtrVector<CParsedContentBase> preColonContent;
+    SharedPtrVector<CParsedContentBase> postColonContent;
+    SharedPtrVector<CParsedContentBase> innerContent;
+    SharedPtrVector<CParsedContentBase> endingContent;
 
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
     {

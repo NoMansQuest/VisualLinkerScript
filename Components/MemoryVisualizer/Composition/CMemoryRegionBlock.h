@@ -14,7 +14,7 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 	constexpr double textToMemoryRegionVSpaceMm = 2;
 	constexpr double titleToSizeTextHSpaceMm = 2;
 	constexpr double memoryRegionBorderMm = 0.5;
-	constexpr double sectionToSectionVSpaceMm = 4;
+	constexpr double sectionToSectionVSpaceMm = 2;
 
     /// @brief Represents a Memory-Object.
     class CMemoryRegionBlock : public CAddressedRegion
@@ -54,7 +54,7 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 
     protected:
         /// @brief Memory-Region is three levels deep
-        int SizeMarkerDepth() override { return 25; }
+        int SizeMarkerDepth() override { return 20; }
     };
 }
 

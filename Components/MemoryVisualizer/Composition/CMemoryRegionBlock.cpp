@@ -43,7 +43,7 @@ SMetricSizeF CMemoryRegionBlock::CalculateBodySize(const CGraphicContext& graphi
 	auto topMemoryLabelAndSize = Graphical::GetTextWidthInPixels(this->Title() + this->MemorySizeText(), graphicContext.FontMetricsLarge());
 
 	double calculatedWidth = 0;
-	double calculatedHeight = (graphicContext.FontMetricsLarge().height() * 1.5) + (memoryRegionBorderMm * 2); // Initial height
+	double calculatedHeight = graphicContext.FontMetricsLarge().height() + textToMemoryRegionVSpaceMm + (memoryRegionBorderMm * 2); // Initial height
 
 	if (!this->m_ChildContent.empty())
 	{
@@ -61,13 +61,13 @@ SMetricSizeF CMemoryRegionBlock::CalculateBodySize(const CGraphicContext& graphi
 }
 
 void CMemoryRegionBlock::SetBodyPosition(const SMetricRectangleF& allocatedArea, const CGraphicContext& graphicContext)
-{
-	auto calculatedDesiredSize = this->CalculateBodySize(graphicContext);
+{	
 	auto currentYHolder = allocatedArea.Top();
 
 	auto topMemoryLabelRect =
-		SMetricRectangleF(graphicContext.FontMetricsLarge().size(Qt::TextSingleLine,QString::fromStdString(this->m_Title)), graphicContext.DpiX(), graphicContext.DpiY())
+		SMetricRectangleF(graphicContext.FontMetricsLarge().size(Qt::TextSingleLine, QString::fromStdString(this->m_Title)), graphicContext.DpiX(), graphicContext.DpiY())
 		.Offset(allocatedArea.Left(), allocatedArea.Top());
+		
 
 	auto topMemorySizeRect =
 		SMetricRectangleF(graphicContext.FontMetricsLarge().size(Qt::TextSingleLine,QString::fromStdString(this->m_MemorySizeText)), graphicContext.DpiX(), graphicContext.DpiY())

@@ -52,7 +52,7 @@ void QMemoryLayoutRender::RedrawDoubleBuffer()
 
     // Set scale and translation
     painter.scale(this->m_zoom, this->m_zoom);   
-    painter.translate(scrollX_InPixels + this->width() / 2, scrollY_InPixels + this->height() / 2);
+    painter.translate(scrollX_InPixels + (this->width() / 2), scrollY_InPixels + (this->height() / 2));
 
     // Draw grids
     this->DrawGrids(painter, graphicContext.DpiX(), graphicContext.DpiY());

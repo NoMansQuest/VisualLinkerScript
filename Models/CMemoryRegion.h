@@ -13,7 +13,7 @@ namespace VisualLinkerScript::Models
     class CMemoryRegion : public CParsedContentBase
     {       
     private:
-        std::vector<std::shared_ptr<CParsedContentBase>> m_memoryStatements;
+        SharedPtrVector<CParsedContentBase> m_memoryStatements;
         CRawEntry m_headerTag;
         CRawEntry m_openingBracket;
         CRawEntry m_closingBracket;
@@ -41,7 +41,7 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Reports back the statements
-        const std::vector<std::shared_ptr<CParsedContentBase>>& Statements() const
+        const SharedPtrVector<CParsedContentBase>& Statements() const
         {
             return m_memoryStatements;
         }

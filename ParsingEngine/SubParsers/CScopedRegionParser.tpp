@@ -35,7 +35,7 @@ std::shared_ptr<TProducingOutputType> CScopedRegionParser<TParserType, TContentP
 {
     auto localIterator = iterator;
     auto parsingStartIteratorPosition = iterator;
-    std::vector<std::shared_ptr<CParsedContentBase>> parsedContent;
+    SharedPtrVector<CParsedContentBase> parsedContent;
     SharedPtrVector<CViolationBase> violations;
 
     auto parserState = ParserState::AwaitingHeader;

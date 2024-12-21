@@ -71,6 +71,7 @@ private slots:
     void OnScrollPositionChange() const;
     void OnZoomIncreaseClicked() const;
     void OnZoomDecreaseClicked() const;
+    void OnZoomToContent() const;
     void OnZoomUpdated() const;
 };
 

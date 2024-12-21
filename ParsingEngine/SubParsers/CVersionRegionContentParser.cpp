@@ -55,7 +55,7 @@ std::shared_ptr<CVersionScope> CVersionRegionContentParser::TryParse(
     CRawEntry bracketCloseEntry;
     CRawEntry parentScopeEntry;
     CRawEntry semicolonEntry;
-    std::vector<std::shared_ptr<CParsedContentBase>> parsedContent;
+    SharedPtrVector<CParsedContentBase> parsedContent;
 
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
     {

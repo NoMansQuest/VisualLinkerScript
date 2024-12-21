@@ -23,6 +23,8 @@
 #include "EditorAction/SEditorSelectText.h"
 #include "EditorAction/SEditorSetCaretPosition.h"
 #include "EditorAction/SEditorSetLineContent.h"
+#include "Models/CMemoryRegion.h"
+#include "Models/CMemoryStatement.h"
 #include "ParsingEngine/CLexerViolation.h"
 #include "ParsingEngine/CParserViolation.h"
 #include "ParsingEngine/EParserViolationCode.h"
@@ -730,7 +732,23 @@ void QLinkerScriptSession::JumpToLine(uint32_t lineNumber) const
     this->m_scintilla->setFocus(Qt::FocusReason::OtherFocusReason);
 }
 
+std::shared_ptr<CFloorPlan> QLinkerScriptSession::GenerateFloorplan() const
+{
+    SharedPtrVector<CMemoryRegionBlock> translatedMemoryRegions;
 
+    if (this->m_linkerScriptFile != nullptr && !this->m_linkerScriptFile->ParsedContent().empty())
+    {
+        SharedPtrVector<CMemoryStatement> foundMemoryStatements;
+
+        auto listOfMemoryStatements = this->m_linkerScriptFile->ParsedContent()
+            .OfType<CMemoryRegion>()
+            .SelectMany([](const std::shared_ptr<CMemoryRegion>& memRegion) { return memRegion->Statements(); })
+            .OfType<CMemoryStatement>();
+
+    }
+
+    return std::make_shared<CFloorPlan>(translatedMemoryRegions);
+}
 
 std::vector<SearchMatchResult> SearchForContent(
     const QString& contentToSearchIn,
@@ -770,7 +788,8 @@ std::vector<SearchMatchResult> SearchForContent(
             }
         }
     }
-    else {
+    else 
+    {
         // Simple string search mode
         int startPos = 0;
 

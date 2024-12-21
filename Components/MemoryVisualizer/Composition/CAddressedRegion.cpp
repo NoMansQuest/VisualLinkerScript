@@ -6,7 +6,7 @@ using namespace VisualLinkerScript::Components::MemoryVisualizer::Composition;
 constexpr double addressStartConnectingLineLengthMm = 1;
 constexpr double addressStartTextToLineHSpaceMm = 5;
 constexpr double sizeMarkerFirstLineLengthMm = 5;
-constexpr double sizeMarkerSecondLineLengthMm = 5;
+constexpr double sizeMarkerSecondLineLengthMm = 3;
 constexpr double sizeMarkerTextToLineMargin = 1;
 
 void CAddressedRegion::PaintAddressedRegion(

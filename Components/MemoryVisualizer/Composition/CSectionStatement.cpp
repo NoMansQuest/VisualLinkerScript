@@ -30,7 +30,7 @@ constexpr double minimumContentAreaHeight = 4;
 SMetricSizeF CSectionStatement::CalculateBodySize(const CGraphicContext& graphicContext) const
 {
 	// Constants
-	double minimumSectionStatementBoxHeight = headerBoxHeight + minimumContentAreaHeight; // 4mm header + 4mm empty boxy content
+	double minimumSectionStatementBoxHeight = headerBoxHeight; // 4mm header + 4mm empty boxy content
 
 	// Top memory label
 	auto topMemoryLabel = Graphical::GetMetricFromPixels(graphicContext.DpiX(), Graphical::GetTextWidthInPixels(this->Title(), graphicContext.FontMetricsSmall()));
@@ -65,8 +65,8 @@ SMetricSizeF CSectionStatement::CalculateBodySize(const CGraphicContext& graphic
 	double maxContentWidth = 0;
 
 	if (!this->m_ChildOutputs.empty())
-	{
-		calculatedHeight -= minimumContentAreaHeight + marginSectionOutputFromTop;
+	{		
+		calculatedHeight += marginSectionOutputFromTop;
 
 		for (const auto& child : this->m_ChildOutputs)
 		{
@@ -74,6 +74,11 @@ SMetricSizeF CSectionStatement::CalculateBodySize(const CGraphicContext& graphic
 			maxContentWidth = std::max(maxContentWidth, childDesiredSize.CX());
 			calculatedHeight += childDesiredSize.CY() + marginSectionOutputSpacing;
 		}
+	}
+	else
+	{
+		// We add this here so the statement would have some space under it when empty.
+		calculatedHeight += minimumContentAreaHeight;
 	}
 
 	return SMetricSizeF( std::max(maxContentWidth, minimumWidth), calculatedHeight);

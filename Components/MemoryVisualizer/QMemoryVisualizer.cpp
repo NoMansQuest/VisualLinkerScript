@@ -96,6 +96,7 @@ void QMemoryVisualizer::BuildInterface()
     QObject::connect(this->m_memoryLayoutRender, &QMemoryLayoutRender::evZoomChanged, this, &QMemoryVisualizer::OnZoomChangedByMouseWheel);
     QObject::connect(this->m_zoomInButton, &QPushButton::clicked, this, &QMemoryVisualizer::OnZoomIncreaseClicked);
     QObject::connect(this->m_zoomOutButton, &QPushButton::clicked, this, &QMemoryVisualizer::OnZoomDecreaseClicked);
+    QObject::connect(this->m_zoomToContent, &QPushButton::clicked, this, &QMemoryVisualizer::OnZoomToContent);
     QObject::connect(this->m_horizontalScrollBar, &QScrollBar::valueChanged, this, &QMemoryVisualizer::OnScrollPositionChange);
     QObject::connect(this->m_verticalScrollBar, &QScrollBar::valueChanged, this, &QMemoryVisualizer::OnScrollPositionChange);
     QObject::connect(this->m_currentZoomTextEdit, &QLineEdit::textChanged, this, &QMemoryVisualizer::OnZoomUpdated);
@@ -176,7 +177,31 @@ void QMemoryVisualizer::OnZoomDecreaseClicked() const
     }
 }
 
+void QMemoryVisualizer::OnZoomToContent() const
+{
+    double zoom = 1;
+
+    if ((this->m_model != nullptr) && (!this->m_model->MemoryRegions().empty()))
+    {
+        auto graphicContext = CGraphicContext::Make(this);
+        auto bodySizeInMm = this->m_model->CalculateBodySize(graphicContext);
+        auto bodySizeInPixels = bodySizeInMm.ToPixelSize(graphicContext.DpiX(), graphicContext.DpiY());
+
+        auto xMarginInMetric = Graphical::GetPixelsInMetric(graphicContext.DpiX(), 10);
+        auto yMarginInMetric = Graphical::GetPixelsInMetric(graphicContext.DpiY(), 20);
+
+        auto xZoomNeeded = this->width() / (bodySizeInPixels.CX() + xMarginInMetric);
+        auto yZoomNeeded = this->height() / (bodySizeInPixels.CY() + yMarginInMetric);
+
+        zoom = std::min(xZoomNeeded, yZoomNeeded);
+    }
+
+	this->m_currentZoomTextEdit->SetPercentage(zoom * 100);
+}
+
 void QMemoryVisualizer::OnZoomUpdated() const
 {
     this->m_memoryLayoutRender->SetZoom((double)this->m_currentZoomTextEdit->Percentage() / 100);
+    this->m_horizontalScrollBar->setValue(0);
+    this->m_verticalScrollBar->setValue(0);
 }

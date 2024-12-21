@@ -77,22 +77,22 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 			auto dpiX = targetWidget->screen()->physicalDotsPerInchX();
 			auto dpiY = targetWidget->screen()->physicalDotsPerInchY();
 
-			auto smallFontSize = Graphical::GetFontSizeFromMetric(dpiY, 2.3);
+			auto smallFontSize = Graphical::GetFontSizeFromMetric(dpiY, 2.5);
 			auto largeFontSize = Graphical::GetFontSizeFromMetric(dpiY, 3.5);
 
-			QFont smallFont("Tahoma, DejaVu Sans", smallFontSize);
-			smallFont.setFamily("Arial, Helvetica, sans-serif"); // Specify primary and fallback fonts
+			QFont smallFont("Roboto", smallFontSize);
+			smallFont.setStyleStrategy(QFont::PreferAntialias);
 
-			QFont smallFontBold("Tahoma, DejaVu Sans", smallFontSize);
+			QFont smallFontBold("Roboto", smallFontSize);
+			smallFontBold.setStyleStrategy(QFont::PreferAntialias);
 			smallFontBold.setBold(true);
-			smallFontBold.setFamily("Arial, Helvetica, sans-serif"); // Specify primary and fallback fonts
 
-			QFont largeFont("Tahoma, DejaVu Sans", largeFontSize);
-			largeFont.setFamily("Arial, Helvetica, sans-serif"); // Specify primary and fallback fonts
+			QFont largeFont("Roboto", largeFontSize);
+			largeFont.setStyleStrategy(QFont::PreferAntialias);
 
-			QFont largeFontBold("Tahoma, DejaVu Sans", largeFontSize);
-			largeFontBold.setBold(true);
-			largeFontBold.setFamily("Arial, Helvetica, sans-serif"); // Specify primary and fallback fonts
+			QFont largeFontBold("Roboto", largeFontSize);
+			largeFontBold.setStyleStrategy(QFont::PreferAntialias);
+			largeFontBold.setBold(true);			
 
 			return CGraphicContext(dpiX, dpiY, smallFont, smallFontBold, largeFont, largeFontBold);
 		}

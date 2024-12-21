@@ -63,7 +63,7 @@ std::shared_ptr<CSectionsRegion> CSectionsRegionParser::TryParse(
     CRawEntry headerEntry;
     CRawEntry bracketOpenEntry;
     CRawEntry bracketCloseEntry;
-    std::vector<std::shared_ptr<CParsedContentBase>> parsedContent;
+    SharedPtrVector<CParsedContentBase> parsedContent;
 
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
     {

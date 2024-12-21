@@ -15,7 +15,7 @@ namespace VisualLinkerScript::QueryEngine
     class CLinq
     {
     private:
-        std::vector<std::shared_ptr<TInput>> m_sourceVector;
+        SharedPtrVector<TInput> m_sourceVector;
 
     public:
         /// @brief Default constructor
@@ -39,7 +39,7 @@ namespace VisualLinkerScript::QueryEngine
 
         template <typename TOutput>
         auto Where(std::function<bool(std::shared_ptr<TInput> inputElement)> selector) {
-            std::vector<std::shared_ptr<TOutput>> result;
+            SharedPtrVector<TOutput> result;
             for (TInput element : m_sourceVector) {
                 if (!selector(element)) {
                     continue;

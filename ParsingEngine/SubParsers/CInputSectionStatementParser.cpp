@@ -61,7 +61,7 @@ std::shared_ptr<CInputSectionStatement> CInputSectionStatementParser::TryParse(
     std::shared_ptr<CParsedContentBase> fileSelector;
     CRawEntry parenthesisOpen;
     CRawEntry parenthesisClose;
-    std::vector<std::shared_ptr<CParsedContentBase>> parsedContent;
+    SharedPtrVector<CParsedContentBase> parsedContent;
 
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
     {
