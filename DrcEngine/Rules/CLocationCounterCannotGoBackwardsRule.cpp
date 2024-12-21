@@ -10,9 +10,9 @@ using namespace VisualLinkerScript::DrcEngine::Rules;
 using namespace VisualLinkerScript::Models;
 using namespace VisualLinkerScript::QueryEngine;
 
-SharedPtrVector<CViolationBase> CLocationCounterCannotGoBackwardsRule::PerformCheck(const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile) {
+LinqVector<CViolationBase> CLocationCounterCannotGoBackwardsRule::PerformCheck(const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile) {
     // TODO: TO BE IMPLEMENTED
-    SharedPtrVector<CViolationBase> violations;
+    LinqVector<CViolationBase> violations;
     return violations;
 }
 

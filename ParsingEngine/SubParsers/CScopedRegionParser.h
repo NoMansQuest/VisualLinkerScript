@@ -20,9 +20,9 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
 
         static_assert(
             std::is_constructible< TProducingOutputType, CRawEntry, CRawEntry, CRawEntry,
-                                   const SharedPtrVector<CParsedContentBase>&,
+                                   const LinqVector<CParsedContentBase>&,
                                    const std::vector<CRawEntry>&,
-                                   const SharedPtrVector<CViolationBase>& >::value,
+                                   const LinqVector<CViolationBase>& >::value,
             "TProducingOutputType is not compatible. Please check the constructor." );
 
     protected:

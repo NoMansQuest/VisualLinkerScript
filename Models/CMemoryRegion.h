@@ -13,7 +13,7 @@ namespace VisualLinkerScript::Models
     class CMemoryRegion : public CParsedContentBase
     {       
     private:
-        SharedPtrVector<CParsedContentBase> m_memoryStatements;
+        LinqVector<CParsedContentBase> m_memoryStatements;
         CRawEntry m_headerTag;
         CRawEntry m_openingBracket;
         CRawEntry m_closingBracket;
@@ -23,9 +23,9 @@ namespace VisualLinkerScript::Models
         explicit CMemoryRegion(const CRawEntry& headerTag,
                                const CRawEntry& openingBracket,
                                const CRawEntry& closingBracket,
-                               const SharedPtrVector<CParsedContentBase>& memoryStatements,
+                               const LinqVector<CParsedContentBase>& memoryStatements,
                                const std::vector<CRawEntry>& rawElements,
-                               const SharedPtrVector<CViolationBase>& violations)
+                               const LinqVector<CViolationBase>& violations)
             : CParsedContentBase(rawElements, violations),
               m_memoryStatements(memoryStatements),
               m_headerTag(headerTag),
@@ -41,7 +41,7 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Reports back the statements
-        const SharedPtrVector<CParsedContentBase>& Statements() const
+        const LinqVector<CParsedContentBase>& Statements() const
         {
             return m_memoryStatements;
         }
@@ -65,7 +65,7 @@ namespace VisualLinkerScript::Models
         }
 
         /// @copydoc CParsedContentBase::AggregateViolation
-        [[nodiscard]] const SharedPtrVector<CViolationBase> AggregateViolation() const override;
+        [[nodiscard]] const LinqVector<CViolationBase> AggregateViolation() const override;
 
         /// @brief Produces debug information on what this object represents.
         const std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;

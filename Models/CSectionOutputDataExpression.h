@@ -32,7 +32,7 @@ namespace VisualLinkerScript::Models
         }
 
         /// @copydoc CParsedContentBase::AggregateViolation
-        [[nodiscard]] const SharedPtrVector<CViolationBase> AggregateViolation() const override {
+        [[nodiscard]] const LinqVector<CViolationBase> AggregateViolation() const override {
             return this->Violations();
         }
     };

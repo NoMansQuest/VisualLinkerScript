@@ -7,7 +7,7 @@ using namespace VisualLinkerScript;
 using namespace VisualLinkerScript::Models;
 using namespace VisualLinkerScript::DrcEngine;
 
-SharedPtrVector<IDrcRuleBase> CDrcManager::m_drcRules;
+LinqVector<IDrcRuleBase> CDrcManager::m_drcRules;
 
 /// @copydoc
 bool CDrcManager::RegisterRule(const std::shared_ptr<IDrcRuleBase>& drcRule)
@@ -19,7 +19,7 @@ bool CDrcManager::RegisterRule(const std::shared_ptr<IDrcRuleBase>& drcRule)
 /// @copydoc
 void CDrcManager::PerformAnalysis(std::shared_ptr<CLinkerScriptFile> linkerScriptFile)
 {
-	SharedPtrVector<CViolationBase> discoveredViolations;
+	LinqVector<CViolationBase> discoveredViolations;
 	for (const auto& rule : this->m_drcRules)
 	{
 		if (!rule->IsEnabled())

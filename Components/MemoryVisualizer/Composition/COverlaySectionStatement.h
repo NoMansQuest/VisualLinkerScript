@@ -12,8 +12,8 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 		DECLARE_READONLY_PROPERTY(std::string, Title)
 		DECLARE_STANDARD_PROPERTY(SMetricRectangleF, TitleArea)
 		DECLARE_STANDARD_PROPERTY(SMetricRectangleF, HeaderArea)
-		DECLARE_READONLY_PROPERTY(SharedPtrVector<COverlaySectionOutput>, ChildContent)
-		DECLARE_READONLY_PROPERTY(SharedPtrVector<CProgramHeaderButton>, ProgramHeaders)
+		DECLARE_READONLY_PROPERTY(LinqVector<COverlaySectionOutput>, ChildContent)
+		DECLARE_READONLY_PROPERTY(LinqVector<CProgramHeaderButton>, ProgramHeaders)
 		DECLARE_READONLY_PROPERTY(CFillExpressionButton, FillExpression)
 		DECLARE_READONLY_PROPERTY(std::string, LoadRegion)
 
@@ -22,8 +22,8 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 		COverlaySectionStatement(
 				std::string title,
 				const CFillExpressionButton& fillExpression,
-				const SharedPtrVector<CProgramHeaderButton>& programHeaders,
-				const SharedPtrVector<COverlaySectionOutput>& childContent,
+				const LinqVector<CProgramHeaderButton>& programHeaders,
+				const LinqVector<COverlaySectionOutput>& childContent,
 				const uint32_t inModelStartPosition,
 				const uint32_t inModelLength,
 				const std::string& startAddress,

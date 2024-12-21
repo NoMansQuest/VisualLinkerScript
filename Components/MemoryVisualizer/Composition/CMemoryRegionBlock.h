@@ -21,7 +21,7 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
     {
         DECLARE_READONLY_PROPERTY(std::string, Title)
         DECLARE_READONLY_PROPERTY(std::string, MemorySizeText)
-	    DECLARE_READONLY_PROPERTY(SharedPtrVector<CSectionDefinitionBase>, ChildContent)
+	    DECLARE_READONLY_PROPERTY(LinqVector<CSectionDefinitionBase>, ChildContent)
 
         DECLARE_STANDARD_PROPERTY(SMetricRectangleF, TitleArea)
         DECLARE_STANDARD_PROPERTY(SMetricRectangleF, MemorySizeTextArea)
@@ -30,7 +30,7 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
         CMemoryRegionBlock(
 				std::string title,
 				std::string memorySizeText,
-				const SharedPtrVector<CSectionDefinitionBase>& childContent,
+				const LinqVector<CSectionDefinitionBase>& childContent,
 		        const uint32_t inLinkerScriptStartPosition,
 		        const uint32_t inLinkerScriptLength,
 				const std::string& startAddress,

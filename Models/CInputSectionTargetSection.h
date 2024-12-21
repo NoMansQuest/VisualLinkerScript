@@ -14,12 +14,12 @@ namespace VisualLinkerScript::Models
     public:
         /// @brief Default constructor
         explicit CInputSectionTargetSection(const CInputSectionWildcardWord& targetSection,
-                                            const SharedPtrVector<CViolationBase>& violations)
+                                            const LinqVector<CViolationBase>& violations)
             : CParsedContentBase(targetSection.RawEntries(), violations)
         {}
 
         /// @copydoc CParsedContentBase::AggregateViolation
-        [[nodiscard]] const SharedPtrVector<CViolationBase> AggregateViolation() const override
+        [[nodiscard]] const LinqVector<CViolationBase> AggregateViolation() const override
         {
             return this->Violations();
         }

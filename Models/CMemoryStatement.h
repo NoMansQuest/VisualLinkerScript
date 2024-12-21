@@ -30,7 +30,7 @@ namespace VisualLinkerScript::Models
                                   std::shared_ptr<CParsedContentBase> originRValue,
                                   std::shared_ptr<CParsedContentBase> lengthRValue,
                                   std::vector<CRawEntry>&& rawEntries,
-                                  SharedPtrVector<CViolationBase>&& violations)
+                                  LinqVector<CViolationBase>&& violations)
             : CParsedContentBase(std::move(rawEntries), std::move(violations)),
               m_nameEntry(nameEntry),
               m_attributes(attributes),
@@ -77,7 +77,7 @@ namespace VisualLinkerScript::Models
         }
 
         /// @copydoc CParsedContentBase::AggregateViolation
-        [[nodiscard]] virtual const SharedPtrVector<CViolationBase> AggregateViolation() const;
+        [[nodiscard]] virtual const LinqVector<CViolationBase> AggregateViolation() const;
 
         /// @brief Produces debug information on what this object represents.
         [[nodiscard]] const std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;

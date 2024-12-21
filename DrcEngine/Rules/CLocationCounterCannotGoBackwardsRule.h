@@ -18,7 +18,7 @@ namespace VisualLinkerScript::DrcEngine::Rules
         }
 
         /// @copydoc
-        virtual SharedPtrVector<CViolationBase> PerformCheck(const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile) override;
+        virtual LinqVector<CViolationBase> PerformCheck(const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile) override;
 
         /// @brief Default destructor
         ~CLocationCounterCannotGoBackwardsRule() override = default;

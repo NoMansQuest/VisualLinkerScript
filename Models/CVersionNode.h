@@ -20,7 +20,7 @@ namespace VisualLinkerScript::Models
                               const CRawEntry& semicolonEntry,
                               const CRawEntry& parentTagEntry,
                               const std::vector<CRawEntry>& rawElements,
-                              const SharedPtrVector<CViolationBase>& violations)
+                              const LinqVector<CViolationBase>& violations)
             : CParsedContentBase(rawElements, violations),
               m_nodeEntry(nodeEntry),
               m_semicolonEntry(semicolonEntry),
@@ -52,7 +52,7 @@ namespace VisualLinkerScript::Models
         }
 
         /// @copydoc CParsedContentBase::AggregateViolation
-        [[nodiscard]] const SharedPtrVector<CViolationBase> AggregateViolation() const override {
+        [[nodiscard]] const LinqVector<CViolationBase> AggregateViolation() const override {
             return this->Violations();
         }
     };    

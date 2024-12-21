@@ -14,12 +14,12 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
     /// @brief Represents a Linker-Script object.
     class CFloorPlan : public CDrawableObjectBase
     {
-        DECLARE_READONLY_PROPERTY(SharedPtrVector<CMemoryRegionBlock>, MemoryRegions)
+        DECLARE_READONLY_PROPERTY(LinqVector<CMemoryRegionBlock>, MemoryRegions)
 
     public:
         /// @brief Default constructor.
         CFloorPlan(
-            const SharedPtrVector<CMemoryRegionBlock>& memorySections) :
+            const LinqVector<CMemoryRegionBlock>& memorySections) :
 				m_MemoryRegions(memorySections)
         {}
 

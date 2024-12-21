@@ -18,7 +18,7 @@ namespace VisualLinkerScript::Components::LinkerScriptSession::AutoStyling
 	{
 	public:
 		/// @brief When text is expected to be inserted (either through key-press or 'Paste')
-		static SharedPtrVector<EditorAction::SEditorActionBase> ProcessKeyboardEvent(
+		static LinqVector<EditorAction::SEditorActionBase> ProcessKeyboardEvent(
 			const std::shared_ptr<Models::CLinkerScriptFile>& linkerScriptFile,
 			const QKeyEvent& keyEvent,
 			uint32_t absolutePosition,

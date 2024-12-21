@@ -50,7 +50,7 @@ std::shared_ptr<CSectionsRegion> CSectionsRegionParser::TryParse(
 {
     auto localIterator = iterator;
     auto parsingStartIteratorPosition = iterator;
-    SharedPtrVector<CViolationBase> violations;
+    LinqVector<CViolationBase> violations;
 
     CFunctionParser functionParser;                             // Example: FILL(0x00000)
     CAssignmentParser assignmentParser;                         // Example: '. = ALIGN(4);'
@@ -63,7 +63,7 @@ std::shared_ptr<CSectionsRegion> CSectionsRegionParser::TryParse(
     CRawEntry headerEntry;
     CRawEntry bracketOpenEntry;
     CRawEntry bracketCloseEntry;
-    SharedPtrVector<CParsedContentBase> parsedContent;
+    LinqVector<CParsedContentBase> parsedContent;
 
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
     {

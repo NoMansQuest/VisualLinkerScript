@@ -45,8 +45,8 @@ std::shared_ptr<CFunctionCall> CFunctionParser::TryParse(
 {
     auto localIterator = iterator;
     auto parsingStartIteratorPosition = iterator;
-    SharedPtrVector<CParsedContentBase> parsedContent;
-    SharedPtrVector<CViolationBase> violations;
+    LinqVector<CParsedContentBase> parsedContent;
+    LinqVector<CViolationBase> violations;
 
     CExpressionParser nestedExpressionParser;
 

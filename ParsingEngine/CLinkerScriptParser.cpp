@@ -38,24 +38,24 @@ CFunctionParser multiParameterFunctionParser(false, true);
 
 bool TryParseLinkerScriptMasterBlocks(
         const std::string& resolvedContent,
-        SharedPtrVector<CViolationBase>& violations,
-        SharedPtrVector<CParsedContentBase>& parsedContent,
+        LinqVector<CViolationBase>& violations,
+        LinqVector<CParsedContentBase>& parsedContent,
         std::vector<CRawEntry>::const_iterator& entryIterator,
         const std::vector<CRawEntry>::const_iterator& endOfVectorIterator,
         const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile); // i.e. MEMORY, VERSION, ETC.
 
 bool TryParseFunctionAndAssignmentProcedureCalls(
         const std::string& resolvedContent,
-        SharedPtrVector<CViolationBase>& violations,
-        SharedPtrVector<CParsedContentBase>& parsedContent,
+        LinqVector<CViolationBase>& violations,
+        LinqVector<CParsedContentBase>& parsedContent,
         std::vector<CRawEntry>::const_iterator& entryIterator,
         const std::vector<CRawEntry>::const_iterator& endOfVectorIterator,
         const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile); // ENTRY(....) or, PROVIDE(X=Y);, etc.
 
 bool TryParseAssignments(
         const std::string& resolvedContent,
-        SharedPtrVector<CViolationBase>& violations,
-        SharedPtrVector<CParsedContentBase>& parsedContent,
+        LinqVector<CViolationBase>& violations,
+        LinqVector<CParsedContentBase>& parsedContent,
         std::vector<CRawEntry>::const_iterator& entryIterator,
         const std::vector<CRawEntry>::const_iterator& endOfVectorIterator,
         const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile);
@@ -65,8 +65,8 @@ void CLinkerScriptParser::ParseLinkerScriptFile(std::shared_ptr<CLinkerScriptFil
     std::vector<CRawEntry>::const_iterator localIterator = linkerScriptFile->LexedContent().cbegin();
     std::vector<CRawEntry>::const_iterator parsingStartIteratorPosition = linkerScriptFile->LexedContent().cbegin();
     std::vector<CRawEntry>::const_iterator endOfVectorIterator = linkerScriptFile->LexedContent().cend();
-    SharedPtrVector<CParsedContentBase> parsedContent;
-    SharedPtrVector<CViolationBase> violations;
+    LinqVector<CParsedContentBase> parsedContent;
+    LinqVector<CViolationBase> violations;
 
     while (localIterator != endOfVectorIterator)
     {
@@ -148,8 +148,8 @@ void CLinkerScriptParser::ParseLinkerScriptFile(std::shared_ptr<CLinkerScriptFil
 
 bool TryParseLinkerScriptMasterBlocks(
         const std::string& resolvedContent,
-        SharedPtrVector<CViolationBase>& violations,
-        SharedPtrVector<CParsedContentBase>& parsedContent,
+        LinqVector<CViolationBase>& violations,
+        LinqVector<CParsedContentBase>& parsedContent,
         std::vector<CRawEntry>::const_iterator& entryIterator,
         const std::vector<CRawEntry>::const_iterator& endOfVectorIterator,
         const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile)
@@ -216,8 +216,8 @@ bool TryParseLinkerScriptMasterBlocks(
 
 bool TryParseFunctionAndAssignmentProcedureCalls(
         const std::string& resolvedContent,
-        SharedPtrVector<CViolationBase>& violations,
-        SharedPtrVector<CParsedContentBase>& parsedContent,
+        LinqVector<CViolationBase>& violations,
+        LinqVector<CParsedContentBase>& parsedContent,
         std::vector<CRawEntry>::const_iterator& entryIterator,
         const std::vector<CRawEntry>::const_iterator& endOfVectorIterator,
         const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile)
@@ -279,8 +279,8 @@ bool TryParseFunctionAndAssignmentProcedureCalls(
 
 bool TryParseAssignments(
         const std::string& resolvedContent,
-        SharedPtrVector<CViolationBase>& violations,
-        SharedPtrVector<CParsedContentBase>& parsedContent,
+        LinqVector<CViolationBase>& violations,
+        LinqVector<CParsedContentBase>& parsedContent,
         std::vector<CRawEntry>::const_iterator& entryIterator,
         const std::vector<CRawEntry>::const_iterator& endOfVectorIterator,
         const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile)

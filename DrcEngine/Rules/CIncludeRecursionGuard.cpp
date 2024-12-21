@@ -31,14 +31,14 @@ using namespace VisualLinkerScript::Models;
 typedef std::unordered_map<std::shared_ptr<CLinkerScriptFile>, std::shared_ptr<CIncludeCommand>> RecursionMap;
 
 /// @brief Recursively checks the given scope to see if @see {sourceFile} is re-observed in the 'include' chain
-bool RecursiveCheck(const SharedPtrVector<CLinkerScriptFile>& scope,
+bool RecursiveCheck(const LinqVector<CLinkerScriptFile>& scope,
                     const std::shared_ptr<CLinkerScriptFile>& fileToCheck,
                     std::shared_ptr<CLinkerScriptFile> subjectOfInterest,
                     RecursionMap& recursionMap);
 
-SharedPtrVector<CViolationBase> CIncludeRecursionGuard::PerformCheck(const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile)
+LinqVector<CViolationBase> CIncludeRecursionGuard::PerformCheck(const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile)
 {
-    SharedPtrVector<CViolationBase> violations;
+    LinqVector<CViolationBase> violations;
     auto foundIncludeCommands = QueryObject<CIncludeCommand>(linkerScriptFile);
 
     /*
@@ -99,7 +99,7 @@ SharedPtrVector<CViolationBase> CIncludeRecursionGuard::PerformCheck(const std::
             // Include file was not found
             auto errorMessage = StringFormat("Included files are expected to be present, but '{}' was not found", targetFile);
             violations.emplace_back(std::static_pointer_cast<CViolationBase>(std::shared_ptr<CDrcViolation>(new CDrcViolation(
-	            SharedPtrVector<CParsedContentBase>{
+	            LinqVector<CParsedContentBase>{
 		            std::dynamic_pointer_cast<CParsedContentBase>(includeCommandResult->Result())
 	            },
 	            this->DrcRuleTitle(),
@@ -116,7 +116,7 @@ SharedPtrVector<CViolationBase> CIncludeRecursionGuard::PerformCheck(const std::
 }
 
 
-bool RecursiveCheck(const SharedPtrVector<CLinkerScriptFile>& scope,
+bool RecursiveCheck(const LinqVector<CLinkerScriptFile>& scope,
                     const std::shared_ptr<CLinkerScriptFile>& fileToCheck,
                     std::shared_ptr<CLinkerScriptFile> subjectOfInterest,
                     RecursionMap& recursionMap)

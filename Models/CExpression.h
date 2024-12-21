@@ -13,7 +13,7 @@ namespace VisualLinkerScript::Models
     class CExpression: public CParsedContentBase
     {   
     private:
-        SharedPtrVector<CParsedContentBase> m_composition;
+        LinqVector<CParsedContentBase> m_composition;
         CRawEntry m_openingParenthesis;
         CRawEntry m_closingParenthesis;        
 
@@ -21,9 +21,9 @@ namespace VisualLinkerScript::Models
         /// @brief Parameterized constructor, accessible to inheritors only
         explicit CExpression(const CRawEntry& openingParenthesis,
                              const CRawEntry& closingParenthesis,
-                             const SharedPtrVector<CParsedContentBase>& composition,
+                             const LinqVector<CParsedContentBase>& composition,
                              const std::vector<CRawEntry>& rawElements,
-                             const SharedPtrVector<CViolationBase>& violations)
+                             const LinqVector<CViolationBase>& violations)
             : CParsedContentBase(rawElements, violations),
               m_composition(composition),
               m_openingParenthesis(openingParenthesis),
@@ -31,9 +31,9 @@ namespace VisualLinkerScript::Models
         {}        
 
         /// @brief Simplified constructor, no parenthesis
-        explicit CExpression(SharedPtrVector<CParsedContentBase> composition,
+        explicit CExpression(LinqVector<CParsedContentBase> composition,
                              const std::vector<CRawEntry>& rawElements,
-                             const SharedPtrVector<CViolationBase>& violations)
+                             const LinqVector<CViolationBase>& violations)
     		: CParsedContentBase(rawElements, violations),
               m_composition(std::move( composition))
         {}
@@ -58,13 +58,13 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Gets the "Composition" 
-        [[nodiscard]] const SharedPtrVector<CParsedContentBase>& Composition() const
+        [[nodiscard]] const LinqVector<CParsedContentBase>& Composition() const
         {
             return this->m_composition;
         }
 
         /// @copydoc CParsedContentBase::AggregateViolation
-        [[nodiscard]] const SharedPtrVector<CViolationBase> AggregateViolation() const override;
+        [[nodiscard]] const LinqVector<CViolationBase> AggregateViolation() const override;
 
         /// @brief Produces debug information on what this object represents.
         [[nodiscard]] const std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;

@@ -44,7 +44,7 @@ std::shared_ptr<CVersionScope> CVersionRegionContentParser::TryParse(
 {
     auto localIterator = iterator;
     auto parsingStartIteratorPosition = iterator;
-    SharedPtrVector<CViolationBase> violations;
+    LinqVector<CViolationBase> violations;
 
     auto parserState = ParserState::AwaitingHeader;
 
@@ -55,7 +55,7 @@ std::shared_ptr<CVersionScope> CVersionRegionContentParser::TryParse(
     CRawEntry bracketCloseEntry;
     CRawEntry parentScopeEntry;
     CRawEntry semicolonEntry;
-    SharedPtrVector<CParsedContentBase> parsedContent;
+    LinqVector<CParsedContentBase> parsedContent;
 
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
     {

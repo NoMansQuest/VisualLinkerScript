@@ -8,9 +8,9 @@
 using namespace VisualLinkerScript;
 using namespace VisualLinkerScript::Models;
 
-const SharedPtrVector<CViolationBase> CInputSectionStatement::AggregateViolation() const
+const LinqVector<CViolationBase> CInputSectionStatement::AggregateViolation() const
 {
-    SharedPtrVector<CViolationBase> allViolations;
+    LinqVector<CViolationBase> allViolations;
 
     for (const auto& childEntry : this->ParsedContent())
     {

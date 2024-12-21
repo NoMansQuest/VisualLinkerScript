@@ -15,10 +15,10 @@ namespace VisualLinkerScript::Models
         CRawEntry m_noCrossRefsEntry;        
         CRawEntry m_bracketOpenEntry;
         CRawEntry m_bracketCloseEntry;                
-        SharedPtrVector<CParsedContentBase> m_preColonContent;
-        SharedPtrVector<CParsedContentBase> m_postColonContent;
-        SharedPtrVector<CParsedContentBase> m_endingContent;
-        SharedPtrVector<CParsedContentBase> m_innerContent;
+        LinqVector<CParsedContentBase> m_preColonContent;
+        LinqVector<CParsedContentBase> m_postColonContent;
+        LinqVector<CParsedContentBase> m_endingContent;
+        LinqVector<CParsedContentBase> m_innerContent;
 
     public:
         /// @brief Default constructor, accessible to inheritors only        
@@ -27,12 +27,12 @@ namespace VisualLinkerScript::Models
                                         const CRawEntry& noCrossRefsEntry,                                        
                                         const CRawEntry& bracketOpenEntry,
                                         const CRawEntry& bracketCloseEntry,                                                                                
-                                        const SharedPtrVector<CParsedContentBase>& preColonContent,
-                                        const SharedPtrVector<CParsedContentBase>& postColonContent,
-                                        const SharedPtrVector<CParsedContentBase>& innerContent,
-                                        const SharedPtrVector<CParsedContentBase>& endingContent,
+                                        const LinqVector<CParsedContentBase>& preColonContent,
+                                        const LinqVector<CParsedContentBase>& postColonContent,
+                                        const LinqVector<CParsedContentBase>& innerContent,
+                                        const LinqVector<CParsedContentBase>& endingContent,
                                         const std::vector<CRawEntry>& rawElements,
-                                        const SharedPtrVector<CViolationBase>& violations)
+                                        const LinqVector<CViolationBase>& violations)
             : CParsedContentBase(rawElements, violations),
               m_headerEntry(headerEntry),              
               m_colonEntry(colonEntry),
@@ -72,25 +72,25 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief [Non-Optional] Reports the content defined inside the 'OVERLAY'
-        [[nodiscard]] const SharedPtrVector<CParsedContentBase>& InnerContent() const
+        [[nodiscard]] const LinqVector<CParsedContentBase>& InnerContent() const
         {
             return this->m_innerContent;
         }
 
         /// @brief [Non-Optional] Reports the content defined inside between the header and colon
-        [[nodiscard]] const SharedPtrVector<CParsedContentBase>& PreColonContent() const
+        [[nodiscard]] const LinqVector<CParsedContentBase>& PreColonContent() const
         {
             return this->m_preColonContent;
         }
 
         /// @brief [Non-Optional] Reports the content defined inside after the colon and before the bracket-open
-        [[nodiscard]] const SharedPtrVector<CParsedContentBase>& PostColonContent() const
+        [[nodiscard]] const LinqVector<CParsedContentBase>& PostColonContent() const
         {
             return this->m_postColonContent;
         }
 
         /// @brief [Non-Optional] Reports the content defined inside after bracket-closure
-        [[nodiscard]] const SharedPtrVector<CParsedContentBase>& EndingContent() const
+        [[nodiscard]] const LinqVector<CParsedContentBase>& EndingContent() const
         {
             return this->m_endingContent;
         }
@@ -102,7 +102,7 @@ namespace VisualLinkerScript::Models
         }
 
         /// @copydoc CParsedContentBase::AggregateViolation
-        [[nodiscard]] const SharedPtrVector<CViolationBase> AggregateViolation() const override;
+        [[nodiscard]] const LinqVector<CViolationBase> AggregateViolation() const override;
 
         /// @brief Produces debug information on what this object represents.
         [[nodiscard]] const std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;

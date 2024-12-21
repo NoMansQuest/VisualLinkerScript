@@ -61,7 +61,7 @@ namespace VisualLinkerScript::Models
     {
     private:
         std::vector<CRawEntry> m_rawEntries;
-        SharedPtrVector<CViolationBase> m_violations;
+        LinqVector<CViolationBase> m_violations;
         std::shared_ptr<CLinkerScriptFile> m_parentLinkerScriptFile;
         std::string m_objectPath;
 
@@ -70,7 +70,7 @@ namespace VisualLinkerScript::Models
         /// @param rawEntries A list of object this element is comprised of
         /// @param violations Violations related to this content (if any)
         explicit CParsedContentBase(const std::vector<CRawEntry>& rawEntries,
-                                          const SharedPtrVector<CViolationBase>& violations)
+                                          const LinqVector<CViolationBase>& violations)
             : m_rawEntries(rawEntries),
               m_violations(violations)
         {
@@ -113,13 +113,13 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Returns list detected violations
-        [[nodiscard]] const SharedPtrVector<CViolationBase>& Violations() const
+        [[nodiscard]] const LinqVector<CViolationBase>& Violations() const
         {
             return m_violations;
         }
 
         /// @brief Returns a aggregate of violations concerning this object and children.
-        [[nodiscard]] virtual const SharedPtrVector<CViolationBase> AggregateViolation() const = 0;
+        [[nodiscard]] virtual const LinqVector<CViolationBase> AggregateViolation() const = 0;
 
         /// @brief Produces debug information on what this object represents.
         [[nodiscard]] const virtual std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const;

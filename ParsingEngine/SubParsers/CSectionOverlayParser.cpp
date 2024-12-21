@@ -54,7 +54,7 @@ std::shared_ptr<CSectionOverlayCommand> CSectionOverlayParser::TryParse(
 {
     auto localIterator = iterator;
     auto parsingStartIteratorPosition = iterator;
-    SharedPtrVector<CViolationBase> violations;
+    LinqVector<CViolationBase> violations;
 
     CExpressionParser expressionParser;
     CFunctionParser functionParser;                                 // Example: FILL(0x00000)
@@ -71,10 +71,10 @@ std::shared_ptr<CSectionOverlayCommand> CSectionOverlayParser::TryParse(
     CRawEntry bracketOpenEntry;
     CRawEntry bracketCloseEntry;
     CRawEntry noCrossRefs;
-    SharedPtrVector<CParsedContentBase> preColonContent;
-    SharedPtrVector<CParsedContentBase> postColonContent;
-    SharedPtrVector<CParsedContentBase> innerContent;
-    SharedPtrVector<CParsedContentBase> endingContent;
+    LinqVector<CParsedContentBase> preColonContent;
+    LinqVector<CParsedContentBase> postColonContent;
+    LinqVector<CParsedContentBase> innerContent;
+    LinqVector<CParsedContentBase> endingContent;
 
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
     {
@@ -445,7 +445,7 @@ std::shared_ptr<CSectionOverlayCommand> CSectionOverlayParser::TryParse(
                             if ((oneEntryAhead.IsPresent()) && (oneEntryAhead.EntryType() == RawEntryType::Word))
                             {
                                 auto resolvedEntryAhead = linkerScriptFile.ResolveRawEntry(oneEntryAhead);
-                                SharedPtrVector<CViolationBase> programHeaderViolations;
+                                LinqVector<CViolationBase> programHeaderViolations;
 
                                 if (CParserHelpers::IsReservedWord(resolvedEntryAhead))
                                 {

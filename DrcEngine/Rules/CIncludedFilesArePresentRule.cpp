@@ -13,9 +13,9 @@ REGISTER_DRC_RULE(CInputFilesAreFoundRule)
 
 using namespace VisualLinkerScript::DrcEngine::Rules;
 
-SharedPtrVector<CViolationBase> CInputFilesAreFoundRule::PerformCheck(const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile)
+LinqVector<CViolationBase> CInputFilesAreFoundRule::PerformCheck(const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile)
 {
-    SharedPtrVector<CViolationBase> violations;
+    LinqVector<CViolationBase> violations;
 
     /*
     const auto foundIncludeCommands = QueryObject<CIncludeCommand>(linkerScriptFile);

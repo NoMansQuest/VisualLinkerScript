@@ -25,7 +25,7 @@ namespace VisualLinkerScript::Models
                                 const CRawEntry& terminatingSemicolon,    
                                 const CAssignmentStatement& assignmentStatement,
                                 const std::vector<CRawEntry>& rawElements, 
-                                const SharedPtrVector<CViolationBase>& violations)
+                                const LinqVector<CViolationBase>& violations)
             : CParsedContentBase(rawElements, violations),
               m_procedureName(procedureName),
               m_openingParenthesis(openingParenthesis),
@@ -72,7 +72,7 @@ namespace VisualLinkerScript::Models
         }
 
         /// @copydoc CParsedContentBase::AggregateViolation
-        [[nodiscard]] virtual const SharedPtrVector<CViolationBase> AggregateViolation() const;
+        [[nodiscard]] virtual const LinqVector<CViolationBase> AggregateViolation() const;
 
         /// @brief Produces debug information on what this object represents.
         [[nodiscard]] const std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;

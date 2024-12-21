@@ -20,8 +20,8 @@ namespace VisualLinkerScript::DrcEngine
     {
     private:
         EDrcViolationCode m_violationCode;
-        SharedPtrVector<CParsedContentBase> m_involvedElements;
-        SharedPtrVector<CDrcViolation> m_subitems;
+        LinqVector<CParsedContentBase> m_involvedElements;
+        LinqVector<CDrcViolation> m_subitems;
         std::string m_violationMessage;
         std::string m_title;
         std::string m_contentSensitivePath;        
@@ -29,11 +29,11 @@ namespace VisualLinkerScript::DrcEngine
 
     public:
         /// @brief Default constructor, reporting the @see {involvedEntries} only
-        explicit CDrcViolation(SharedPtrVector<CParsedContentBase> involvedElements,
+        explicit CDrcViolation(LinqVector<CParsedContentBase> involvedElements,
                                std::string title,
                                std::string violationMessage,
                                std::string contentSensitivePath,
-                               SharedPtrVector<CDrcViolation> subitems,
+                               LinqVector<CDrcViolation> subitems,
                                const std::shared_ptr<CCorrectiveAction>& correctiveAction,
                                const EDrcViolationCode violationCode,
                                const ESeverityCode drcViolationSeverity = ESeverityCode::Error)
@@ -48,10 +48,10 @@ namespace VisualLinkerScript::DrcEngine
         {}
 
         /// @brief Specialized constructor - ContentSensitivePath not taken
-        explicit CDrcViolation(SharedPtrVector<CParsedContentBase> involvedElements,
+        explicit CDrcViolation(LinqVector<CParsedContentBase> involvedElements,
                                std::string title,
                                std::string violationMessage,
-                               SharedPtrVector<CDrcViolation>&& subitems,
+                               LinqVector<CDrcViolation>&& subitems,
                                const std::shared_ptr<CCorrectiveAction>& correctiveAction,
                                const EDrcViolationCode violationCode,
 							   const ESeverityCode drcViolationSeverity = ESeverityCode::Error)
@@ -65,7 +65,7 @@ namespace VisualLinkerScript::DrcEngine
         {}
 
         /// @brief Specialized constructor - ContentSensitivePath and SubItems not taken
-        explicit CDrcViolation(SharedPtrVector<CParsedContentBase> involvedElements,
+        explicit CDrcViolation(LinqVector<CParsedContentBase> involvedElements,
                                std::string title,
                                std::string violationMessage,
                                const std::shared_ptr<CCorrectiveAction>& correctiveAction,
@@ -80,7 +80,7 @@ namespace VisualLinkerScript::DrcEngine
         {}
 
         /// @brief Specialized constructor - ContentSensitivePath, SubItems and CorrectiveAction not taken
-        explicit CDrcViolation(SharedPtrVector<CParsedContentBase> involvedElements,
+        explicit CDrcViolation(LinqVector<CParsedContentBase> involvedElements,
                                std::string title,
                                std::string violationMessage,
                                const EDrcViolationCode violationCode,
@@ -107,7 +107,7 @@ namespace VisualLinkerScript::DrcEngine
 
     public:
         /// @brief Reports back a list of involved elements
-        [[nodiscard]] SharedPtrVector<CParsedContentBase> InvolvedElements() const
+        [[nodiscard]] LinqVector<CParsedContentBase> InvolvedElements() const
         {
             return this->m_involvedElements;
         }
@@ -139,7 +139,7 @@ namespace VisualLinkerScript::DrcEngine
         }
 
         /// @brief Reports back sub items (if any) belonging to this violation
-        [[nodiscard]] SharedPtrVector<CDrcViolation> Subitems() const{
+        [[nodiscard]] LinqVector<CDrcViolation> Subitems() const{
             return this->m_subitems;
         }
 

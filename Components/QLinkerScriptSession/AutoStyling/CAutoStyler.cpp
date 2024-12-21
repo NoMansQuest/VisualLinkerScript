@@ -23,7 +23,7 @@ void ProcessLineFeed(
     const uint32_t absolutePosition, 
     const uint32_t lineNumber, 
     const uint32_t columnIndex, 
-    SharedPtrVector<SEditorActionBase>& actionsToPerform);
+    LinqVector<SEditorActionBase>& actionsToPerform);
 
 CRawEntry PositionDropTest(
     const std::shared_ptr<Models::CLinkerScriptFile>& linkerScriptFile, 
@@ -59,14 +59,14 @@ CRawEntry SucceedingImmediateBracketCloseOnLine(
 
 uint32_t LeadingWhiteSpaces(const std::string& stringToInspect);
 
-SharedPtrVector<SEditorActionBase> CAutoStyler::ProcessKeyboardEvent(
+LinqVector<SEditorActionBase> CAutoStyler::ProcessKeyboardEvent(
 	const std::shared_ptr<Models::CLinkerScriptFile>& linkerScriptFile,
     const QKeyEvent& keyEvent,
 	const uint32_t absolutePosition,
     const uint32_t lineNumber,
     const uint32_t columnIndex)
 {
-    SharedPtrVector<SEditorActionBase> actionsToPerform;
+    LinqVector<SEditorActionBase> actionsToPerform;
     const auto entryContainingCharacter = PositionDropTest(linkerScriptFile, absolutePosition);
 
     switch (keyEvent.key())
@@ -132,7 +132,7 @@ void ProcessLineFeed(
     const uint32_t absolutePosition,
     const uint32_t lineNumber,
     const uint32_t columnIndex,
-    SharedPtrVector<SEditorActionBase>& actionsToPerform)
+    LinqVector<SEditorActionBase>& actionsToPerform)
 {
     // Edge case: In case of no text present, no action is to be undertaken.
     if (linkerScriptFile->Content().empty())

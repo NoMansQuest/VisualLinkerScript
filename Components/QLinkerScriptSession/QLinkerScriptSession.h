@@ -103,7 +103,7 @@ private:
         const std::string& offendingCode);
 
     // Editor Actions
-    void ApplyEditorActions(VisualLinkerScript::SharedPtrVector<VisualLinkerScript::Components::LinkerScriptSession::EditorAction::SEditorActionBase> actions) const;
+    void ApplyEditorActions(VisualLinkerScript::LinqVector<VisualLinkerScript::Components::LinkerScriptSession::EditorAction::SEditorActionBase> actions) const;
     void InitiateDeferredProcessing();
     void DeferredContentProcessingAction();
     void EditorContentUpdated();

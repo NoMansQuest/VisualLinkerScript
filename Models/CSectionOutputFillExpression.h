@@ -18,7 +18,7 @@ namespace VisualLinkerScript::Models
         explicit CSectionOutputFillExpression(const CRawEntry& equalSign,
                                               const CRawEntry& fillExpressionValue,
                                               const std::vector<CRawEntry>& rawElements,
-                                              const SharedPtrVector<CViolationBase>& violations)
+                                              const LinqVector<CViolationBase>& violations)
             : CParsedContentBase(rawElements, violations),
               m_equalSign(equalSign),
               m_fillExpressionValue(fillExpressionValue)
@@ -44,7 +44,7 @@ namespace VisualLinkerScript::Models
         }
 
         /// @copydoc CParsedContentBase::AggregateViolation
-        [[nodiscard]] const SharedPtrVector<CViolationBase> AggregateViolation() const override {
+        [[nodiscard]] const LinqVector<CViolationBase> AggregateViolation() const override {
             return this->Violations();	        
         }
     };

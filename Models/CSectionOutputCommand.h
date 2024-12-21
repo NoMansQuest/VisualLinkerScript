@@ -14,10 +14,10 @@ namespace VisualLinkerScript::Models
     {   
     private:
         CRawEntry m_sectionOutputNameEntry;
-        SharedPtrVector<CParsedContentBase> m_preColonContent;
-        SharedPtrVector<CParsedContentBase> m_postColonContent;
-        SharedPtrVector<CParsedContentBase> m_innerContent;
-        SharedPtrVector<CParsedContentBase> m_endingContent;
+        LinqVector<CParsedContentBase> m_preColonContent;
+        LinqVector<CParsedContentBase> m_postColonContent;
+        LinqVector<CParsedContentBase> m_innerContent;
+        LinqVector<CParsedContentBase> m_endingContent;
         CRawEntry m_colonEntry;        
         CRawEntry m_noCrossRefsEntry;
         CRawEntry m_openingBracketEntry;
@@ -27,16 +27,16 @@ namespace VisualLinkerScript::Models
     public:
         /// @brief Default constructor, accessible to inheritors only
         explicit CSectionOutputCommand(const CRawEntry& sectionOutputNameEntry,
-                                       const SharedPtrVector<CParsedContentBase>& preColonContent,
-                                       const SharedPtrVector<CParsedContentBase>& postColonContent,
+                                       const LinqVector<CParsedContentBase>& preColonContent,
+                                       const LinqVector<CParsedContentBase>& postColonContent,
                                        const CRawEntry& colonEntry,
                                        const CRawEntry& noCrossRefsEntry,
                                        const CRawEntry& openingBracketEntry,
-                                       const SharedPtrVector<CParsedContentBase>& innerContent,
+                                       const LinqVector<CParsedContentBase>& innerContent,
                                        const CRawEntry& closingBracketEntry,
-                                       const SharedPtrVector<CParsedContentBase>& endingContent,
+                                       const LinqVector<CParsedContentBase>& endingContent,
                                        const std::vector<CRawEntry>& rawElements,
-                                       const SharedPtrVector<CViolationBase>& violations)
+                                       const LinqVector<CViolationBase>& violations)
             : CParsedContentBase(rawElements, violations),
               m_sectionOutputNameEntry(sectionOutputNameEntry),
               m_preColonContent(preColonContent),
@@ -63,13 +63,13 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Reports back the content found after the header and before the colon
-        [[nodiscard]] const SharedPtrVector<CParsedContentBase>& PreColonContent() const
+        [[nodiscard]] const LinqVector<CParsedContentBase>& PreColonContent() const
         {
             return this->m_preColonContent;
         }
 
         /// @brief Reports back the content found after the colon and before the opening bracket
-        [[nodiscard]] const SharedPtrVector<CParsedContentBase>& PostColonContent() const
+        [[nodiscard]] const LinqVector<CParsedContentBase>& PostColonContent() const
         {
             return this->m_postColonContent;
         }
@@ -93,19 +93,19 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Reports back the outer content, which includes all parsed content.
-        [[nodiscard]] const SharedPtrVector<CParsedContentBase>& InnerContent() const
+        [[nodiscard]] const LinqVector<CParsedContentBase>& InnerContent() const
         {
             return this->m_innerContent;
         }
 
         /// @brief Reports back the ending content, which can contain AtLma, ToVma, Phdrs and fill-expression
-        [[nodiscard]] const SharedPtrVector<CParsedContentBase>& EndingContent() const
+        [[nodiscard]] const LinqVector<CParsedContentBase>& EndingContent() const
         {
             return this->m_endingContent;
         }
 
         /// @copydoc CParsedContentBase::AggregateViolation
-        [[nodiscard]] const SharedPtrVector<CViolationBase> AggregateViolation() const override;
+        [[nodiscard]] const LinqVector<CViolationBase> AggregateViolation() const override;
 
         /// @brief Produces debug information on what this object represents.
         [[nodiscard]] const std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;

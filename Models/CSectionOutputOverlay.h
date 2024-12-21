@@ -18,32 +18,32 @@ namespace VisualLinkerScript::Models
     {
     private:
         CRawEntry m_sectionOutputNameEntry;
-        SharedPtrVector<CParsedContentBase> m_preColonContent;
-        SharedPtrVector<CParsedContentBase> m_postColonContent;
+        LinqVector<CParsedContentBase> m_preColonContent;
+        LinqVector<CParsedContentBase> m_postColonContent;
         CRawEntry m_colonEntry;
         CRawEntry m_openingBracketEntry;
         CRawEntry m_closingBracketEntry;
         std::shared_ptr<CSectionOutputToVmaRegion> m_toVmaRegion;
         std::shared_ptr<CSectionOutputAtLmaRegion> m_atLmaRegionFunction;
-        SharedPtrVector<CSectionOutputPhdr> m_programHeaders;
+        LinqVector<CSectionOutputPhdr> m_programHeaders;
         std::shared_ptr<CSectionOutputFillExpression> m_fillExpression;
-        SharedPtrVector<CParsedContentBase> m_innerContent;
+        LinqVector<CParsedContentBase> m_innerContent;
 
     public:
         /// @brief Default constructor, accessible to inheritors only
         explicit CSectionOutputOverlay(const CRawEntry& sectionOutputNameEntry,
-                                       const SharedPtrVector<CParsedContentBase>& preColonContent,
-                                       const SharedPtrVector<CParsedContentBase>& postColonContent,
+                                       const LinqVector<CParsedContentBase>& preColonContent,
+                                       const LinqVector<CParsedContentBase>& postColonContent,
                                        const CRawEntry& colonEntry,
                                        const CRawEntry& openingBracketEntry,
                                        const CRawEntry& closingBracketEntry,
                                        const std::shared_ptr<CSectionOutputToVmaRegion>& toVmaRegion,
                                        const std::shared_ptr<CSectionOutputAtLmaRegion>& atLmaRegionFunction,
-                                       const SharedPtrVector<CSectionOutputPhdr>& programHeaders,
+                                       const LinqVector<CSectionOutputPhdr>& programHeaders,
                                        const std::shared_ptr<CSectionOutputFillExpression>& fillExpression,
-                                       const SharedPtrVector<CParsedContentBase>& innerContent,
+                                       const LinqVector<CParsedContentBase>& innerContent,
                                        const std::vector<CRawEntry>& rawElements,
-                                       const SharedPtrVector<CViolationBase>& violations)
+                                       const LinqVector<CViolationBase>& violations)
             : CParsedContentBase(rawElements, violations),
               m_sectionOutputNameEntry(sectionOutputNameEntry),
               m_preColonContent(preColonContent),
@@ -72,13 +72,13 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Reports back the content found after the header and before the colon
-        [[nodiscard]] const SharedPtrVector<CParsedContentBase>& PreColonContent() const
+        [[nodiscard]] const LinqVector<CParsedContentBase>& PreColonContent() const
         {
             return this->m_preColonContent;
         }
 
         /// @brief Reports back the content found after the colon and before the opening bracket
-        [[nodiscard]] const SharedPtrVector<CParsedContentBase>& PostColonContent() const
+        [[nodiscard]] const LinqVector<CParsedContentBase>& PostColonContent() const
         {
             return this->m_postColonContent;
         }
@@ -114,7 +114,7 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Reports back the program headers defined, if present.
-        [[nodiscard]] const SharedPtrVector<CSectionOutputPhdr>& ProgramHeaders() const
+        [[nodiscard]] const LinqVector<CSectionOutputPhdr>& ProgramHeaders() const
         {
             return this->m_programHeaders;
         }
@@ -126,13 +126,13 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Reports back the outer content, which includes all parsed content.
-        [[nodiscard]] const SharedPtrVector<CParsedContentBase>& InnerContent() const
+        [[nodiscard]] const LinqVector<CParsedContentBase>& InnerContent() const
         {
             return this->m_innerContent;
         }
 
         /// @copydoc CParsedContentBase::AggregateViolation
-        [[nodiscard]] const SharedPtrVector<CViolationBase> AggregateViolation() const override;
+        [[nodiscard]] const LinqVector<CViolationBase> AggregateViolation() const override;
 
         /// @brief Produces debug information on what this object represents.
         [[nodiscard]] const std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;

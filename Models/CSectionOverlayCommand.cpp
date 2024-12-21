@@ -7,9 +7,9 @@
 using namespace VisualLinkerScript;
 using namespace VisualLinkerScript::Models;
 
-const SharedPtrVector<CViolationBase> CSectionOverlayCommand::AggregateViolation() const
+const LinqVector<CViolationBase> CSectionOverlayCommand::AggregateViolation() const
 {
-    SharedPtrVector<CViolationBase> allViolations;
+    LinqVector<CViolationBase> allViolations;
 
     for (const auto& childEntry : this->PreColonContent())
     {

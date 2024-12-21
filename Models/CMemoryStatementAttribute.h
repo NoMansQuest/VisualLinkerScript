@@ -37,7 +37,7 @@ namespace VisualLinkerScript::Models
                                            const AttributeDefinitionState& allocatableSection,
                                            const AttributeDefinitionState& initializedSection,
                                            const std::vector<CRawEntry>& rawEntries,
-                                           const SharedPtrVector<CViolationBase>& violations)
+                                           const LinqVector<CViolationBase>& violations)
             : CParsedContentBase(rawEntries, violations),
               m_parenthesisOpen(parenthesisOpen),
               m_parenthesisClose(parenthesisClose),
@@ -121,7 +121,7 @@ namespace VisualLinkerScript::Models
         }
 
         /// @copydoc CParsedContentBase::AggregateViolation
-        [[nodiscard]] const SharedPtrVector<CViolationBase> AggregateViolation() const override {
+        [[nodiscard]] const LinqVector<CViolationBase> AggregateViolation() const override {
             return this->Violations();
         }
     };

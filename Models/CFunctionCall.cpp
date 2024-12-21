@@ -14,9 +14,9 @@ using namespace VisualLinkerScript::Models;
 using namespace VisualLinkerScript::ParsingEngine;
 using namespace VisualLinkerScript::DrcEngine;
 
-const SharedPtrVector<CViolationBase> CFunctionCall::AggregateViolation() const
+const LinqVector<CViolationBase> CFunctionCall::AggregateViolation() const
 {
-    SharedPtrVector<CViolationBase> allViolations;
+    LinqVector<CViolationBase> allViolations;
     for (const auto& childEntry : this->ParsedContent())
     {
         FuseVectors(allViolations, childEntry->AggregateViolation());

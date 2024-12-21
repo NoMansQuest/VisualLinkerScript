@@ -41,8 +41,8 @@ std::shared_ptr<CAssignmentStatement> CAssignmentParser::TryParse(
 {
     auto localIterator = iterator;
     auto parsingStartIteratorPosition = iterator;
-    SharedPtrVector<CParsedContentBase> parsedContent;
-    SharedPtrVector<CViolationBase> violations;
+    LinqVector<CParsedContentBase> parsedContent;
+    LinqVector<CViolationBase> violations;
 
     auto parserState = ParserState::AwaitingLValue;
     auto doNotAdvance = false;

@@ -21,7 +21,7 @@ class QLinkerScriptManager : public QObject
     Q_OBJECT
 
 private:
-    SharedPtrVector<QLinkerScriptSession> m_sessions;
+    LinqVector<QLinkerScriptSession> m_sessions;
     uint32_t m_sessionIdHolder = 10000;
 
 public:

@@ -19,7 +19,7 @@ namespace VisualLinkerScript
 	    /// @brief In charge of Design-Rule-Check operations
         class CDrcManager
         {
-            typedef SharedPtrVector<IDrcRuleBase> DrcRulesType;
+            typedef LinqVector<IDrcRuleBase> DrcRulesType;
             static DrcRulesType m_drcRules;
 
         public:

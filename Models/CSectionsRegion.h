@@ -10,7 +10,7 @@ namespace VisualLinkerScript::Models
     class CSectionsRegion : public CParsedContentBase
     {       
     private:
-        SharedPtrVector<CParsedContentBase> m_entries;
+        LinqVector<CParsedContentBase> m_entries;
         CRawEntry m_openingBracketEntry;
         CRawEntry m_closingBracketEntry;
         CRawEntry m_sectionsHeaderEntry;
@@ -20,9 +20,9 @@ namespace VisualLinkerScript::Models
         explicit CSectionsRegion(const CRawEntry& sectionsHeaderEntry,
                                  const CRawEntry& openingBracketEntry,
                                  const CRawEntry& closingBracketEntry,
-                                 const SharedPtrVector<CParsedContentBase>& entries,
+                                 const LinqVector<CParsedContentBase>& entries,
                                  const std::vector<CRawEntry>& rawElements,
-                                 const SharedPtrVector<CViolationBase>& violations)
+                                 const LinqVector<CViolationBase>& violations)
             : CParsedContentBase(rawElements, violations),
               m_entries(entries),
               m_openingBracketEntry(openingBracketEntry),
@@ -38,7 +38,7 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Reports back the statements
-        [[nodiscard]] const SharedPtrVector<CParsedContentBase>& Entries() const
+        [[nodiscard]] const LinqVector<CParsedContentBase>& Entries() const
         {
             return m_entries;
         }
@@ -62,7 +62,7 @@ namespace VisualLinkerScript::Models
         }
 
         /// @copydoc CParsedContentBase::AggregateViolation
-        [[nodiscard]] const SharedPtrVector<CViolationBase> AggregateViolation() const override;
+        [[nodiscard]] const LinqVector<CViolationBase> AggregateViolation() const override;
 
         /// @brief Produces debug information on what this object represents.
         [[nodiscard]] const std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;

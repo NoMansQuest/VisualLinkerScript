@@ -36,8 +36,8 @@ std::shared_ptr<CFunctionCall> CInputSectionFunctionKeepParser::TryParse(
 {
     auto localIterator = iterator;
     auto parsingStartIteratorPosition = iterator;
-    SharedPtrVector<CParsedContentBase> parsedContent;
-    SharedPtrVector<CViolationBase> violations;
+    LinqVector<CParsedContentBase> parsedContent;
+    LinqVector<CViolationBase> violations;
 
     CInputSectionStatementParser statementParser;
 

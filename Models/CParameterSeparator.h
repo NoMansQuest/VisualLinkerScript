@@ -17,7 +17,7 @@ namespace VisualLinkerScript::Models
         /// @brief Default constructor, accessible to inheritors only
         explicit CParameterSeparator(const CRawEntry& commaEntry,
                                      const std::vector<CRawEntry>& rawElements,
-                                     const SharedPtrVector<CViolationBase>& violations)
+                                     const LinqVector<CViolationBase>& violations)
             : CParsedContentBase(rawElements, violations),
               m_commaEntry(commaEntry)
         {}
@@ -35,7 +35,7 @@ namespace VisualLinkerScript::Models
         }
 
         /// @copydoc CParsedContentBase::AggregateViolation
-        [[nodiscard]] virtual const SharedPtrVector<CViolationBase> AggregateViolation() const {
+        [[nodiscard]] virtual const LinqVector<CViolationBase> AggregateViolation() const {
             return this->Violations();
         }
     };

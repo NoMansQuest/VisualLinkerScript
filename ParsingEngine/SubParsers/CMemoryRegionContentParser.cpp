@@ -49,8 +49,8 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
     auto localIterator = iterator;
     auto parsingStartIteratorPosition = iterator;
 
-    SharedPtrVector<CParsedContentBase> parsedContent;
-    SharedPtrVector<CViolationBase> violations;
+    LinqVector<CParsedContentBase> parsedContent;
+    LinqVector<CViolationBase> violations;
     CExpressionParser expressionParser;
     CMemoryStatementAttributeParser attributeParser;
 

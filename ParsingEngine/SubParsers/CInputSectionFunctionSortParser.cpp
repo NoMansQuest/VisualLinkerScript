@@ -37,8 +37,8 @@ std::shared_ptr<CFunctionCall> CInputSectionFunctionSortParser::TryParse(
 {
     auto localIterator = iterator;
     auto parsingStartIteratorPosition = iterator;
-    SharedPtrVector<CParsedContentBase> parsedContent;
-    SharedPtrVector<CViolationBase> violations;
+    LinqVector<CParsedContentBase> parsedContent;
+    LinqVector<CViolationBase> violations;
 
     auto parserState = ParserState::AwaitingHeader;
     CRawEntry functionNameEntry;

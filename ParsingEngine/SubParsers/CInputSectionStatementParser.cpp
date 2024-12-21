@@ -51,7 +51,7 @@ std::shared_ptr<CInputSectionStatement> CInputSectionStatementParser::TryParse(
 {
     auto localIterator = iterator;
     auto parsingStartIteratorPosition = iterator;
-    SharedPtrVector<CViolationBase> violations;
+    LinqVector<CViolationBase> violations;
 
     CInputSectionFunctionSortParser sortParser;
     CInputSectionFunctionExcludeFileParser excludeFileParser;
@@ -61,7 +61,7 @@ std::shared_ptr<CInputSectionStatement> CInputSectionStatementParser::TryParse(
     std::shared_ptr<CParsedContentBase> fileSelector;
     CRawEntry parenthesisOpen;
     CRawEntry parenthesisClose;
-    SharedPtrVector<CParsedContentBase> parsedContent;
+    LinqVector<CParsedContentBase> parsedContent;
 
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
     {

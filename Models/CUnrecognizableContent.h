@@ -12,7 +12,7 @@ namespace VisualLinkerScript::Models
     public:
         /// @brief Construct an "Unrecognizable" object
         explicit CUnrecognizableContent(const std::vector<CRawEntry>& composingRawElements, 
-                                        const SharedPtrVector<CViolationBase>& violations = {})
+                                        const LinqVector<CViolationBase>& violations = {})
             : CParsedContentBase(composingRawElements, violations)
         {}        
 
@@ -24,7 +24,7 @@ namespace VisualLinkerScript::Models
         }
 
         /// @copydoc CParsedContentBase::AggregateViolation
-        [[nodiscard]] const SharedPtrVector<CViolationBase> AggregateViolation() const override {
+        [[nodiscard]] const LinqVector<CViolationBase> AggregateViolation() const override {
             return this->Violations();
         }
     };

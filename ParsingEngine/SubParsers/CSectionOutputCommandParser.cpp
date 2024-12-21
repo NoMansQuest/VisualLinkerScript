@@ -58,7 +58,7 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
 {
     auto localIterator = iterator;
     auto parsingStartIteratorPosition = iterator;
-    SharedPtrVector<CViolationBase> violations;
+    LinqVector<CViolationBase> violations;
 
     CExpressionParser preColonExpressionParser(false, false, true);
     CFunctionParser functionParser;                             // Example: FILL(0x00000)
@@ -74,10 +74,10 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
     CRawEntry bracketOpenEntry;
     CRawEntry bracketCloseEntry;
     CRawEntry noCrossRefsEntry;
-    SharedPtrVector<CParsedContentBase> preColonContent;
-    SharedPtrVector<CParsedContentBase> postColonContent;
-    SharedPtrVector<CParsedContentBase> innerContent;
-    SharedPtrVector<CParsedContentBase> endingContent;
+    LinqVector<CParsedContentBase> preColonContent;
+    LinqVector<CParsedContentBase> postColonContent;
+    LinqVector<CParsedContentBase> innerContent;
+    LinqVector<CParsedContentBase> endingContent;
 
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
     {
@@ -396,7 +396,7 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
                                 violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
 
                             } else {
-                                SharedPtrVector<CViolationBase> toVmaRegionViolations;
+                                LinqVector<CViolationBase> toVmaRegionViolations;
 
                                 if (CParserHelpers::IsReservedWord(linkerScriptFile.ResolveRawEntry(*oneEntryAhead))) {
                                     auto parserViolation = new CParserViolation({*localIterator, *oneEntryAhead}, EParserViolationCode::VmaRegionNameCannotBeAReservedWord);
@@ -451,7 +451,7 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
                         if ((oneEntryAhead == endOfVectorIterator) || (oneEntryAhead->EntryType() != RawEntryType::Number) || (resolvedContent != "=")) {
                             violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
                         } else {
-                            SharedPtrVector<CViolationBase> programHeaderViolations;
+                            LinqVector<CViolationBase> programHeaderViolations;
                             auto resolvedOneEntryAhead = linkerScriptFile.ResolveRawEntry(*oneEntryAhead);
                             auto fillExpression = std::shared_ptr<CParsedContentBase>(
                                     new CSectionOutputFillExpression(*localIterator,
@@ -502,7 +502,7 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
                             violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
 
                         } else {
-                            SharedPtrVector<CViolationBase> programHeaderViolations;
+                            LinqVector<CViolationBase> programHeaderViolations;
                             auto resolvedOneEntryAhead = linkerScriptFile.ResolveRawEntry(*oneEntryAhead);
 
                             if (CParserHelpers::IsReservedWord(resolvedOneEntryAhead)) {

@@ -30,13 +30,13 @@ namespace VisualLinkerScript::Models
         std::vector<std::string> m_lines;
         bool m_isOnDisk;
 
-        SharedPtrVector<CViolationBase> m_drcViolations;
-        SharedPtrVector<CViolationBase> m_parserViolations;
-        SharedPtrVector<CViolationBase> m_lexerViolations;
+        LinqVector<CViolationBase> m_drcViolations;
+        LinqVector<CViolationBase> m_parserViolations;
+        LinqVector<CViolationBase> m_lexerViolations;
 
         std::unordered_map<uint32_t, CIndentationInfo> m_indentationData;
         std::vector<CRawEntry> m_lexedContent;
-        SharedPtrVector<CParsedContentBase> m_parsedContent;
+        LinqVector<CParsedContentBase> m_parsedContent;
         std::shared_ptr<CRawFile> m_rawFile;
 
 
@@ -102,22 +102,22 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Returns the content of the file
-        [[nodiscard]] const SharedPtrVector<CParsedContentBase>& ParsedContent() const {
+        [[nodiscard]] const LinqVector<CParsedContentBase>& ParsedContent() const {
             return this->m_parsedContent;
         }
 
         /// @brief Reports back lexer violations detected at root level of the linker-script file
-        [[nodiscard]] const SharedPtrVector<CViolationBase>& LexerViolations() const {
+        [[nodiscard]] const LinqVector<CViolationBase>& LexerViolations() const {
             return this->m_lexerViolations;
         }
 
         /// @brief Reports back parser violations detected at root level of the linker-script file
-        [[nodiscard]] const SharedPtrVector<CViolationBase>& ParserViolations() const {
+        [[nodiscard]] const LinqVector<CViolationBase>& ParserViolations() const {
             return this->m_parserViolations;
         }
 
         /// @brief Reports back DRC violations detected at root level of the linker-script file
-        [[nodiscard]] const SharedPtrVector<CViolationBase>& DrcViolations() const {
+        [[nodiscard]] const LinqVector<CViolationBase>& DrcViolations() const {
             return this->m_drcViolations;
         }
 
@@ -162,14 +162,14 @@ namespace VisualLinkerScript::Models
         [[nodiscard]] virtual std::string ToDebugInfo(uint32_t depth) const;
 
         /// @brief Update parsed content
-        void UpdateParsedContent(const SharedPtrVector<CParsedContentBase>& parsedContent, 
-								 const SharedPtrVector<CViolationBase>& parserViolations) {
+        void UpdateParsedContent(const LinqVector<CParsedContentBase>& parsedContent, 
+								 const LinqVector<CViolationBase>& parserViolations) {
             this->m_parsedContent = parsedContent;
             this->m_parserViolations = parserViolations;
         }
 
         /// @brief Updates DRC violations associated with this linker-script file
-        void UpdateDrcViolations(SharedPtrVector<CViolationBase> drcViolations) {
+        void UpdateDrcViolations(LinqVector<CViolationBase> drcViolations) {
             this->m_drcViolations = std::move(drcViolations);
         }
 
@@ -177,7 +177,7 @@ namespace VisualLinkerScript::Models
         void UpdateLexerData(
 				const std::vector<CRawEntry>& lexerContent,
 				const std::unordered_map<uint32_t, CIndentationInfo>& indentationData,
-				const SharedPtrVector<CViolationBase>& lexerViolations)
+				const LinqVector<CViolationBase>& lexerViolations)
     	{
             this->m_lexedContent = lexerContent;
             this->m_indentationData = indentationData;

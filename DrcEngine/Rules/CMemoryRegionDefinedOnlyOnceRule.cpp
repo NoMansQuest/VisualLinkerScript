@@ -15,8 +15,8 @@ using namespace VisualLinkerScript::Models;
 using namespace VisualLinkerScript::QueryEngine;
 using namespace VisualLinkerScript::DrcEngine::Rules;
 
-SharedPtrVector<CViolationBase> CMemoryRegionDefinedOnlyOnceRule::PerformCheck(const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile) {
-    SharedPtrVector<CViolationBase> violations;
+LinqVector<CViolationBase> CMemoryRegionDefinedOnlyOnceRule::PerformCheck(const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile) {
+    LinqVector<CViolationBase> violations;
 
    auto foundSectionsRegion = QueryObject<CMemoryRegion>(linkerScriptFile, nullptr, true);
 
@@ -24,7 +24,7 @@ SharedPtrVector<CViolationBase> CMemoryRegionDefinedOnlyOnceRule::PerformCheck(c
    {
        auto errorMessage = "'SECTIONS' region could only be defined once in linker-script file.";
        auto violation = std::shared_ptr<CDrcViolation>(new CDrcViolation(
-           SharedPtrVector<CParsedContentBase>{
+           LinqVector<CParsedContentBase>{
 	           std::dynamic_pointer_cast<CParsedContentBase>(sectionsRegionResult->Result())
            },
            this->DrcRuleTitle(),

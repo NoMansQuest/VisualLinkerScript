@@ -41,8 +41,8 @@ std::shared_ptr<CAssignmentProcedureStatement> CAssignmentProcedureParser::TryPa
     auto parsingStartIteratorPosition = iterator;
     auto parserState = ParserState::AwaitingProcedureName;
 
-    SharedPtrVector<CParsedContentBase> parsedContent;
-    SharedPtrVector<CViolationBase> violations;
+    LinqVector<CParsedContentBase> parsedContent;
+    LinqVector<CViolationBase> violations;
 
     CRawEntry procedureNameEntry;
     CRawEntry parenthesisOpenEntry;

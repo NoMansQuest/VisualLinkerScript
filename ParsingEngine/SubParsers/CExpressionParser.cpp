@@ -59,8 +59,8 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
 {
     auto localIterator = iterator;
     auto parsingStartIteratorPosition = iterator;
-    SharedPtrVector<CParsedContentBase> parsedContent;
-    SharedPtrVector<CViolationBase> violations;
+    LinqVector<CParsedContentBase> parsedContent;
+    LinqVector<CViolationBase> violations;
 
     auto parserState = ParserState::AwaitingContent;
     auto ternaryState = TernaryState::AwaitingThenExpression;

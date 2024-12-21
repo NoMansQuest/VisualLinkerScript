@@ -14,14 +14,14 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
     /// @brief Represents an 'Overlay' object found in "SECTION"
     class COverlayStatement : public CSectionDefinitionBase
     {       
-        DECLARE_READONLY_PROPERTY(SharedPtrVector<COverlaySectionStatement>, OverlaySections)
+        DECLARE_READONLY_PROPERTY(LinqVector<COverlaySectionStatement>, OverlaySections)
         DECLARE_READONLY_PROPERTY(std::string, LoadRegion)
 
         /// @brief Default constructor.    	
         COverlayStatement(
 				const CFillExpressionButton& fillExpression,
-				SharedPtrVector<CProgramHeaderButton> programHeaders,
-				SharedPtrVector<COverlaySectionStatement> childSections,
+				LinqVector<CProgramHeaderButton> programHeaders,
+				LinqVector<COverlaySectionStatement> childSections,
 	            const uint32_t inModelStartPosition,
 	            const uint32_t inModelLength,
 	            const std::string& startAddress,

@@ -15,9 +15,9 @@ using namespace VisualLinkerScript::DrcEngine::Rules;
 using namespace VisualLinkerScript::QueryEngine;
 using namespace VisualLinkerScript::Models;
 
-SharedPtrVector<CViolationBase> CEntryIsDefinedRule::PerformCheck(const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile)
+LinqVector<CViolationBase> CEntryIsDefinedRule::PerformCheck(const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile)
 {
-    SharedPtrVector<CViolationBase> violations;
+    LinqVector<CViolationBase> violations;
 
 	/*
     auto foundDirectives = QueryObject<CFunctionCall>(

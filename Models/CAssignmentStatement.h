@@ -14,7 +14,7 @@ namespace VisualLinkerScript::Models
     private:
         CRawEntry m_assignmentOperator;
         CRawEntry m_lValueEntry;
-        SharedPtrVector<CParsedContentBase> m_parsedContent;
+        LinqVector<CParsedContentBase> m_parsedContent;
         CRawEntry m_semicolonEntry;
 
     public:
@@ -22,9 +22,9 @@ namespace VisualLinkerScript::Models
         explicit CAssignmentStatement(const CRawEntry& lValueEntry,
                                       const CRawEntry& assignmentOperator,
                                       const CRawEntry& semicolonEntry,
-                                      const SharedPtrVector<CParsedContentBase>& parsedContent,
+                                      const LinqVector<CParsedContentBase>& parsedContent,
                                       const std::vector<CRawEntry>& rawElements, 
-                                      const SharedPtrVector<CViolationBase>& violations)
+                                      const LinqVector<CViolationBase>& violations)
             : CParsedContentBase(rawElements, violations),
               m_assignmentOperator(assignmentOperator),
               m_lValueEntry(lValueEntry),
@@ -51,7 +51,7 @@ namespace VisualLinkerScript::Models
         }
         
         /// @brief Gets the "RValueComposition"
-        [[nodiscard]] const SharedPtrVector<CParsedContentBase>& ParsedContent() const
+        [[nodiscard]] const LinqVector<CParsedContentBase>& ParsedContent() const
         {
             return this->m_parsedContent;
         }
@@ -63,7 +63,7 @@ namespace VisualLinkerScript::Models
         }
 
         /// @copydoc CParsedContentBase::AggregateViolation
-        [[nodiscard]] const SharedPtrVector<CViolationBase> AggregateViolation() const override;
+        [[nodiscard]] const LinqVector<CViolationBase> AggregateViolation() const override;
 
         /// @brief Produces debug information on what this object represents.
         [[nodiscard]] const std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;

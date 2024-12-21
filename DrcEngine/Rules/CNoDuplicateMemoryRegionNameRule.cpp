@@ -15,14 +15,14 @@ using namespace VisualLinkerScript::DrcEngine::Rules;
 using namespace VisualLinkerScript::Models;
 using namespace VisualLinkerScript::QueryEngine;
 
-SharedPtrVector<CViolationBase> CNoDuplicateMemoryRegionNameRule::PerformCheck(const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile) {
-    SharedPtrVector<CViolationBase> violations;
+LinqVector<CViolationBase> CNoDuplicateMemoryRegionNameRule::PerformCheck(const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile) {
+    LinqVector<CViolationBase> violations;
 
     const auto foundMemoryStatements = QueryObject<CMemoryStatement>(linkerScriptFile, nullptr, true);
 
     for (const auto memoryStatementToInspect: foundMemoryStatements) {
         // Check if any other file has the name described
-       SharedPtrVector<CMemoryStatement> foundDuplicates { memoryStatementToInspect->Result() };
+       LinqVector<CMemoryStatement> foundDuplicates { memoryStatementToInspect->Result() };
        auto inspectStatementName = memoryStatementToInspect->LinkerScriptFile()->ResolveRawEntry(memoryStatementToInspect->Result()->NameEntry());
 
        for (const auto memoryStatementSecondLoop: foundMemoryStatements) {
@@ -42,14 +42,14 @@ SharedPtrVector<CViolationBase> CNoDuplicateMemoryRegionNameRule::PerformCheck(c
         }
 
         auto errorMessage = StringFormat("Memory statement names are expected to be unique, but multiple memory statements found named '{}'", inspectStatementName);        
-        SharedPtrVector<CDrcViolation> subitems;
+        LinqVector<CDrcViolation> subitems;
 
         // NOTE: We skip index '0', as that's the 'memoryStatementToInspect' itself.
         for (auto index = 1; index < foundDuplicates.size(); index++)
         {
             auto subItemStatement = foundDuplicates[index];
             std::string subItemErrorMessage = "Memory statement with identical name defined here";
-            SharedPtrVector<CParsedContentBase> subItemStatements {
+            LinqVector<CParsedContentBase> subItemStatements {
                 std::dynamic_pointer_cast<CParsedContentBase>(subItemStatement)
             };
 
@@ -58,13 +58,13 @@ SharedPtrVector<CViolationBase> CNoDuplicateMemoryRegionNameRule::PerformCheck(c
 	            this->DrcRuleTitle(),
 	            subItemErrorMessage,
 	            subItemStatement->ObjectPath(),
-	            SharedPtrVector<CDrcViolation>(),
+	            LinqVector<CDrcViolation>(),
 	            std::shared_ptr<CCorrectiveAction>(nullptr),
 	            EDrcViolationCode::DuplicateNameForMemoryStatement,
                 ESeverityCode::Error));
         }
 
-        SharedPtrVector<CParsedContentBase> memoryStatementsToInspect {
+        LinqVector<CParsedContentBase> memoryStatementsToInspect {
             std::dynamic_pointer_cast<CParsedContentBase>(memoryStatementToInspect->Result())
         };
 

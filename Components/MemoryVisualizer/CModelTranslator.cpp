@@ -14,7 +14,7 @@ std::shared_ptr<CFloorPlan> CModelTranslator::TranslateToFloorPlan(const CLinker
 	QFontMetrics fontMetrics(font);
 	*/
 
-    auto translatedFloorPlan = std::make_shared<CFloorPlan>(SharedPtrVector<CMemoryRegionBlock>());
+    auto translatedFloorPlan = std::make_shared<CFloorPlan>(LinqVector<CMemoryRegionBlock>());
 
     /*
     for (auto lsFile : linkerScriptFiles) {

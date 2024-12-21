@@ -12,9 +12,9 @@ using namespace VisualLinkerScript::Models;
 using namespace VisualLinkerScript::ParsingEngine;
 using namespace VisualLinkerScript::DrcEngine;
 
-const SharedPtrVector<CViolationBase> CExpression::AggregateViolation() const
+const LinqVector<CViolationBase> CExpression::AggregateViolation() const
 {
-    SharedPtrVector<CViolationBase> allViolations;
+    LinqVector<CViolationBase> allViolations;
     for (const auto& childEntry : this->Composition())
     {
         FuseVectors(allViolations, childEntry->AggregateViolation());

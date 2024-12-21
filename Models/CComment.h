@@ -14,12 +14,12 @@ namespace VisualLinkerScript::Models
         /// @param composingRawElements A list of object this element is comprised of.
         /// @param violations Violations list.
         explicit CComment(const std::vector<CRawEntry>& composingRawElements,                              
-                          const SharedPtrVector<CViolationBase>& violations)
+                          const LinqVector<CViolationBase>& violations)
             : CParsedContentBase(composingRawElements, violations)
         {}
 
         /// @copydoc CParsedContentBase::AggregateViolation
-        [[nodiscard]] const SharedPtrVector<CViolationBase> AggregateViolation() const override
+        [[nodiscard]] const LinqVector<CViolationBase> AggregateViolation() const override
         {
             return this->Violations();
         }

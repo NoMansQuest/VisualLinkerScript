@@ -32,7 +32,7 @@ namespace
     void ProcessAttribute(CRawEntry rawEntry,
                           bool negatingSymbolDetected,
                           AttributeDefinitionState& sectionToAssign,
-                          SharedPtrVector<CViolationBase>& violations,
+                          LinqVector<CViolationBase>& violations,
                           EParserViolationCode violationCode)
     {
         if (sectionToAssign != AttributeDefinitionState::Undefined)
@@ -52,7 +52,7 @@ namespace
                               AttributeDefinitionState& allocatableSection,
                               AttributeDefinitionState& executableSection,
                               AttributeDefinitionState& initializedSection,
-                              SharedPtrVector<CViolationBase>&  detectedViolations) noexcept
+                              LinqVector<CViolationBase>&  detectedViolations) noexcept
     {
         auto inversion = false;
 
@@ -132,8 +132,8 @@ std::shared_ptr<CMemoryStatementAttribute> CMemoryStatementAttributeParser::TryP
 {
     auto localIterator = iterator;
     auto parsingStartIteratorPosition = iterator;
-    SharedPtrVector<CParsedContentBase> parsedContent;
-    SharedPtrVector<CViolationBase> violations;
+    LinqVector<CParsedContentBase> parsedContent;
+    LinqVector<CViolationBase> violations;
 
     if (iterator->EntryType() != RawEntryType::ParenthesisOpen)
     {

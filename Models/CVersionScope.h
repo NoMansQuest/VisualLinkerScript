@@ -16,7 +16,7 @@ namespace VisualLinkerScript::Models
         CRawEntry m_openingBracketEntry;
         CRawEntry m_closingBracketEntry;
         CRawEntry m_semicolonDelimiterEntry;
-        SharedPtrVector<CParsedContentBase> m_parsedContent;
+        LinqVector<CParsedContentBase> m_parsedContent;
 
     public:
         /// @brief Default constructor, accessible to inheritors only
@@ -25,9 +25,9 @@ namespace VisualLinkerScript::Models
                                const CRawEntry& openingBracketEntry,
                                const CRawEntry& closingBracketEntry,
                                const CRawEntry& semicolonDelimiterEntry,
-                               const SharedPtrVector<CParsedContentBase>& parsedContent,
+                               const LinqVector<CParsedContentBase>& parsedContent,
                                const std::vector<CRawEntry>& rawElements,
-                               const SharedPtrVector<CViolationBase>& violations)
+                               const LinqVector<CViolationBase>& violations)
             : CParsedContentBase(rawElements, violations),
               m_scopeNameEntry(scopeNameEntry),
               m_inheritingScopeEntry(inheritingScopeEntry),
@@ -74,7 +74,7 @@ namespace VisualLinkerScript::Models
         }
 
         /// @copydoc CParsedContentBase::AggregateViolation
-        [[nodiscard]] virtual const SharedPtrVector<CViolationBase> AggregateViolation() const;
+        [[nodiscard]] virtual const LinqVector<CViolationBase> AggregateViolation() const;
 
         /// @brief Produces debug information on what this object represents.
         [[nodiscard]] const std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;

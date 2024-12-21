@@ -10,7 +10,7 @@ namespace VisualLinkerScript::Models
     class CVersionsRegion : public CParsedContentBase
     {  
     private:
-        SharedPtrVector<CParsedContentBase> m_versionNodes;
+        LinqVector<CParsedContentBase> m_versionNodes;
         CRawEntry m_openingBracketEntry;
         CRawEntry m_closingBracketEntry;
         CRawEntry m_versionHeaderEntry;
@@ -20,9 +20,9 @@ namespace VisualLinkerScript::Models
         explicit CVersionsRegion(const CRawEntry& versionHeaderEntry,
                                  const CRawEntry& openingBracketEntry,
                                  const CRawEntry& closingBracketEntry,
-                                 const SharedPtrVector<CParsedContentBase>& versionNodes,
+                                 const LinqVector<CParsedContentBase>& versionNodes,
                                  const std::vector<CRawEntry>& rawElements,
-                                 const SharedPtrVector<CViolationBase>& violations)
+                                 const LinqVector<CViolationBase>& violations)
             : CParsedContentBase(rawElements, violations),
               m_versionNodes(versionNodes),
               m_openingBracketEntry(openingBracketEntry),
@@ -38,7 +38,7 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Reports back PHDR statements
-        const SharedPtrVector<CParsedContentBase>& Nodes()
+        const LinqVector<CParsedContentBase>& Nodes()
         {
             return m_versionNodes;
         }
@@ -62,7 +62,7 @@ namespace VisualLinkerScript::Models
         }
 
         /// @copydoc CParsedContentBase::AggregateViolation
-        [[nodiscard]] const SharedPtrVector<CViolationBase> AggregateViolation() const override {
+        [[nodiscard]] const LinqVector<CViolationBase> AggregateViolation() const override {
             return this->Violations();
         }
     };

@@ -69,7 +69,7 @@ namespace VisualLinkerScript
 
     /// @brief Type widely used across the code-base
     template <typename T>
-    class SharedPtrVector : public std::vector<std::shared_ptr<T>>
+    class LinqVector : public std::vector<std::shared_ptr<T>>
 	{
     public:
         using BaseType = std::vector<std::shared_ptr<T>>;        
@@ -77,10 +77,10 @@ namespace VisualLinkerScript
 
         // Support for C# LINQ 'OfType' call
         template <typename U>
-        SharedPtrVector<U> OfType() const
+        LinqVector<U> OfType() const
     	{
             static_assert(std::is_base_of_v<T, U>, "U must be derived from T");
-            SharedPtrVector<U> result;
+            LinqVector<U> result;
             for (const auto& obj : *this) 
             {
                 if (auto casted = std::dynamic_pointer_cast<U>(obj)) 
@@ -99,7 +99,7 @@ namespace VisualLinkerScript
             static_assert(std::is_same<ResultType, std::shared_ptr<std::decay_t<typename ResultType::element_type>>>::value,
                 "Select function must return std::shared_ptr<U> for some U");
 
-            SharedPtrVector<typename ResultType::element_type> result;
+            LinqVector<typename ResultType::element_type> result;
             for (const auto& obj : *this) 
             {
                 result.push_back(func(obj));
@@ -109,8 +109,8 @@ namespace VisualLinkerScript
 
         // Support for C# LINQ 'Where' call
         template <typename Func>
-        SharedPtrVector<T> Where(Func&& predicate) const {
-            SharedPtrVector<T> result;
+        LinqVector<T> Where(Func&& predicate) const {
+            LinqVector<T> result;
             for (const auto& obj : *this) {
                 if (predicate(obj)) {
                     result.push_back(obj);
@@ -133,7 +133,7 @@ namespace VisualLinkerScript
             using InnerVector = typename std::invoke_result<Func, std::shared_ptr<T>>::type;
             using InnerType = typename InnerVector::value_type::element_type;
 
-            SharedPtrVector<InnerType> result;
+            LinqVector<InnerType> result;
             for (const auto& obj : *this) {
                 InnerVector inner = func(obj); // Apply the transformation
                 result.insert(result.end(), inner.begin(), inner.end());
@@ -150,11 +150,11 @@ namespace VisualLinkerScript
 
     /// @brief Performs a 'Linq.Where()'
     template <typename T>
-    SharedPtrVector<T> LinqWhere(
-            const SharedPtrVector<T> source,
+    LinqVector<T> LinqWhere(
+            const LinqVector<T> source,
             std::function<bool(std::shared_ptr<T> element)> filterInput)
     {
-        SharedPtrVector<T> returnList;
+        LinqVector<T> returnList;
         for (const auto entry: source)
         {
              if (filterInput(entry))
@@ -168,7 +168,7 @@ namespace VisualLinkerScript
     /// @brief Performs a 'Linq.FirstOrDefault()'
     template <typename T>
     std::shared_ptr<T> LinqFirstOrDefault(
-            const SharedPtrVector<T> source,
+            const LinqVector<T> source,
             std::function<bool(std::shared_ptr<T> element)> filterInput)
     {
         for (const auto entry: source)
@@ -183,10 +183,10 @@ namespace VisualLinkerScript
 
     /// @brief Performs a 'Linq.OfType<>'
     template <typename TBase, typename TReturn>
-    SharedPtrVector<TReturn> LinqOfType(
-            SharedPtrVector<TBase> source)
+    LinqVector<TReturn> LinqOfType(
+            LinqVector<TBase> source)
     {
-        SharedPtrVector<TReturn> returnList;
+        LinqVector<TReturn> returnList;
         for (const auto entry: source)
         {
             auto converted = std::dynamic_pointer_cast<TReturn>(entry);
@@ -201,7 +201,7 @@ namespace VisualLinkerScript
     /// @brief Performs a Linq.Select.
     template <typename TBase, typename TReturn>
     std::vector<TReturn> LinqSelect(
-            const SharedPtrVector<TBase> source,
+            const LinqVector<TBase> source,
             std::function<TReturn(std::shared_ptr<TBase> element)> transformFunction)
     {
         std::vector<TReturn> returnList;

@@ -8,9 +8,9 @@
 using namespace VisualLinkerScript;
 using namespace VisualLinkerScript::Models;
 
-const SharedPtrVector<CViolationBase> CMemoryStatement::AggregateViolation() const
+const LinqVector<CViolationBase> CMemoryStatement::AggregateViolation() const
 {
-    SharedPtrVector<CViolationBase> allViolations;
+    LinqVector<CViolationBase> allViolations;
     FuseVectors(allViolations, this->Attributes()->AggregateViolation());
     FuseVectors(allViolations, this->OriginAssignment()->AggregateViolation());
     FuseVectors(allViolations, this->LengthAssignment()->AggregateViolation());

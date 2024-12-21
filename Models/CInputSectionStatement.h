@@ -14,16 +14,16 @@ namespace VisualLinkerScript::Models
         std::shared_ptr<CParsedContentBase> m_fileSelector;
         CRawEntry m_openingParenthesis;
         CRawEntry m_closingParenthesis;
-        SharedPtrVector<CParsedContentBase> m_parsedContent;        
+        LinqVector<CParsedContentBase> m_parsedContent;        
 
     public:
         /// @brief Default constructor, including desired sections
         explicit CInputSectionStatement(const std::shared_ptr<CParsedContentBase>& fileSelector,
                                         const CRawEntry& openingParenthesis,
                                         const CRawEntry& closingParenthesis,
-                                        const SharedPtrVector<CParsedContentBase>& parsedContent,
+                                        const LinqVector<CParsedContentBase>& parsedContent,
                                         const std::vector<CRawEntry>& rawElements,
-                                        const SharedPtrVector<CViolationBase>& violations)
+                                        const LinqVector<CViolationBase>& violations)
             : CParsedContentBase(rawElements, violations),
               m_fileSelector(fileSelector),
               m_openingParenthesis(openingParenthesis),
@@ -39,7 +39,7 @@ namespace VisualLinkerScript::Models
         }
 
         /// @brief Reports back the list of parameters
-        [[nodiscard]] const SharedPtrVector<CParsedContentBase>& ParsedContent() const
+        [[nodiscard]] const LinqVector<CParsedContentBase>& ParsedContent() const
         {
             return this->m_parsedContent;
         }
@@ -71,7 +71,7 @@ namespace VisualLinkerScript::Models
         }
 
         /// @copydoc CParsedContentBase::AggregateViolation
-        [[nodiscard]] const SharedPtrVector<CViolationBase> AggregateViolation() const override;
+        [[nodiscard]] const LinqVector<CViolationBase> AggregateViolation() const override;
 
         /// @brief Produces debug information on what this object represents.
         [[nodiscard]] const std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;

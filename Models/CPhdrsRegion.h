@@ -23,7 +23,7 @@ namespace VisualLinkerScript::Models
                               const CRawEntry& closingBracketEntry,
                               const std::vector<std::shared_ptr<CParsedContentBase>>& phdrsStatements,
                               const std::vector<CRawEntry>& rawElements,
-                              const SharedPtrVector<CViolationBase>& violations)
+                              const LinqVector<CViolationBase>& violations)
             : CParsedContentBase(rawElements, violations),
               m_statements(phdrsStatements),
               m_openingBracketEntry(openingBracketEntry),
@@ -63,7 +63,7 @@ namespace VisualLinkerScript::Models
         }
 
         /// @copydoc CParsedContentBase::AggregateViolation
-        [[nodiscard]] virtual const SharedPtrVector<CViolationBase> AggregateViolation() const;
+        [[nodiscard]] virtual const LinqVector<CViolationBase> AggregateViolation() const;
 
         /// @brief Produces debug information on what this object represents.
         [[nodiscard]] const std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;

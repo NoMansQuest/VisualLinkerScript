@@ -8,9 +8,9 @@
 using namespace VisualLinkerScript;
 using namespace VisualLinkerScript::Models;
 
-const SharedPtrVector<CViolationBase> CProcedureCall::AggregateViolation() const
+const LinqVector<CViolationBase> CProcedureCall::AggregateViolation() const
 {
-    SharedPtrVector<CViolationBase> allViolations;
+    LinqVector<CViolationBase> allViolations;
     allViolations.insert(allViolations.end(), this->AssignmentStatement().Violations().cbegin(), this->AssignmentStatement().Violations().cend());
     allViolations.insert(allViolations.end(), this->Violations().begin(), this->Violations().end());
     return allViolations; // Note: R-Value optimization ensures this vector isn't unnecessarily copied.

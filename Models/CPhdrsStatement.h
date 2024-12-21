@@ -27,7 +27,7 @@ namespace VisualLinkerScript::Models
                                  const std::shared_ptr<CParsedContentBase>& flagsFunction,
                                  const CRawEntry& semicolonEntry,
                                  const std::vector<CRawEntry>& rawElements, 
-                                 const SharedPtrVector<CViolationBase>& violations)
+                                 const LinqVector<CViolationBase>& violations)
             : CParsedContentBase(rawElements, violations),
               m_headerNameEntry(headerNameEntry),
               m_headerTypeEntry(headerTypeEntry),
@@ -74,7 +74,7 @@ namespace VisualLinkerScript::Models
         }
 
         /// @copydoc CParsedContentBase::AggregateViolation
-        [[nodiscard]] virtual const SharedPtrVector<CViolationBase> AggregateViolation() const;
+        [[nodiscard]] virtual const LinqVector<CViolationBase> AggregateViolation() const;
 
         /// @brief Produces debug information on what this object represents.
         [[nodiscard]] const std::string ToDebugInfo(uint32_t depth, const CLinkerScriptFile& linkerScriptFile) const override;

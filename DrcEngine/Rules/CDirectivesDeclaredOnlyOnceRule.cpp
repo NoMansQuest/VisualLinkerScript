@@ -17,8 +17,8 @@ using namespace VisualLinkerScript::DrcEngine::Rules;
 using namespace VisualLinkerScript::QueryEngine;
 using namespace VisualLinkerScript::Models;
 
-SharedPtrVector<CViolationBase> CDirectivesDeclaredOnlyOnceRule::PerformCheck(const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile) {
-    SharedPtrVector<CViolationBase> violations;
+LinqVector<CViolationBase> CDirectivesDeclaredOnlyOnceRule::PerformCheck(const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile) {
+    LinqVector<CViolationBase> violations;
 
     std::vector<std::string> directives {
         "ENTRY",
@@ -39,7 +39,7 @@ SharedPtrVector<CViolationBase> CDirectivesDeclaredOnlyOnceRule::PerformCheck(co
             foundDirectives.size() > 1) 
         {
              violations.emplace_back(std::static_pointer_cast<CViolationBase>(std::shared_ptr<CDrcViolation>(new CDrcViolation(
-                 SharedPtrVector<CParsedContentBase>(),
+                 LinqVector<CParsedContentBase>(),
 	             this->DrcRuleTitle(),
 	             "Directive is defined more than once.",
 	             EDrcViolationCode::EntryDirectiveDefinedMoreThanOnce,

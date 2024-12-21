@@ -14,8 +14,8 @@ using namespace VisualLinkerScript::DrcEngine::Rules;
 using namespace VisualLinkerScript::Models;
 using namespace VisualLinkerScript::QueryEngine;
 
-SharedPtrVector<CViolationBase> CSymbolsDefinedInAdvanceRule::PerformCheck(const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile) {
-    SharedPtrVector<CViolationBase> violations;
+LinqVector<CViolationBase> CSymbolsDefinedInAdvanceRule::PerformCheck(const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile) {
+    LinqVector<CViolationBase> violations;
 
     /* TO BE IMPLEMENTED IN THE FUTURE */
     return violations;

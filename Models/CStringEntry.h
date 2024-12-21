@@ -17,7 +17,7 @@ namespace VisualLinkerScript::Models
         /// @brief Default constructor, accessible to inheritors only
         explicit CStringEntry(const CRawEntry& stringEntry,
                               const std::vector<CRawEntry>& rawElements,
-                              const SharedPtrVector<CViolationBase>& violations)
+                              const LinqVector<CViolationBase>& violations)
             : CParsedContentBase(rawElements, violations),
               m_stringEntry(stringEntry)
         {}
@@ -35,7 +35,7 @@ namespace VisualLinkerScript::Models
         }
 
         /// @copydoc CParsedContentBase::AggregateViolation
-        [[nodiscard]] const SharedPtrVector<CViolationBase> AggregateViolation() const override {
+        [[nodiscard]] const LinqVector<CViolationBase> AggregateViolation() const override {
             return this->Violations();
         }
     };

@@ -18,7 +18,7 @@ namespace VisualLinkerScript::DrcEngine::Rules
         }
 
         /// @copydoc
-        SharedPtrVector<CViolationBase> PerformCheck(const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile) override;
+        LinqVector<CViolationBase> PerformCheck(const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile) override;
 
         /// @brief Default destructor
         ~CInputFilesAreFoundRule() override = default;

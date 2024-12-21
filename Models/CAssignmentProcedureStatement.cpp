@@ -8,9 +8,9 @@
 using namespace VisualLinkerScript;
 using namespace VisualLinkerScript::Models;
 
-const SharedPtrVector<CViolationBase> CAssignmentProcedureStatement::AggregateViolation() const
+const LinqVector<CViolationBase> CAssignmentProcedureStatement::AggregateViolation() const
 {
-    SharedPtrVector<CViolationBase> allViolations;
+    LinqVector<CViolationBase> allViolations;
 
     if (this->AssignmentStatement() != nullptr)
     {
