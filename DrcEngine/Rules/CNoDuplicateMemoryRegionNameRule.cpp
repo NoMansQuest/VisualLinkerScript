@@ -1,39 +1,39 @@
 #include "CNoDuplicateMemoryRegionNameRule.h"
 #include "../../Models/CMemoryStatement.h"
-#include "../../QueryEngine/QueryCenter.h"
 #include "../../Helpers.h"
 #include "../DrcCommons.h"
 #include "../CDrcManager.h"
 #include "DrcEngine/CCorrectiveAction.h"
 #include "DrcEngine/CDrcViolation.h"
 #include "DrcEngine/EDrcViolationCode.h"
+#include "Models/CLinkerScriptFile.h"
 
 REGISTER_DRC_RULE(CNoDuplicateMemoryRegionNameRule)
 
 using namespace VisualLinkerScript;
 using namespace VisualLinkerScript::DrcEngine::Rules;
 using namespace VisualLinkerScript::Models;
-using namespace VisualLinkerScript::QueryEngine;
-
-LinqVector<CViolationBase> CNoDuplicateMemoryRegionNameRule::PerformCheck(const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile) {
+LinqVector<CViolationBase> CNoDuplicateMemoryRegionNameRule::PerformCheck(const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile)
+{
     LinqVector<CViolationBase> violations;
 
-    const auto foundMemoryStatements = QueryObject<CMemoryStatement>(linkerScriptFile, nullptr, true);
+    /*
+    const auto foundMemoryStatements = linkerScriptFile->ParsedContent().OfType<CMemoryStatement>();
 
     for (const auto memoryStatementToInspect: foundMemoryStatements) {
         // Check if any other file has the name described
-       LinqVector<CMemoryStatement> foundDuplicates { memoryStatementToInspect->Result() };
-       auto inspectStatementName = memoryStatementToInspect->LinkerScriptFile()->ResolveRawEntry(memoryStatementToInspect->Result()->NameEntry());
+       LinqVector<CMemoryStatement> foundDuplicates { memoryStatementToInspect };
+       auto inspectStatementName = linkerScriptFile->ResolveRawEntry(memoryStatementToInspect->NameEntry());
 
        for (const auto memoryStatementSecondLoop: foundMemoryStatements) {
-            if (memoryStatementSecondLoop->Result()->StartPosition() == memoryStatementToInspect->Result()->StartPosition()) {
+            if (memoryStatementSecondLoop->StartPosition() == memoryStatementToInspect->StartPosition()) {
                 continue;
             }
 
-            auto secondLoopStatementName = memoryStatementSecondLoop->LinkerScriptFile()->ResolveRawEntry(memoryStatementSecondLoop->Result()->NameEntry());
+            auto secondLoopStatementName = linkerScriptFile->ResolveRawEntry(memoryStatementSecondLoop->NameEntry());
 
             if (StringEquals(inspectStatementName,secondLoopStatementName)){
-                foundDuplicates.emplace_back(memoryStatementSecondLoop->Result());
+                foundDuplicates.emplace_back(memoryStatementSecondLoop);
             }
         }
 
@@ -65,14 +65,14 @@ LinqVector<CViolationBase> CNoDuplicateMemoryRegionNameRule::PerformCheck(const 
         }
 
         LinqVector<CParsedContentBase> memoryStatementsToInspect {
-            std::dynamic_pointer_cast<CParsedContentBase>(memoryStatementToInspect->Result())
+            std::dynamic_pointer_cast<CParsedContentBase>(memoryStatementToInspect)
         };
 
         auto violation = std::shared_ptr<CDrcViolation>(new CDrcViolation(
             memoryStatementsToInspect,
             this->DrcRuleTitle(),
             errorMessage,
-            memoryStatementToInspect->Result()->ObjectPath(),
+            memoryStatementToInspect->ObjectPath(),
             std::move(subitems),
             std::shared_ptr<CCorrectiveAction>(nullptr),
             EDrcViolationCode::DuplicateNameForMemoryStatement,
@@ -80,7 +80,7 @@ LinqVector<CViolationBase> CNoDuplicateMemoryRegionNameRule::PerformCheck(const 
 
         violations.emplace_back(std::static_pointer_cast<CViolationBase>(violation));
     }
-
+    */
     return violations;
 }
 

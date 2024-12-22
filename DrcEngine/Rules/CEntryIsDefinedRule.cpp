@@ -4,7 +4,6 @@
 #include "../../Models/CLinkerScriptFile.h"
 #include "../../Models/CFunctionCall.h"
 #include "../../Helpers.h"
-#include "../../QueryEngine/QueryCenter.h"
 #include "DrcEngine/CDrcViolation.h"
 #include "DrcEngine/EDrcViolationCode.h"
 
@@ -12,7 +11,6 @@ REGISTER_DRC_RULE(CEntryIsDefinedRule)
 
 using namespace VisualLinkerScript;
 using namespace VisualLinkerScript::DrcEngine::Rules;
-using namespace VisualLinkerScript::QueryEngine;
 using namespace VisualLinkerScript::Models;
 
 LinqVector<CViolationBase> CEntryIsDefinedRule::PerformCheck(const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile)

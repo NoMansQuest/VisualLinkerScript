@@ -745,6 +745,7 @@ std::shared_ptr<CFloorPlan> QLinkerScriptSession::GenerateFloorplan() const
             .SelectMany([](const std::shared_ptr<CMemoryRegion>& memRegion) { return memRegion->Statements(); })
             .OfType<CMemoryStatement>();
 
+
     }
 
     return std::make_shared<CFloorPlan>(translatedMemoryRegions);

@@ -5,7 +5,6 @@
 #include "../../Models/CLinkerScriptFile.h"
 #include "../../Models/CIncludeCommand.h"
 #include "../../Helpers.h"
-#include "../../QueryEngine/QueryCenter.h"
 #include "DrcEngine/CDrcViolation.h"
 #include "DrcEngine/EDrcViolationCode.h"
 
@@ -18,7 +17,7 @@ LinqVector<CViolationBase> CInputFilesAreFoundRule::PerformCheck(const std::shar
     LinqVector<CViolationBase> violations;
 
     /*
-    const auto foundIncludeCommands = QueryObject<CIncludeCommand>(linkerScriptFile);
+    const auto foundIncludeCommands = linkerScriptFile->ParsedContent().OfType<CIncludeCommand>();
     for (const auto includeCommandResult: foundIncludeCommands) {
         // Check if file exists        
         auto targetFile = includeCommandResult->LinkerScriptFile()->ResolveParsedContent(includeCommandResult->Result()->IncludeFileEntry());

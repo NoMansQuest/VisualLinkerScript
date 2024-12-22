@@ -91,17 +91,37 @@ namespace VisualLinkerScript
             return result;
         }
 
-        // Support for C# LINQ 'Select' call
+        // Support for C# LINQ 'Select' call (returning LinqVector of objects)
         template <typename Func>
         auto Select(Func&& func) const
-    	{
-            using ResultType = typename std::invoke_result<Func, std::shared_ptr<T>>::type;            
-            static_assert(std::is_same<ResultType, std::shared_ptr<std::decay_t<typename ResultType::element_type>>>::value,
-                "Select function must return std::shared_ptr<U> for some U");
-
+            -> typename std::enable_if<
+	            std::is_invocable_r<
+		            std::shared_ptr<typename std::invoke_result<Func, std::shared_ptr<T>>::type::element_type>,
+		            Func,
+		            std::shared_ptr<T>
+	            >::value,
+	            LinqVector<typename std::invoke_result<Func, std::shared_ptr<T>>::type::element_type>
+	            >::type
+        {
+            using ResultType = typename std::invoke_result<Func, std::shared_ptr<T>>::type;
             LinqVector<typename ResultType::element_type> result;
-            for (const auto& obj : *this) 
-            {
+
+            for (const auto& obj : *this) {
+                result.push_back(func(obj));
+            }
+            return result;
+        }
+
+        // Support for C# LINQ 'Select' call (returning std::vector of primitives)
+        template <typename Func>
+        auto Select(Func&& func) const
+            -> typename std::enable_if<
+	            std::is_invocable_r<bool, Func, std::shared_ptr<T>>::value,
+	            std::vector<bool>
+            >::type
+        {
+            std::vector<bool> result;
+            for (const auto& obj : *this) {
                 result.push_back(func(obj));
             }
             return result;
@@ -140,76 +160,42 @@ namespace VisualLinkerScript
             }
             return result;
         }
+
+        // Support for C# LINQ 'First' function
+        std::shared_ptr<T> First() const
+    	{
+            if (this->empty()) {
+                throw std::out_of_range("LinqPtrVector is empty.");
+            }
+            return this->front();
+        }
+
+        // Support for C# LINQ 'FirstOrDefault' function with optional default value
+        std::shared_ptr<T> FirstOrDefault(std::shared_ptr<T> defaultValue = nullptr) const
+    	{
+            return this->empty() ? defaultValue : this->front();
+        }
+
+        // Support for C# LINQ 'Single' function
+        std::shared_ptr<T> Single() const
+    	{
+            if (this->size() != 1) {
+                throw std::logic_error("SharedPtrVector does not contain exactly one element.");
+            }
+            return this->front();
+        }
+
+        // Support for C# LINQ 'SingleOrDefault' function with optional default value
+        std::shared_ptr<T> SingleOrDefault(std::shared_ptr<T> defaultValue = nullptr) const
+    	{
+            return (this->size() == 1) ? this->front() : defaultValue;
+        }
     };
 
     /// @brief Merges 'vectorToAdd' into 'mainVector'
     template <typename T>
     void FuseVectors(std::vector<T>& mainVector, const std::vector<T>& vectorToAdd) {
         mainVector.insert(mainVector.end(), vectorToAdd.cbegin(), vectorToAdd.cend());
-    }
-
-    /// @brief Performs a 'Linq.Where()'
-    template <typename T>
-    LinqVector<T> LinqWhere(
-            const LinqVector<T> source,
-            std::function<bool(std::shared_ptr<T> element)> filterInput)
-    {
-        LinqVector<T> returnList;
-        for (const auto entry: source)
-        {
-             if (filterInput(entry))
-             {
-                 returnList.emplace_back(entry);
-             }
-        }
-        return returnList;
-    }
-
-    /// @brief Performs a 'Linq.FirstOrDefault()'
-    template <typename T>
-    std::shared_ptr<T> LinqFirstOrDefault(
-            const LinqVector<T> source,
-            std::function<bool(std::shared_ptr<T> element)> filterInput)
-    {
-        for (const auto entry: source)
-        {
-            if (filterInput(entry))
-            {
-                return entry;
-            }
-        }
-        return nullptr;
-    }
-
-    /// @brief Performs a 'Linq.OfType<>'
-    template <typename TBase, typename TReturn>
-    LinqVector<TReturn> LinqOfType(
-            LinqVector<TBase> source)
-    {
-        LinqVector<TReturn> returnList;
-        for (const auto entry: source)
-        {
-            auto converted = std::dynamic_pointer_cast<TReturn>(entry);
-            if (converted != nullptr)
-            {
-                returnList.emplace_back(converted);
-            }
-        }
-        return returnList;
-    }
-
-    /// @brief Performs a Linq.Select.
-    template <typename TBase, typename TReturn>
-    std::vector<TReturn> LinqSelect(
-            const LinqVector<TBase> source,
-            std::function<TReturn(std::shared_ptr<TBase> element)> transformFunction)
-    {
-        std::vector<TReturn> returnList;
-        for (const auto entry: source)
-        {
-            returnList.emplace_back(transformFunction(entry));
-        }
-        return returnList;
     }
 
     /// @brief Compares strings

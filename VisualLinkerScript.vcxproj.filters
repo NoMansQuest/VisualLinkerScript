@@ -628,9 +628,6 @@
     <ClInclude Include="Models\CLinkerScriptFile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="QueryEngine\CLinq.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Messaging\UserInitiated\CLoadMappingFileRequest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -994,9 +991,6 @@
     <QtMoc Include="Components\MemoryVisualizer\QMemoryVisualizer.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <ClInclude Include="QueryEngine\QueryCenter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Components\QScintilla\scintilla\src\RESearch.h">
       <Filter>Header Files</Filter>
     </ClInclude>

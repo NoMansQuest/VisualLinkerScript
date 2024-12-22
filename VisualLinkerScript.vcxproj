@@ -447,7 +447,6 @@
     <ClInclude Include="ParsingEngine\CLexerException.h" />
     <ClInclude Include="Models\CParsedContentBase.h" />
     <ClInclude Include="Models\CLinkerScriptFile.h" />
-    <ClInclude Include="QueryEngine\CLinq.h" />
     <ClInclude Include="Messaging\UserInitiated\CLoadMappingFileRequest.h" />
     <ClInclude Include="DrcEngine\Rules\CLocationCounterCannotGoBackwardsRule.h" />
     <ClInclude Include="ParsingEngine\CLinkerScriptParser.h" />
@@ -577,7 +576,6 @@
     <QtMoc Include="Components\MemoryVisualizer\QMemoryVisualizer.h">
     </QtMoc>
     <QtMoc Include="Components\QSearchPopup\QSearchPopup.h" />
-    <ClInclude Include="QueryEngine\QueryCenter.h" />
     <ClInclude Include="Components\QScintilla\scintilla\src\RESearch.h" />
     <ClInclude Include="Models\Raw\RawEntryType.h" />
     <ClInclude Include="Components\QScintilla\scintilla\src\RunStyles.h" />

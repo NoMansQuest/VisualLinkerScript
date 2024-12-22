@@ -9,7 +9,6 @@
 #include "../../Models/CLinkerScriptFile.h"
 #include "../../Models/CIncludeCommand.h"
 #include "../../Helpers.h"
-#include "../../QueryEngine/QueryCenter.h"
 #include "DrcEngine/CDrcViolation.h"
 #include "DrcEngine/EDrcViolationCode.h"
 
@@ -17,7 +16,6 @@ REGISTER_DRC_RULE(CIncludeRecursionGuard)
 
 using namespace VisualLinkerScript;
 using namespace VisualLinkerScript::DrcEngine::Rules;
-using namespace VisualLinkerScript::QueryEngine;
 using namespace VisualLinkerScript::Models;
 
 #if defined(COMPILING_FOR_WINDOWS)
@@ -39,9 +37,10 @@ bool RecursiveCheck(const LinqVector<CLinkerScriptFile>& scope,
 LinqVector<CViolationBase> CIncludeRecursionGuard::PerformCheck(const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile)
 {
     LinqVector<CViolationBase> violations;
-    auto foundIncludeCommands = QueryObject<CIncludeCommand>(linkerScriptFile);
 
     /*
+    auto foundIncludeCommands = linkerScriptFile->ParsedContent().OfType<CIncludeCommand>();
+
     for (auto file: linkerScriptFiles) {
         // Recursion list
         std::vector<std::string> visitedFile { file->AbsoluteFilePath() };
@@ -115,20 +114,20 @@ LinqVector<CViolationBase> CIncludeRecursionGuard::PerformCheck(const std::share
     return violations;
 }
 
-
+/*
 bool RecursiveCheck(const LinqVector<CLinkerScriptFile>& scope,
                     const std::shared_ptr<CLinkerScriptFile>& fileToCheck,
                     std::shared_ptr<CLinkerScriptFile> subjectOfInterest,
                     RecursionMap& recursionMap)
 {
-	const auto includeCommands  = QueryObject<CIncludeCommand>(fileToCheck);
+	const auto includeCommands  = fileToCheck->ParsedContent().OfType<CIncludeCommand>();
 
     for (const auto includeCommandResult: includeCommands) 
     {
-	    if (auto fileToInclude = fileToCheck->ResolveRawEntry(includeCommandResult->Result()->IncludeFileEntry());
+	    if (auto fileToInclude = fileToCheck->ResolveRawEntry(includeCommandResult->IncludeFileEntry());
             StringEquals(fileToInclude, subjectOfInterest->FileName(),IGNORE_CASE_WHEN_COMPARING_PATHS)) 
         {
-            recursionMap.insert_or_assign(fileToCheck, includeCommandResult->Result());
+            recursionMap.insert_or_assign(fileToCheck, includeCommandResult);
             return true;
         }
 
@@ -144,10 +143,10 @@ bool RecursiveCheck(const LinqVector<CLinkerScriptFile>& scope,
             continue;
         }
 
-        recursionMap.insert_or_assign(fileToCheck, includeCommandResult->Result());
+        recursionMap.insert_or_assign(fileToCheck, includeCommandResult);
         return true;
     }
 
     return false;
 }
-
+*/
