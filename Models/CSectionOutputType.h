@@ -17,14 +17,22 @@ namespace VisualLinkerScript::Models
     public:
         /// @brief Default constructor, accessible to inheritors only
         explicit CSectionOutputType(const CRawEntry& typeEntry,
-                                    const CRawEntry& openingParenthesis,
-                                    const CRawEntry& closingParenthesis,
                                     const std::vector<CRawEntry>& rawElements,
                                     const LinqVector<CViolationBase>& violations)
             : CParsedContentBase(rawElements, violations),
-              m_typeEntry(typeEntry),
-              m_openingParenthesis(openingParenthesis),
-              m_closingParenthesis(closingParenthesis)
+              m_typeEntry(typeEntry)
+        {}
+
+        /// @brief Default constructor, accessible to inheritors only
+        explicit CSectionOutputType(const CRawEntry& typeEntry,
+            const CRawEntry& openingParenthesis,
+            const CRawEntry& closingParenthesis,
+            const std::vector<CRawEntry>& rawElements,
+            const LinqVector<CViolationBase>& violations)
+            : CParsedContentBase(rawElements, violations),
+            m_typeEntry(typeEntry),
+            m_openingParenthesis(openingParenthesis),
+            m_closingParenthesis(closingParenthesis)
         {}
 
     public:
@@ -40,17 +48,18 @@ namespace VisualLinkerScript::Models
             return this->m_typeEntry;
         }
 
-        /// @brief Reports back the opening parenthesis
+        /// @brief Reports back the opening parenthesis (if present)
         const CRawEntry& OpeningParenthesis()
         {
             return this->m_openingParenthesis;
         }
 
-        /// @brief Reports back the closing parenthesis
+        /// @brief Reports back the closing parenthesis (if present)
         const CRawEntry& ClosingParenthesis()
         {
             return this->m_closingParenthesis;
         }
+
 
         /// @copydoc CParsedContentBase::AggregateViolation
         [[nodiscard]] const LinqVector<CViolationBase> AggregateViolation() const override {

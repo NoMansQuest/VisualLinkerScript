@@ -19,13 +19,13 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
         DECLARE_STANDARD_PROPERTY(SMetricRectangleF, TitleArea)
         DECLARE_STANDARD_PROPERTY(SMetricRectangleF, HeaderArea)
 	    DECLARE_STANDARD_PROPERTY(CFillExpressionButton, FillExpression)
-        DECLARE_STANDARD_PROPERTY(LinqVector<CProgramHeaderButton>, ProgramHeaders)
+        DECLARE_STANDARD_PROPERTY(std::shared_ptr<LinqVector<CProgramHeaderButton>>, ProgramHeaders)
 
         /// @brief Default constructor
         CSectionDefinitionBase(
 	            std::string title,
 	            CFillExpressionButton fillExpression, 
-	            const LinqVector<CProgramHeaderButton>& programHeaders,
+	            const std::shared_ptr<LinqVector<CProgramHeaderButton>>& programHeaders,
 				const uint32_t inModelStartPosition,
 				const uint32_t inModelLength,
 	            const std::string& startAddress,

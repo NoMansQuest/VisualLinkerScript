@@ -4,6 +4,8 @@
 #include <cstdint>
 
 #include "CMemoryStatement.h"
+#include "CMemoryStatementAttribute.h"
+#include "CExpression.h"
 
 using namespace VisualLinkerScript;
 using namespace VisualLinkerScript::Models;

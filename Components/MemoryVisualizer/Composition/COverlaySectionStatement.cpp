@@ -35,9 +35,9 @@ SMetricSizeF COverlaySectionStatement::CalculateBodySize(const CGraphicContext& 
 	auto topMemoryLabel = Graphical::GetMetricFromPixels(graphicContext.DpiX(), Graphical::GetTextWidthInPixels(this->Title(), graphicContext.FontMetricsSmall()));
 	double minimumWidth = topMemoryLabel * 1.5;
 
-	if (!this->ProgramHeaders().empty())
+	if (!this->ProgramHeaders()->empty())
 	{
-		for (const auto& programHeader : this->ProgramHeaders())
+		for (const auto& programHeader : *this->ProgramHeaders())
 		{
 			minimumWidth += programHeader->CalculateBodySize(graphicContext).CX();
 		}
@@ -51,11 +51,11 @@ SMetricSizeF COverlaySectionStatement::CalculateBodySize(const CGraphicContext& 
 	double calculatedHeight = minimumSectionStatementBoxHeight;
 	double maxContentWidth = 0;
 
-	if (!this->m_ChildContent.empty())
+	if (!this->m_ChildContent->empty())
 	{
 		calculatedHeight -= minimumContentAreaHeight + marginSectionOutputFromTop;
 
-		for (const auto& child : this->m_ChildContent)
+		for (const auto& child : *this->m_ChildContent)
 		{
 			auto childDesiredSize = child->CalculateBodySize(graphicContext);
 			maxContentWidth = std::max(maxContentWidth, childDesiredSize.CX());
@@ -89,9 +89,9 @@ void COverlaySectionStatement::SetBodyPosition(const SMetricRectangleF& allocate
 	currentYHolder += headerBoxHeight + marginSectionOutputFromTop;	
 	auto sectionStatementTop = allocatedArea.Top();
 
-	if (!this->m_ChildContent.empty())
+	if (!this->m_ChildContent->empty())
 	{
-		for (const auto& child : this->m_ChildContent)
+		for (const auto& child : *this->m_ChildContent)
 		{
 			auto childDesiredSize = child->CalculateBodySize(graphicContext);
 			auto childAllocatedArea = SMetricRectangleF(
@@ -114,7 +114,7 @@ void COverlaySectionStatement::SetBodyPosition(const SMetricRectangleF& allocate
 	auto programHeaderTopYPos = allocatedArea.Top() + programHeaderMarginTop;
 	auto programHeaderRightXPos = allocatedArea.Right() - programHeaderMarginRight;
 
-	for (auto programHeader : this->ProgramHeaders())
+	for (const auto& programHeader : *this->ProgramHeaders())
 	{
 		auto calculatedProgramHeader = programHeader->CalculateBodySize(graphicContext);
 		auto programHeaderAllocatedArea = SMetricRectangleF(
@@ -162,13 +162,13 @@ void COverlaySectionStatement::Paint(const CGraphicContext& graphicContext, QPai
 		this->FillExpression().Paint(graphicContext, painter);
 	}
 
-	for (auto progHeader : this->ProgramHeaders())
+	for (auto progHeader : *this->ProgramHeaders())
 	{
 		progHeader->Paint(graphicContext, painter);
 	}
 
 	// Draw all children
-	for (const auto& childContent : this->ChildContent())
+	for (const auto& childContent : *this->ChildContent())
 	{
 		childContent->Paint(graphicContext, painter);
 	}

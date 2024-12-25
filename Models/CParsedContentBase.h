@@ -58,8 +58,7 @@ namespace VisualLinkerScript::Models
 
     /// @brief Linker-Script content based object.
     class CParsedContentBase
-    {
-    private:
+    {    
         std::vector<CRawEntry> m_rawEntries;
         LinqVector<CViolationBase> m_violations;
         std::shared_ptr<CLinkerScriptFile> m_parentLinkerScriptFile;
@@ -109,7 +108,13 @@ namespace VisualLinkerScript::Models
         /// @brief Returns list detected violations
         [[nodiscard]] uint32_t StartPosition() const
         {
-            return this->m_rawEntries[0].StartPosition();
+            return this->m_rawEntries.front().StartPosition();
+        }
+
+        /// @brief Returns list detected violations
+        [[nodiscard]] uint32_t EndPosition() const
+        {
+            return this->m_rawEntries.back().Length() + this->m_rawEntries.back().StartPosition() - 1;
         }
 
         /// @brief Returns list detected violations

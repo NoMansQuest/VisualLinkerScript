@@ -11,14 +11,14 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
     /// @brief Represents a Memory-Statement.
     class CSectionStatement : public CSectionDefinitionBase
     {
-        DECLARE_READONLY_PROPERTY(LinqVector<CSectionOutput>, ChildOutputs)
+        DECLARE_READONLY_PROPERTY(std::shared_ptr<LinqVector<CSectionOutput>>, ChildOutputs)
 
         /// @brief Default constructor
         CSectionStatement(
 				const std::string& title, 
 				const CFillExpressionButton& fillExpression, 
-	            const LinqVector<CProgramHeaderButton>& programHeaders, 
-	            const LinqVector<CSectionOutput>& childOutputs, 
+	            const std::shared_ptr<LinqVector<CProgramHeaderButton>>& programHeaders,
+	            const std::shared_ptr<LinqVector<CSectionOutput>>& childOutputs,
 				const uint32_t inModelStartPosition,
 				const uint32_t inModelLength,
 				const std::string& startAddress,

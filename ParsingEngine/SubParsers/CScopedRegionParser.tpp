@@ -48,6 +48,8 @@ std::shared_ptr<TProducingOutputType> CScopedRegionParser<TParserType, TContentP
 
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
     {
+        auto resolvedIteratorText = linkerScriptFile.ResolveRawEntry(*localIterator);
+
         switch (localIterator->EntryType())
         {
             case RawEntryType::Comment:
@@ -97,7 +99,7 @@ std::shared_ptr<TProducingOutputType> CScopedRegionParser<TParserType, TContentP
                 else if (parserState == ParserState::AwaitingHeader)
                 {
                     auto stringContent = linkerScriptFile.ResolveRawEntry(*localIterator);
-                    if (stringContent != this->GetHeaderName())
+                    if (!StringEquals(stringContent,this->GetHeaderName(), true))
                     {
                         // Full abort in this case
                         return nullptr;
@@ -131,7 +133,7 @@ std::shared_ptr<TProducingOutputType> CScopedRegionParser<TParserType, TContentP
                 }
                 else if (parserState == ParserState::AwaitingOpeningBracket)
                 {
-                    localIterator--;
+                    --localIterator;
                     parserState = ParserState::ParsingComplete;
                 }
                 break;
@@ -147,7 +149,7 @@ std::shared_ptr<TProducingOutputType> CScopedRegionParser<TParserType, TContentP
                 else if ((parserState == ParserState::AwaitingClosingBracket) ||
                          (parserState == ParserState::AwaitingHeader))
                 {
-                    localIterator--; // This entry here has to be parsed by someone else.
+                    --localIterator; // This entry here has to be parsed by someone else.
                     parserState = ParserState::ParsingComplete;
                 }
                 break;
@@ -163,6 +165,8 @@ std::shared_ptr<TProducingOutputType> CScopedRegionParser<TParserType, TContentP
                 break;
             }
 
+        	case RawEntryType::Comma:
+        	case RawEntryType::Colon:
             case RawEntryType::Unknown:
             {
                 switch (parserState)
@@ -202,7 +206,7 @@ std::shared_ptr<TProducingOutputType> CScopedRegionParser<TParserType, TContentP
     }
 
     std::vector<CRawEntry> rawEntries;
-    std::copy(parsingStartIteratorPosition, localIterator, rawEntries.begin());
+    std::copy(parsingStartIteratorPosition, localIterator + 1, std::back_inserter(rawEntries));
 
     iterator = localIterator;
 

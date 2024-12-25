@@ -86,6 +86,7 @@ namespace VisualLinkerScript::ParsingEngine
         OnlyOneSectionOutputTypeIsAllowed,
         SectionOutputNameCannotBeAReservedKeyword,
         MissingRegionForAtLmaDefinition,
+        MissingRegionForAtVmaDefinition,
         WasExpectingANumericValueForFillExpression,
         WasExpectingProgramHeaderName,
         ProgramHeaderNameCannotBeAReservedWord,

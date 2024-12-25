@@ -45,9 +45,9 @@ SMetricSizeF COverlayStatement::CalculateBodySize(const CGraphicContext& graphic
 
 	double minimumVanillaWidth = leftSizeTotal + rightSizeTotal + (topMemoryLabel * 1.5);
 
-	if (!this->ProgramHeaders().empty())
+	if (!this->ProgramHeaders()->empty())
 	{
-		for (const auto& programHeader : this->ProgramHeaders())
+		for (const auto& programHeader : *this->ProgramHeaders())
 		{
 			minimumVanillaWidth += programHeader->CalculateBodySize(graphicContext).CX();
 		}
@@ -61,11 +61,11 @@ SMetricSizeF COverlayStatement::CalculateBodySize(const CGraphicContext& graphic
 	double maxContentHeight = 0;	
 	double finalContentWidthWithMargin = 0;
 
-	if (!this->m_OverlaySections.empty())
+	if (!this->m_OverlaySections->empty())
 	{
 		double maxContentWidth = 0;
 
-		for (const auto& overlaySection : this->m_OverlaySections)
+		for (const auto& overlaySection : *this->m_OverlaySections)
 		{
 			auto childDesiredSize = overlaySection->CalculateBodySize(graphicContext);
 			maxContentWidth = std::max(maxContentWidth, childDesiredSize.CX()); // 1mm spacing			
@@ -73,8 +73,8 @@ SMetricSizeF COverlayStatement::CalculateBodySize(const CGraphicContext& graphic
 		}
 
 		finalContentWidthWithMargin = 
-			(maxContentWidth * static_cast<double>(this->m_OverlaySections.size())) + 
-			((static_cast<double>(this->m_OverlaySections.size()) - 1.0) * marginSectionOutputSpacing);
+			(maxContentWidth * static_cast<double>(this->m_OverlaySections->size())) + 
+			((static_cast<double>(this->m_OverlaySections->size()) - 1.0) * marginSectionOutputSpacing);
 	}	
 
 	return SMetricSizeF(
@@ -101,13 +101,13 @@ void COverlayStatement::SetBodyPosition(const SMetricRectangleF& allocatedArea, 
 	currentYHolder += headerBoxHeight + marginSectionOutputFromTop;
 	auto sectionStatementTop = allocatedArea.Top();
 
-	if (!this->m_OverlaySections.empty())
+	if (!this->m_OverlaySections->empty())
 	{
-		double childStatementWidth = allocatedArea.Width() / this->m_OverlaySections.size();
+		double childStatementWidth = allocatedArea.Width() / this->m_OverlaySections->size();
 		double maxDetectedHeight = 0;
 		double currentXHolder = allocatedArea.Left() + marginSectionOutputLeft;
 
-		for (const auto& overlaySection : this->m_OverlaySections)
+		for (const auto& overlaySection : *this->m_OverlaySections)
 		{
 			auto childDesiredSize = overlaySection->CalculateBodySize(graphicContext);
 			maxDetectedHeight = std::max(maxDetectedHeight, childDesiredSize.CY());
@@ -128,7 +128,7 @@ void COverlayStatement::SetBodyPosition(const SMetricRectangleF& allocatedArea, 
 	auto programHeaderTopYPos = allocatedArea.Top() + programHeaderMarginTop;
 	auto programHeaderRightXPos = allocatedArea.Right() - programHeaderMarginRight;
 
-	for (const auto& programHeader : this->ProgramHeaders())
+	for (const auto& programHeader : *this->ProgramHeaders())
 	{
 		auto calculatedProgramHeader = programHeader->CalculateBodySize(graphicContext);
 		programHeader->SetBodyPosition(
@@ -182,13 +182,13 @@ void COverlayStatement::Paint(const CGraphicContext& graphicContext, QPainter& p
 		this->FillExpression().Paint(graphicContext, painter);
 	}
 
-	for (auto progHeader : this->ProgramHeaders())
+	for (auto progHeader : *this->ProgramHeaders())
 	{
 		progHeader->Paint(graphicContext, painter);
 	}
 
 	// Draw all children
-	for (const auto& childOutput : this->OverlaySections())
+	for (const auto& childOutput : *this->OverlaySections())
 	{
 		childOutput->Paint(graphicContext, painter);
 	}

@@ -31,9 +31,21 @@ void CMemoryRegionBlock::Paint(const CGraphicContext& graphicContext, QPainter& 
 	this->PaintAddressedRegion(graphicContext, painter, borderPen, fillBrush);
 
 	// Draw all children
-	for (const auto& childContent : this->ChildContent())
+	if (!this->ChildContent()->empty())
 	{
-		childContent->Paint(graphicContext, painter);
+		for (const auto& childContent : *this->ChildContent())
+		{
+			childContent->Paint(graphicContext, painter);
+		}		
+	}
+	else
+	{
+		painter.setPen(QColor::fromRgba(Colors::MemoryRegionClickForeColor));
+		painter.setFont(graphicContext.FontLarge());
+		painter.drawText(
+			this->BodyArea().ConvertToQRect(graphicContext),
+			Qt::AlignHCenter | Qt::AlignVCenter,
+			QString::fromStdString("No sections found."));
 	}
 }
 
@@ -45,16 +57,20 @@ SMetricSizeF CMemoryRegionBlock::CalculateBodySize(const CGraphicContext& graphi
 	double calculatedWidth = 0;
 	double calculatedHeight = graphicContext.FontMetricsLarge().height() + textToMemoryRegionVSpaceMm + (memoryRegionBorderMm * 2); // Initial height
 
-	if (!this->m_ChildContent.empty())
+	if (!this->m_ChildContent->empty())
 	{
 		calculatedHeight += distanceFromFirstSectionToRegionTopInMmm;
 
-		for (const auto& child : this->m_ChildContent)
+		for (const auto& child : *this->m_ChildContent)
 		{
 			auto childDesiredSize = child->CalculateBodySize(graphicContext);
 			calculatedWidth = std::max(calculatedWidth, childDesiredSize.CX());
 			calculatedHeight += childDesiredSize.CY() + sectionToSectionVSpaceMm;
 		}
+	}
+	else
+	{
+		calculatedHeight += emptyMemoryRegionHeight;
 	}
 
 	return { std::max(topMemoryLabelAndSize, calculatedWidth), calculatedHeight };
@@ -66,8 +82,7 @@ void CMemoryRegionBlock::SetBodyPosition(const SMetricRectangleF& allocatedArea,
 
 	auto topMemoryLabelRect =
 		SMetricRectangleF(graphicContext.FontMetricsLarge().size(Qt::TextSingleLine, QString::fromStdString(this->m_Title)), graphicContext.DpiX(), graphicContext.DpiY())
-		.Offset(allocatedArea.Left(), allocatedArea.Top());
-		
+		.Offset(allocatedArea.Left(), allocatedArea.Top());		
 
 	auto topMemorySizeRect =
 		SMetricRectangleF(graphicContext.FontMetricsLarge().size(Qt::TextSingleLine,QString::fromStdString(this->m_MemorySizeText)), graphicContext.DpiX(), graphicContext.DpiY())
@@ -80,22 +95,29 @@ void CMemoryRegionBlock::SetBodyPosition(const SMetricRectangleF& allocatedArea,
 	currentYHolder += Graphical::GetMetricFromPixels(graphicContext.DpiY(), fontMetricsLargeHeightInPixels) + textToMemoryRegionVSpaceMm;
 	double memoryRegionTop = currentYHolder;
 
-	if (!this->m_ChildContent.empty())
+	if (!this->m_ChildContent->empty())
 	{
 		currentYHolder += distanceFromFirstSectionToRegionTopInMmm;
-		for (const auto& child : this->m_ChildContent)
+		for (const auto& child : *this->m_ChildContent)
 		{
 			auto childDesiredSize = child->CalculateBodySize(graphicContext);
 			auto childAllocatedArea = SMetricRectangleF(allocatedArea.Left(), currentYHolder, allocatedArea.Width(), childDesiredSize.CY());
 			child->SetBodyPosition(childAllocatedArea, graphicContext);
 			currentYHolder += childDesiredSize.CY() + sectionToSectionVSpaceMm;
 		}
+
+		double memoryRegionBottom = currentYHolder;
+		double memoryAreaHeight = memoryRegionBottom - memoryRegionTop;
+
+		this->SetBodyArea(SMetricRectangleF(allocatedArea.Left(), memoryRegionTop, allocatedArea.Width(), memoryAreaHeight));
 	}
+	else
+	{
+		double memoryRegionBottom = currentYHolder + emptyMemoryRegionHeight;
+		double memoryAreaHeight = emptyMemoryRegionHeight;
 
-	double memoryRegionBottom = currentYHolder;
-	double memoryAreaHeight = memoryRegionBottom - memoryRegionTop;
-
-	this->SetBodyArea(SMetricRectangleF(allocatedArea.Left(), memoryRegionTop, allocatedArea.Width(), memoryAreaHeight));
+		this->SetBodyArea(SMetricRectangleF(allocatedArea.Left(), memoryRegionTop, allocatedArea.Width(), memoryAreaHeight));
+	}
 
 	// Set size-marker and address marker
 	CAddressedRegion::SetBodyPosition(this->BodyArea(), graphicContext);

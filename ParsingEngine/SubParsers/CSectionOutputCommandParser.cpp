@@ -79,6 +79,15 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
     LinqVector<CParsedContentBase> innerContent;
     LinqVector<CParsedContentBase> endingContent;
 
+    std::vector<std::string> validTypes = {
+    "NOLOAD",
+    "DSECT",
+    "COPY",
+    "INFO",
+    "OVERLAY",
+    };
+
+
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
     {
         // Edge case coverage, where we read end-of-file prematurely.
@@ -223,15 +232,28 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
 
                     case ParserState::AwaitingColon:
                     {
-                        // Here the job is a bit difficult. We need to extract
-                        // 1 - [Optional] The 'startAddress' in form of an expression
-                        // 2 - [Optional] The 'Block(align)' function call
-                        // 3 - [Optional] The section-output type (e.g. (NOLOAD))
-                        auto parsedContent =  std::dynamic_pointer_cast<CParsedContentBase>(preColonExpressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator));
-                        if (parsedContent == nullptr) {
-                            violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
-                        } else {
-                            preColonContent.emplace_back(parsedContent);
+                        auto matchResult = MatchSequenceAnyContent(linkerScriptFile, localIterator, endOfVectorIterator, validTypes);
+                        if (matchResult.Successful())
+                        {
+                            auto matchedElements = matchResult.MatchedElements();
+                            auto sectionOutputType = std::shared_ptr<CParsedContentBase>(new CSectionOutputType(*localIterator, { *localIterator }, {}));
+                            preColonContent.emplace_back(sectionOutputType);
+                            localIterator = matchResult.IteratorToLastElement();
+                            parserState = ParserState::AwaitingColon;
+                        }
+                        else 
+                        {
+                            // Here the job is a bit difficult. We need to extract
+                            // 1 - [Optional] The 'startAddress' in form of an expression
+                            // 2 - [Optional] The 'Block(align)' function call
+                            // 3 - [Optional] The section-output type (e.g. (NOLOAD))
+                            auto parsedContent = std::dynamic_pointer_cast<CParsedContentBase>(preColonExpressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator));
+                            if (parsedContent == nullptr) {
+                                violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
+                            }
+                            else {
+                                preColonContent.emplace_back(parsedContent);
+                            }
                         }
                         break;
                     }
@@ -296,33 +318,60 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
 
                     case ParserState::AwaitingEndOfParse:
                     {
-                        auto matchResultForAtRegion = MatchSequenceOpenEnded(linkerScriptFile, localIterator, endOfVectorIterator, {"AT", ">"});
-                        if (matchResultForAtRegion.Successful()) {
+                        auto matchResultForAtLmaRegion = MatchSequenceOpenEnded(linkerScriptFile, localIterator, endOfVectorIterator, {"AT", ">"});
+                        auto matchResultForAtVmaRegion = MatchSequenceOpenEnded(linkerScriptFile, localIterator, endOfVectorIterator, { ">" });
+                        if (matchResultForAtLmaRegion.Successful()) {
 
                             auto potentialRegionName = FindNextNonCommentEntry(linkerScriptFile, localIterator + 2, endOfVectorIterator);
                             if (potentialRegionName == endOfVectorIterator) {
-                                std::shared_ptr<CViolationBase> missingRegionViolation(new CParserViolation({*localIterator, matchResultForAtRegion.MatchedElements()[1]}, EParserViolationCode::MissingRegionForAtLmaDefinition));
+                                std::shared_ptr<CViolationBase> missingRegionViolation(new CParserViolation({*localIterator, matchResultForAtLmaRegion.MatchedElements()[1]}, EParserViolationCode::MissingRegionForAtLmaDefinition));
                                 auto atLmaRegion = std::shared_ptr<CParsedContentBase>(new CSectionOutputAtLmaRegion(
-                                                      matchResultForAtRegion.MatchedElements()[0],
-                                                      matchResultForAtRegion.MatchedElements()[1],
+													  matchResultForAtLmaRegion.MatchedElements()[0],
+										matchResultForAtLmaRegion.MatchedElements()[1],
                                                       CRawEntry(),
                                                       { missingRegionViolation }));
                                 endingContent.emplace_back(atLmaRegion);
-                                localIterator++; // We need to position the iterator at the last parsed element.
+                                ++localIterator; // We need to position the iterator at the last parsed element.
 
                             } else {
                                 auto atLmaRegion = std::shared_ptr<CParsedContentBase>(new CSectionOutputAtLmaRegion(
-                                                      matchResultForAtRegion.MatchedElements()[0],
-                                                      matchResultForAtRegion.MatchedElements()[1],
+													  matchResultForAtLmaRegion.MatchedElements()[0],
+										matchResultForAtLmaRegion.MatchedElements()[1],
                                                       *potentialRegionName));
                                 endingContent.emplace_back(atLmaRegion);
                                 localIterator += 2; // We need to position the iterator at the last parsed element.
 
                             }
-                        } else {
+                        }
+                        else if (matchResultForAtVmaRegion.Successful())
+                        {
+                            auto potentialRegionName = FindNextNonCommentEntry(linkerScriptFile, localIterator + 1, endOfVectorIterator);
+                            if (potentialRegionName == endOfVectorIterator) 
+                            {
+                                std::shared_ptr<CViolationBase> missingRegionViolation(new CParserViolation({ *localIterator, matchResultForAtLmaRegion.MatchedElements()[0] }, EParserViolationCode::MissingRegionForAtVmaDefinition));
+                                auto atLmaRegion = std::shared_ptr<CParsedContentBase>(new CSectionOutputToVmaRegion(
+                                    matchResultForAtLmaRegion.MatchedElements()[0],
+                                    CRawEntry(),
+                                    { matchResultForAtLmaRegion.MatchedElements()[0] },
+                                    { missingRegionViolation }));
+                                endingContent.emplace_back(atLmaRegion);
+                            }
+                            else 
+                            {
+                                auto atLmaRegion = std::shared_ptr<CParsedContentBase>(new CSectionOutputToVmaRegion(
+                                    matchResultForAtLmaRegion.MatchedElements()[0],
+                                    *potentialRegionName,
+                                    { matchResultForAtLmaRegion.MatchedElements()[0], *potentialRegionName }, 
+                                    {}));
+                                endingContent.emplace_back(atLmaRegion);
+                                localIterator += 1; // We need to position the iterator at the last parsed element.
+                            }
+                        }
+                        else 
+                        {
                             // This is the start of a new expression or statement, etc. We need to rewind the iterator
                             // and return back to the caller.
-                            localIterator--;
+                            --localIterator;
                             parserState = ParserState::ParsingComplete;
                         }
                         break;
@@ -541,36 +590,31 @@ std::shared_ptr<CSectionOutputCommand> CSectionOutputCommandParser::TryParse(
 
                     case ParserState::AwaitingColon:
                     {
-                        std::vector<std::string> validTypes = {
-                            "NOLOAD",
-                            "DSECT",
-                            "COPY",
-                            "INFO",
-                            "OVERLAY",
-                        };
-
                         auto matchResult = MatchSequenceAnyContentWithinEnclosure(linkerScriptFile, localIterator, endOfVectorIterator, "(", validTypes, ")");
-                        if (matchResult.Successful()) 
+                        if (matchResult.Successful())
                         {
                             auto matchedElements = matchResult.MatchedElements();
-                            auto sectionOutputType = std::shared_ptr<CParsedContentBase>(new CSectionOutputType(matchedElements[1], 
-                                matchedElements[0],
-                                matchedElements[2], 
+                            auto sectionOutputType = std::shared_ptr<CParsedContentBase>(new CSectionOutputType(
+                                matchedElements[1], 
+                                matchedElements[0], 
+                                matchedElements[2],
                                 matchedElements, 
                                 {}));
 
                             preColonContent.emplace_back(sectionOutputType);
                             localIterator = matchResult.IteratorToLastElement();
                             parserState = ParserState::AwaitingColon;
-                        } else {
-                            auto parsedContent =  std::dynamic_pointer_cast<CParsedContentBase>(preColonExpressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator));
+                        }
+                        else 
+                        {
+                            auto parsedContent = std::dynamic_pointer_cast<CParsedContentBase>(preColonExpressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator));
                             if (parsedContent == nullptr) {
                                 violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::EntryInvalidOrMisplaced)));
-                            } else {
+                            }
+                            else {
                                 preColonContent.emplace_back(parsedContent);
                             }
                         }
-
                         break;
                     }
 

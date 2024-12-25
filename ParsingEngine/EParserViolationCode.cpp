@@ -66,7 +66,8 @@ std::string VisualLinkerScript::ParsingEngine::MapParserViolationToDescription(E
     case EParserViolationCode::AssignmentIsMissingParenthesisClosure: return "Assignment is missing parenthesis closure";
     case EParserViolationCode::OnlyOneSectionOutputTypeIsAllowed: return "Only one section output type is allowed";
     case EParserViolationCode::SectionOutputNameCannotBeAReservedKeyword: return "Section output name cannot be a reserved keyword";
-    case EParserViolationCode::MissingRegionForAtLmaDefinition: return "Missing region for at lma definition";
+    case EParserViolationCode::MissingRegionForAtLmaDefinition: return "Missing region for at LMA definition";
+    case EParserViolationCode::MissingRegionForAtVmaDefinition: return "Missing region for at VMA definition";
     case EParserViolationCode::WasExpectingANumericValueForFillExpression: return "Was expecting a numeric value for fill expression";
     case EParserViolationCode::WasExpectingProgramHeaderName: return "Was expecting program header name";
     case EParserViolationCode::ProgramHeaderNameCannotBeAReservedWord: return "Program header name cannot be a reserved word";

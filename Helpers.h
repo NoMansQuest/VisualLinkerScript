@@ -29,7 +29,7 @@
         propType m_##propName;\
                         \
     public:\
-        propType propName() const{\
+        propType propName() const {\
             return m_##propName;\
         }\
          \
@@ -83,7 +83,10 @@ namespace VisualLinkerScript
             LinqVector<U> result;
             for (const auto& obj : *this) 
             {
-                if (auto casted = std::dynamic_pointer_cast<U>(obj)) 
+                qDebug() << "Type:" << typeid(obj).name() << " To type: " << typeid(U).name();
+                auto casted = std::dynamic_pointer_cast<U>(obj);                
+                qDebug() << "Cast type:" << typeid(casted).name();
+                if (casted != nullptr) 
                 {
                     result.push_back(casted);
                 }
@@ -94,14 +97,14 @@ namespace VisualLinkerScript
         // Support for C# LINQ 'Select' call (returning LinqVector of objects)
         template <typename Func>
         auto Select(Func&& func) const
-            -> typename std::enable_if<
-	            std::is_invocable_r<
-		            std::shared_ptr<typename std::invoke_result<Func, std::shared_ptr<T>>::type::element_type>,
+            -> std::enable_if_t<
+	            std::is_invocable_r_v<
+		            std::shared_ptr<typename std::invoke_result_t<Func, std::shared_ptr<T>>::element_type>,
 		            Func,
 		            std::shared_ptr<T>
-	            >::value,
-	            LinqVector<typename std::invoke_result<Func, std::shared_ptr<T>>::type::element_type>
-	            >::type
+	            >,
+	            LinqVector<typename std::invoke_result_t<Func, std::shared_ptr<T>>::element_type>
+	            >
         {
             using ResultType = typename std::invoke_result<Func, std::shared_ptr<T>>::type;
             LinqVector<typename ResultType::element_type> result;
@@ -115,10 +118,10 @@ namespace VisualLinkerScript
         // Support for C# LINQ 'Select' call (returning std::vector of primitives)
         template <typename Func>
         auto Select(Func&& func) const
-            -> typename std::enable_if<
-	            std::is_invocable_r<bool, Func, std::shared_ptr<T>>::value,
+            -> std::enable_if_t<
+	            std::is_invocable_r_v<bool, Func, std::shared_ptr<T>>,
 	            std::vector<bool>
-            >::type
+            >
         {
             std::vector<bool> result;
             for (const auto& obj : *this) {
@@ -129,7 +132,8 @@ namespace VisualLinkerScript
 
         // Support for C# LINQ 'Where' call
         template <typename Func>
-        LinqVector<T> Where(Func&& predicate) const {
+        LinqVector<T> Where(Func&& predicate) const
+    	{
             LinqVector<T> result;
             for (const auto& obj : *this) {
                 if (predicate(obj)) {
@@ -149,8 +153,9 @@ namespace VisualLinkerScript
 
         // Support for C# LINQ 'SelectMany' call
         template <typename Func>
-        auto SelectMany(Func&& func) const {
-            using InnerVector = typename std::invoke_result<Func, std::shared_ptr<T>>::type;
+        auto SelectMany(Func&& func) const
+    	{
+            using InnerVector = std::invoke_result_t<Func, std::shared_ptr<T>>;
             using InnerType = typename InnerVector::value_type::element_type;
 
             LinqVector<InnerType> result;
@@ -177,18 +182,60 @@ namespace VisualLinkerScript
         }
 
         // Support for C# LINQ 'Single' function
-        std::shared_ptr<T> Single() const
+        template <typename Func>
+        std::shared_ptr<T> Single(Func&& predicate = nullptr) const
     	{
-            if (this->size() != 1) {
-                throw std::logic_error("SharedPtrVector does not contain exactly one element.");
+            using ResultType = typename std::invoke_result<Func, std::shared_ptr<T>>::type;
+            LinqVector<typename ResultType::element_type> result;
+
+            if (predicate == nullptr)
+            {
+                if (this->size() != 1) {
+                    throw std::logic_error("SharedPtrVector does not contain exactly one element.");
+                }
+                return this->front();
             }
-            return this->front();
+            
         }
 
         // Support for C# LINQ 'SingleOrDefault' function with optional default value
-        std::shared_ptr<T> SingleOrDefault(std::shared_ptr<T> defaultValue = nullptr) const
+        std::shared_ptr<T> Single(const std::function<bool(const std::shared_ptr<T>&)>& predicate = nullptr) const
     	{
-            return (this->size() == 1) ? this->front() : defaultValue;
+            std::shared_ptr<T> result = nullptr;
+
+            for (const auto& item : *this) {
+                if (!predicate || predicate(item)) {
+                    if (result != nullptr) {
+                        throw std::logic_error("Multiple elements match the condition.");
+                    }
+                    result = item;
+                }
+            }
+
+            if (result == nullptr) {
+                throw std::logic_error("No element matches the condition.");
+            }
+
+            return result;
+        }
+
+        // Support for C# LINQ 'SingleOrDefault' function with optional default value
+        std::shared_ptr<T> SingleOrDefault(
+            const std::function<bool(const std::shared_ptr<T>&)>& predicate = nullptr, 
+            std::shared_ptr<T> defaultValue = nullptr) const
+    	{
+            std::shared_ptr<T> result = nullptr;
+
+            for (const auto& item : *this) {
+                if (!predicate || predicate(item)) {
+                    if (result != nullptr) {
+                        throw std::logic_error("Multiple elements match the condition.");
+                    }
+                    result = item;
+                }
+            }
+
+            return (result != nullptr) ? result : defaultValue;
         }
     };
 

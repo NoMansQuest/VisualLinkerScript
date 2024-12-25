@@ -58,6 +58,8 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
         std::vector<CRawEntry>::const_iterator endOfVectorIterator)
 {
     auto localIterator = iterator;
+    auto previousIterator = iterator;
+    auto currentLine = localIterator->StartLineNumber();
     auto parsingStartIteratorPosition = iterator;
     LinqVector<CParsedContentBase> parsedContent;
     LinqVector<CViolationBase> violations;
@@ -99,6 +101,14 @@ std::shared_ptr<CExpression> CExpressionParser::TryParse(
                     MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
                     "ParserState invalid in CExpressionParser");
             }
+        }
+
+        // If no multi-line support exists, stop parsing when line number changes... we're done
+        if ((!this->m_supportsMultiLine) && (currentLine != localIterator->StartLineNumber()))
+        {
+            --localIterator;
+            parserState = ParserState::ParsingComplete;
+            break;
         }
 
         auto resolvedContent = linkerScriptFile.ResolveRawEntry(*localIterator);

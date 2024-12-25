@@ -10,7 +10,7 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 {
 	class CGraphicContext;
 
-	/// @brief Represents an 'Overlap' object found in "SECTION"
+	/// @brief Represents an 'section output' object found in a given section statement.
 	class CSectionOutput : public CAddressedRegion
 	{		
 		DECLARE_READONLY_PROPERTY(std::string, Content)

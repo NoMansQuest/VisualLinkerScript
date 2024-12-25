@@ -50,8 +50,7 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
     auto parsingStartIteratorPosition = iterator;
 
     LinqVector<CParsedContentBase> parsedContent;
-    LinqVector<CViolationBase> violations;
-    CExpressionParser expressionParser;
+    LinqVector<CViolationBase> violations;   
     CMemoryStatementAttributeParser attributeParser;
 
     auto parserState = ParserState::AwaitingName;
@@ -63,9 +62,9 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
     CRawEntry commaSeparatingOriginAndLength;
     CRawEntry lengthHeaderEntry;
     CRawEntry lengthAssignmentSymbol;
-    std::shared_ptr<CParsedContentBase> attributes;
-    std::shared_ptr<CParsedContentBase> originRValue;
-    std::shared_ptr<CParsedContentBase> lengthRValue;
+    std::shared_ptr<CMemoryStatementAttribute> attributes;
+    std::shared_ptr<CExpression> originRValue;
+    std::shared_ptr<CExpression> lengthRValue;
 
     while ((localIterator != endOfVectorIterator) && (parserState != ParserState::ParsingComplete))
     {
@@ -175,6 +174,7 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
 
                     case ParserState::AwaitingOriginRValue:
                     {
+                        CExpressionParser expressionParser(false, false, false);
                         auto parsedRValue = expressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
                         if (parsedRValue == nullptr)
                         {
@@ -190,6 +190,7 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
 
                     case ParserState::AwaitingLengthRValue:
                     {
+                        CExpressionParser expressionParser(false, false, false);
                         auto parsedRValue = expressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
                         if (parsedRValue == nullptr)
                         {
@@ -205,7 +206,7 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
 
                     case ParserState::AwaitingOriginHeader:
                     {                       
-                        if (!StringEquals(resolvedContent, "ORIGIN"))
+                        if (!StringEquals(resolvedContent, "ORIGIN", true))
                         {
                             violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::WasExpectingOriginDeclaration)));
                         }
@@ -219,14 +220,16 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
 
                     case ParserState::AwaitingLengthHeader:
                     {
-                        if (!StringEquals(resolvedContent, "LEN") && !StringEquals(resolvedContent, "LENGTH"))
+                        if (!StringEquals(resolvedContent, "LEN", true) &&
+                            !StringEquals(resolvedContent, "l", true) &&
+                            !StringEquals(resolvedContent, "LENGTH", true))
                         {
                             violations.emplace_back(std::shared_ptr<CViolationBase>(new CParserViolation(*localIterator, EParserViolationCode::WasExpectingLengthDeclaration)));
                         }
                         else
                         {
                             lengthHeaderEntry = *localIterator;
-                            parserState = ParserState::AwaitingOriginAssignmentSymbol;
+                            parserState = ParserState::AwaitingLengthAssignmentSymbol;
                         }
                         break;
                     }
@@ -235,7 +238,7 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
                     {
                         throw CMasterParsingException(
                                     MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
-                                    "ParserState invalid in CPhdrsRegionContentParser");
+                                    "ParserState invalid in CMemoryRegionContentParser");
                     }
                 }
                 break;
@@ -270,7 +273,7 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
                     {
                         throw CMasterParsingException(
                                     MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
-                                    "ParserState invalid in CPhdrsRegionContentParser");
+                                    "ParserState invalid in CMemoryRegionContentParser");
                     }
                 }
                 break;
@@ -282,6 +285,7 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
                 {
                     case ParserState::AwaitingOriginRValue:
                     {
+                        CExpressionParser expressionParser(false, false, false);
                         auto parsedRValue = expressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
                         if (parsedRValue == nullptr)
                         {
@@ -297,6 +301,7 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
 
                     case ParserState::AwaitingLengthRValue:
                     {
+                        CExpressionParser expressionParser(false, false, false);
                         auto parsedRValue = expressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
                         if (parsedRValue == nullptr)
                         {
@@ -327,7 +332,7 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
                     {
                         throw CMasterParsingException(
                                     MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
-                                    "ParserState invalid in CPhdrsRegionContentParser");
+                                    "ParserState invalid in CMemoryRegionContentParser");
                     }
                 }
                 break;
@@ -378,7 +383,7 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
                     {
                         throw CMasterParsingException(
                                     MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
-                                    "ParserState invalid in CPhdrsRegionContentParser");
+                                    "ParserState invalid in CMemoryRegionContentParser");
                     }
                 }
                 break;
@@ -413,7 +418,7 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
                     {
                         throw CMasterParsingException(
                                     MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
-                                    "ParserState invalid in CPhdrsRegionContentParser");
+                                    "ParserState invalid in CMemoryRegionContentParser");
                     }
                 }
                 break;
@@ -433,6 +438,7 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
                 {
                     case ParserState::AwaitingOriginRValue:
                     {
+                        CExpressionParser expressionParser(false, false, false);
                         auto parsedRValue = expressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
                         if (parsedRValue == nullptr)
                         {
@@ -448,6 +454,7 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
 
                     case ParserState::AwaitingLengthRValue:
                     {
+                        CExpressionParser expressionParser(false, false, false);
                         auto parsedRValue = expressionParser.TryParse(linkerScriptFile, localIterator, endOfVectorIterator);
                         if (parsedRValue == nullptr)
                         {
@@ -478,7 +485,7 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
                     {
                         throw CMasterParsingException(
                                     MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
-                                    "ParserState invalid in CPhdrsRegionContentParser");
+                                    "ParserState invalid in CMemoryRegionContentParser");
                     }
                 }
                 break;
@@ -531,7 +538,7 @@ std::shared_ptr<CMemoryStatement> CMemoryRegionContentParser::TryParse(
                     {
                         throw CMasterParsingException(
                                     MasterParsingExceptionType::ParserMachineStateNotExpectedOrUnknown,
-                                    "ParserState invalid in CPhdrsRegionContentParser");
+                                    "ParserState invalid in CMemoryRegionContentParser");
                     }
                 }
                 break;

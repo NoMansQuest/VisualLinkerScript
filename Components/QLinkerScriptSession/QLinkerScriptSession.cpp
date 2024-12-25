@@ -23,8 +23,15 @@
 #include "EditorAction/SEditorSelectText.h"
 #include "EditorAction/SEditorSetCaretPosition.h"
 #include "EditorAction/SEditorSetLineContent.h"
+#include "Models/CExpression.h"
 #include "Models/CMemoryRegion.h"
 #include "Models/CMemoryStatement.h"
+#include "Models/CSectionOutputAtLmaRegion.h"
+#include "Models/CSectionOutputToVmaRegion.h"
+#include "Models/CSectionOutputCommand.h"
+#include "Models/CSectionOutputFillExpression.h"
+#include "Models/CSectionOutputPhdr.h"
+#include "Models/CSectionsRegion.h"
 #include "ParsingEngine/CLexerViolation.h"
 #include "ParsingEngine/CParserViolation.h"
 #include "ParsingEngine/EParserViolationCode.h"
@@ -64,7 +71,7 @@ CRawEntry SupersedingBracketCloseOnLine(const std::shared_ptr<CRawFile>& rawFile
 uint32_t LeadingWhiteSpaces(const std::string& stringToInspect);
 
 /// @brief Create a dummy region to be shown
-std::shared_ptr<CFloorPlan> _MakeDummyModel();
+// std::shared_ptr<CFloorPlan> _MakeDummyModel();
 
 static QIcon GetIconForSeverity(const ESeverityCode severity)
 {
@@ -539,7 +546,7 @@ void QLinkerScriptSession::DeferredContentProcessingAction()
     UpdateParserViolationsInModel();
     UpdateDrcViolationsInModel();
 
-    this->m_memoryVisualizer->SetModel(_MakeDummyModel());
+    this->m_memoryVisualizer->SetModel(this->GenerateFloorplan());
 }
 
 void QLinkerScriptSession::InitiateDeferredProcessing()
@@ -736,17 +743,193 @@ std::shared_ptr<CFloorPlan> QLinkerScriptSession::GenerateFloorplan() const
 {
     LinqVector<CMemoryRegionBlock> translatedMemoryRegions;
 
-    if (this->m_linkerScriptFile != nullptr && !this->m_linkerScriptFile->ParsedContent().empty())
+    if (this->m_linkerScriptFile != nullptr && this->m_linkerScriptFile->ParsedContent().empty())
     {
-        LinqVector<CMemoryStatement> foundMemoryStatements;
-
-        auto listOfMemoryStatements = this->m_linkerScriptFile->ParsedContent()
-            .OfType<CMemoryRegion>()
-            .SelectMany([](const std::shared_ptr<CMemoryRegion>& memRegion) { return memRegion->Statements(); })
-            .OfType<CMemoryStatement>();
-
-
+        return std::make_shared<CFloorPlan>(translatedMemoryRegions);
     }
+
+    bool noMemoryRegionDefined = false;
+    std::shared_ptr<CMemoryRegionBlock> defaultMemoryRegion;
+    std::shared_ptr<CMemoryRegionBlock> orphanMemoryRegion;
+    LinqVector<CMemoryStatement> foundMemoryStatements;
+
+    auto listOfMemoryStatements = this->m_linkerScriptFile->ParsedContent()
+        .OfType<CMemoryRegion>()
+        .SelectMany([](const std::shared_ptr<CMemoryRegion>& memRegion) { return memRegion->Statements(); })
+        .OfType<CMemoryStatement>();
+
+    // Insert memory regions into the model.
+    listOfMemoryStatements.ForEach([&](const std::shared_ptr<CMemoryStatement>& memoryStatement)
+        {
+            auto length = this->LinkerScriptFile()->ResolveParsedContent(*memoryStatement->LengthAssignment());
+			auto origin = this->LinkerScriptFile()->ResolveParsedContent(*memoryStatement->OriginAssignment());
+            auto name = this->LinkerScriptFile()->ResolveRawEntry(memoryStatement->NameEntry());
+
+			auto memoryRegionBlock = std::make_shared<CMemoryRegionBlock>(
+                name,
+                name,
+                length,
+                std::make_shared<LinqVector<CSectionDefinitionBase>>(),
+                memoryStatement->NameEntry().StartPosition(),
+                memoryStatement->LengthAssignment()->EndPosition(),
+                origin,
+                origin + " + " + length,
+                length);
+
+            translatedMemoryRegions.emplace_back(memoryRegionBlock);
+        });
+
+    noMemoryRegionDefined = listOfMemoryStatements.empty();
+    if (noMemoryRegionDefined)
+    {
+        defaultMemoryRegion = std::make_shared<CMemoryRegionBlock>(
+            "DEFAULT",
+            "<DEFAULT REGION>",
+            "",
+            std::make_shared<LinqVector<CSectionDefinitionBase>>(),
+            0,
+            0,
+            "",
+            "",
+            "");
+
+        translatedMemoryRegions.emplace_back(defaultMemoryRegion);
+    }
+
+
+    auto sectionsRegion = this->m_linkerScriptFile->ParsedContent()
+        .OfType<CSectionsRegion>()
+        .SingleOrDefault();
+
+    if (sectionsRegion == nullptr)
+    {
+        return std::make_shared<CFloorPlan>(translatedMemoryRegions);
+    }   
+
+    sectionsRegion->Entries()
+		.OfType<CSectionOutputCommand>()
+        .ForEach([&](const std::shared_ptr<CSectionOutputCommand>& sectionOutputStatement)
+        {
+            auto vmaTargetRegion = sectionOutputStatement->EndingContent().OfType<CSectionOutputToVmaRegion>().FirstOrDefault();
+            auto lmaTargetRegion = sectionOutputStatement->EndingContent().OfType<CSectionOutputAtLmaRegion>().FirstOrDefault();
+            auto fillExpression = sectionOutputStatement->EndingContent().OfType<CSectionOutputFillExpression>().SingleOrDefault();
+            auto startAddress = sectionOutputStatement->PreColonContent().OfType<CExpression>().SingleOrDefault();
+            auto sectionName = this->LinkerScriptFile()->ResolveRawEntry(sectionOutputStatement->SectionOutputNameEntry());
+
+            // Get Fill-Expression (if any)
+            CFillExpressionButton fillExpressionButton;            
+            if (fillExpression != nullptr)
+            {
+	            auto fillExpressionContent = this->LinkerScriptFile()->ResolveRawEntry(fillExpression->FillExpressionValue());
+	            if (!fillExpressionContent.empty())
+	            {
+	                fillExpressionButton = CFillExpressionButton(fillExpressionContent,fillExpression->EqualSign().StartPosition(),fillExpression->FillExpressionValue().Length() + 1);
+	            }	            
+            }
+
+            // Gather program headers (if any)
+            LinqVector<CProgramHeaderButton> programHeaders;
+            sectionOutputStatement->EndingContent()
+                .OfType<CSectionOutputPhdr>()
+                .ForEach([&](const std::shared_ptr<CSectionOutputPhdr>& programHeader)
+                    {
+                        auto programHeaderText = this->LinkerScriptFile()->ResolveRawEntry(programHeader->PhdrRegion());
+                        auto programHeaderButton = std::shared_ptr<CProgramHeaderButton>(new CProgramHeaderButton(
+                            programHeaderText,
+                            programHeader->ColonEntry().StartPosition(),
+                            programHeader->PhdrRegion().Length() + 1));
+
+                        programHeaders.emplace_back(programHeaderButton);
+                    });
+
+            // Gather section outputs
+            LinqVector<CSectionOutput> sectionOutputs;
+            sectionOutputStatement->InnerContent()
+                .OfType<CSectionOutputCommand>()
+                .ForEach([&](const std::shared_ptr<CSectionOutputCommand>& sectionOutputCommand)
+                    {
+                        auto outputCommandName = this->LinkerScriptFile()->ResolveRawEntry(sectionOutputCommand->SectionOutputNameEntry());
+                        auto sectionOutput = std::shared_ptr<CSectionOutput>(new CSectionOutput(
+                            outputCommandName,
+                            sectionOutputCommand->SectionOutputNameEntry().StartPosition(),
+                            sectionOutputCommand->ClosingBracketEntry().StartPosition() - sectionOutputCommand->SectionOutputNameEntry().StartPosition() + 1,
+                            "", "", "" ));
+
+                        sectionOutputs.emplace_back(sectionOutput);
+                    });
+
+            // Gather section outputs
+            auto translatedSectionStatement = std::shared_ptr<CSectionStatement>(
+                new CSectionStatement(
+                    sectionName, 
+                    fillExpressionButton, 
+                    std::make_shared<LinqVector<CProgramHeaderButton>>(programHeaders), 
+                    std::make_shared<LinqVector<CSectionOutput>>(sectionOutputs),
+                    sectionOutputStatement->SectionOutputNameEntry().StartPosition(), 
+                    sectionOutputStatement->ClosingBracketEntry().StartPosition() - sectionOutputStatement->SectionOutputNameEntry().StartPosition() + 1,
+                    (startAddress != nullptr) ? this->LinkerScriptFile()->ResolveParsedContent(*startAddress) : "", 
+                    "", // We can't process memory end address at this time for section-output commands (unless we have the mapping file info)
+                    "")); // We can't process memory size at this time for section-output commands (unless we have the mapping file info)
+
+            if (noMemoryRegionDefined)
+            {
+                // We simply ignore. This should have been caught as an DRC
+                defaultMemoryRegion->ChildContent()->emplace_back(translatedSectionStatement);
+            }
+            else
+            {
+                if (lmaTargetRegion != nullptr)
+                {
+                    auto lmaRegionName = this->LinkerScriptFile()->ResolveRawEntry(lmaTargetRegion->RegionName());
+                    auto correspondingRegion = translatedMemoryRegions
+                		.SingleOrDefault([&](const std::shared_ptr<CMemoryRegionBlock>& memoryRegion)
+                		{
+                			return StringEquals(memoryRegion->Name(), lmaRegionName, true);
+                		});
+
+                    if (correspondingRegion != nullptr)
+                    {
+                        correspondingRegion->ChildContent()->emplace_back(translatedSectionStatement);
+                    }
+                }
+
+                if (vmaTargetRegion != nullptr)
+                {
+                    auto vmaRegionName = this->LinkerScriptFile()->ResolveRawEntry(vmaTargetRegion->RegionName());
+                    auto correspondingRegion = translatedMemoryRegions
+                		.SingleOrDefault([&](const std::shared_ptr<CMemoryRegionBlock>& memoryRegion)
+                		{
+                			return StringEquals(memoryRegion->Name(), vmaRegionName, true);
+                		});
+
+                    if (correspondingRegion != nullptr)
+                    {
+                        correspondingRegion->ChildContent()->emplace_back(translatedSectionStatement);
+                    }
+                }
+
+                if (lmaTargetRegion == nullptr && vmaTargetRegion == nullptr)
+                {
+                    if (orphanMemoryRegion == nullptr)
+                    {
+                        orphanMemoryRegion = std::make_shared<CMemoryRegionBlock>(
+                            "ORPHAN",
+                            "<ORPHAN REGION>",
+                            "",
+                            std::make_shared<LinqVector<CSectionDefinitionBase>>(),
+                            0,
+                            0,
+                            "",
+                            "",
+                            "");
+                        translatedMemoryRegions.emplace_back(orphanMemoryRegion);
+                    }
+
+                    // Add it to orphans
+                    orphanMemoryRegion->ChildContent()->emplace_back(translatedSectionStatement);
+                }
+            }
+        });    
 
     return std::make_shared<CFloorPlan>(translatedMemoryRegions);
 }
@@ -834,6 +1017,7 @@ std::vector<SearchMatchResult> SearchForContent(
     return results;
 }
 
+/*
 std::shared_ptr<CFloorPlan> _MakeDummyModel()
 {
     LinqVector<CMemoryRegionBlock> dummyModel;
@@ -844,7 +1028,7 @@ std::shared_ptr<CFloorPlan> _MakeDummyModel()
         std::dynamic_pointer_cast<CSectionDefinitionBase>(std::make_shared<CSectionStatement>(".GeneralBSS", CFillExpressionButton(), LinqVector<CProgramHeaderButton> {}, LinqVector<CSectionOutput> {}, 0, 0, "0x1B100", "0x1B200", "256 B")),
         std::dynamic_pointer_cast<CSectionDefinitionBase>(std::make_shared<CSectionStatement>(".GeneralRO", CFillExpressionButton(), LinqVector<CProgramHeaderButton> {}, LinqVector<CSectionOutput> {}, 0, 0, "0x1C100", "0x1C200", "256 B")),
     };
-    auto memRegion1 = std::make_shared<CMemoryRegionBlock>("FLASH", "1024 KB", memRegion1Sections, 0, 0, "0x00010000", "0x00020000", "1024 KB");
+    auto memRegion1 = std::make_shared<CMemoryRegionBlock>("memRegion1Sections", "FLASH", "1024 KB", memRegion1Sections, 0, 0, "0x00010000", "0x00020000", "1024 KB");
 
     LinqVector<CSectionDefinitionBase> memRegion2Sections
     {
@@ -922,7 +1106,7 @@ std::shared_ptr<CFloorPlan> _MakeDummyModel()
             },
             0, 0, "0x1A100", "0x1A200", "256 B"))
     };
-    auto memRegion2 = std::shared_ptr<CMemoryRegionBlock>(new CMemoryRegionBlock("RAM", "1024 KB", memRegion2Sections, 0, 0,"0x00010000", "0x00020000", "1024 KB"));
+    auto memRegion2 = std::shared_ptr<CMemoryRegionBlock>(new CMemoryRegionBlock("memRegion2Sections", "RAM", "1024 KB", memRegion2Sections, 0, 0,"0x00010000", "0x00020000", "1024 KB"));
 
     LinqVector<CSectionDefinitionBase> memRegion3Sections =
     {
@@ -930,8 +1114,9 @@ std::shared_ptr<CFloorPlan> _MakeDummyModel()
         std::dynamic_pointer_cast<CSectionDefinitionBase>(std::make_shared<CSectionStatement>(".GeneralBSS", CFillExpressionButton(), LinqVector<CProgramHeaderButton> {}, LinqVector<CSectionOutput> {}, 0, 0, "0x1B000", "0x1C000", "64 KB")),
         std::dynamic_pointer_cast<CSectionDefinitionBase>(std::make_shared<CSectionStatement>(".GeneralRO", CFillExpressionButton(), LinqVector<CProgramHeaderButton> {}, LinqVector<CSectionOutput> {}, 0, 0, "0x1D000", "0x1E000", "64 KB")),
     };
-    auto memRegion3 = std::shared_ptr<CMemoryRegionBlock>(new CMemoryRegionBlock("BOOTLOADER", "64 KB", memRegion3Sections, 0, 0, "0x00010000", "0x00020000", "1024 KB"));
+    auto memRegion3 = std::shared_ptr<CMemoryRegionBlock>(new CMemoryRegionBlock("memRegion3Sections", "BOOTLOADER", "64 KB", memRegion3Sections, 0, 0, "0x00010000", "0x00020000", "1024 KB"));
 
     LinqVector<CMemoryRegionBlock> regions = { memRegion1, memRegion2, memRegion3 };
     return std::make_shared<CFloorPlan>(regions);
 }
+*/

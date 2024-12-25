@@ -48,9 +48,9 @@ SMetricSizeF CSectionStatement::CalculateBodySize(const CGraphicContext& graphic
 
 	double minimumWidth = leftSizeTotal + rightSizeTotal + (topMemoryLabel * 1.5);
 
-	if (!this->ProgramHeaders().empty())
+	if (!this->ProgramHeaders()->empty())
 	{
-		for (const auto& programHeader : this->ProgramHeaders())
+		for (const auto& programHeader : *this->ProgramHeaders())
 		{
 			minimumWidth += programHeader->CalculateBodySize(graphicContext).CX();
 		}
@@ -64,11 +64,11 @@ SMetricSizeF CSectionStatement::CalculateBodySize(const CGraphicContext& graphic
 	double calculatedHeight = minimumSectionStatementBoxHeight;
 	double maxContentWidth = 0;
 
-	if (!this->m_ChildOutputs.empty())
+	if (!this->m_ChildOutputs->empty())
 	{		
 		calculatedHeight += marginSectionOutputFromTop;
 
-		for (const auto& child : this->m_ChildOutputs)
+		for (const auto& child : *this->m_ChildOutputs)
 		{
 			auto childDesiredSize = child->CalculateBodySize(graphicContext);
 			maxContentWidth = std::max(maxContentWidth, childDesiredSize.CX());
@@ -103,9 +103,9 @@ void CSectionStatement::SetBodyPosition(const SMetricRectangleF& allocatedArea, 
 	currentYHolder += headerBoxHeight + marginSectionOutputFromTop;	
 	auto sectionStatementTop = allocatedArea.Top();
 
-	if (!this->m_ChildOutputs.empty())
+	if (!this->m_ChildOutputs->empty())
 	{
-		for (const auto& child : this->m_ChildOutputs)
+		for (const auto& child : *this->m_ChildOutputs)
 		{
 			auto childDesiredSize = child->CalculateBodySize(graphicContext);
 			child->SetBodyPosition(
@@ -125,7 +125,7 @@ void CSectionStatement::SetBodyPosition(const SMetricRectangleF& allocatedArea, 
 	auto programHeaderTopYPos = allocatedArea.Top() + programHeaderMarginTop;
 	auto programHeaderRightXPos = allocatedArea.Right() - programHeaderMarginRight;
 
-	for (const auto& programHeader : this->ProgramHeaders())
+	for (const auto& programHeader : *this->ProgramHeaders())
 	{
 		auto calculatedProgramHeader = programHeader->CalculateBodySize(graphicContext);
 		programHeader->SetBodyPosition(
@@ -179,13 +179,13 @@ void CSectionStatement::Paint(const CGraphicContext& graphicContext, QPainter& p
 		this->FillExpression().Paint(graphicContext, painter);
 	}
 
-	for (const auto& progHeader : this->ProgramHeaders())
+	for (const auto& progHeader : *this->ProgramHeaders())
 	{
 		progHeader->Paint(graphicContext, painter);
 	}
 
 	// Draw all children
-	for (const auto& childOutput : this->ChildOutputs())
+	for (const auto& childOutput : *this->ChildOutputs())
 	{
 		childOutput->Paint(graphicContext, painter);
 	}
