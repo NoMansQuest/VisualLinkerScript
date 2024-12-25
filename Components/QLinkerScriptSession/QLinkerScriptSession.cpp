@@ -751,6 +751,7 @@ std::shared_ptr<CFloorPlan> QLinkerScriptSession::GenerateFloorplan() const
     bool noMemoryRegionDefined = false;
     std::shared_ptr<CMemoryRegionBlock> defaultMemoryRegion;
     std::shared_ptr<CMemoryRegionBlock> orphanMemoryRegion;
+    std::shared_ptr<CMemoryRegionBlock> violationMemoryRegion;
     LinqVector<CMemoryStatement> foundMemoryStatements;
 
     auto listOfMemoryStatements = this->m_linkerScriptFile->ParsedContent()
@@ -769,6 +770,7 @@ std::shared_ptr<CFloorPlan> QLinkerScriptSession::GenerateFloorplan() const
                 name,
                 name,
                 length,
+                MemoryRegionBlockFlag::Default,
                 std::make_shared<LinqVector<CSectionDefinitionBase>>(),
                 memoryStatement->NameEntry().StartPosition(),
                 memoryStatement->LengthAssignment()->EndPosition(),
@@ -784,8 +786,9 @@ std::shared_ptr<CFloorPlan> QLinkerScriptSession::GenerateFloorplan() const
     {
         defaultMemoryRegion = std::make_shared<CMemoryRegionBlock>(
             "DEFAULT",
-            "<DEFAULT REGION>",
+            "DEFAULT",
             "",
+            MemoryRegionBlockFlag::Default,
             std::make_shared<LinqVector<CSectionDefinitionBase>>(),
             0,
             0,
@@ -891,6 +894,25 @@ std::shared_ptr<CFloorPlan> QLinkerScriptSession::GenerateFloorplan() const
                     {
                         correspondingRegion->ChildContent()->emplace_back(translatedSectionStatement);
                     }
+                    else
+                    {
+                        if (violationMemoryRegion == nullptr)
+                        {
+                            violationMemoryRegion = std::make_shared<CMemoryRegionBlock>(
+                                "VIOLATION",
+                                "VIOLATION",
+                                "",
+                                MemoryRegionBlockFlag::Violation,
+                                std::make_shared<LinqVector<CSectionDefinitionBase>>(),
+                                0,
+                                0,
+                                "",
+                                "",
+                                "");
+                            translatedMemoryRegions.emplace_back(violationMemoryRegion);
+                        }
+                        violationMemoryRegion->ChildContent()->emplace_back(translatedSectionStatement);
+                    }
                 }
 
                 if (vmaTargetRegion != nullptr)
@@ -906,6 +928,25 @@ std::shared_ptr<CFloorPlan> QLinkerScriptSession::GenerateFloorplan() const
                     {
                         correspondingRegion->ChildContent()->emplace_back(translatedSectionStatement);
                     }
+                    else
+                    {
+                        if (violationMemoryRegion == nullptr)
+                        {
+	                        violationMemoryRegion = std::make_shared<CMemoryRegionBlock>(
+	                            "VIOLATION",
+	                            "VIOLATION",
+	                            "",
+	                            MemoryRegionBlockFlag::Violation,
+	                            std::make_shared<LinqVector<CSectionDefinitionBase>>(),
+	                            0,
+	                            0,
+	                            "",
+	                            "",
+	                            "");
+	                        translatedMemoryRegions.emplace_back(violationMemoryRegion);
+                        }
+                        violationMemoryRegion->ChildContent()->emplace_back(translatedSectionStatement);
+                    }
                 }
 
                 if (lmaTargetRegion == nullptr && vmaTargetRegion == nullptr)
@@ -914,8 +955,9 @@ std::shared_ptr<CFloorPlan> QLinkerScriptSession::GenerateFloorplan() const
                     {
                         orphanMemoryRegion = std::make_shared<CMemoryRegionBlock>(
                             "ORPHAN",
-                            "<ORPHAN REGION>",
+                            "ORPHAN",
                             "",
+                            MemoryRegionBlockFlag::Orphan,
                             std::make_shared<LinqVector<CSectionDefinitionBase>>(),
                             0,
                             0,

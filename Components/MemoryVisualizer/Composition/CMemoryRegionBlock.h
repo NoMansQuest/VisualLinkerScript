@@ -17,12 +17,21 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 	constexpr double sectionToSectionVSpaceMm = 2;
     constexpr double emptyMemoryRegionHeight = 15;
 
+    /// @brief Various types of memory region block.
+    enum class MemoryRegionBlockFlag
+    {
+	    Default,
+        Orphan,
+        Violation
+    };
+
     /// @brief Represents a Memory-Object.
     class CMemoryRegionBlock : public CAddressedRegion
     {
         DECLARE_READONLY_PROPERTY(std::string, Name)
         DECLARE_READONLY_PROPERTY(std::string, Title)
         DECLARE_READONLY_PROPERTY(std::string, MemorySizeText)
+        DECLARE_READONLY_PROPERTY(MemoryRegionBlockFlag, Flag)
 	    DECLARE_READONLY_PROPERTY(std::shared_ptr<LinqVector<CSectionDefinitionBase>>, ChildContent)
 
         DECLARE_STANDARD_PROPERTY(SMetricRectangleF, TitleArea)
@@ -30,9 +39,10 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 
         /// @brief Default constructor
         CMemoryRegionBlock(
-				std::string name,
-				std::string title,
-				std::string memorySizeText,
+				const std::string& name,
+				const std::string& title,
+				const std::string& memorySizeText,
+				const MemoryRegionBlockFlag flag,
 				const std::shared_ptr<LinqVector<CSectionDefinitionBase>>& childContent,
 		        const uint32_t inLinkerScriptStartPosition,
 		        const uint32_t inLinkerScriptLength,
@@ -41,8 +51,9 @@ namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 				const std::string& memorySize) :
 			  CAddressedRegion(inLinkerScriptStartPosition, inLinkerScriptLength, startAddress, endAddress, memorySize),
 			  m_Name(name),
-	          m_Title(std::move(title)),
-    		  m_MemorySizeText(std::move(memorySizeText)),
+	          m_Title(title),
+    		  m_MemorySizeText(memorySizeText),
+			  m_Flag(flag),
               m_ChildContent(childContent)
         {}
 

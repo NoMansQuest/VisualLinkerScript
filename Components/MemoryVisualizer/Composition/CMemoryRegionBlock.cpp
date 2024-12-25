@@ -27,7 +27,22 @@ void CMemoryRegionBlock::Paint(const CGraphicContext& graphicContext, QPainter& 
 
 
 	const auto borderPen = QPen(QColor::fromRgba(Colors::MemoryRegionDefaultBorderColor), 2, Qt::DotLine, Qt::FlatCap, Qt::BevelJoin);
-	const auto fillBrush = QBrush(QColor::fromRgba(Colors::MemoryRegionDefaultBackgroundColor), Qt::SolidPattern);
+
+	QBrush fillBrush;
+
+	if (this->Flag() == MemoryRegionBlockFlag::Default )
+	{
+		fillBrush = QBrush(QColor::fromRgba(Colors::MemoryRegionDefaultBackgroundColor), Qt::SolidPattern);		
+	}
+	else if (this->Flag() == MemoryRegionBlockFlag::Orphan)
+	{
+		fillBrush = QBrush(QColor::fromRgba(Colors::MemoryRegionOrphanDefaultBackgroundColor), Qt::SolidPattern);		
+	}
+	else
+	{
+		fillBrush = QBrush(QColor::fromRgba(Colors::MemoryRegionViolationDefaultBackgroundColor), Qt::SolidPattern);
+	}
+
 	this->PaintAddressedRegion(graphicContext, painter, borderPen, fillBrush);
 
 	// Draw all children
