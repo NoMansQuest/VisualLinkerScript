@@ -11,8 +11,6 @@
 #include "Components/QLinkerScriptSession/QLinkerScriptSession.h"
 #include "LinkerScriptManager/QLinkerScriptManager.h"
 #include "ParsingEngine/CLinkerScriptParser.h"
-#include "Messaging/CEventAggregator.h"
-#include "Messaging/UserInitiated/COpenFileRequest.h"
 #include "MD5/MD5.h"
 
 using namespace VisualLinkerScript::ParsingEngine;

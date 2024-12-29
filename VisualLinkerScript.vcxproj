@@ -335,7 +335,6 @@
     <ClCompile Include="Components\QChromeTab\QChromeTabButton.cpp" />
     <ClCompile Include="Components\QChromeTab\QChromeTabWidget.cpp" />
     <ClCompile Include="LinkerScriptManager\QLinkerScriptManager.cpp" />
-    <ClCompile Include="Widgets\QLinkerScriptPanel.cpp" />
     <ClCompile Include="Components\QLinkerScriptSession\QLinkerScriptSession.cpp" />
     <ClCompile Include="Components\MemoryVisualizer\QMemoryVisualizer.cpp" />
     <ClCompile Include="Components\QSearchPopup\QSearchPopup.cpp" />
@@ -414,21 +413,15 @@
     <ClInclude Include="ParsingEngine\SubParsers\CAssignmentProcedureParser.h" />
     <ClInclude Include="Models\CAssignmentProcedureStatement.h" />
     <ClInclude Include="Models\CAssignmentStatement.h" />
-    <ClInclude Include="Messaging\UserInitiated\CCloseFileRequest.h" />
     <ClInclude Include="ParsingEngine\SubParsers\CCommandParser.h" />
     <ClInclude Include="DrcEngine\Rules\CDirectivesDeclaredOnlyOnceRule.h" />
     <ClInclude Include="DrcEngine\CDrcManager.h" />
     <ClInclude Include="DrcEngine\CDrcViolation.h" />
     <ClInclude Include="DrcEngine\Rules\CEntryIsDefinedRule.h" />
-    <ClInclude Include="Messaging\CEventAggregator.h" />
     <ClInclude Include="Models\CExpression.h" />
     <ClInclude Include="Models\CExpressionNumber.h" />
     <ClInclude Include="Models\CExpressionOperator.h" />
     <ClInclude Include="ParsingEngine\SubParsers\CExpressionParser.h" />
-    <ClInclude Include="Messaging\LinkerScriptManager\CFileWasClosedEvent.h" />
-    <ClInclude Include="Messaging\LinkerScriptManager\CFileWasOpenedEvent.h" />
-    <ClInclude Include="Messaging\UserInitiated\CFindReplaceRequest.h" />
-    <ClInclude Include="Messaging\UserInitiated\CFindRequest.h" />
     <ClInclude Include="Components\MemoryVisualizer\Composition\CFloorPlan.h" />
     <ClInclude Include="Models\CFunctionCall.h" />
     <ClInclude Include="ParsingEngine\SubParsers\CFunctionParser.h" />
@@ -447,7 +440,6 @@
     <ClInclude Include="ParsingEngine\CLexerException.h" />
     <ClInclude Include="Models\CParsedContentBase.h" />
     <ClInclude Include="Models\CLinkerScriptFile.h" />
-    <ClInclude Include="Messaging\UserInitiated\CLoadMappingFileRequest.h" />
     <ClInclude Include="DrcEngine\Rules\CLocationCounterCannotGoBackwardsRule.h" />
     <ClInclude Include="ParsingEngine\CLinkerScriptParser.h" />
     <ClInclude Include="ParsingEngine\CMasterParserException.h" />
@@ -461,8 +453,6 @@
     <ClInclude Include="Models\CMemoryStatementAttribute.h" />
     <ClInclude Include="ParsingEngine\SubParsers\CMemoryStatementAttributeParser.h" />
     <ClInclude Include="DrcEngine\Rules\CNoDuplicateMemoryRegionNameRule.h" />
-    <ClInclude Include="Messaging\General\CNotifyUserEvent.h" />
-    <ClInclude Include="Messaging\UserInitiated\COpenFileRequest.h" />
     <ClInclude Include="Components\MemoryVisualizer\Composition\COverlayStatement.h" />
     <ClInclude Include="Components\MemoryVisualizer\Composition\COverlaySectionStatement.h" />
     <ClInclude Include="Models\CParameterSeparator.h" />
@@ -472,11 +462,8 @@
     <ClInclude Include="ParsingEngine\SubParsers\CPhdrsRegionParser.h" />
     <ClInclude Include="Models\CPhdrsStatement.h" />
     <ClInclude Include="Models\CProcedureCall.h" />
-    <ClInclude Include="Messaging\CPubSubEvent.h" />
     <ClInclude Include="Models\Raw\CRawEntry.h" />
     <ClInclude Include="Models\Raw\CRawFile.h" />
-    <ClInclude Include="Messaging\UserInitiated\CRedoRequest.h" />
-    <ClInclude Include="Messaging\UserInitiated\CSaveFileRequest.h" />
     <ClInclude Include="ParsingEngine\SubParsers\CScopedRegionParser.h" />
     <ClInclude Include="ParsingEngine\SubParsers\CScopedRegionParser.tpp" />
     <ClInclude Include="Components\MemoryVisualizer\Composition\CSectionOutput.h" />
@@ -496,13 +483,11 @@
     <ClInclude Include="DrcEngine\Rules\CSectionsDefinedOnlyOnceRule.h" />
     <ClInclude Include="Models\CSectionsRegion.h" />
     <ClInclude Include="ParsingEngine\SubParsers\CSectionsRegionParser.h" />
-    <ClInclude Include="Messaging\UserInitiated\CShowAboutRequest.h" />
     <ClInclude Include="Models\CStringEntry.h" />
     <ClInclude Include="ParsingEngine\SubParsers\CSubParserBase.h" />
     <ClInclude Include="Models\CSymbol.h" />
     <ClInclude Include="DrcEngine\Rules\CSymbolsDefinedInAdvanceRule.h" />
     <ClInclude Include="Components\MemoryVisualizer\Composition\CTooltip.h" />
-    <ClInclude Include="Messaging\UserInitiated\CUndoRequest.h" />
     <ClInclude Include="Models\CUnrecognizableContent.h" />
     <ClInclude Include="Models\CVersionNode.h" />
     <ClInclude Include="ParsingEngine\SubParsers\CVersionRegionContentParser.h" />
@@ -568,8 +553,6 @@
     <QtMoc Include="Components\QChromeTab\QChromeTabWidget.h">
     </QtMoc>
     <QtMoc Include="LinkerScriptManager\QLinkerScriptManager.h">
-    </QtMoc>
-    <QtMoc Include="Widgets\QLinkerScriptPanel.h">
     </QtMoc>
     <QtMoc Include="Components\QLinkerScriptSession\QLinkerScriptSession.h">
     </QtMoc>

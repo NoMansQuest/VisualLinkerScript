@@ -17,27 +17,28 @@ using namespace VisualLinkerScript::DrcEngine::Rules;
 LinqVector<CViolationBase> CMemoryRegionDefinedOnlyOnceRule::PerformCheck(const std::shared_ptr<CLinkerScriptFile>& linkerScriptFile)
 {
     LinqVector<CViolationBase> violations;
-
-	/*
-    auto foundSectionsRegion = linkerScriptFile->ParsedContent().OfType<CMemoryRegion>();
-    
-    for (const auto sectionsRegionResult: foundSectionsRegion) 
+	
+    auto foundMemoryRegions = linkerScriptFile->ParsedContent().OfType<CMemoryRegion>();
+    if (foundMemoryRegions.size() > 1)
     {
-        auto errorMessage = "'SECTIONS' region could only be defined once in linker-script file.";
-        auto violation = std::shared_ptr<CDrcViolation>(new CDrcViolation(
-            LinqVector<CParsedContentBase>{
-	            std::dynamic_pointer_cast<CParsedContentBase>(sectionsRegionResult)
-            },
-            this->DrcRuleTitle(),
-            errorMessage,
-            sectionsRegionResult->ObjectPath(),
-            {},
-            nullptr,
-            EDrcViolationCode::MemoryRegionDefinedMultipleTimes,
-            ESeverityCode::Error));
-    
-        violations.emplace_back(std::static_pointer_cast<CViolationBase>(violation));
+	    for (const auto foundMemoryRegion : foundMemoryRegions)
+	    {
+	        auto errorMessage = "'MEMORY' region could only be defined at most once in the linker-script file.";
+	        auto violation = std::shared_ptr<CDrcViolation>(new CDrcViolation(
+	            LinqVector<CParsedContentBase>{
+		            std::dynamic_pointer_cast<CParsedContentBase>(foundMemoryRegion)
+	            },
+	            this->DrcRuleTitle(),
+	            errorMessage,
+	            foundMemoryRegion->ObjectPath(),
+	            {},
+	            nullptr,
+	            EDrcViolationCode::MemoryRegionDefinedMultipleTimes,
+	            ESeverityCode::Error));
+	    
+	        violations.emplace_back(std::static_pointer_cast<CViolationBase>(violation));
+	    }	    
     }
-    */
+
     return violations;
 }

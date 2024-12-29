@@ -320,9 +320,6 @@
     <ClCompile Include="LinkerScriptManager\QLinkerScriptManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Widgets\QLinkerScriptPanel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Components\QLinkerScriptSession\QLinkerScriptSession.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -529,9 +526,6 @@
     <ClInclude Include="Models\CAssignmentStatement.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Messaging\UserInitiated\CCloseFileRequest.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ParsingEngine\SubParsers\CCommandParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -547,9 +541,6 @@
     <ClInclude Include="DrcEngine\Rules\CEntryIsDefinedRule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Messaging\CEventAggregator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Models\CExpression.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -560,18 +551,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ParsingEngine\SubParsers\CExpressionParser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Messaging\LinkerScriptManager\CFileWasClosedEvent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Messaging\LinkerScriptManager\CFileWasOpenedEvent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Messaging\UserInitiated\CFindReplaceRequest.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Messaging\UserInitiated\CFindRequest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Components\MemoryVisualizer\Composition\CFloorPlan.h">
@@ -628,9 +607,6 @@
     <ClInclude Include="Models\CLinkerScriptFile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Messaging\UserInitiated\CLoadMappingFileRequest.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="DrcEngine\Rules\CLocationCounterCannotGoBackwardsRule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -670,12 +646,6 @@
     <ClInclude Include="DrcEngine\Rules\CNoDuplicateMemoryRegionNameRule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Messaging\General\CNotifyUserEvent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Messaging\UserInitiated\COpenFileRequest.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Components\MemoryVisualizer\Composition\COverlayStatement.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -703,19 +673,10 @@
     <ClInclude Include="Models\CProcedureCall.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Messaging\CPubSubEvent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Models\Raw\CRawEntry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Models\Raw\CRawFile.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Messaging\UserInitiated\CRedoRequest.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Messaging\UserInitiated\CSaveFileRequest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ParsingEngine\SubParsers\CScopedRegionParser.h">
@@ -775,9 +736,6 @@
     <ClInclude Include="ParsingEngine\SubParsers\CSectionsRegionParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Messaging\UserInitiated\CShowAboutRequest.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Models\CStringEntry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -791,9 +749,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Components\MemoryVisualizer\Composition\CTooltip.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Messaging\UserInitiated\CUndoRequest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Models\CUnrecognizableContent.h">
@@ -980,9 +935,6 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="LinkerScriptManager\QLinkerScriptManager.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="Widgets\QLinkerScriptPanel.h">
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="Components\QLinkerScriptSession\QLinkerScriptSession.h">

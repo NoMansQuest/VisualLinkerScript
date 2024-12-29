@@ -18,7 +18,7 @@ LinqVector<CViolationBase> CSectionsDefinedOnlyOnceRule::PerformCheck(const std:
 {
     LinqVector<CViolationBase> violations;
 
-    /*
+    
     auto foundSectionsRegion = linkerScriptFile->ParsedContent().OfType<CSectionsRegion>();
     if (foundSectionsRegion.size() > 1)
     {
@@ -37,7 +37,7 @@ LinqVector<CViolationBase> CSectionsDefinedOnlyOnceRule::PerformCheck(const std:
                 ESeverityCode::Error))));
         }	    
     }
-    */
+    
     return violations;
 }
 

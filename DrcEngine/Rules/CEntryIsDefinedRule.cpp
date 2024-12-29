@@ -17,26 +17,22 @@ LinqVector<CViolationBase> CEntryIsDefinedRule::PerformCheck(const std::shared_p
 {
     LinqVector<CViolationBase> violations;
 
-	/*
-    auto foundDirectives = QueryObject<CFunctionCall>(
-		linkerScriptFile,
-	    [&](const std::shared_ptr<CLinkerScriptFile>& localLinkerScriptFile, const std::shared_ptr<CFunctionCall>& resolveEntryText) {
-		    return StringEquals(localLinkerScriptFile->ResolveParsedContent(resolveEntryText->FunctionName()), "ENTRY", true);
-	    });
+	auto foundEntryCalls = linkerScriptFile->ParsedContent()
+		.OfType<CFunctionCall>()
+		.Where([&](const std::shared_ptr<CFunctionCall>& call) { return StringEquals(linkerScriptFile->ResolveRawEntry(call->FunctionName()), "ENTRY", true); });
 
-	if (foundDirectives.size() > 1)
+	if (foundEntryCalls.size() > 1)
 	{
-		for (const auto foundDirective : foundDirectives)
+		for (const auto foundDirective : foundEntryCalls)
 		{
 			violations.emplace_back(std::static_pointer_cast<CViolationBase>(std::shared_ptr<CDrcViolation>(new CDrcViolation(
 				foundDirective,
 				this->DrcRuleTitle(),
-				"Directive is defined more than once.",
+				"Multiple definitions of 'ENTRY' directive was detected.",
 				EDrcViolationCode::EntryDirectiveDefinedMoreThanOnce,
-				EDrcViolationSeverity::Error))));
+				ESeverityCode::Error))));
 		}		
 	}
-	*/
 
     return violations;
 }

@@ -7,6 +7,7 @@
 #include "DrcEngine/CDrcViolation.h"
 #include "DrcEngine/EDrcViolationCode.h"
 #include "Models/CLinkerScriptFile.h"
+#include "Models/CMemoryRegion.h"
 
 REGISTER_DRC_RULE(CNoDuplicateMemoryRegionNameRule)
 
@@ -17,8 +18,11 @@ LinqVector<CViolationBase> CNoDuplicateMemoryRegionNameRule::PerformCheck(const 
 {
     LinqVector<CViolationBase> violations;
 
-    /*
-    const auto foundMemoryStatements = linkerScriptFile->ParsedContent().OfType<CMemoryStatement>();
+    
+    const auto foundMemoryStatements = linkerScriptFile->ParsedContent()
+        .OfType<CMemoryRegion>()
+        .SelectMany([&](const std::shared_ptr<CMemoryRegion>& memoryRegion) { return memoryRegion->Statements(); })
+		.OfType<CMemoryStatement>();
 
     for (const auto memoryStatementToInspect: foundMemoryStatements) {
         // Check if any other file has the name described
@@ -80,7 +84,7 @@ LinqVector<CViolationBase> CNoDuplicateMemoryRegionNameRule::PerformCheck(const 
 
         violations.emplace_back(std::static_pointer_cast<CViolationBase>(violation));
     }
-    */
+    
     return violations;
 }
 
