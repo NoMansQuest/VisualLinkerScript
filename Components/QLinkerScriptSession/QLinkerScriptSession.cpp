@@ -24,6 +24,8 @@
 #include "EditorAction/SEditorSetCaretPosition.h"
 #include "EditorAction/SEditorSetLineContent.h"
 #include "Models/CExpression.h"
+#include "Models/CFunctionCall.h"
+#include "Models/CInputSectionStatement.h"
 #include "Models/CMemoryRegion.h"
 #include "Models/CMemoryStatement.h"
 #include "Models/CSectionOutputAtLmaRegion.h"
@@ -847,21 +849,54 @@ std::shared_ptr<CFloorPlan> QLinkerScriptSession::GenerateFloorplan() const
 
             // Gather section outputs
             LinqVector<CSectionOutput> sectionOutputs;
-            sectionOutputStatement->InnerContent()
-                .OfType<CSectionOutputCommand>()
-                .ForEach([&](const std::shared_ptr<CSectionOutputCommand>& sectionOutputCommand)
+            for (const auto& innerContent : sectionOutputStatement->InnerContent())
+            {
+                const auto castAsInputStatement = std::dynamic_pointer_cast<CInputSectionStatement>(innerContent);
+                if (castAsInputStatement != nullptr)
+                {
+                    auto inputStatementContent = this->LinkerScriptFile()->ResolveParsedContent(*castAsInputStatement);
+                    auto sectionOutput = std::shared_ptr<CSectionOutput>(new CSectionOutput(
+                        inputStatementContent,
+                        castAsInputStatement->StartPosition(),
+                        castAsInputStatement->EndPosition(),
+                        "", "", ""));
+
+                    sectionOutputs.emplace_back(sectionOutput);
+                }
+
+                const auto castAsSectionOutputCommand = std::dynamic_pointer_cast<CSectionOutputCommand>(innerContent);
+                if (castAsSectionOutputCommand != nullptr)
+                {
+                    auto outputCommandName = this->LinkerScriptFile()->ResolveRawEntry(castAsSectionOutputCommand->SectionOutputNameEntry());
+                    auto sectionOutput = std::shared_ptr<CSectionOutput>(new CSectionOutput(
+                        outputCommandName,
+                        castAsSectionOutputCommand->SectionOutputNameEntry().StartPosition(),
+                        castAsSectionOutputCommand->ClosingBracketEntry().StartPosition() - castAsSectionOutputCommand->SectionOutputNameEntry().StartPosition() + 1,
+                        "", "", ""));
+
+                    sectionOutputs.emplace_back(sectionOutput);
+                }
+
+                const auto castAsKeepFunctionCall = std::dynamic_pointer_cast<CFunctionCall>(innerContent);
+                if (castAsKeepFunctionCall != nullptr)
+                {
+                    auto function = this->LinkerScriptFile()->ResolveRawEntry(castAsKeepFunctionCall->FunctionName());
+                    if (!StringEquals(function, "KEEP", true))
                     {
-                        auto outputCommandName = this->LinkerScriptFile()->ResolveRawEntry(sectionOutputCommand->SectionOutputNameEntry());
-                        auto sectionOutput = std::shared_ptr<CSectionOutput>(new CSectionOutput(
-                            outputCommandName,
-                            sectionOutputCommand->SectionOutputNameEntry().StartPosition(),
-                            sectionOutputCommand->ClosingBracketEntry().StartPosition() - sectionOutputCommand->SectionOutputNameEntry().StartPosition() + 1,
-                            "", "", "" ));
+	                    continue;
+                    }
 
-                        sectionOutputs.emplace_back(sectionOutput);
-                    });
+                    auto sectionOutput = std::shared_ptr<CSectionOutput>(new CSectionOutput(
+                        this->LinkerScriptFile()->ResolveParsedContent(*castAsKeepFunctionCall),
+                        castAsKeepFunctionCall->StartPosition(),
+                        castAsKeepFunctionCall->EndPosition(),
+                        "", "", ""));
 
-            // Gather section outputs
+                    sectionOutputs.emplace_back(sectionOutput);
+                }
+            }
+
+            // Generate the section statement
             auto translatedSectionStatement = std::shared_ptr<CSectionStatement>(
                 new CSectionStatement(
                     sectionName, 
