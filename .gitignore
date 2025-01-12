@@ -3,3 +3,9 @@ bin/*
 .vs/*
 debug/*
 release/*
+src/release/*
+src/debug/*
+src/bin/*
+tests/release/*
+tests/debug/*
+tests/bin/*
