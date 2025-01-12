@@ -209,15 +209,10 @@
     </QtUic>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <QtMoc Include="DrcEngine\Rules\CEntryIsDefinedRuleTests.cpp">
-      <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">input</DynamicSource>
-      <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).moc</QtMocFileName>
-      <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Release|x64'">input</DynamicSource>
-      <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).moc</QtMocFileName>
-    </QtMoc>
+    <QtMoc Include="..\src\DrcEngine\Rules\CEntryIsDefinedRuleTests.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="DrcEngine\Rules\CEntryIsDefinedRuleTests.h" />
+    <QtMoc Include="..\src\DrcEngine\Rules\CEntryIsDefinedRuleTests.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="release\moc_predefs.h.cbt">

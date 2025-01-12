@@ -1,3 +1,0 @@
-﻿  Moc'ing DrcEngine\Rules\CEntryIsDefinedRuleTests.h...
-   moc: C:\Users\nasse\Source\Repos\VisualLinkerScript\tests\DrcEngine\Rules\CEntryIsDefinedRuleTests.h: No such file
-C:\Users\nasse\AppData\Local\QtMsBuild\qt_globals.targets(293,5): error MSB4181: The "QtRunWork" task returned false but did not log an error.
