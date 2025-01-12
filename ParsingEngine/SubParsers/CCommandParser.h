@@ -1,4 +1,0 @@
-#ifndef CCOMMAND_PARSER_H__
-#define CCOMMAND_PARSER_H__
-
-#endif // CCOMMANDPARSER_H

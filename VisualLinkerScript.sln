@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32811.315
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VisualLinkerScript", "VisualLinkerScript.vcxproj", "{4F41248D-51D4-3A55-B974-D0F930BF8F65}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VisualLinkerScript", "src\VisualLinkerScript.vcxproj", "{4F41248D-51D4-3A55-B974-D0F930BF8F65}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,0 +1,1 @@
+QtProjectFileBuilder\ProFileBuilder.exe VisualLinkerScript.pro.template 

@@ -1,0 +1,741 @@
+﻿  Uic'ing MainWindow.ui...
+  Rcc'ing Resources.qrc...
+  Moc'ing Components\QFlatCheckBox\QFlatCheckBox.h...
+  Moc'ing Components\InputDialogs\QLabelAssistedInput.h...
+  Moc'ing Components\InputDialogs\QJumpToLineDialog.h...
+  Moc'ing Components\MemoryVisualizer\QMemoryLayoutRender.h...
+  Moc'ing Components\MemoryVisualizer\QPercentageLineEdit.h...
+  Moc'ing Components\QManualSizeGrip\QManualSizeGrip.h...
+  Moc'ing Components\QLinkerScriptSession\CustomComponents\QIssuesTreeView.h...
+  Moc'ing MainWindow.h...
+  Moc'ing Components\QChromeTab\QChromeTabButton.h...
+  Moc'ing Components\QChromeTab\QChromeTabWidget.h...
+  Moc'ing LinkerScriptManager\QLinkerScriptManager.h...
+  Moc'ing Components\QLinkerScriptSession\QLinkerScriptSession.h...
+  Moc'ing Components\MemoryVisualizer\QMemoryVisualizer.h...
+   Warning: Failed to resolve include "./Debug/moc_predefs.h" for moc file C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QFlatCheckBox\QFlatCheckBox.h
+   Warning: Failed to resolve include "./Debug/moc_predefs.h" for moc file C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\InputDialogs\QLabelAssistedInput.h
+  Moc'ing Components\QSearchPopup\QSearchPopup.h...
+   Warning: Failed to resolve include "./Debug/moc_predefs.h" for moc file C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\InputDialogs\QJumpToLineDialog.h
+   Warning: Failed to resolve include "./Debug/moc_predefs.h" for moc file C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\MemoryVisualizer\QMemoryLayoutRender.h
+  Moc'ing Components\QScintilla\src\SciClasses.h...
+  Moc'ing Components\QScintilla\src\ScintillaQt.h...
+   Warning: Failed to resolve include "./Debug/moc_predefs.h" for moc file C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\MemoryVisualizer\QPercentageLineEdit.h
+   Warning: Failed to resolve include "./Debug/moc_predefs.h" for moc file C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QLinkerScriptSession\CustomComponents\QIssuesTreeView.h
+   Warning: Failed to resolve include "./Debug/moc_predefs.h" for moc file C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QManualSizeGrip\QManualSizeGrip.h
+   Warning: Failed to resolve include "./Debug/moc_predefs.h" for moc file C:\Users\nasse\Source\Repos\VisualLinkerScript\src\MainWindow.h
+   Warning: Failed to resolve include "./Debug/moc_predefs.h" for moc file C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabButton.h
+   Warning: Failed to resolve include "./Debug/moc_predefs.h" for moc file C:\Users\nasse\Source\Repos\VisualLinkerScript\src\LinkerScriptManager\QLinkerScriptManager.h
+   Warning: Failed to resolve include "./Debug/moc_predefs.h" for moc file C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h
+  Moc'ing Components\QScintilla\src\Qsci\qsciabstractapis.h...
+  Moc'ing Components\QScintilla\src\Qsci\qsciapis.h...
+  Moc'ing Components\QScintilla\src\Qsci\qscilexer.h...
+  Moc'ing Components\QScintilla\src\Qsci\qscilexercpp.h...
+  Moc'ing Components\QScintilla\src\Qsci\qscilexerlinkerscript.h...
+  Moc'ing Components\QScintilla\src\Qsci\qscimacro.h...
+  Moc'ing Components\QScintilla\src\Qsci\qsciscintilla.h...
+  Moc'ing Components\QScintilla\src\Qsci\qsciscintillabase.h...
+   Warning: Failed to resolve include "./Debug/moc_predefs.h" for moc file C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QLinkerScriptSession\QLinkerScriptSession.h
+   Warning: Failed to resolve include "./Debug/moc_predefs.h" for moc file C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\MemoryVisualizer\QMemoryVisualizer.h
+   Warning: Failed to resolve include "./Debug/moc_predefs.h" for moc file C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QScintilla\src\SciClasses.h
+   Warning: Failed to resolve include "./Debug/moc_predefs.h" for moc file C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QScintilla\src\ScintillaQt.h
+   Warning: Failed to resolve include "./Debug/moc_predefs.h" for moc file C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QSearchPopup\QSearchPopup.h
+   Warning: Failed to resolve include "./Debug/moc_predefs.h" for moc file C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QScintilla\src\Qsci\qsciabstractapis.h
+   Warning: Failed to resolve include "./Debug/moc_predefs.h" for moc file C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QScintilla\src\Qsci\qsciapis.h
+   Warning: Failed to resolve include "./Debug/moc_predefs.h" for moc file C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QScintilla\src\Qsci\qscilexer.h
+   Warning: Failed to resolve include "./Debug/moc_predefs.h" for moc file C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QScintilla\src\Qsci\qscilexercpp.h
+   Warning: Failed to resolve include "./Debug/moc_predefs.h" for moc file C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QScintilla\src\Qsci\qscilexerlinkerscript.h
+   Warning: Failed to resolve include "./Debug/moc_predefs.h" for moc file C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QScintilla\src\Qsci\qscimacro.h
+   Warning: Failed to resolve include "./Debug/moc_predefs.h" for moc file C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QScintilla\src\Qsci\qsciscintilla.h
+   Warning: Failed to resolve include "./Debug/moc_predefs.h" for moc file C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QScintilla\src\Qsci\qsciscintillabase.h
+  QJumpToLineDialog.cpp
+  QLabelAssistedInput.cpp
+  QListAssistedInput.cpp
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'Components/InputDialogs/QJumpToLineDialog.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\InputDialogs\QLabelAssistedInput.h(22,27): warning C4100: 'textBlockSelected': unreferenced formal parameter
+  (compiling source file 'Components/InputDialogs/QLabelAssistedInput.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\LinkerScriptManager\QLinkerScriptManager.h(46,69): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'Components/InputDialogs/QJumpToLineDialog.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\InputDialogs\QJumpToLineDialog.cpp(55,46): warning C4100: 'obj': unreferenced formal parameter
+  CAddressedRegion.cpp
+  CFillExpressionButton.cpp
+  CFloorPlan.cpp
+  CMemoryRegionBlock.cpp
+  COverlaySectionOutput.cpp
+  COverlaySectionStatement.cpp
+  COverlayStatement.cpp
+  CProgramHeaderButton.cpp
+  CSectionOutput.cpp
+  CSectionStatement.cpp
+  CTooltip.cpp
+  SLineF.h
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'Components/MemoryVisualizer/Composition/CMemoryRegionBlock.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'Components/MemoryVisualizer/Composition/CAddressedRegion.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'Components/MemoryVisualizer/Composition/COverlayStatement.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'Components/MemoryVisualizer/Composition/CFloorPlan.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'Components/MemoryVisualizer/Composition/COverlaySectionStatement.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'Components/MemoryVisualizer/Composition/CMemoryRegionBlock.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'Components/MemoryVisualizer/Composition/CSectionOutput.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'Components/MemoryVisualizer/Composition/SLineF.h')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'Components/MemoryVisualizer/Composition/COverlaySectionOutput.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'Components/MemoryVisualizer/Composition/CFloorPlan.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\MemoryVisualizer\Composition\CAddressedRegion.cpp(86,65): warning C4100: 'allocatedArea': unreferenced formal parameter
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'Components/MemoryVisualizer/Composition/CTooltip.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'Components/MemoryVisualizer/Composition/COverlayStatement.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'Components/MemoryVisualizer/Composition/COverlaySectionStatement.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'Components/MemoryVisualizer/Composition/CFillExpressionButton.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\MemoryVisualizer\Composition\CMemoryRegionBlock.cpp(131,10): warning C4189: 'memoryRegionBottom': local variable is initialized but not referenced
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\MemoryVisualizer\Composition\CTooltip.cpp(5,71): warning C4100: 'painter': unreferenced formal parameter
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\MemoryVisualizer\Composition\CTooltip.cpp(5,45): warning C4100: 'graphicContext': unreferenced formal parameter
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'Components/MemoryVisualizer/Composition/CProgramHeaderButton.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'Components/MemoryVisualizer/Composition/CSectionStatement.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\MemoryVisualizer\Composition\COverlaySectionStatement.cpp(90,7): warning C4189: 'sectionStatementTop': local variable is initialized but not referenced
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\MemoryVisualizer\Composition\COverlayStatement.cpp(102,7): warning C4189: 'sectionStatementTop': local variable is initialized but not referenced
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'Components/MemoryVisualizer/Composition/CFillExpressionButton.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'Components/MemoryVisualizer/Composition/CProgramHeaderButton.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'Components/MemoryVisualizer/Composition/CSectionStatement.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\MemoryVisualizer\Composition\CSectionStatement.cpp(104,7): warning C4189: 'sectionStatementTop': local variable is initialized but not referenced
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\MemoryVisualizer\Composition\CSectionStatement.cpp(120,9): warning C4189: 'sectionStatementHeight': local variable is initialized but not referenced
+  QMemoryLayoutRender.cpp
+  CModelTranslator.cpp
+  QMemoryVisualizer.cpp
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'Components/MemoryVisualizer/CModelTranslator.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'Components/MemoryVisualizer/QMemoryVisualizer.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'Components/MemoryVisualizer/QMemoryLayoutRender.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'Components/MemoryVisualizer/QMemoryVisualizer.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'Components/MemoryVisualizer/CModelTranslator.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'Components/MemoryVisualizer/QMemoryLayoutRender.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\MemoryVisualizer\QMemoryLayoutRender.cpp(20,53): warning C4100: 'event': unreferenced formal parameter
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\MemoryVisualizer\QMemoryLayoutRender.cpp(26,51): warning C4100: 'paintEvent': unreferenced formal parameter
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\LinkerScriptManager\QLinkerScriptManager.h(46,69): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'Components/MemoryVisualizer/QMemoryVisualizer.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\MemoryVisualizer\CModelTranslator.cpp(9,93): warning C4100: 'linkerScriptFile': unreferenced formal parameter
+  CAutoStyler.cpp
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'Components/QLinkerScriptSession/AutoStyling/CAutoStyler.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'Components/QLinkerScriptSession/AutoStyling/CAutoStyler.cpp')
+  
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\xutility(255,82): warning C4267: 'argument': conversion from 'size_t' to 'const uint32_t', possible loss of data
+  (compiling source file 'Components/QLinkerScriptSession/AutoStyling/CAutoStyler.cpp')
+  C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\xutility(255,82):
+  the template instantiation context (the oldest one first) is
+  	C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QLinkerScriptSession\AutoStyling\CAutoStyler.cpp(155,44):
+  	see reference to function template instantiation 'std::shared_ptr<VisualLinkerScript::Components::LinkerScriptSession::EditorAction::SEditorSetCaretPosition> std::make_shared<VisualLinkerScript::Components::LinkerScriptSession::EditorAction::SEditorSetCaretPosition,uint32_t,unsigned __int64>(uint32_t &&,unsigned __int64 &&)' being compiled
+  	C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\memory(2738,46):
+  	see reference to function template instantiation 'std::_Ref_count_obj2<VisualLinkerScript::Components::LinkerScriptSession::EditorAction::SEditorSetCaretPosition>::_Ref_count_obj2<_Ty,unsigned __int64>(_Ty &&,unsigned __int64 &&)' being compiled
+          with
+          [
+              _Ty=uint32_t
+          ]
+  	C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\memory(2062,18):
+  	see reference to function template instantiation 'void std::_Construct_in_place<_Ty,unsigned int,unsigned __int64>(_Ty &,unsigned int &&,unsigned __int64 &&) noexcept(false)' being compiled
+          with
+          [
+              _Ty=VisualLinkerScript::Components::LinkerScriptSession::EditorAction::SEditorSetCaretPosition
+          ]
+  
+  SEditorRemoveLine.h
+  SEditorReplaceContent.h
+  SEditorSelectText.h
+  SEditorSetCaretPosition.h
+  SEditorSetLineContent.h
+  QFlatCheckBox.cpp
+  QIssuesTreeView.cpp
+  QManualSizeGrip.cpp
+  Accessor.cpp
+  CharacterCategory.cpp
+  CharacterSet.cpp
+  DefaultLexer.cpp
+  LexerBase.cpp
+  LexerModule.cpp
+  LexerNoExceptions.cpp
+  LexerSimple.cpp
+  PropSetSimple.cpp
+  StyleContext.cpp
+  WordList.cpp
+  AutoComplete.cpp
+  CallTip.cpp
+  CaseConvert.cpp
+  CaseFolder.cpp
+  Catalogue.cpp
+  CellBuffer.cpp
+  CharClassify.cpp
+  ContractionState.cpp
+  DBCS.cpp
+  Decoration.cpp
+  Document.cpp
+  EditModel.cpp
+  EditView.cpp
+  Editor.cpp
+  ExternalLexer.cpp
+  Indicator.cpp
+  KeyMap.cpp
+  LineMarker.cpp
+  MarginView.cpp
+  PerLine.cpp
+  PositionCache.cpp
+  RESearch.cpp
+  RunStyles.cpp
+  ScintillaBase.cpp
+  Selection.cpp
+  Style.cpp
+  UniConversion.cpp
+  ViewStyle.cpp
+  XPM.cpp
+  VlsScintilla.cpp
+  ComponentHelpers.cpp
+  CCorrectiveAction.h
+  EDrcViolationCode.cpp
+  CDrcManager.cpp
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'DrcEngine/CDrcManager.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'DrcEngine/CDrcManager.cpp')
+  
+  MD5.cpp
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\MD5\MD5.cpp(296,40): warning C4244: '=': conversion from '__int64' to 'unsigned int', possible loss of data
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\MD5\MD5.cpp(297,45): warning C4244: '=': conversion from '__int64' to 'unsigned int', possible loss of data
+  ELexerViolationCode.cpp
+  CLinkerScriptLexer.cpp
+  CLinkerScriptParser.cpp
+  EParserViolationCode.cpp
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'ParsingEngine/CLinkerScriptLexer.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'ParsingEngine/CLinkerScriptParser.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'ParsingEngine/CLinkerScriptLexer.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'ParsingEngine/CLinkerScriptParser.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\ParsingEngine\CLinkerScriptLexer.cpp(404,19): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\ParsingEngine\CLinkerScriptLexer.cpp(424,19): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\ParsingEngine\CLinkerScriptParser.cpp(281,28): warning C4100: 'resolvedContent': unreferenced formal parameter
+  CAssignmentParser.cpp
+  CAssignmentProcedureParser.cpp
+  CExpressionParser.cpp
+  CFunctionParser.cpp
+  CInputSectionFunctionExcludeFileParser.cpp
+  CInputSectionFunctionKeepParser.cpp
+  CInputSectionFunctionSortParser.cpp
+  CInputSectionStatementParser.cpp
+  CMemoryRegionContentParser.cpp
+  CMemoryStatementAttributeParser.cpp
+  CPhdrsRegionContentParser.cpp
+  CSectionOutputCommandParser.cpp
+  CSectionOverlayParser.cpp
+  CSectionsRegionParser.cpp
+  CSubParserBase.cpp
+  CVersionRegionContentParser.cpp
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'ParsingEngine/SubParsers/CInputSectionFunctionExcludeFileParser.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'ParsingEngine/SubParsers/CInputSectionStatementParser.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'ParsingEngine/SubParsers/CMemoryRegionContentParser.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'ParsingEngine/SubParsers/CInputSectionFunctionKeepParser.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'ParsingEngine/SubParsers/CInputSectionFunctionSortParser.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'ParsingEngine/SubParsers/CAssignmentProcedureParser.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'ParsingEngine/SubParsers/CFunctionParser.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'ParsingEngine/SubParsers/CMemoryStatementAttributeParser.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'ParsingEngine/SubParsers/CSectionOverlayParser.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'ParsingEngine/SubParsers/CPhdrsRegionContentParser.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'ParsingEngine/SubParsers/CExpressionParser.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'ParsingEngine/SubParsers/CSectionOutputCommandParser.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'ParsingEngine/SubParsers/CSubParserBase.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'ParsingEngine/SubParsers/CAssignmentParser.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'ParsingEngine/SubParsers/CVersionRegionContentParser.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'ParsingEngine/SubParsers/CSectionsRegionParser.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'ParsingEngine/SubParsers/CInputSectionStatementParser.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'ParsingEngine/SubParsers/CInputSectionFunctionKeepParser.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'ParsingEngine/SubParsers/CFunctionParser.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'ParsingEngine/SubParsers/CMemoryRegionContentParser.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'ParsingEngine/SubParsers/CSectionOverlayParser.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'ParsingEngine/SubParsers/CSectionOutputCommandParser.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'ParsingEngine/SubParsers/CInputSectionFunctionExcludeFileParser.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'ParsingEngine/SubParsers/CMemoryStatementAttributeParser.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'ParsingEngine/SubParsers/CAssignmentProcedureParser.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'ParsingEngine/SubParsers/CVersionRegionContentParser.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'ParsingEngine/SubParsers/CSubParserBase.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'ParsingEngine/SubParsers/CSectionsRegionParser.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'ParsingEngine/SubParsers/CInputSectionFunctionSortParser.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'ParsingEngine/SubParsers/CPhdrsRegionContentParser.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'ParsingEngine/SubParsers/CAssignmentParser.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\ParsingEngine\SubParsers\CSubParserBase.cpp(19,24): warning C4100: 'end': unreferenced formal parameter
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\ParsingEngine\SubParsers\CSubParserBase.cpp(111,28): warning C4100: 'linkerScriptFile': unreferenced formal parameter
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\ParsingEngine\SubParsers\CSubParserBase.cpp(125,30): warning C4100: 'linkerScriptFile': unreferenced formal parameter
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'ParsingEngine/SubParsers/CExpressionParser.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\ParsingEngine\SubParsers\CAssignmentParser.cpp(48,10): warning C4189: 'doNotAdvance': local variable is initialized but not referenced
+  Constants.cpp
+  SubParserHelpers.cpp
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'ParsingEngine/SubParsers/SubParserHelpers.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'ParsingEngine/SubParsers/SubParserHelpers.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\ParsingEngine\SubParsers\SubParserHelpers.cpp(193,28): warning C4100: 'linkerScriptFile': unreferenced formal parameter
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\ParsingEngine\SubParsers\SubParserHelpers.cpp(264,30): warning C4100: 'linkerScriptFile': unreferenced formal parameter
+  CAssignmentProcedureStatement.cpp
+  CAssignmentStatement.cpp
+  CExpression.cpp
+  CFunctionCall.cpp
+  CInputSectionFunction.cpp
+  CInputSectionStatement.cpp
+  CParsedContentBase.cpp
+  CLinkerScriptFile.cpp
+  CMemoryRegion.cpp
+  CMemoryStatement.cpp
+  CPhdrsRegion.cpp
+  CPhdrsStatement.cpp
+  CProcedureCall.cpp
+  CSectionOutputCommand.cpp
+  CSectionOutputOverlay.cpp
+  CSectionOverlayCommand.cpp
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'Models/CSectionOutputCommand.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'Models/CInputSectionFunction.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'Models/CPhdrsStatement.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'Models/CSectionOutputOverlay.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'Models/CPhdrsRegion.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'Models/CAssignmentProcedureStatement.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'Models/CProcedureCall.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'Models/CInputSectionStatement.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'Models/CExpression.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'Models/CMemoryStatement.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'Models/CAssignmentStatement.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'Models/CSectionOverlayCommand.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'Models/CMemoryRegion.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'Models/CFunctionCall.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'Models/CParsedContentBase.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'Models/CLinkerScriptFile.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'Models/CSectionOutputCommand.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'Models/CAssignmentStatement.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'Models/CPhdrsStatement.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'Models/CProcedureCall.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'Models/CFunctionCall.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'Models/CInputSectionFunction.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'Models/CParsedContentBase.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'Models/CInputSectionStatement.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'Models/CMemoryStatement.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'Models/CSectionOutputOverlay.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'Models/CSectionOverlayCommand.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'Models/CExpression.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'Models/CPhdrsRegion.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'Models/CAssignmentProcedureStatement.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'Models/CLinkerScriptFile.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'Models/CMemoryRegion.cpp')
+  
+  CSectionsRegion.cpp
+  CVersionScope.cpp
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'Models/CSectionsRegion.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'Models/CVersionScope.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'Models/CSectionsRegion.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'Models/CVersionScope.cpp')
+  
+  CDirectivesDeclaredOnlyOnceRule.cpp
+  CEntryIsDefinedRule.cpp
+  CIncludeRecursionGuard.cpp
+  CIncludedFilesArePresentRule.cpp
+  CLocationCounterCannotGoBackwardsRule.cpp
+  CMemoryRegionDefinedOnlyOnceRule.cpp
+  CNoDuplicateMemoryRegionNameRule.cpp
+  CSectionsDefinedOnlyOnceRule.cpp
+  CSymbolsDefinedInAdvanceRule.cpp
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'DrcEngine/Rules/CSymbolsDefinedInAdvanceRule.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'DrcEngine/Rules/CMemoryRegionDefinedOnlyOnceRule.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'DrcEngine/Rules/CSymbolsDefinedInAdvanceRule.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'DrcEngine/Rules/CDirectivesDeclaredOnlyOnceRule.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'DrcEngine/Rules/CMemoryRegionDefinedOnlyOnceRule.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\DrcEngine\Rules\CSymbolsDefinedInAdvanceRule.cpp(15,113): warning C4100: 'linkerScriptFile': unreferenced formal parameter
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'DrcEngine/Rules/CDirectivesDeclaredOnlyOnceRule.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'DrcEngine/Rules/CLocationCounterCannotGoBackwardsRule.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'DrcEngine/Rules/CNoDuplicateMemoryRegionNameRule.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'DrcEngine/Rules/CEntryIsDefinedRule.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'DrcEngine/Rules/CLocationCounterCannotGoBackwardsRule.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'DrcEngine/Rules/CIncludeRecursionGuard.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'DrcEngine/Rules/CNoDuplicateMemoryRegionNameRule.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'DrcEngine/Rules/CEntryIsDefinedRule.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'DrcEngine/Rules/CIncludedFilesArePresentRule.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\DrcEngine\Rules\CLocationCounterCannotGoBackwardsRule.cpp(11,122): warning C4100: 'linkerScriptFile': unreferenced formal parameter
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'DrcEngine/Rules/CIncludeRecursionGuard.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'DrcEngine/Rules/CSectionsDefinedOnlyOnceRule.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'DrcEngine/Rules/CIncludedFilesArePresentRule.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'DrcEngine/Rules/CSectionsDefinedOnlyOnceRule.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\DrcEngine\Rules\CIncludeRecursionGuard.cpp(37,107): warning C4100: 'linkerScriptFile': unreferenced formal parameter
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\DrcEngine\Rules\CIncludedFilesArePresentRule.cpp(15,108): warning C4100: 'linkerScriptFile': unreferenced formal parameter
+  Helpers.cpp
+  MainWindow.cpp
+  main.cpp
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'MainWindow.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'Helpers.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'MainWindow.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Helpers.cpp(28,20): warning C4100: 'caseSensitive': unreferenced formal parameter
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\LinkerScriptManager\QLinkerScriptManager.h(46,69): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'MainWindow.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\MainWindow.cpp(102,61): warning C4100: 'activeTab': unreferenced formal parameter
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\MainWindow.cpp(156,38): warning C4100: 'checked': unreferenced formal parameter
+  InputMethod.cpp
+  ListBoxQt.cpp
+  MacPasteboardMime.cpp
+  PlatQt.cpp
+  SciAccessibility.cpp
+  SciClasses.cpp
+  ScintillaQt.cpp
+  qsciabstractapis.cpp
+  qsciapis.cpp
+  qscicommand.cpp
+  qscicommandset.cpp
+  qscidocument.cpp
+  qscilexer.cpp
+  qscilexercpp.cpp
+  qscilexerlinkerscript.cpp
+  qscimacro.cpp
+  qsciprinter.cpp
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QScintilla\src\qscilexerlinkerscript.cpp(111,46): warning C4100: 'style': unreferenced formal parameter
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QScintilla\src\qscilexerlinkerscript.cpp(194,48): warning C4100: 'style': unreferenced formal parameter
+  qsciscintilla.cpp
+  qsciscintillabase.cpp
+  qscistyle.cpp
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QScintilla\src\InputMethod.cpp(178,36): warning C4018: '<': signed/unsigned mismatch
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QScintilla\src\InputMethod.cpp(159,23): warning C4189: 'oneCharLen': local variable is initialized but not referenced
+  qscistyledtext.cpp
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QScintilla\src\qsciapis.cpp(46,8): warning C4099: 'QsciAPIsPrepared': type name first seen using 'class' now seen using 'struct'
+  C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QScintilla\src\qsciapis.cpp(46,8):
+  see declaration of 'QsciAPIsPrepared'
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QScintilla\src\qsciscintilla.cpp(4202,17): warning C4267: 'initializing': conversion from 'size_t' to 'uint', possible loss of data
+  LexCPP.cpp
+  LexLinkerScript.cpp
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QScintilla\scintilla\lexers\LexLinkerScript.cpp(359,87): warning C4100: 'initStyle': unreferenced formal parameter
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QScintilla\scintilla\lexers\LexLinkerScript.cpp(359,75): warning C4100: 'length': unreferenced formal parameter
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QScintilla\scintilla\lexers\LexLinkerScript.cpp(359,52): warning C4100: 'startPos': unreferenced formal parameter
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QScintilla\scintilla\lexers\LexLinkerScript.cpp(623,90): warning C4100: 'initStyle': unreferenced formal parameter
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QScintilla\scintilla\lexers\LexLinkerScript.cpp(623,78): warning C4100: 'length': unreferenced formal parameter
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QScintilla\scintilla\lexers\LexLinkerScript.cpp(623,47): warning C4100: 'startingPosition': unreferenced formal parameter
+  QChromeTabButton.cpp
+  QChromeTabWidget.cpp
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'Components/QChromeTab/QChromeTabWidget.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabButton.cpp(76,48): warning C4100: 'event': unreferenced formal parameter
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabButton.cpp(82,43): warning C4100: 'event': unreferenced formal parameter
+  QLinkerScriptManager.cpp
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'LinkerScriptManager/QLinkerScriptManager.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\LinkerScriptManager\QLinkerScriptManager.h(46,69): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'LinkerScriptManager/QLinkerScriptManager.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'LinkerScriptManager/QLinkerScriptManager.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\LinkerScriptManager\QLinkerScriptManager.cpp(11,14): warning C4189: 'matchFound': local variable is initialized but not referenced
+  QLinkerScriptSession.cpp
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'Components/QLinkerScriptSession/QLinkerScriptSession.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'Components/QLinkerScriptSession/QLinkerScriptSession.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QLinkerScriptSession\QLinkerScriptSession.cpp(230,72): warning C4100: 'column': unreferenced formal parameter
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QLinkerScriptSession\QLinkerScriptSession.cpp(230,62): warning C4100: 'line': unreferenced formal parameter
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QLinkerScriptSession\QLinkerScriptSession.cpp(265,25): warning C4100: 'searchPerimeter': unreferenced formal parameter
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QLinkerScriptSession\QLinkerScriptSession.cpp(260,20): warning C4100: 'replaceWith': unreferenced formal parameter
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QLinkerScriptSession\QLinkerScriptSession.cpp(352,85): warning C4100: 'isCaseSensitive': unreferenced formal parameter
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QLinkerScriptSession\QLinkerScriptSession.cpp(352,70): warning C4100: 'isRegExt': unreferenced formal parameter
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QLinkerScriptSession\QLinkerScriptSession.cpp(739,58): warning C4100: 'charAdded': unreferenced formal parameter
+  QSearchPopup.cpp
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QSearchPopup\QSearchPopup.cpp(152,74): warning C4100: 'dy': unreferenced formal parameter
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QSearchPopup\QSearchPopup.cpp(152,66): warning C4100: 'dx': unreferenced formal parameter
+  CEntryIsDefinedRuleTests.cpp
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'Tests/DrcEngine/Rules/CEntryIsDefinedRuleTests.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'Tests/DrcEngine/Rules/CEntryIsDefinedRuleTests.cpp')
+  
+  qrc_Resources.cpp
+  moc_QFlatCheckBox.cpp
+  moc_QLabelAssistedInput.cpp
+  moc_QJumpToLineDialog.cpp
+  moc_QMemoryLayoutRender.cpp
+  moc_QPercentageLineEdit.cpp
+  moc_QManualSizeGrip.cpp
+  moc_QIssuesTreeView.cpp
+  moc_MainWindow.cpp
+  moc_QChromeTabButton.cpp
+  moc_QChromeTabWidget.cpp
+  moc_QLinkerScriptManager.cpp
+  moc_QLinkerScriptSession.cpp
+  moc_QMemoryVisualizer.cpp
+  moc_QSearchPopup.cpp
+  moc_SciClasses.cpp
+  moc_ScintillaQt.cpp
+  moc_qsciabstractapis.cpp
+  moc_qsciapis.cpp
+  moc_qscilexer.cpp
+  moc_qscilexercpp.cpp
+  moc_qscilexerlinkerscript.cpp
+  moc_qscimacro.cpp
+  moc_qsciscintilla.cpp
+  moc_qsciscintillabase.cpp
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'Debug/moc_QChromeTabWidget.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'Debug/moc_QMemoryVisualizer.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\InputDialogs\QLabelAssistedInput.h(22,27): warning C4100: 'textBlockSelected': unreferenced formal parameter
+  (compiling source file 'Debug/moc_QLabelAssistedInput.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'Debug/moc_QLinkerScriptManager.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'Debug/moc_QLinkerScriptSession.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Components\QChromeTab\QChromeTabWidget.h(71,57): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'Debug/moc_QMemoryLayoutRender.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\LinkerScriptManager\QLinkerScriptManager.h(46,69): warning C4267: 'return': conversion from 'size_t' to 'uint32_t', possible loss of data
+  (compiling source file 'Debug/moc_QLinkerScriptManager.cpp')
+  
+C:\Users\nasse\Source\Repos\VisualLinkerScript\src\Models\Raw\CRawEntry.h(49,21): warning C4100: 'parentVectorIndex': unreferenced formal parameter
+  (compiling source file 'Debug/moc_QLinkerScriptSession.cpp')
+  
+  VisualLinkerScript.vcxproj -> C:\Users\nasse\Source\Repos\VisualLinkerScript\src\debug\VisualLinkerScript.exe

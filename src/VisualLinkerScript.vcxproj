@@ -1,0 +1,663 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{4F41248D-51D4-3A55-B974-D0F930BF8F65}</ProjectGuid>
+    <RootNamespace>VisualLinkerScript</RootNamespace>
+    <Keyword>QtVS_v304</Keyword>
+    <WindowsTargetPlatformVersion>10.0.22621.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformMinVersion>10.0.22621.0</WindowsTargetPlatformMinVersion>
+    <QtMsBuild Condition="'$(QtMsBuild)'=='' or !Exists('$(QtMsBuild)\qt.targets')">$(MSBuildProjectDirectory)\QtMsBuild</QtMsBuild>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <PlatformToolset>v143</PlatformToolset>
+    <OutputDirectory>release\</OutputDirectory>
+    <ATLMinimizesCRunTimeLibraryUsage>false</ATLMinimizesCRunTimeLibraryUsage>
+    <CharacterSet>NotSet</CharacterSet>
+    <ConfigurationType>Application</ConfigurationType>
+    <IntermediateDirectory>release\</IntermediateDirectory>
+    <PrimaryOutput>VisualLinkerScript</PrimaryOutput>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <PlatformToolset>v143</PlatformToolset>
+    <OutputDirectory>debug\</OutputDirectory>
+    <ATLMinimizesCRunTimeLibraryUsage>false</ATLMinimizesCRunTimeLibraryUsage>
+    <CharacterSet>NotSet</CharacterSet>
+    <ConfigurationType>Application</ConfigurationType>
+    <IntermediateDirectory>debug\</IntermediateDirectory>
+    <PrimaryOutput>VisualLinkerScript</PrimaryOutput>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(QtMsBuild)\qt.targets') or !Exists('$(QtMsBuild)\qt.props')">
+    <Message Importance="High" Text="QtMsBuild: could not locate qt.targets, qt.props; project may not build correctly." />
+  </Target>
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt_defaults.props')">
+    <Import Project="$(QtMsBuild)\qt_defaults.props" />
+  </ImportGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>debug\</OutDir>
+    <IntDir>debug\</IntDir>
+    <TargetName>VisualLinkerScript</TargetName>
+    <IgnoreImportLibrary>true</IgnoreImportLibrary>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>release\</OutDir>
+    <IntDir>release\</IntDir>
+    <TargetName>VisualLinkerScript</TargetName>
+    <IgnoreImportLibrary>true</IgnoreImportLibrary>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <QtInstall>6.3.2</QtInstall>
+    <QtModules>core;gui;widgets;printsupport</QtModules>
+  </PropertyGroup>
+  <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <QtInstall>6.3.2</QtInstall>
+    <QtModules>core;gui;widgets;printsupport</QtModules>
+  </PropertyGroup>
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt.props')">
+    <Import Project="$(QtMsBuild)\qt.props" />
+  </ImportGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>GeneratedFiles\$(ConfigurationName);GeneratedFiles;.;Components\QScintilla\scintilla\include;Components\QScintilla\scintilla\lexlib;Components\QScintilla\scintilla\src;release;/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>-Zc:rvalueCast -Zc:inline -Zc:strictStrings -Zc:throwingNew -permissive- -Zc:__cplusplus -Zc:externConstexpr -O0 -utf-8 -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 %(AdditionalOptions)</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)%(RelativeDir)</AssemblerListingLocation>
+      <BrowseInformation>false</BrowseInformation>
+      <DebugInformationFormat>None</DebugInformationFormat>
+      <DisableSpecificWarnings>4577;4467;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_WINDOWS;UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;SCINTILLA_QT;SCI_LEXER;INCLUDE_DEPRECATED_FEATURES;NDEBUG;QT_NO_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
+      <ProgramDataBaseFileName>
+      </ProgramDataBaseFileName>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>$(QTDIR)\lib\Qt6EntryPoint.lib;shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>"/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'" %(AdditionalOptions)</AdditionalOptions>
+      <DataExecutionPrevention>true</DataExecutionPrevention>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreImportLibrary>true</IgnoreImportLibrary>
+      <LinkIncremental>false</LinkIncremental>
+      <OptimizeReferences>true</OptimizeReferences>
+      <OutputFile>$(OutDir)\VisualLinkerScript.exe</OutputFile>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
+      <SubSystem>Windows</SubSystem>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Link>
+    <Midl>
+      <DefaultCharType>Unsigned</DefaultCharType>
+      <EnableErrorChecks>None</EnableErrorChecks>
+      <WarningLevel>0</WarningLevel>
+    </Midl>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_WINDOWS;UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;SCINTILLA_QT;SCI_LEXER;INCLUDE_DEPRECATED_FEATURES;NDEBUG;QT_NO_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <QtMoc>
+      <CompilerFlavor>msvc</CompilerFlavor>
+      <Include>./$(Configuration)/moc_predefs.h</Include>
+      <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
+      <DynamicSource>output</DynamicSource>
+      <QtMocDir>$(Configuration)</QtMocDir>
+      <QtMocFileName>moc_%(Filename).cpp</QtMocFileName>
+    </QtMoc>
+    <QtRcc>
+      <ExecutionDescription>Rcc'ing %(Identity)...</ExecutionDescription>
+      <NoZstd>true</NoZstd>
+      <Compression>default</Compression>
+      <InitFuncName>Resources</InitFuncName>
+      <QtRccDir>$(Configuration)</QtRccDir>
+      <QtRccFileName>qrc_%(Filename).cpp</QtRccFileName>
+    </QtRcc>
+    <QtUic>
+      <ExecutionDescription>Uic'ing %(Identity)...</ExecutionDescription>
+      <QtUicDir>$(ProjectDir)</QtUicDir>
+      <QtUicFileName>ui_%(Filename).h</QtUicFileName>
+    </QtUic>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>GeneratedFiles\$(ConfigurationName);GeneratedFiles;.;Components\QScintilla\scintilla\include;Components\QScintilla\scintilla\lexlib;Components\QScintilla\scintilla\src;debug;/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>-Zc:rvalueCast -Zc:inline -Zc:strictStrings -Zc:throwingNew -permissive- -Zc:__cplusplus -Zc:externConstexpr -utf-8 -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 %(AdditionalOptions)</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)%(RelativeDir)</AssemblerListingLocation>
+      <BrowseInformation>false</BrowseInformation>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4577;4467;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_WINDOWS;UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;SCINTILLA_QT;SCI_LEXER;INCLUDE_DEPRECATED_FEATURES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>$(QTDIR)\lib\Qt6EntryPointd.lib;shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>/DEBUG "/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'" %(AdditionalOptions)</AdditionalOptions>
+      <DataExecutionPrevention>true</DataExecutionPrevention>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreImportLibrary>true</IgnoreImportLibrary>
+      <OutputFile>$(OutDir)\VisualLinkerScript.exe</OutputFile>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
+      <SubSystem>Windows</SubSystem>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Link>
+    <Midl>
+      <DefaultCharType>Unsigned</DefaultCharType>
+      <EnableErrorChecks>None</EnableErrorChecks>
+      <WarningLevel>0</WarningLevel>
+    </Midl>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_WINDOWS;UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;SCINTILLA_QT;SCI_LEXER;INCLUDE_DEPRECATED_FEATURES;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <QtMoc>
+      <CompilerFlavor>msvc</CompilerFlavor>
+      <Include>./$(Configuration)/moc_predefs.h</Include>
+      <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
+      <DynamicSource>output</DynamicSource>
+      <QtMocDir>$(Configuration)</QtMocDir>
+      <QtMocFileName>moc_%(Filename).cpp</QtMocFileName>
+    </QtMoc>
+    <QtRcc>
+      <ExecutionDescription>Rcc'ing %(Identity)...</ExecutionDescription>
+      <NoZstd>true</NoZstd>
+      <Compression>default</Compression>
+      <InitFuncName>Resources</InitFuncName>
+      <QtRccDir>$(Configuration)</QtRccDir>
+      <QtRccFileName>qrc_%(Filename).cpp</QtRccFileName>
+    </QtRcc>
+    <QtUic>
+      <ExecutionDescription>Uic'ing %(Identity)...</ExecutionDescription>
+      <QtUicDir>$(ProjectDir)</QtUicDir>
+      <QtUicFileName>ui_%(Filename).h</QtUicFileName>
+    </QtUic>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="Components\InputDialogs\QJumpToLineDialog.cpp">
+      <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">input</DynamicSource>
+      <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).moc</QtMocFileName>
+      <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Release|x64'">input</DynamicSource>
+      <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).moc</QtMocFileName>
+    </ClCompile>
+    <ClCompile Include="Components\MemoryVisualizer\Composition\CAddressedRegion.cpp" />
+    <ClCompile Include="Components\MemoryVisualizer\Composition\CFillExpressionButton.cpp" />
+    <ClCompile Include="Components\MemoryVisualizer\Composition\CFloorPlan.cpp" />
+    <ClCompile Include="Components\MemoryVisualizer\Composition\CMemoryRegionBlock.cpp" />
+    <ClCompile Include="Components\MemoryVisualizer\Composition\COverlaySectionOutput.cpp" />
+    <ClCompile Include="Components\MemoryVisualizer\Composition\COverlaySectionStatement.cpp" />
+    <ClCompile Include="Components\MemoryVisualizer\Composition\COverlayStatement.cpp" />
+    <ClCompile Include="Components\MemoryVisualizer\Composition\CProgramHeaderButton.cpp" />
+    <ClCompile Include="Components\MemoryVisualizer\Composition\CSectionOutput.cpp" />
+    <ClCompile Include="Components\MemoryVisualizer\Composition\CSectionStatement.cpp" />
+    <ClCompile Include="Components\MemoryVisualizer\Composition\CTooltip.cpp" />
+    <ClCompile Include="Components\MemoryVisualizer\Composition\SLineF.h" />
+    <ClCompile Include="Components\MemoryVisualizer\QMemoryLayoutRender.cpp" />
+    <ClCompile Include="Components\QLinkerScriptSession\AutoStyling\CAutoStyler.cpp" />
+    <ClCompile Include="Components\QLinkerScriptSession\EditorAction\SEditorRemoveLine.h" />
+    <ClCompile Include="Components\QLinkerScriptSession\EditorAction\SEditorReplaceContent.h" />
+    <ClCompile Include="Components\QLinkerScriptSession\EditorAction\SEditorSelectText.h" />
+    <ClCompile Include="Components\InputDialogs\QLabelAssistedInput.cpp" />
+    <ClCompile Include="Components\InputDialogs\QListAssistedInput.cpp" />
+    <ClCompile Include="Components\QFlatCheckBox\QFlatCheckBox.cpp" />
+    <ClCompile Include="Components\QLinkerScriptSession\CustomComponents\QIssuesTreeView.cpp" />
+    <ClCompile Include="Components\QLinkerScriptSession\EditorAction\SEditorSetCaretPosition.h" />
+    <ClCompile Include="Components\QLinkerScriptSession\EditorAction\SEditorSetLineContent.h" />
+    <ClCompile Include="Components\QManualSizeGrip\QManualSizeGrip.cpp" />
+    <ClCompile Include="Components\QScintilla\scintilla\lexlib\Accessor.cpp" />
+    <ClCompile Include="Components\QScintilla\scintilla\src\AutoComplete.cpp" />
+    <ClCompile Include="Components\QScintilla\VlsScintilla.cpp" />
+    <ClCompile Include="DrcEngine\CCorrectiveAction.h" />
+    <ClCompile Include="DrcEngine\EDrcViolationCode.cpp" />
+    <ClCompile Include="MD5\MD5.cpp" />
+    <ClCompile Include="ParsingEngine\ELexerViolationCode.cpp" />
+    <ClCompile Include="ParsingEngine\SubParsers\CAssignmentParser.cpp" />
+    <ClCompile Include="ParsingEngine\SubParsers\CAssignmentProcedureParser.cpp" />
+    <ClCompile Include="Models\CAssignmentProcedureStatement.cpp" />
+    <ClCompile Include="Models\CAssignmentStatement.cpp" />
+    <ClCompile Include="DrcEngine\Rules\CDirectivesDeclaredOnlyOnceRule.cpp" />
+    <ClCompile Include="DrcEngine\CDrcManager.cpp" />
+    <ClCompile Include="DrcEngine\Rules\CEntryIsDefinedRule.cpp" />
+    <ClCompile Include="Models\CExpression.cpp" />
+    <ClCompile Include="ParsingEngine\SubParsers\CExpressionParser.cpp" />
+    <ClCompile Include="Models\CFunctionCall.cpp" />
+    <ClCompile Include="ParsingEngine\SubParsers\CFunctionParser.cpp" />
+    <ClCompile Include="DrcEngine\Rules\CIncludeRecursionGuard.cpp" />
+    <ClCompile Include="DrcEngine\Rules\CIncludedFilesArePresentRule.cpp" />
+    <ClCompile Include="Models\CInputSectionFunction.cpp" />
+    <ClCompile Include="ParsingEngine\SubParsers\CInputSectionFunctionExcludeFileParser.cpp" />
+    <ClCompile Include="ParsingEngine\SubParsers\CInputSectionFunctionKeepParser.cpp" />
+    <ClCompile Include="ParsingEngine\SubParsers\CInputSectionFunctionSortParser.cpp" />
+    <ClCompile Include="Models\CInputSectionStatement.cpp" />
+    <ClCompile Include="ParsingEngine\SubParsers\CInputSectionStatementParser.cpp" />
+    <ClCompile Include="ParsingEngine\CLinkerScriptLexer.cpp" />
+    <ClCompile Include="Models\CParsedContentBase.cpp" />
+    <ClCompile Include="Models\CLinkerScriptFile.cpp" />
+    <ClCompile Include="DrcEngine\Rules\CLocationCounterCannotGoBackwardsRule.cpp" />
+    <ClCompile Include="ParsingEngine\CLinkerScriptParser.cpp" />
+    <ClCompile Include="Models\CMemoryRegion.cpp" />
+    <ClCompile Include="ParsingEngine\SubParsers\CMemoryRegionContentParser.cpp" />
+    <ClCompile Include="DrcEngine\Rules\CMemoryRegionDefinedOnlyOnceRule.cpp" />
+    <ClCompile Include="Models\CMemoryStatement.cpp" />
+    <ClCompile Include="ParsingEngine\SubParsers\CMemoryStatementAttributeParser.cpp" />
+    <ClCompile Include="DrcEngine\Rules\CNoDuplicateMemoryRegionNameRule.cpp" />
+    <ClCompile Include="Models\CPhdrsRegion.cpp" />
+    <ClCompile Include="ParsingEngine\SubParsers\CPhdrsRegionContentParser.cpp" />
+    <ClCompile Include="Models\CPhdrsStatement.cpp" />
+    <ClCompile Include="Models\CProcedureCall.cpp" />
+    <ClCompile Include="Models\CSectionOutputCommand.cpp" />
+    <ClCompile Include="ParsingEngine\SubParsers\CSectionOutputCommandParser.cpp" />
+    <ClCompile Include="Models\CSectionOutputOverlay.cpp" />
+    <ClCompile Include="Models\CSectionOverlayCommand.cpp" />
+    <ClCompile Include="ParsingEngine\SubParsers\CSectionOverlayParser.cpp" />
+    <ClCompile Include="DrcEngine\Rules\CSectionsDefinedOnlyOnceRule.cpp" />
+    <ClCompile Include="Models\CSectionsRegion.cpp" />
+    <ClCompile Include="ParsingEngine\SubParsers\CSectionsRegionParser.cpp" />
+    <ClCompile Include="ParsingEngine\SubParsers\CSubParserBase.cpp" />
+    <ClCompile Include="DrcEngine\Rules\CSymbolsDefinedInAdvanceRule.cpp" />
+    <ClCompile Include="ParsingEngine\SubParsers\CVersionRegionContentParser.cpp" />
+    <ClCompile Include="Models\CVersionScope.cpp" />
+    <ClCompile Include="Components\QScintilla\scintilla\src\CallTip.cpp" />
+    <ClCompile Include="Components\QScintilla\scintilla\src\CaseConvert.cpp" />
+    <ClCompile Include="Components\QScintilla\scintilla\src\CaseFolder.cpp" />
+    <ClCompile Include="Components\QScintilla\scintilla\src\Catalogue.cpp" />
+    <ClCompile Include="Components\QScintilla\scintilla\src\CellBuffer.cpp" />
+    <ClCompile Include="Components\QScintilla\scintilla\src\CharClassify.cpp" />
+    <ClCompile Include="Components\QScintilla\scintilla\lexlib\CharacterCategory.cpp" />
+    <ClCompile Include="Components\QScintilla\scintilla\lexlib\CharacterSet.cpp" />
+    <ClCompile Include="Components\QScintilla\ComponentHelpers.cpp" />
+    <ClCompile Include="ParsingEngine\SubParsers\Constants.cpp" />
+    <ClCompile Include="Components\QScintilla\scintilla\src\ContractionState.cpp" />
+    <ClCompile Include="Components\QScintilla\scintilla\src\DBCS.cpp" />
+    <ClCompile Include="Components\QScintilla\scintilla\src\Decoration.cpp" />
+    <ClCompile Include="Components\QScintilla\scintilla\lexlib\DefaultLexer.cpp" />
+    <ClCompile Include="Components\QScintilla\scintilla\src\Document.cpp" />
+    <ClCompile Include="ParsingEngine\EParserViolationCode.cpp" />
+    <ClCompile Include="Components\QScintilla\scintilla\src\EditModel.cpp" />
+    <ClCompile Include="Components\QScintilla\scintilla\src\EditView.cpp" />
+    <ClCompile Include="Components\QScintilla\scintilla\src\Editor.cpp" />
+    <ClCompile Include="Components\QScintilla\scintilla\src\ExternalLexer.cpp" />
+    <ClCompile Include="Helpers.cpp" />
+    <ClCompile Include="Components\QScintilla\scintilla\src\Indicator.cpp" />
+    <ClCompile Include="Components\QScintilla\src\InputMethod.cpp" />
+    <ClCompile Include="Components\QScintilla\scintilla\src\KeyMap.cpp" />
+    <ClCompile Include="Components\QScintilla\scintilla\lexers\LexCPP.cpp" />
+    <ClCompile Include="Components\QScintilla\scintilla\lexers\LexLinkerScript.cpp" />
+    <ClCompile Include="Components\QScintilla\scintilla\lexlib\LexerBase.cpp" />
+    <ClCompile Include="Components\QScintilla\scintilla\lexlib\LexerModule.cpp" />
+    <ClCompile Include="Components\QScintilla\scintilla\lexlib\LexerNoExceptions.cpp" />
+    <ClCompile Include="Components\QScintilla\scintilla\lexlib\LexerSimple.cpp" />
+    <ClCompile Include="Components\QScintilla\scintilla\src\LineMarker.cpp" />
+    <ClCompile Include="Components\QScintilla\src\ListBoxQt.cpp" />
+    <ClCompile Include="Components\QScintilla\src\MacPasteboardMime.cpp" />
+    <ClCompile Include="MainWindow.cpp" />
+    <ClCompile Include="Components\QScintilla\scintilla\src\MarginView.cpp" />
+    <ClCompile Include="Components\MemoryVisualizer\CModelTranslator.cpp" />
+    <ClCompile Include="Components\QScintilla\scintilla\src\PerLine.cpp" />
+    <ClCompile Include="Components\QScintilla\src\PlatQt.cpp" />
+    <ClCompile Include="Components\QScintilla\scintilla\src\PositionCache.cpp" />
+    <ClCompile Include="Components\QScintilla\scintilla\lexlib\PropSetSimple.cpp" />
+    <ClCompile Include="Components\QChromeTab\QChromeTabButton.cpp" />
+    <ClCompile Include="Components\QChromeTab\QChromeTabWidget.cpp" />
+    <ClCompile Include="LinkerScriptManager\QLinkerScriptManager.cpp" />
+    <ClCompile Include="Components\QLinkerScriptSession\QLinkerScriptSession.cpp" />
+    <ClCompile Include="Components\MemoryVisualizer\QMemoryVisualizer.cpp" />
+    <ClCompile Include="Components\QSearchPopup\QSearchPopup.cpp" />
+    <ClCompile Include="Components\QScintilla\scintilla\src\RESearch.cpp" />
+    <ClCompile Include="Components\QScintilla\scintilla\src\RunStyles.cpp" />
+    <ClCompile Include="Components\QScintilla\src\SciAccessibility.cpp" />
+    <ClCompile Include="Components\QScintilla\src\SciClasses.cpp" />
+    <ClCompile Include="Components\QScintilla\scintilla\src\ScintillaBase.cpp" />
+    <ClCompile Include="Components\QScintilla\src\ScintillaQt.cpp" />
+    <ClCompile Include="Components\QScintilla\scintilla\src\Selection.cpp" />
+    <ClCompile Include="Components\QScintilla\scintilla\src\Style.cpp" />
+    <ClCompile Include="Components\QScintilla\scintilla\lexlib\StyleContext.cpp" />
+    <ClCompile Include="ParsingEngine\SubParsers\SubParserHelpers.cpp" />
+    <ClCompile Include="Components\QScintilla\scintilla\src\UniConversion.cpp" />
+    <ClCompile Include="Components\QScintilla\scintilla\src\ViewStyle.cpp" />
+    <ClCompile Include="Components\QScintilla\scintilla\lexlib\WordList.cpp" />
+    <ClCompile Include="Components\QScintilla\scintilla\src\XPM.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Components\QScintilla\src\qsciabstractapis.cpp" />
+    <ClCompile Include="Components\QScintilla\src\qsciapis.cpp" />
+    <ClCompile Include="Components\QScintilla\src\qscicommand.cpp" />
+    <ClCompile Include="Components\QScintilla\src\qscicommandset.cpp" />
+    <ClCompile Include="Components\QScintilla\src\qscidocument.cpp" />
+    <ClCompile Include="Components\QScintilla\src\qscilexer.cpp" />
+    <ClCompile Include="Components\QScintilla\src\qscilexercpp.cpp" />
+    <ClCompile Include="Components\QScintilla\src\qscilexerlinkerscript.cpp" />
+    <ClCompile Include="Components\QScintilla\src\qscimacro.cpp" />
+    <ClCompile Include="Components\QScintilla\src\qsciprinter.cpp" />
+    <ClCompile Include="Components\QScintilla\src\qsciscintilla.cpp" />
+    <ClCompile Include="Components\QScintilla\src\qsciscintillabase.cpp" />
+    <ClCompile Include="Components\QScintilla\src\qscistyle.cpp" />
+    <ClCompile Include="Components\QScintilla\src\qscistyledtext.cpp" />
+    <ClCompile Include="Tests\DrcEngine\Rules\CEntryIsDefinedRuleTests.cpp">
+      <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">input</DynamicSource>
+      <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).moc</QtMocFileName>
+      <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Release|x64'">input</DynamicSource>
+      <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).moc</QtMocFileName>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ui_MainWindow.h" />
+    <QtMoc Include="Components\QFlatCheckBox\QFlatCheckBox.h" />
+    <QtMoc Include="Components\InputDialogs\QLabelAssistedInput.h" />
+    <QtMoc Include="Components\InputDialogs\QJumpToLineDialog.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Composition\CAddressedRegion.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Composition\CFillExpressionButton.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Composition\CGraphicContext.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Composition\CInteractiveObject.h" />
+    <ClInclude Include="Components\MemoryVisualizer\ColorResources.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Composition\COverlaySectionOutput.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Composition\CProgramHeaderButton.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Composition\CSectionDefinitionBase.h" />
+    <QtMoc Include="Components\MemoryVisualizer\QMemoryLayoutRender.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Composition\CModelMappedObject.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Composition\CDrawableObjectBase.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Composition\SModelSelectionRange.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Composition\SMetricSizeF.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Composition\SPixelSizeF.h" />
+    <QtMoc Include="Components\MemoryVisualizer\QPercentageLineEdit.h" />
+    <ClInclude Include="Components\QLinkerScriptSession\AutoStyling\CAutoStyler.h" />
+    <ClInclude Include="Components\QLinkerScriptSession\EditorAction\EEditorActionType.h" />
+    <ClInclude Include="Components\QLinkerScriptSession\EditorAction\SEditorActionBase.h" />
+    <ClInclude Include="Components\QLinkerScriptSession\EditorAction\SEditorAddContent.h" />
+    <ClInclude Include="Components\QLinkerScriptSession\EditorAction\SEditorAddEmptyLine.h" />
+    <ClInclude Include="Components\QLinkerScriptSession\EditorAction\SEditorRemoveContent.h" />
+    <ClInclude Include="Components\InputDialogs\QListAssistedInput.h" />
+    <QtMoc Include="Components\QManualSizeGrip\QManualSizeGrip.h" />
+    <QtMoc Include="Components\QLinkerScriptSession\CustomComponents\QIssuesTreeView.h" />
+    <ClInclude Include="Components\QLinkerScriptSession\EditorAction\SEditorShowAutoCompletion.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\lexlib\Accessor.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\src\AutoComplete.h" />
+    <ClInclude Include="Components\QScintilla\VlsScintilla.h" />
+    <ClInclude Include="Components\QSearchPopup\SearchPerimeterTypeEnum.h" />
+    <ClInclude Include="Components\QSearchPopup\SearchReplaceRequestTypeEnum.h" />
+    <ClInclude Include="MD5\MD5.h" />
+    <ClInclude Include="MD5\MD5_loc.h" />
+    <ClInclude Include="Models\CComment.h" />
+    <ClInclude Include="Models\ESeverityCode.h" />
+    <ClInclude Include="Models\CIndentationInfo.h" />
+    <ClInclude Include="ParsingEngine\CLexerViolation.h" />
+    <ClInclude Include="ParsingEngine\ELexerViolationCode.h" />
+    <ClInclude Include="ParsingEngine\SubParsers\CAssignmentParser.h" />
+    <ClInclude Include="ParsingEngine\SubParsers\CAssignmentProcedureParser.h" />
+    <ClInclude Include="Models\CAssignmentProcedureStatement.h" />
+    <ClInclude Include="Models\CAssignmentStatement.h" />
+    <ClInclude Include="ParsingEngine\SubParsers\CCommandParser.h" />
+    <ClInclude Include="DrcEngine\Rules\CDirectivesDeclaredOnlyOnceRule.h" />
+    <ClInclude Include="DrcEngine\CDrcManager.h" />
+    <ClInclude Include="DrcEngine\CDrcViolation.h" />
+    <ClInclude Include="DrcEngine\Rules\CEntryIsDefinedRule.h" />
+    <ClInclude Include="Models\CExpression.h" />
+    <ClInclude Include="Models\CExpressionNumber.h" />
+    <ClInclude Include="Models\CExpressionOperator.h" />
+    <ClInclude Include="ParsingEngine\SubParsers\CExpressionParser.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Composition\CFloorPlan.h" />
+    <ClInclude Include="Models\CFunctionCall.h" />
+    <ClInclude Include="ParsingEngine\SubParsers\CFunctionParser.h" />
+    <ClInclude Include="Models\CIncludeCommand.h" />
+    <ClInclude Include="DrcEngine\Rules\CIncludeRecursionGuard.h" />
+    <ClInclude Include="DrcEngine\Rules\CIncludedFilesArePresentRule.h" />
+    <ClInclude Include="Models\CInputSectionFunction.h" />
+    <ClInclude Include="ParsingEngine\SubParsers\CInputSectionFunctionExcludeFileParser.h" />
+    <ClInclude Include="ParsingEngine\SubParsers\CInputSectionFunctionKeepParser.h" />
+    <ClInclude Include="ParsingEngine\SubParsers\CInputSectionFunctionSortParser.h" />
+    <ClInclude Include="Models\CInputSectionStatement.h" />
+    <ClInclude Include="ParsingEngine\SubParsers\CInputSectionStatementParser.h" />
+    <ClInclude Include="Models\CInputSectionTargetSection.h" />
+    <ClInclude Include="Models\CInputSectionWildcardWord.h" />
+    <ClInclude Include="ParsingEngine\CLinkerScriptLexer.h" />
+    <ClInclude Include="ParsingEngine\CLexerException.h" />
+    <ClInclude Include="Models\CParsedContentBase.h" />
+    <ClInclude Include="Models\CLinkerScriptFile.h" />
+    <ClInclude Include="DrcEngine\Rules\CLocationCounterCannotGoBackwardsRule.h" />
+    <ClInclude Include="ParsingEngine\CLinkerScriptParser.h" />
+    <ClInclude Include="ParsingEngine\CMasterParserException.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Composition\CMemoryRegionBlock.h" />
+    <ClInclude Include="Models\CMemoryRegion.h" />
+    <ClInclude Include="ParsingEngine\SubParsers\CMemoryRegionContentParser.h" />
+    <ClInclude Include="DrcEngine\Rules\CMemoryRegionDefinedOnlyOnceRule.h" />
+    <ClInclude Include="ParsingEngine\SubParsers\CMemoryRegionParser.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Composition\CSectionStatement.h" />
+    <ClInclude Include="Models\CMemoryStatement.h" />
+    <ClInclude Include="Models\CMemoryStatementAttribute.h" />
+    <ClInclude Include="ParsingEngine\SubParsers\CMemoryStatementAttributeParser.h" />
+    <ClInclude Include="DrcEngine\Rules\CNoDuplicateMemoryRegionNameRule.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Composition\COverlayStatement.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Composition\COverlaySectionStatement.h" />
+    <ClInclude Include="Models\CParameterSeparator.h" />
+    <ClInclude Include="ParsingEngine\CParserViolation.h" />
+    <ClInclude Include="Models\CPhdrsRegion.h" />
+    <ClInclude Include="ParsingEngine\SubParsers\CPhdrsRegionContentParser.h" />
+    <ClInclude Include="ParsingEngine\SubParsers\CPhdrsRegionParser.h" />
+    <ClInclude Include="Models\CPhdrsStatement.h" />
+    <ClInclude Include="Models\CProcedureCall.h" />
+    <ClInclude Include="Models\Raw\CRawEntry.h" />
+    <ClInclude Include="Models\Raw\CRawFile.h" />
+    <ClInclude Include="ParsingEngine\SubParsers\CScopedRegionParser.h" />
+    <ClInclude Include="ParsingEngine\SubParsers\CScopedRegionParser.tpp" />
+    <ClInclude Include="Components\MemoryVisualizer\Composition\CSectionOutput.h" />
+    <ClInclude Include="Models\CSectionOutputAtLmaRegion.h" />
+    <ClInclude Include="Models\CSectionOutputCommand.h" />
+    <ClInclude Include="ParsingEngine\SubParsers\CSectionOutputCommandParser.h" />
+    <ClInclude Include="Models\CSectionOutputConstraint.h" />
+    <ClInclude Include="Models\CSectionOutputDataExpression.h" />
+    <ClInclude Include="Models\CSectionOutputFillExpression.h" />
+    <ClInclude Include="Models\CSectionOutputOverlay.h" />
+    <ClInclude Include="ParsingEngine\SubParsers\CSectionOutputOverlayParser.h" />
+    <ClInclude Include="Models\CSectionOutputPhdr.h" />
+    <ClInclude Include="Models\CSectionOutputToVmaRegion.h" />
+    <ClInclude Include="Models\CSectionOutputType.h" />
+    <ClInclude Include="Models\CSectionOverlayCommand.h" />
+    <ClInclude Include="ParsingEngine\SubParsers\CSectionOverlayParser.h" />
+    <ClInclude Include="DrcEngine\Rules\CSectionsDefinedOnlyOnceRule.h" />
+    <ClInclude Include="Models\CSectionsRegion.h" />
+    <ClInclude Include="ParsingEngine\SubParsers\CSectionsRegionParser.h" />
+    <ClInclude Include="Models\CStringEntry.h" />
+    <ClInclude Include="ParsingEngine\SubParsers\CSubParserBase.h" />
+    <ClInclude Include="Models\CSymbol.h" />
+    <ClInclude Include="DrcEngine\Rules\CSymbolsDefinedInAdvanceRule.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Composition\CTooltip.h" />
+    <ClInclude Include="Models\CUnrecognizableContent.h" />
+    <ClInclude Include="Models\CVersionNode.h" />
+    <ClInclude Include="ParsingEngine\SubParsers\CVersionRegionContentParser.h" />
+    <ClInclude Include="ParsingEngine\SubParsers\CVersionRegionParser.h" />
+    <ClInclude Include="Models\CVersionScope.h" />
+    <ClInclude Include="Models\CVersionTag.h" />
+    <ClInclude Include="Models\CVersionsRegion.h" />
+    <ClInclude Include="Models\CViolationBase.h" />
+    <ClInclude Include="Models\CWildcardEntry.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\src\CallTip.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\src\CaseConvert.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\src\CaseFolder.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\src\Catalogue.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\src\CellBuffer.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\src\CharClassify.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\lexlib\CharacterCategory.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\lexlib\CharacterSet.h" />
+    <ClInclude Include="Components\QScintilla\ComponentHelpers.h" />
+    <ClInclude Include="ParsingEngine\SubParsers\Constants.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\src\ContractionState.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\src\DBCS.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\src\Decoration.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\lexlib\DefaultLexer.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\src\Document.h" />
+    <ClInclude Include="DrcEngine\DrcCommons.h" />
+    <ClInclude Include="DrcEngine\EDrcViolationCode.h" />
+    <ClInclude Include="Components\MemoryVisualizer\EInsertObjectType.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Composition\EObjectState.h" />
+    <ClInclude Include="ParsingEngine\EParserViolationCode.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\src\EditModel.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\src\EditView.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\src\Editor.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\src\ElapsedPeriod.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\src\ExternalLexer.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\src\FontQuality.h" />
+    <ClInclude Include="Helpers.h" />
+    <ClInclude Include="DrcEngine\IDrcRuleBase.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\include\ILexer.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\include\ILoader.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\src\Indicator.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\src\IntegerRectangle.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\src\KeyMap.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\lexlib\LexAccessor.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\lexlib\LexerBase.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\lexlib\LexerModule.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\lexlib\LexerNoExceptions.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\lexlib\LexerSimple.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\src\LineMarker.h" />
+    <ClInclude Include="Components\QScintilla\src\ListBoxQt.h" />
+    <QtMoc Include="MainWindow.h">
+    </QtMoc>
+    <ClInclude Include="Components\QScintilla\scintilla\src\MarginView.h" />
+    <ClInclude Include="Components\MemoryVisualizer\CModelTranslator.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\lexlib\OptionSet.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\src\Partitioning.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\src\PerLine.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\include\Platform.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\src\Position.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\src\PositionCache.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\lexlib\PropSetSimple.h" />
+    <QtMoc Include="Components\QChromeTab\QChromeTabButton.h">
+    </QtMoc>
+    <QtMoc Include="Components\QChromeTab\QChromeTabWidget.h">
+    </QtMoc>
+    <QtMoc Include="LinkerScriptManager\QLinkerScriptManager.h">
+    </QtMoc>
+    <QtMoc Include="Components\QLinkerScriptSession\QLinkerScriptSession.h">
+    </QtMoc>
+    <QtMoc Include="Components\MemoryVisualizer\QMemoryVisualizer.h">
+    </QtMoc>
+    <QtMoc Include="Components\QSearchPopup\QSearchPopup.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\src\RESearch.h" />
+    <ClInclude Include="Models\Raw\RawEntryType.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\src\RunStyles.h" />
+    <ClInclude Include="Components\MemoryVisualizer\SBackendResponse.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Composition\SMetricPointF.h" />
+    <ClInclude Include="Components\MemoryVisualizer\Composition\SMetricRectangleF.h" />
+    <ClInclude Include="Components\QScintilla\src\SciAccessibility.h" />
+    <QtMoc Include="Components\QScintilla\src\SciClasses.h">
+    </QtMoc>
+    <ClInclude Include="Components\QScintilla\scintilla\include\SciLexer.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\include\Sci_Position.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\include\Scintilla.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\src\ScintillaBase.h" />
+    <QtMoc Include="Components\QScintilla\src\ScintillaQt.h">
+    </QtMoc>
+    <ClInclude Include="Components\QScintilla\scintilla\include\ScintillaWidget.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\src\Selection.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\lexlib\SparseState.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\src\SparseVector.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\src\SplitVector.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\lexlib\StringCopy.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\src\Style.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\lexlib\StyleContext.h" />
+    <ClInclude Include="ParsingEngine\SubParsers\SubParserHelpers.h" />
+    <ClInclude Include="ParsingEngine\SubParsers\SubParserType.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\lexlib\SubStyles.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\src\UniConversion.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\src\UniqueString.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\src\ViewStyle.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\lexlib\WordList.h" />
+    <ClInclude Include="Components\QScintilla\scintilla\src\XPM.h" />
+    <QtMoc Include="Components\QScintilla\src\Qsci\qsciabstractapis.h">
+    </QtMoc>
+    <QtMoc Include="Components\QScintilla\src\Qsci\qsciapis.h">
+    </QtMoc>
+    <ClInclude Include="Components\QScintilla\src\Qsci\qscicommand.h" />
+    <ClInclude Include="Components\QScintilla\src\Qsci\qscicommandset.h" />
+    <ClInclude Include="Components\QScintilla\src\Qsci\qscidocument.h" />
+    <ClInclude Include="Components\QScintilla\src\Qsci\qsciglobal.h" />
+    <QtMoc Include="Components\QScintilla\src\Qsci\qscilexer.h">
+    </QtMoc>
+    <QtMoc Include="Components\QScintilla\src\Qsci\qscilexercpp.h">
+    </QtMoc>
+    <QtMoc Include="Components\QScintilla\src\Qsci\qscilexerlinkerscript.h">
+    </QtMoc>
+    <QtMoc Include="Components\QScintilla\src\Qsci\qscimacro.h">
+    </QtMoc>
+    <ClInclude Include="Components\QScintilla\src\Qsci\qsciprinter.h" />
+    <QtMoc Include="Components\QScintilla\src\Qsci\qsciscintilla.h">
+    </QtMoc>
+    <QtMoc Include="Components\QScintilla\src\Qsci\qsciscintillabase.h">
+    </QtMoc>
+    <ClInclude Include="Components\QScintilla\src\Qsci\qscistyle.h" />
+    <ClInclude Include="Components\QScintilla\src\Qsci\qscistyledtext.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="release\moc_predefs.h.cbt">
+      <FileType>Document</FileType>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\mkspecs\features\data\dummy.cpp;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">cl -Bx"$(QTDIR)\bin\qmake.exe" -nologo -Zc:wchar_t -FS -Zc:rvalueCast -Zc:inline -Zc:strictStrings -Zc:throwingNew -permissive- -Zc:__cplusplus -Zc:externConstexpr -MD -O0 -std:c++17 -utf-8 -W3 -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 -wd4577 -wd4467 -E $(QTDIR)\mkspecs\features\data\dummy.cpp 2&gt;NUL &gt;release\moc_predefs.h</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Generate moc_predefs.h</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">release\moc_predefs.h;%(Outputs)</Outputs>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="MainWindow.ui">
+    </QtUic>
+  </ItemGroup>
+  <ItemGroup>
+    <QtRcc Include="Resources.qrc">
+    </QtRcc>
+    <None Include="Images\arrow-drop-down-icon.svg" />
+    <None Include="Images\arrow-drop-up-icon.svg" />
+    <None Include="Images\arrow-left-icon.svg" />
+    <None Include="Images\arrow-right-icon.svg" />
+    <None Include="Images\chevron-right-icon.svg" />
+    <None Include="Images\close-icon-black.svg" />
+    <None Include="Images\close-icon.svg" />
+    <None Include="Images\close-sm-svgrepo-com.svg" />
+    <None Include="Images\expand-more-icon.svg" />
+    <None Include="Images\find-replace-icon.svg" />
+    <None Include="Images\match-case-icon.svg" />
+    <None Include="Images\match-word-icon.svg" />
+    <None Include="Images\regular-expression-icon.svg" />
+    <None Include="Images\search-magnifying-glass-icon.svg" />
+    <None Include="Stylesheets\colorpalette.txt" />
+    <None Include="Stylesheets\default.qss" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
+    <Import Project="$(QtMsBuild)\qt.targets" />
+  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets" />
+</Project>

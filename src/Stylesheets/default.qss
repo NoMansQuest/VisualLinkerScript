@@ -1,0 +1,450 @@
+/*
+ * QMainWindow       
+ *
+ */
+QMainWindow {
+    background-color: @level0;
+}
+
+/*
+ *
+ * Menu bar and items
+ *
+ */
+QMenuBar {
+    padding-left: 5px;
+    padding-top: 5px;
+    padding-right: 5px;
+    padding-bottom: 2px;
+    border-top: 1px solid @MenuBorder;
+    background-color: @level0;
+    color: @ActiveTextColor;
+}
+
+QMenuBar::item {
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    background-color: @level0;
+}
+
+QMenuBar::item:selected {    
+    padding-top: 4px;
+    padding-bottom: 4px;
+    border: 1px solid @MenuBorder;
+    background: @MenuHighlighted;
+}
+
+QMenu {
+    padding-left: 4px;
+    padding-right: 4px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    border: 1px solid @MenuBorder;
+    background: @MenuOpened;
+    color: @ActiveTextColor;
+}
+
+QMenu:selected {    
+    background: @MenuHighlighted;
+}
+
+QMenu::item {
+    border: 1px solid transparent; /* 1px border with silver color */    
+    padding: 2px 5px;
+}
+
+QMenu::item:selected {
+    /* Selected item properties */
+    border: 1px solid @MenuBorder; /* 1px border with silver color */
+    background: @MenuHighlighted;
+    padding: 2px 5px;
+}
+
+
+/*
+ * QPushbutton
+ */
+QPushButton {
+    background-color: @DialogBackground;
+    border: 2px solid transparent;
+}
+
+QPushButton:hover:!pressed {
+    background-color: @ButtonHoverColor;
+}
+
+QPushButton:hover:pressed {
+    background-color: @ButtonPressedColor;
+    border: 2px solid @level7;
+}
+
+
+/*
+ * QStatusBar
+ *
+ */
+QStatusBar {
+    background-color: @level3;    
+}
+
+QStatusBar::item {
+    border: none; /* Remove separators in QStatusBar */
+}
+
+QStatusBar QLabel
+{
+    background-color: transparent;
+    color: white;
+    padding-left: 5px;
+}
+
+QStatusBar QPushButton {
+    background-color: transparent;
+    border: 0px solid transparent;
+    color: white;
+    padding-left: 3px;
+    padding-right: 3px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    cursor: pointer; /* Hand cursor */
+}
+
+QStatusBar QPushButton:hover:!pressed {
+    background-color: @level5;
+    border: 0px solid transparent;
+}
+
+QStatusBar QPushButton:hover:pressed {
+    background-color: @level7;
+    border: 0px solid transparent;
+}
+
+
+/*
+ *
+ * Scroll Bars
+ *
+ */
+QScrollBar {
+    background: @level1;
+    border-radius: 0px;
+}
+
+QScrollBar:horizontal {
+    height: 13px;
+}
+
+QScrollBar:vertical {
+    width: 13px;
+}
+
+QScrollBar::handle {
+    background: @level3;
+    border-radius: 0px; 
+}
+
+QScrollBar::handle:hover {
+    background: @level4;
+}
+
+QScrollBar::handle:horizontal {
+    height: 25px;
+    min-width: 85px;
+}
+
+QScrollBar::handle:vertical {
+    width: 25px;
+    min-height: 85px;
+}
+
+QScrollBar::add-line,
+QScrollBar::sub-line {
+    border: none;
+    background: none;
+}
+
+QScrollBar::add-page:horizontal,
+QScrollBar::sub-page:horizontal,
+QScrollBar::add-page:vertical,
+QScrollBar::sub-page:vertical {
+    background: none;
+}
+
+/*
+ * QComboBox
+ */
+QComboBox {
+    border: 0px solid transparent;
+    background-color: @StaticComboboxBackground;
+    color: white;
+}
+
+QComboBox[editable="true"] {
+    background-color: @EditableComboboxBackground;
+    border: 1px solid transparent;
+}  
+
+QComboBox[editable="true"][inError="true"] {
+    background-color: @EditableComboboxBackground;
+    border: 1px solid @ComboBoxErrorBorder;        
+}  
+
+QComboBox QAbstractItemView {
+    background-color: @ComboBoxDropDownBackground;
+    color: white;
+    border: 1px solid transparent;
+}
+
+QComboBox QAbstractItemView::item:selected {
+    background-color: @ComboBoxSelectedItemBackground;
+    border: 1px solid @ComboBoxSelectedItemBorder;
+}
+
+/*
+ * QFlatCheckBox
+ */
+
+QFlatCheckBox {
+    background-color: @DialogBackground;
+    border: 2px solid transparent;
+}
+
+QFlatCheckBox:hover:!pressed {
+    background-color: @ButtonHoverColor;    
+}
+
+QFlatCheckBox:hover:pressed {
+    background-color: @ButtonPressedColor;
+    border: 2px solid @level7;
+}
+
+QFlatCheckBox[IsChecked="true"] {
+    background-color: @ButtonPressedColor;
+    border: 2px solid @level7;
+}
+
+/*
+ *
+ * Splitters
+ *
+ */
+QSplitter::handle {
+    background: @splitterBackground;
+}
+
+QSplitter::handle:horizontal {
+    width: 10px;
+    background: transparent;
+    border: 0px;
+    margin: 0px;
+    padding: 0px;
+}
+
+QSplitter::handle:vertical {
+    height: 10px;
+    background: transparent;
+    border: 0px;
+    margin: 0px;
+    padding: 0px;
+}
+
+QSplitter::handle:horizontal:hover {
+    background: @splitterHandleHover;
+}
+
+QSplitter::handle:vertical:hover {
+    background: @splitterHandleHover;
+}
+
+QSplitter::handle:pressed {
+    background: @splitterHandlePressed;
+}
+
+QSplitter::handle:hover {
+    background: @splitterHandleHover;
+}
+
+/*
+ *
+ * QScintilla
+ *
+ */
+QsciScintilla {
+    padding: 0px;
+    border: 0px solid #000000;
+    background: @level4;
+}
+
+/*
+ *
+ * QChromeTabWidget and QChromTabButton
+ *
+ */
+QChromeTabWidget {
+    background-color: @level0;
+}
+
+QChromeTabWidget QStackedWidget {
+    background-color: @level0;
+}
+
+QChromeTabWidget QScrollArea {
+    border-top: 0px solid transparent;
+    border-left: 0px solid transparent;
+    border-right: 0px solid transparent;
+    border-bottom: 3px solid @PurpleRibbon;
+    background-color: @level0;
+}
+
+QChromeTabButton {
+    border-top: none;    
+}
+
+QChromeTabButton QPushButton {
+    background-color: transparent;
+    border: none;
+}
+
+QChromeTabButton QPushButton:hover:!pressed {
+    background-color: white;
+    icon: url(:/resources/Images/close-icon-black.svg);
+    border: none;
+}
+
+QChromeTabButton QPushButton:hover:pressed {
+    background-color: transparent;
+    border: 0px solid transparent;
+}
+
+QChromeTabButton[IsActiveTab="true"] {
+    border-top: 3px solid @PurpleRibbon;
+}
+
+QChromeTabButton[IsActiveTab="false"][IsHovering="false"] {
+    background-color: @level2;
+}
+
+QChromeTabButton[IsActiveTab="false"][IsHovering="true"] {
+    background-color: @level3;
+}
+
+QChromeTabButton[IsActiveTab="true"][IsHovering="false"] {
+    background-color: @level3;
+}
+
+QChromeTabButton[IsActiveTab="true"][IsHovering="true"] {
+    background-color: @level3;
+}
+
+QChromeTabButton QLabel {
+    margin-left: 5px;
+    border: 0px solid transparent;
+    background-color: transparent;
+    color: @TabItemDefaultTextColor;
+}
+
+QChromeTabButton[IsHovering="true"] QLabel {
+    color: @TabItemSelectedOrActiveTextColor;
+    font-weight: normal;
+}
+
+QChromeTabButton[IsActiveTab="true"] QLabel {
+    color: @TabItemSelectedOrActiveTextColor;
+    font-weight: bold;    
+}
+
+QChromeTabButton[IsActiveTab="true"][IsHovering="true"] QLabel {
+    color: @TabItemSelectedOrActiveTextColor;
+    font-weight: bold;
+}
+
+/*
+ * QSearchPopup, QJumpToLineDialog
+ */
+QSearchPopup, QJumpToLineDialog {
+    background-color: @DialogBackground;
+}
+
+QSearchPopup[HasFocus="true"], QJumpToLineDialog[HasFocus="true"] {
+    border-bottom: 4px solid @PurpleRibbon;
+}
+
+QSearchPopup[HasFocus="false"], QJumpToLineDialog[HasFocus="false"] {
+    border-bottom: 4px solid @DialogBackground;
+}
+
+/*
+ * QJumpToLineDialog
+ */
+QJumpToLineDialog {
+    background-color: @DialogBackground;
+    border: 1px solid @PurpleRibbon;
+}
+
+/*
+ * QLineEdit
+ */
+QLineEdit {
+    border: none;
+    background-color: @DialogBackground;
+    color: #fffafafa;
+    selection-background-color: #ff4f4f4f;
+    selection-color: #fffafafa;
+}
+
+/*
+ * QMemoryVisualizer
+ */
+QMemoryVisualizer {
+    border: none;
+    background-color: @levelM1;
+}
+
+/*
+ * QTreeView styling
+ */
+QTreeView {
+    cursor: pointer;
+    background-color: @paperBackground; /* General background color */
+    alternate-background-color: #ff4e4e4e; /* Alternate row color */
+    color: #ffd0d0d0; /* Default text (foreground) color */
+    border: 1px solid #444444; /* Optional border around the QTreeView */
+}
+
+QTreeView::header {
+    background-color: @paperBackground; /* Header background color */
+    color: #d0d0d0; /* Header text color */
+    min-height: 10px; /* Set minimum header height */
+    padding: 2px; /* Adjust padding if necessary */
+    font-size: 12px; /* You can also reduce the font size to make it smaller */
+}
+
+QHeaderView::section {
+    background-color: @paperBackground; /* Section background color */
+    color: #d0d0d0; /* Section text color */
+    padding: 4px; /* Adjust padding as needed */
+    height: 10px; /* Force the height of each section */
+    border: 1px solid #444444; /* Optional border for each section */
+}
+
+QTreeView::branch {
+    background-color: @paperBackground;
+}
+   
+QHeaderView::section {
+    background-color: #ff3a3a3a;
+    color: #ffd0d0d0;
+    padding: 5px;
+    border: 1px solid #ff444444;
+}
+
+QTreeView::verticalScrollBar, QTreeView::horizontalScrollBar {
+    background-color: @paperBackground;
+}
+
+QScrollBar::handle:vertical, QScrollBar::handle:horizontal {
+    background-color: #ff555555;
+    border-radius: 4px;
+}
