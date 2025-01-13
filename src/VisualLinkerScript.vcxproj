@@ -367,12 +367,6 @@
     <ClCompile Include="Components\QScintilla\src\qsciscintillabase.cpp" />
     <ClCompile Include="Components\QScintilla\src\qscistyle.cpp" />
     <ClCompile Include="Components\QScintilla\src\qscistyledtext.cpp" />
-    <ClCompile Include="Tests\DrcEngine\Rules\CEntryIsDefinedRuleTests.cpp">
-      <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">input</DynamicSource>
-      <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(Filename).moc</QtMocFileName>
-      <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Release|x64'">input</DynamicSource>
-      <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).moc</QtMocFileName>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ui_MainWindow.h" />
