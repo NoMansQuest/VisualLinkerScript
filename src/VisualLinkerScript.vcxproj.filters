@@ -506,9 +506,6 @@
     <ClCompile Include="Components\MemoryVisualizer\Composition\COverlaySectionOutput.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="Tests\DrcEngine\Rules\CEntryIsDefinedRuleTests.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Components\QScintilla\scintilla\lexlib\Accessor.h">
@@ -1174,6 +1171,18 @@
     <ClInclude Include="ui_MainWindow.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
+    <ClInclude Include="Tests\TestRegistry.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Tests\TestMacros.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Tests\DrcEngine\Rules\RulesTestsHelper.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Tests\DrcEngine\Rules\SuperCLinkerScriptFile.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="release\moc_predefs.h.cbt">
@@ -1222,6 +1231,9 @@
       <Filter>Generated Files</Filter>
     </QtMoc>
     <QtMoc Include="Components\MemoryVisualizer\QPercentageLineEdit.h">
+      <Filter>Generated Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Tests\DrcEngine\Rules\TCEntryIsDefinedRule.cpp">
       <Filter>Generated Files</Filter>
     </QtMoc>
   </ItemGroup>

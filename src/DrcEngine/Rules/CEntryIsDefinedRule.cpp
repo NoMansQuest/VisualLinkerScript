@@ -19,7 +19,10 @@ LinqVector<CViolationBase> CEntryIsDefinedRule::PerformCheck(const std::shared_p
 
 	auto foundEntryCalls = linkerScriptFile->ParsedContent()
 		.OfType<CFunctionCall>()
-		.Where([&](const std::shared_ptr<CFunctionCall>& call) { return StringEquals(linkerScriptFile->ResolveRawEntry(call->FunctionName()), "ENTRY", true); });
+		.Where([&](const std::shared_ptr<CFunctionCall>& call)
+		{
+			return StringEquals(linkerScriptFile->ResolveRawEntry(call->FunctionName()), "ENTRY", true);
+		});
 
 	if (foundEntryCalls.size() > 1)
 	{

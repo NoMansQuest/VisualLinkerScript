@@ -26,5 +26,16 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\DrcEngine\Rules\CEntryIsDefinedRule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Models\CLinkerScriptFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="DrcEngine\Rules\TestCEntryIsDefinedRule.cpp">
+      <Filter>Source Files</Filter>
+    </QtMoc>
   </ItemGroup>
 </Project>

@@ -6,7 +6,7 @@
 
 class TestRegistry {
 public:
-    static TestRegistry& instance() {
+    static TestRegistry& Instance() {
         static TestRegistry registry;
         return registry;
     }

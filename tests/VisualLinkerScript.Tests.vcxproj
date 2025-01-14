@@ -70,7 +70,7 @@
       <AssemblerListingLocation>$(IntDir)%(RelativeDir)</AssemblerListingLocation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>Qt6Test.lib;%(AdditionalDependencies);$(Qt_LIBS_)</AdditionalDependencies>      
+      <AdditionalDependencies>Qt6Test.lib;%(AdditionalDependencies);$(Qt_LIBS_)</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories);$(QTDIR)\lib</AdditionalLibraryDirectories>
       <AdditionalOptions>/DEBUG "/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'" %(AdditionalOptions)</AdditionalOptions>
     </Link>
@@ -120,10 +120,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="TestMacros.h" />
-    <ClInclude Include="TestRegistry.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

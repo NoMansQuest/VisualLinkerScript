@@ -6,7 +6,7 @@
     namespace {                                      \
         struct AutoRegister##ClassName {             \
             AutoRegister##ClassName() {              \
-                TestRegistry::instance().RegisterTest([](int argc, char* argv[]) { \
+                TestRegistry::Instance().RegisterTest([](int argc, char* argv[]) { \
                     ClassName test;                  \
                     return QTest::qExec(&test, argc, argv); \
                 });                                  \

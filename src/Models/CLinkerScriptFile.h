@@ -143,7 +143,7 @@ namespace VisualLinkerScript::Models
 
         /// @brief Resolves the entry by returning the string-content the @see {entryToResolve} is
         ///        referring to.        
-        [[nodiscard]] std::string ResolveRawEntry(const CRawEntry& entryToResolve) const
+        [[nodiscard]] virtual std::string ResolveRawEntry(const CRawEntry& entryToResolve) const
         {
             return this->Content().substr(entryToResolve.StartPosition(), entryToResolve.Length());
         }
@@ -151,7 +151,7 @@ namespace VisualLinkerScript::Models
         /// @brief Returns the full text the input component is composed of.
         /// @param contentToResolve Component to process
         /// @return The full text that constitutes the component.
-        [[nodiscard]] std::string ResolveParsedContent(const CParsedContentBase& contentToResolve) const
+        [[nodiscard]] virtual std::string ResolveParsedContent(const CParsedContentBase& contentToResolve) const
         {
             const auto startPosition = contentToResolve.RawEntries().front().StartPosition();
             const auto endPosition = contentToResolve.RawEntries().back().StartPosition() +contentToResolve.RawEntries().back().Length() - 1;

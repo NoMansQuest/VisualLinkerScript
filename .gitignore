@@ -9,3 +9,5 @@ src/bin/*
 tests/release/*
 tests/debug/*
 tests/bin/*
+src/test.bin/*
+src/Test/*

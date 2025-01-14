@@ -3,12 +3,15 @@
 
 #include "RawEntryType.h"
 #include <cstdint>
+#include <stdexcept>
 
 namespace VisualLinkerScript::Models::Raw 
 {
     /// @brief Represents an entry found in the LinkerScript file by the @see {CLinkerScriptLexer}
     class CRawEntry
     {
+        bool m_diagnosticFlag;
+        std::string m_diagnosticResolution;
         uint32_t m_startAbsPosition;
         uint32_t m_length;
         uint32_t m_parenthesisDepth;
@@ -21,6 +24,26 @@ namespace VisualLinkerScript::Models::Raw
         RawEntryType m_entryType;
 
     public:
+        /// @brief Explicitly made based on callers request
+        explicit CRawEntry(
+	            const std::string& diagnosticResolution,
+	            const RawEntryType typeOfEntry)
+    	  : m_startAbsPosition(0),
+            m_length(0),
+            m_parenthesisDepth(0),
+            m_scopeDepth(0),
+            m_startLineNumber(0),
+            m_endLineNumber(0),
+            m_startIndexInLine(0),
+            m_endIndexInLine(0),
+            m_parentVectorIndex(0),
+            m_entryType(typeOfEntry),
+			m_diagnosticFlag(true),
+			m_diagnosticResolution(diagnosticResolution)
+        {  
+        }
+
+
         /// @brief Explicitly made based on callers request
         explicit CRawEntry(
 					const RawEntryType typeOfEntry,      
@@ -40,7 +63,8 @@ namespace VisualLinkerScript::Models::Raw
               m_endLineNumber(endLineNumber),
               m_startIndexInLine(startIndexInLine),
 		      m_endIndexInLine(endIndexInLine),
-              m_entryType(typeOfEntry)
+              m_entryType(typeOfEntry),
+			  m_diagnosticFlag(false)
         {}
 
         /// @brief Explicitly made based on callers request for single-line entries
@@ -61,7 +85,8 @@ namespace VisualLinkerScript::Models::Raw
               m_endLineNumber(lineNumber),
               m_startIndexInLine(startIndexInLine),
               m_endIndexInLine(startIndexInLine + length - 1),
-              m_entryType(typeOfEntry)
+              m_entryType(typeOfEntry),
+			  m_diagnosticFlag(false)
         {}
 
         /// @brief Explicitly constructs a "Null" entry, indicating that the entry does not exist.
@@ -75,7 +100,8 @@ namespace VisualLinkerScript::Models::Raw
               m_startIndexInLine(0),
               m_endIndexInLine(0),
               m_parentVectorIndex(0),
-              m_entryType(RawEntryType::NotPresent)
+              m_entryType(RawEntryType::NotPresent),
+              m_diagnosticFlag(false)
         {}
 
         /// @brief Object-Copy constructor
@@ -89,12 +115,24 @@ namespace VisualLinkerScript::Models::Raw
 	          m_startIndexInLine(cloneSource.StartIndexInLine()),
 	          m_endIndexInLine(cloneSource.EndIndexInLine()),
 	          m_parentVectorIndex(cloneSource.ParentVectorIndex()),
-	          m_entryType(cloneSource.EntryType())
+	          m_entryType(cloneSource.EntryType()),
+              m_diagnosticFlag(cloneSource.m_diagnosticFlag),
+			  m_diagnosticResolution(cloneSource.m_diagnosticResolution)
         {}
 
         /// @brief Default destructor
         ~CRawEntry()
         {}
+
+        /// @brief Returns content meant for diagnostics purposes.
+        const std::string& DiagnosticContent() const
+        {
+            if (!this->m_diagnosticFlag)
+            {
+                throw std::invalid_argument("This CRawEntry was not marked as diagnostic entry (m_diagnosticFlag = false)");
+            }
+            return this->m_diagnosticResolution;
+        }
 
         /// @brief Assignment operator
         CRawEntry& operator= (const CRawEntry& cloneSource)
@@ -109,6 +147,10 @@ namespace VisualLinkerScript::Models::Raw
             this->m_startIndexInLine = cloneSource.StartIndexInLine();
             this->m_endIndexInLine = cloneSource.EndIndexInLine();
             this->m_entryType = cloneSource.EntryType();
+
+            // Copy diagnostics data
+            this->m_diagnosticFlag = cloneSource.m_diagnosticFlag;
+            this->m_diagnosticResolution = cloneSource.m_diagnosticResolution;
             return *this;
         }
         
