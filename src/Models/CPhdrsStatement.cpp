@@ -3,7 +3,7 @@
 #include <string>
 #include <stdint.h>
 
-#include "CPhdrsStatement.h"
+#include "Models/CPhdrsStatement.h"
 
 using namespace VisualLinkerScript;
 using namespace VisualLinkerScript::Models;

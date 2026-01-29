@@ -1,5 +1,5 @@
-#include "QLinkerScriptManager.h"
-#include "../Components/QLinkerScriptSession/QLinkerScriptSession.h"
+#include "LinkerScriptManager/QLinkerScriptManager.h"
+#include "Components/QLinkerScriptSession/QLinkerScriptSession.h"
 
 /// @brief Create a new session for an 'untitled' linker script.
 std::shared_ptr<QLinkerScriptSession> QLinkerScriptManager::CreateSessionForUntitled()

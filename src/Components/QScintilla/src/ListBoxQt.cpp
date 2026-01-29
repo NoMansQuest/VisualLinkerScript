@@ -19,14 +19,14 @@
 // WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 
 
-#include "ListBoxQt.h"
+#include "Components/QScintilla/src/ListBoxQt.h"
 
 #include <stdlib.h>
 
 #include <QApplication>
 
-#include "SciClasses.h"
-#include "Qsci/qsciscintilla.h"
+#include "Components/QScintilla/src/SciClasses.h"
+#include "Components/QScintilla/src/Qsci/qsciscintilla.h"
 
 
 QsciListBoxQt::QsciListBoxQt()

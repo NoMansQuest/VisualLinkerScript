@@ -1,4 +1,4 @@
-#include "QJumpToLineDialog.h"
+#include "Components/InputDialogs/QJumpToLineDialog.h"
 #include "LinkerScriptManager/QLinkerScriptManager.h"
 
 void QJumpToLineDialog::BuildInterface()

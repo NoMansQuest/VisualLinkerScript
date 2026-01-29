@@ -1,6 +1,6 @@
-#include "CLocationCounterCannotGoBackwardsRule.h"
-#include "../DrcCommons.h"
-#include "../CDrcManager.h"
+#include "DrcEngine/Rules/CLocationCounterCannotGoBackwardsRule.h"
+#include "DrcEngine/DrcCommons.h"
+#include "DrcEngine/CDrcManager.h"
 
 REGISTER_DRC_RULE(CLocationCounterCannotGoBackwardsRule)
 

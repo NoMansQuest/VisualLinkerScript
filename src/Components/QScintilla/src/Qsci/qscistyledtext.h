@@ -23,7 +23,7 @@
 
 #include <qstring.h>
 
-#include "qsciglobal.h"
+#include "Components/QScintilla/src/Qsci/qsciglobal.h"
 
 
 class QsciScintillaBase;

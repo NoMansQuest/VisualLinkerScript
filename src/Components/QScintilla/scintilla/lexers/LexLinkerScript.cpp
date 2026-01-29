@@ -15,16 +15,16 @@
 #include <assert.h>
 #include <ctype.h>
 
-#include "../include/ILexer.h"
-#include "Scintilla.h"
-#include "SciLexer.h"
+#include "Components/QScintilla/scintilla/include/ILexer.h"
+#include "Components/QScintilla/scintilla/include/Scintilla.h"
+#include "Components/QScintilla/scintilla/include/SciLexer.h"
 
-#include "WordList.h"
-#include "LexAccessor.h"
-#include "Accessor.h"
-#include "../lexlib/StyleContext.h"
-#include "CharacterSet.h"
-#include "LexerModule.h"
+#include "Components/QScintilla/scintilla/lexlib/WordList.h"
+#include "Components/QScintilla/scintilla/lexlib/LexAccessor.h"
+#include "Components/QScintilla/scintilla/lexlib/Accessor.h"
+#include "Components/QScintilla/scintilla/lexlib/StyleContext.h"
+#include "Components/QScintilla/scintilla/lexlib/CharacterSet.h"
+#include "Components/QScintilla/scintilla/lexlib/LexerModule.h"
 
 #define UNREFERENCED_PARAMETER(P) (P)
 

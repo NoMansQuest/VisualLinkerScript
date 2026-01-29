@@ -1,10 +1,10 @@
 #ifndef CSECTION_STATEMENT_H__
 #define CSECTION_STATEMENT_H__
 
-#include "CSectionDefinitionBase.h"
-#include "CSectionOutput.h"
-#include "CProgramHeaderButton.h"
-#include "CFillExpressionButton.h"
+#include "Components/MemoryVisualizer/Composition/CSectionDefinitionBase.h"
+#include "Components/MemoryVisualizer/Composition/CSectionOutput.h"
+#include "Components/MemoryVisualizer/Composition/CProgramHeaderButton.h"
+#include "Components/MemoryVisualizer/Composition/CFillExpressionButton.h"
 
 namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 {

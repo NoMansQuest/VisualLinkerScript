@@ -9,16 +9,16 @@
 #include <cassert>
 #include <cstring>
 
-#include "ILexer.h"
-#include "Scintilla.h"
-#include "SciLexer.h"
+#include "Components/QScintilla/scintilla/include/ILexer.h"
+#include "Components/QScintilla/scintilla/include/Scintilla.h"
+#include "Components/QScintilla/scintilla/include/SciLexer.h"
 
-#include "PropSetSimple.h"
-#include "WordList.h"
-#include "LexAccessor.h"
-#include "Accessor.h"
-#include "LexerModule.h"
-#include "DefaultLexer.h"
+#include "Components/QScintilla/scintilla/lexlib/PropSetSimple.h"
+#include "Components/QScintilla/scintilla/lexlib/WordList.h"
+#include "Components/QScintilla/scintilla/lexlib/LexAccessor.h"
+#include "Components/QScintilla/scintilla/lexlib/Accessor.h"
+#include "Components/QScintilla/scintilla/lexlib/LexerModule.h"
+#include "Components/QScintilla/scintilla/lexlib/DefaultLexer.h"
 
 using namespace Scintilla;
 

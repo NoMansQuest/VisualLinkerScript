@@ -1,10 +1,10 @@
 #ifndef CMEMORY_REGION_PARSER_H__
 #define CMEMORY_REGION_PARSER_H__
 
-#include "CMemoryRegionContentParser.h"
-#include "CScopedRegionParser.h"
-#include "SubParserType.h"
-#include "../../Models/CMemoryRegion.h"
+#include "ParsingEngine/SubParsers/CMemoryRegionContentParser.h"
+#include "ParsingEngine/SubParsers/CScopedRegionParser.h"
+#include "ParsingEngine/SubParsers/SubParserType.h"
+#include "Models/CMemoryRegion.h"
 #include <memory>
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers

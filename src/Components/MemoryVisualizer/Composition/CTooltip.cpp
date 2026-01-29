@@ -1,4 +1,4 @@
-#include "CTooltip.h"
+#include "Components/MemoryVisualizer/Composition/CTooltip.h"
 
 using namespace VisualLinkerScript::Components::MemoryVisualizer::Composition;
 

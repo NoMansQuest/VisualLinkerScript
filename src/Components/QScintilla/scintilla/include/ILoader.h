@@ -8,7 +8,7 @@
 #ifndef ILOADER_H
 #define ILOADER_H
 
-#include "Sci_Position.h"
+#include "Components/QScintilla/scintilla/include/Sci_Position.h"
 
 class ILoader {
 public:

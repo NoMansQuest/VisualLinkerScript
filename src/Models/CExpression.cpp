@@ -2,10 +2,10 @@
 #include <memory>
 #include <string>
 
-#include "CExpression.h"
-#include "CLinkerScriptFile.h"
-#include "../ParsingEngine/CParserViolation.h"
-#include "../DrcEngine/CDrcViolation.h"
+#include "Models/CExpression.h"
+#include "Models/CLinkerScriptFile.h"
+#include "ParsingEngine/CParserViolation.h"
+#include "DrcEngine/CDrcViolation.h"
 
 using namespace VisualLinkerScript;
 using namespace VisualLinkerScript::Models;

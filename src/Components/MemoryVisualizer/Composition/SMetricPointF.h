@@ -1,7 +1,7 @@
 #ifndef SPOINTF_H__
 #define SPOINTF_H__
 
-#include "../../../Helpers.h"
+#include "Helpers.h"
 
 namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 {

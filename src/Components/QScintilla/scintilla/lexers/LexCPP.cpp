@@ -19,20 +19,20 @@
 #include <map>
 #include <algorithm>
 
-#include "ILexer.h"
-#include "Scintilla.h"
-#include "SciLexer.h"
+#include "Components/QScintilla/scintilla/include/ILexer.h"
+#include "Components/QScintilla/scintilla/include/Scintilla.h"
+#include "Components/QScintilla/scintilla/include/SciLexer.h"
 
-#include "StringCopy.h"
-#include "WordList.h"
-#include "LexAccessor.h"
-#include "Accessor.h"
-#include "StyleContext.h"
-#include "CharacterSet.h"
-#include "LexerModule.h"
-#include "OptionSet.h"
-#include "SparseState.h"
-#include "SubStyles.h"
+#include "Components/QScintilla/scintilla/lexlib/StringCopy.h"
+#include "Components/QScintilla/scintilla/lexlib/WordList.h"
+#include "Components/QScintilla/scintilla/lexlib/LexAccessor.h"
+#include "Components/QScintilla/scintilla/lexlib/Accessor.h"
+#include "Components/QScintilla/scintilla/lexlib/StyleContext.h"
+#include "Components/QScintilla/scintilla/lexlib/CharacterSet.h"
+#include "Components/QScintilla/scintilla/lexlib/LexerModule.h"
+#include "Components/QScintilla/scintilla/lexlib/OptionSet.h"
+#include "Components/QScintilla/scintilla/lexlib/SparseState.h"
+#include "Components/QScintilla/scintilla/lexlib/SubStyles.h"
 
 using namespace Scintilla;
 

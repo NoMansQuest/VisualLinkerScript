@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <cstdint>
-#include "../Helpers.h"
+#include "Helpers.h"
 #include "Models/CViolationBase.h"
 #include "Models/CParsedContentBase.h"
 

@@ -3,21 +3,21 @@
 #include <string>
 #include <iterator>
 
-#include "CVersionRegionContentParser.h"
-#include "Constants.h"
+#include "ParsingEngine/SubParsers/CVersionRegionContentParser.h"
+#include "ParsingEngine/SubParsers/Constants.h"
 
-#include "../CMasterParserException.h"
-#include "../CParserViolation.h"
-#include "../EParserViolationCode.h"
+#include "ParsingEngine/CMasterParserException.h"
+#include "ParsingEngine/CParserViolation.h"
+#include "ParsingEngine/EParserViolationCode.h"
 
-#include "../../Models/CParsedContentBase.h"
-#include "../../Models/CVersionScope.h"
-#include "../../Models/CVersionTag.h"
-#include "../../Models/CVersionNode.h"
-#include "../../Models/Raw/CRawEntry.h"
-#include "../../Models/Raw/RawEntryType.h"
-#include "../../Models/Raw/CRawFile.h"
-#include "../../Models/CComment.h"
+#include "Models/CParsedContentBase.h"
+#include "Models/CVersionScope.h"
+#include "Models/CVersionTag.h"
+#include "Models/CVersionNode.h"
+#include "Models/Raw/CRawEntry.h"
+#include "Models/Raw/RawEntryType.h"
+#include "Models/Raw/CRawFile.h"
+#include "Models/CComment.h"
 
 using namespace VisualLinkerScript::Models;
 using namespace VisualLinkerScript::Models::Raw;

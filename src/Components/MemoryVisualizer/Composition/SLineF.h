@@ -1,9 +1,9 @@
 #ifndef SLINE_H__
 #define SLINE_H__
 
-#include "../../../Helpers.h"
-#include "SMetricPointF.h"
-#include "CGraphicContext.h"
+#include "Helpers.h"
+#include "Components/MemoryVisualizer/Composition/SMetricPointF.h"
+#include "Components/MemoryVisualizer/Composition/CGraphicContext.h"
 
 namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 {

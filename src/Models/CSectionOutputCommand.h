@@ -3,9 +3,9 @@
 
 #include <vector>
 #include <string>
-#include "CParsedContentBase.h"
-#include "Raw/CRawEntry.h"
-#include "CViolationBase.h"
+#include "Models/CParsedContentBase.h"
+#include "Models/Raw/CRawEntry.h"
+#include "Models/CViolationBase.h"
 
 namespace VisualLinkerScript::Models
 {

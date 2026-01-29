@@ -1,8 +1,8 @@
 #ifndef SMETRIC_SIZEF_H__
 #define SMETRIC_SIZEF_H__
 
-#include "SPixelSizeF.h"
-#include "../../../Helpers.h"
+#include "Components/MemoryVisualizer/Composition/SPixelSizeF.h"
+#include "Helpers.h"
 
 namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 {

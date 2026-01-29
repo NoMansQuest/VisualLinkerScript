@@ -1,8 +1,8 @@
 #ifndef COVERLAY_SECTION_STATEMENT_H_
 #define COVERLAY_SECTION_STATEMENT_H_
 
-#include "CSectionDefinitionBase.h"
-#include "COverlaySectionOutput.h"
+#include "Components/MemoryVisualizer/Composition/CSectionDefinitionBase.h"
+#include "Components/MemoryVisualizer/Composition/COverlaySectionOutput.h"
 
 namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 {

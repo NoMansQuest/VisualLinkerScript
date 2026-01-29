@@ -1,10 +1,10 @@
 #ifndef CMEMORY_REGION_CONTENT_PARSER_H__
 #define CMEMORY_REGION_CONTENT_PARSER_H__
 
-#include "CSubParserBase.h"
-#include "SubParserType.h"
-#include "../../Models/Raw/CRawFile.h"
-#include "../../Models/CMemoryStatement.h"
+#include "ParsingEngine/SubParsers/CSubParserBase.h"
+#include "ParsingEngine/SubParsers/SubParserType.h"
+#include "Models/Raw/CRawFile.h"
+#include "Models/CMemoryStatement.h"
 #include <memory>
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers

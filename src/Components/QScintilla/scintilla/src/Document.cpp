@@ -24,27 +24,27 @@
 #include <regex>
 #endif
 
-#include "Platform.h"
+#include "Components/QScintilla/scintilla/include/Platform.h"
 
-#include "ILoader.h"
-#include "ILexer.h"
-#include "Scintilla.h"
+#include "Components/QScintilla/scintilla/include/ILoader.h"
+#include "Components/QScintilla/scintilla/include/ILexer.h"
+#include "Components/QScintilla/scintilla/include/Scintilla.h"
 
-#include "CharacterSet.h"
-#include "CharacterCategory.h"
-#include "Position.h"
-#include "SplitVector.h"
-#include "Partitioning.h"
-#include "RunStyles.h"
-#include "CellBuffer.h"
-#include "PerLine.h"
-#include "CharClassify.h"
-#include "Decoration.h"
-#include "CaseFolder.h"
-#include "Document.h"
-#include "RESearch.h"
-#include "UniConversion.h"
-#include "ElapsedPeriod.h"
+#include "Components/QScintilla/scintilla/lexlib/CharacterSet.h"
+#include "Components/QScintilla/scintilla/lexlib/CharacterCategory.h"
+#include "Components/QScintilla/scintilla/src/Position.h"
+#include "Components/QScintilla/scintilla/src/SplitVector.h"
+#include "Components/QScintilla/scintilla/src/Partitioning.h"
+#include "Components/QScintilla/scintilla/src/RunStyles.h"
+#include "Components/QScintilla/scintilla/src/CellBuffer.h"
+#include "Components/QScintilla/scintilla/src/PerLine.h"
+#include "Components/QScintilla/scintilla/src/CharClassify.h"
+#include "Components/QScintilla/scintilla/src/Decoration.h"
+#include "Components/QScintilla/scintilla/src/CaseFolder.h"
+#include "Components/QScintilla/scintilla/src/Document.h"
+#include "Components/QScintilla/scintilla/src/RESearch.h"
+#include "Components/QScintilla/scintilla/src/UniConversion.h"
+#include "Components/QScintilla/scintilla/src/ElapsedPeriod.h"
 
 using namespace Scintilla;
 

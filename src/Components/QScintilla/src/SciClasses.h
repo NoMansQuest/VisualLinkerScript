@@ -27,7 +27,7 @@
 #include <QSignalMapper>
 #include <QWidget>
 
-#include "Qsci/qsciglobal.h"
+#include "Components/QScintilla/src/Qsci/qsciglobal.h"
 
 
 class QsciScintillaQt;

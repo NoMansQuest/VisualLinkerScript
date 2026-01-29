@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-#include "SEditorActionBase.h"
+#include "Components/QLinkerScriptSession/EditorAction/SEditorActionBase.h"
 
 namespace VisualLinkerScript::Components::LinkerScriptSession::EditorAction
 {

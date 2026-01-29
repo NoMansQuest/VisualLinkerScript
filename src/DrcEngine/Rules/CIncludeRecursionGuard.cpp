@@ -1,14 +1,14 @@
 #include <algorithm>
 
-#include "CIncludeRecursionGuard.h"
+#include "DrcEngine/Rules/CIncludeRecursionGuard.h"
 
-#include "../DrcCommons.h"
-#include "../CDrcManager.h"
-#include "../IDrcRuleBase.h"
+#include "DrcEngine/DrcCommons.h"
+#include "DrcEngine/CDrcManager.h"
+#include "DrcEngine/IDrcRuleBase.h"
 
-#include "../../Models/CLinkerScriptFile.h"
-#include "../../Models/CIncludeCommand.h"
-#include "../../Helpers.h"
+#include "Models/CLinkerScriptFile.h"
+#include "Models/CIncludeCommand.h"
+#include "Helpers.h"
 #include "DrcEngine/CDrcViolation.h"
 #include "DrcEngine/EDrcViolationCode.h"
 

@@ -2,7 +2,7 @@
 #define CSECTIONOUTPUTCONSTRAINT_H
 
 #include <vector>
-#include "CParsedContentBase.h"
+#include "Models/CParsedContentBase.h"
 
 namespace VisualLinkerScript::Models
 {

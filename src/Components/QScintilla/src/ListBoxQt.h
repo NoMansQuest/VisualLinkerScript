@@ -23,7 +23,7 @@
 #include <qpixmap.h>
 #include <qstring.h>
 
-#include "Platform.h"
+#include "Components/QScintilla/scintilla/include/Platform.h"
 
 
 class QsciSciListBox;

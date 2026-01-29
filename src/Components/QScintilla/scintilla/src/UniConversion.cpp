@@ -10,7 +10,7 @@
 #include <stdexcept>
 #include <string>
 
-#include "UniConversion.h"
+#include "Components/QScintilla/scintilla/src/UniConversion.h"
 
 using namespace Scintilla;
 

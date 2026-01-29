@@ -3,14 +3,14 @@
 #include <memory>
 #include <iterator>
 
-#include "CMemoryStatementAttributeParser.h"
-#include "../CMasterParserException.h"
-#include "../../Models/Raw/CRawEntry.h"
-#include "../../Models/CComment.h"
-#include "../../Models/CMemoryStatementAttribute.h"
-#include "../CParserViolation.h"
-#include "../EParserViolationCode.h"
-#include "../../Helpers.h"
+#include "ParsingEngine/SubParsers/CMemoryStatementAttributeParser.h"
+#include "ParsingEngine/CMasterParserException.h"
+#include "Models/Raw/CRawEntry.h"
+#include "Models/CComment.h"
+#include "Models/CMemoryStatementAttribute.h"
+#include "ParsingEngine/CParserViolation.h"
+#include "ParsingEngine/EParserViolationCode.h"
+#include "Helpers.h"
 
 using namespace VisualLinkerScript;
 using namespace VisualLinkerScript::ParsingEngine;

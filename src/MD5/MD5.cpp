@@ -2,8 +2,8 @@
 #include <cstring>
 #include <iostream>
 
-#include "MD5.h"
-#include "MD5_loc.h"
+#include "MD5/MD5.h"
+#include "MD5/MD5_loc.h"
 
 namespace VisualLinkerScript::MD5 {
 

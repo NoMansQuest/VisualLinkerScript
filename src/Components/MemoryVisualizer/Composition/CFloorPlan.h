@@ -3,9 +3,9 @@
 
 #include <vector>
 
-#include "SMetricSizeF.h"
-#include "SMetricRectangleF.h"
-#include "CMemoryRegionBlock.h"
+#include "Components/MemoryVisualizer/Composition/SMetricSizeF.h"
+#include "Components/MemoryVisualizer/Composition/SMetricRectangleF.h"
+#include "Components/MemoryVisualizer/Composition/CMemoryRegionBlock.h"
 
 class QFontMetrics;
 

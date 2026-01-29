@@ -2,7 +2,7 @@
 #define CINPUT_SECTION_FUNCTION_H__
 
 #include <vector>
-#include "CParsedContentBase.h"
+#include "Models/CParsedContentBase.h"
 
 namespace VisualLinkerScript::Models
 {

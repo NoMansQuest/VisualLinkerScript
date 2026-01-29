@@ -1,5 +1,5 @@
-#include "CAddressedRegion.h"
-#include "../ColorResources.h"
+#include "Components/MemoryVisualizer/Composition/CAddressedRegion.h"
+#include "Components/MemoryVisualizer/ColorResources.h"
 
 using namespace VisualLinkerScript::Components::MemoryVisualizer::Composition;
 

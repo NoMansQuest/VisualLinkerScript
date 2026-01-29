@@ -1,4 +1,4 @@
-#include "QIssuesTreeView.h"
+#include "Components/QLinkerScriptSession/CustomComponents/QIssuesTreeView.h"
 
 void QIssuesTreeView::Initialize()
 {

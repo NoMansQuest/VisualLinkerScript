@@ -18,16 +18,16 @@
 // WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 
 
-#include "Qsci/qscilexer.h"
+#include "Components/QScintilla/src/Qsci/qscilexer.h"
 
 #include <qapplication.h>
 #include <qcolor.h>
 #include <qfont.h>
 #include <qsettings.h>
 
-#include "Qsci/qsciapis.h"
-#include "Qsci/qsciscintilla.h"
-#include "Qsci/qsciscintillabase.h"
+#include "Components/QScintilla/src/Qsci/qsciapis.h"
+#include "Components/QScintilla/src/Qsci/qsciscintilla.h"
+#include "Components/QScintilla/src/Qsci/qsciscintillabase.h"
 
 
 // The ctor.

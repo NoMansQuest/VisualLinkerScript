@@ -2,7 +2,7 @@
 #include <string>
 #include <stdint.h>
 
-#include "CSectionOutputOverlay.h"
+#include "Models/CSectionOutputOverlay.h"
 
 using namespace VisualLinkerScript;
 using namespace VisualLinkerScript::Models;

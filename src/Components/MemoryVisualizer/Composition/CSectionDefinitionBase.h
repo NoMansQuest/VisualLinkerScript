@@ -5,10 +5,10 @@
 #include <string>
 #include <cstdint>
 
-#include "CAddressedRegion.h"
-#include "CFillExpressionButton.h"
-#include "CProgramHeaderButton.h"
-#include "../../../Helpers.h"
+#include "Components/MemoryVisualizer/Composition/CAddressedRegion.h"
+#include "Components/MemoryVisualizer/Composition/CFillExpressionButton.h"
+#include "Components/MemoryVisualizer/Composition/CProgramHeaderButton.h"
+#include "Helpers.h"
 
 namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 {

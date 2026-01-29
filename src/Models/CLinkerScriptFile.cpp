@@ -1,5 +1,5 @@
-#include "CLinkerScriptFile.h"
-#include "CParsedContentBase.h"
+#include "Models/CLinkerScriptFile.h"
+#include "Models/CParsedContentBase.h"
 #include <string>
 
 using namespace VisualLinkerScript::Models;

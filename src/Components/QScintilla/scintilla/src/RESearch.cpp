@@ -208,9 +208,9 @@
 #include <algorithm>
 #include <iterator>
 
-#include "Position.h"
-#include "CharClassify.h"
-#include "RESearch.h"
+#include "Components/QScintilla/scintilla/src/Position.h"
+#include "Components/QScintilla/scintilla/src/CharClassify.h"
+#include "Components/QScintilla/scintilla/src/RESearch.h"
 
 using namespace Scintilla;
 

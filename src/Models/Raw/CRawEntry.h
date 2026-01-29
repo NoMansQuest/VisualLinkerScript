@@ -1,7 +1,7 @@
 #ifndef CRAWENTRY_H__
 #define CRAWENTRY_H__
 
-#include "RawEntryType.h"
+#include "Models/Raw/RawEntryType.h"
 #include <cstdint>
 #include <stdexcept>
 

@@ -1,10 +1,10 @@
-#include "CIncludedFilesArePresentRule.h"
+#include "DrcEngine/Rules/CIncludedFilesArePresentRule.h"
 
-#include "../DrcCommons.h"
-#include "../CDrcManager.h"
-#include "../../Models/CLinkerScriptFile.h"
-#include "../../Models/CIncludeCommand.h"
-#include "../../Helpers.h"
+#include "DrcEngine/DrcCommons.h"
+#include "DrcEngine/CDrcManager.h"
+#include "Models/CLinkerScriptFile.h"
+#include "Models/CIncludeCommand.h"
+#include "Helpers.h"
 #include "DrcEngine/CDrcViolation.h"
 #include "DrcEngine/EDrcViolationCode.h"
 

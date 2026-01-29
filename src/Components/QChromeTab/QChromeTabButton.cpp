@@ -1,4 +1,4 @@
-#include "QChromeTabButton.h"
+#include "Components/QChromeTab/QChromeTabButton.h"
 
 void QChromeTabButton::BuildUserInterface()
 {

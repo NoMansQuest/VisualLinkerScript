@@ -1,5 +1,5 @@
-#include "CFloorPlan.h"
-#include "CMemoryRegionBlock.h"
+#include "Components/MemoryVisualizer/Composition/CFloorPlan.h"
+#include "Components/MemoryVisualizer/Composition/CMemoryRegionBlock.h"
 
 using namespace VisualLinkerScript::Components::MemoryVisualizer::Composition;
 

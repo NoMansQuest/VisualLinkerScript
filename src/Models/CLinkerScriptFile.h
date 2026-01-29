@@ -5,9 +5,9 @@
 #include <sstream>
 #include <vector>
 #include <string>
-#include "CViolationBase.h"
-#include "CParsedContentBase.h"
-#include "Raw/CRawFile.h"
+#include "Models/CViolationBase.h"
+#include "Models/CParsedContentBase.h"
+#include "Models/Raw/CRawFile.h"
 
 namespace VisualLinkerScript::ParsingEngine
 {

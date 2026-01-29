@@ -30,8 +30,8 @@
 
 #if !defined(QT_NO_PRINTER)
 
-#include "qsciglobal.h"
-#include "qsciscintilla.h"
+#include "Components/QScintilla/src/Qsci/qsciglobal.h"
+#include "Components/QScintilla/src/Qsci/qsciscintilla.h"
 
 
 QT_BEGIN_NAMESPACE

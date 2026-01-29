@@ -3,19 +3,19 @@
 #include <memory>
 #include <iterator>
 
-#include "CInputSectionStatementParser.h"
-#include "CInputSectionFunctionSortParser.h"
-#include "CInputSectionFunctionExcludeFileParser.h"
+#include "ParsingEngine/SubParsers/CInputSectionStatementParser.h"
+#include "ParsingEngine/SubParsers/CInputSectionFunctionSortParser.h"
+#include "ParsingEngine/SubParsers/CInputSectionFunctionExcludeFileParser.h"
 
-#include "Constants.h"
-#include "SubParserHelpers.h"
-#include "../CMasterParserException.h"
-#include "../../Models/Raw/CRawEntry.h"
-#include "../../Models/CComment.h"
-#include "../../Models/CWildcardEntry.h"
-#include "../../Models/CInputSectionStatement.h"
-#include "../CParserViolation.h"
-#include "../EParserViolationCode.h"
+#include "ParsingEngine/SubParsers/Constants.h"
+#include "ParsingEngine/SubParsers/SubParserHelpers.h"
+#include "ParsingEngine/CMasterParserException.h"
+#include "Models/Raw/CRawEntry.h"
+#include "Models/CComment.h"
+#include "Models/CWildcardEntry.h"
+#include "Models/CInputSectionStatement.h"
+#include "ParsingEngine/CParserViolation.h"
+#include "ParsingEngine/EParserViolationCode.h"
 
 using namespace VisualLinkerScript::ParsingEngine;
 using namespace VisualLinkerScript::ParsingEngine::SubParsers;

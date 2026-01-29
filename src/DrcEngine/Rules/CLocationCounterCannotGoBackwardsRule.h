@@ -1,7 +1,7 @@
 #ifndef CLOCATIONCOUNTERCANNOTGOBACKWARDSRULE_H
 #define CLOCATIONCOUNTERCANNOTGOBACKWARDSRULE_H
 
-#include "../IDrcRuleBase.h"
+#include "DrcEngine/IDrcRuleBase.h"
 
 namespace VisualLinkerScript::DrcEngine::Rules
 {

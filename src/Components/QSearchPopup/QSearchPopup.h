@@ -3,8 +3,8 @@
 
 #include <QtWidgets>
 #include <QString>
-#include "SearchReplaceRequestTypeEnum.h"
-#include "SearchPerimeterTypeEnum.h"
+#include "Components/QSearchPopup/SearchReplaceRequestTypeEnum.h"
+#include "Components/QSearchPopup/SearchPerimeterTypeEnum.h"
 
 class QFlatCheckBox;
 class QManualSizeGrip;

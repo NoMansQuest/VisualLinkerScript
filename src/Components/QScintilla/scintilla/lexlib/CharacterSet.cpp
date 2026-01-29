@@ -9,7 +9,7 @@
 #include <cstdlib>
 #include <cassert>
 
-#include "CharacterSet.h"
+#include "Components/QScintilla/scintilla/lexlib/CharacterSet.h"
 
 using namespace Scintilla;
 

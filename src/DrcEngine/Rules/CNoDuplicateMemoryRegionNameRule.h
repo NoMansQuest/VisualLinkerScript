@@ -1,7 +1,7 @@
 #ifndef CNODUPLICATEMEMORYREGIONNAMERULE_H
 #define CNODUPLICATEMEMORYREGIONNAMERULE_H
 
-#include "../IDrcRuleBase.h"
+#include "DrcEngine/IDrcRuleBase.h"
 #include <memory>
 
 namespace VisualLinkerScript::DrcEngine::Rules

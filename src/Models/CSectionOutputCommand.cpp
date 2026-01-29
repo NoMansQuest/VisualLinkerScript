@@ -2,10 +2,10 @@
 #include <string>
 #include <stdint.h>
 
-#include "CSectionOutputCommand.h"
-#include "CLinkerScriptFile.h"
-#include "../ParsingEngine/CParserViolation.h"
-#include "../DrcEngine/CDrcViolation.h"
+#include "Models/CSectionOutputCommand.h"
+#include "Models/CLinkerScriptFile.h"
+#include "ParsingEngine/CParserViolation.h"
+#include "DrcEngine/CDrcViolation.h"
 
 using namespace VisualLinkerScript;
 using namespace VisualLinkerScript::Models;

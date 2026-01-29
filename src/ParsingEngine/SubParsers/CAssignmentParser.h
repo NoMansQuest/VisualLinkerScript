@@ -3,10 +3,10 @@
 
 #include <memory>
 
-#include "CSubParserBase.h"
-#include "SubParserType.h"
+#include "ParsingEngine/SubParsers/CSubParserBase.h"
+#include "ParsingEngine/SubParsers/SubParserType.h"
 
-#include "../../Models/CAssignmentStatement.h"
+#include "Models/CAssignmentStatement.h"
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {

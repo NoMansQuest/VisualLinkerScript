@@ -18,13 +18,13 @@
 // WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 
 
-#include "Qsci/qscicommand.h"
+#include "Components/QScintilla/src/Qsci/qscicommand.h"
 
 #include <qnamespace.h>
 #include <qapplication.h>
 
-#include "Qsci/qsciscintilla.h"
-#include "Qsci/qsciscintillabase.h"
+#include "Components/QScintilla/src/Qsci/qsciscintilla.h"
+#include "Components/QScintilla/src/Qsci/qsciscintillabase.h"
 
 
 static int convert(int key);

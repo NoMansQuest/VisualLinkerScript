@@ -4,10 +4,10 @@
 #include <vector>
 #include <string>
 #include <cstdint>
-#include "COverlaySectionStatement.h"
-#include "../../../Helpers.h"
-#include "CProgramHeaderButton.h"
-#include "CFillExpressionButton.h"
+#include "Components/MemoryVisualizer/Composition/COverlaySectionStatement.h"
+#include "Helpers.h"
+#include "Components/MemoryVisualizer/Composition/CProgramHeaderButton.h"
+#include "Components/MemoryVisualizer/Composition/CFillExpressionButton.h"
 
 namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 {

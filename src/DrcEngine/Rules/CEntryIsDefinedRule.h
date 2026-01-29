@@ -1,7 +1,7 @@
 #ifndef CENTRYISDEFINEDRULE_H
 #define CENTRYISDEFINEDRULE_H
 
-#include "../IDrcRuleBase.h"
+#include "DrcEngine/IDrcRuleBase.h"
 
 namespace VisualLinkerScript::DrcEngine::Rules
 {

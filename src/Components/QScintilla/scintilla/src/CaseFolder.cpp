@@ -9,8 +9,8 @@
 #include <vector>
 #include <algorithm>
 
-#include "CaseFolder.h"
-#include "CaseConvert.h"
+#include "Components/QScintilla/scintilla/src/CaseFolder.h"
+#include "Components/QScintilla/scintilla/src/CaseConvert.h"
 
 using namespace Scintilla;
 

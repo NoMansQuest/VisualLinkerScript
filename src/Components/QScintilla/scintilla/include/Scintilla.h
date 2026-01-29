@@ -34,7 +34,7 @@ typedef uintptr_t uptr_t;
 // Define sptr_t, a signed integer large enough to hold a pointer.
 typedef intptr_t sptr_t;
 
-#include "Sci_Position.h"
+#include "Components/QScintilla/scintilla/include/Sci_Position.h"
 
 typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, sptr_t lParam);
 

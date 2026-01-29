@@ -3,8 +3,8 @@
 #include <QString>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "qscrollbar.h"
-#include "QElapsedTimer.h"
+#include <qscrollbar.h>
+#include <QElapsedTimer.h>
 #include "Components/InputDialogs/QJumpToLineDialog.h"
 #include "Components/QScintilla/src/Qsci/qscilexerlinkerscript.h"
 #include "Components/QChromeTab/QChromeTabWidget.h"

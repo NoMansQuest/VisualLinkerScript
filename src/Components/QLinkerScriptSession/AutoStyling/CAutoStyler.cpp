@@ -1,4 +1,4 @@
-#include "CAutoStyler.h"
+#include "Components/QLinkerScriptSession/AutoStyling/CAutoStyler.h"
 #include "Models/CLinkerScriptFile.h"
 #include "Models/Raw/CRawEntry.h"
 #include <qlogging.h>

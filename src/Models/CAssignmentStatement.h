@@ -2,8 +2,8 @@
 #define CASSIGNMENT_STATEMENT_H__
 
 #include <vector>
-#include "CParsedContentBase.h"
-#include "Raw/CRawEntry.h"
+#include "Models/CParsedContentBase.h"
+#include "Models/Raw/CRawEntry.h"
 
 namespace VisualLinkerScript::Models
 {

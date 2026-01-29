@@ -10,7 +10,7 @@
 
 #include <stdexcept>
 
-#include "CharClassify.h"
+#include "Components/QScintilla/scintilla/src/CharClassify.h"
 
 using namespace Scintilla;
 

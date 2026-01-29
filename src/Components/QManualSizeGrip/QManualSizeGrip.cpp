@@ -1,4 +1,4 @@
-#include "QManualSizeGrip.h"
+#include "Components/QManualSizeGrip/QManualSizeGrip.h"
 #include <QMouseEvent>
 
 QManualSizeGrip::QManualSizeGrip(QWidget* parent)

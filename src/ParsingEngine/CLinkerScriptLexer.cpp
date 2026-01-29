@@ -3,18 +3,18 @@
 #include <string>
 #include <vector>
 
-#include "CLinkerScriptLexer.h"
+#include "ParsingEngine/CLinkerScriptLexer.h"
 #include <QDebug>
 #include <QString>
 
 #include <ostream>
 
-#include "CLexerException.h"
+#include "ParsingEngine/CLexerException.h"
 
-#include "../Models/Raw/CRawEntry.h"
-#include "../Models/Raw/CRawFile.h"
-#include "../Models/Raw/RawEntryType.h"
-#include "../Helpers.h"
+#include "Models/Raw/CRawEntry.h"
+#include "Models/Raw/CRawFile.h"
+#include "Models/Raw/RawEntryType.h"
+#include "Helpers.h"
 #include "Models/CLinkerScriptFile.h"
 
 using namespace VisualLinkerScript::Models;

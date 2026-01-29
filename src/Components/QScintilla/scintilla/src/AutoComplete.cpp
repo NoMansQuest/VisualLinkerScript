@@ -17,12 +17,12 @@
 #include <algorithm>
 #include <memory>
 
-#include "Platform.h"
+#include "Components/QScintilla/scintilla/include/Platform.h"
 
-#include "Scintilla.h"
-#include "CharacterSet.h"
-#include "Position.h"
-#include "AutoComplete.h"
+#include "Components/QScintilla/scintilla/include/Scintilla.h"
+#include "Components/QScintilla/scintilla/lexlib/CharacterSet.h"
+#include "Components/QScintilla/scintilla/src/Position.h"
+#include "Components/QScintilla/scintilla/src/AutoComplete.h"
 
 using namespace Scintilla;
 

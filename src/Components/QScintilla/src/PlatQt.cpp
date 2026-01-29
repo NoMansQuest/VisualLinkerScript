@@ -39,13 +39,13 @@
 #include <qlibrary.h>
 #endif
 
-#include "Platform.h"
-#include "XPM.h"
+#include "Components/QScintilla/scintilla/include/Platform.h"
+#include "Components/QScintilla/scintilla/src/XPM.h"
 
-#include "Qsci/qsciscintillabase.h"
-#include "SciClasses.h"
+#include "Components/QScintilla/src/Qsci/qsciscintillabase.h"
+#include "Components/QScintilla/src/SciClasses.h"
 
-#include "FontQuality.h"
+#include "Components/QScintilla/scintilla/src/FontQuality.h"
 
 
 namespace Scintilla {

@@ -1,6 +1,6 @@
 #ifndef CDRAWABLE_OBJECT_BASE_H__
 #define CDRAWABLE_OBJECT_BASE_H__
-#include "CGraphicContext.h"
+#include "Components/MemoryVisualizer/Composition/CGraphicContext.h"
 
 class QPainter;
 

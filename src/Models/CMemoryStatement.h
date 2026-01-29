@@ -4,7 +4,7 @@
 #include <utility>
 #include <vector>
 #include <memory>
-#include "CParsedContentBase.h"
+#include "Models/CParsedContentBase.h"
 
 namespace VisualLinkerScript::Models
 {

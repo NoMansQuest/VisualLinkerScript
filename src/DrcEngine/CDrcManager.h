@@ -2,7 +2,7 @@
 #define CDRCENGINEMANAGER_H__
 
 #include <memory>
-#include "../Helpers.h"
+#include "Helpers.h"
 
 namespace VisualLinkerScript
 {

@@ -8,7 +8,7 @@
 #ifndef ILEXER_H
 #define ILEXER_H
 
-#include "Sci_Position.h"
+#include "Components/QScintilla/scintilla/include/Sci_Position.h"
 
 namespace Scintilla {
 

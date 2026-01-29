@@ -18,14 +18,14 @@
 #include <algorithm>
 #include <memory>
 
-#include "Platform.h"
+#include "Components/QScintilla/scintilla/include/Platform.h"
 
-#include "Scintilla.h"
-#include "Position.h"
-#include "SplitVector.h"
-#include "Partitioning.h"
-#include "CellBuffer.h"
-#include "UniConversion.h"
+#include "Components/QScintilla/scintilla/include/Scintilla.h"
+#include "Components/QScintilla/scintilla/src/Position.h"
+#include "Components/QScintilla/scintilla/src/SplitVector.h"
+#include "Components/QScintilla/scintilla/src/Partitioning.h"
+#include "Components/QScintilla/scintilla/src/CellBuffer.h"
+#include "Components/QScintilla/scintilla/src/UniConversion.h"
 
 namespace Scintilla {
 

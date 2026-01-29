@@ -25,8 +25,8 @@
 
 #include <QList>
 
-#include "qsciglobal.h"
-#include "qscicommand.h"
+#include "Components/QScintilla/src/Qsci/qsciglobal.h"
+#include "Components/QScintilla/src/Qsci/qscicommand.h"
 
 
 QT_BEGIN_NAMESPACE

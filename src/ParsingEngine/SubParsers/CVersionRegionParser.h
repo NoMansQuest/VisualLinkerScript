@@ -3,11 +3,11 @@
 
 #include <memory>
 
-#include "CScopedRegionParser.h"
-#include "CVersionRegionContentParser.h"
-#include "SubParserType.h"
+#include "ParsingEngine/SubParsers/CScopedRegionParser.h"
+#include "ParsingEngine/SubParsers/CVersionRegionContentParser.h"
+#include "ParsingEngine/SubParsers/SubParserType.h"
 
-#include "../../Models/CVersionsRegion.h"
+#include "Models/CVersionsRegion.h"
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {

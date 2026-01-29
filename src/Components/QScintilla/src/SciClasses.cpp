@@ -19,7 +19,7 @@
 // WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 
 
-#include "SciClasses.h"
+#include "Components/QScintilla/src/SciClasses.h"
 
 #include <QCoreApplication>
 #include <QKeyEvent>
@@ -28,8 +28,8 @@
 #include <QPainter>
 #include <QPaintEvent>
 
-#include "ScintillaQt.h"
-#include "ListBoxQt.h"
+#include "Components/QScintilla/src/ScintillaQt.h"
+#include "Components/QScintilla/src/ListBoxQt.h"
 
 
 // Create a call tip.

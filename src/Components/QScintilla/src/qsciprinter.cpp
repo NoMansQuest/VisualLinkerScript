@@ -18,7 +18,7 @@
 // WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 
 
-#include "Qsci/qsciprinter.h"
+#include "Components/QScintilla/src/Qsci/qsciprinter.h"
 
 #if !defined(QT_NO_PRINTER)
 
@@ -26,7 +26,7 @@
 #include <QPainter>
 #include <QStack>
 
-#include "Qsci/qsciscintillabase.h"
+#include "Components/QScintilla/src/Qsci/qsciscintillabase.h"
 
 
 // The ctor.

@@ -4,7 +4,7 @@
 /*
 #include <QtWidgets>
 #include <QString>
-#include "src/Qsci/qsciscintilla.h"
+#include "Components/QScintilla/src/Qsci/qsciscintilla.h"
 
 
 class VlsScintilla : public QsciScintilla

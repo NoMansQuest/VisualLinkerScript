@@ -1,5 +1,5 @@
-#include "QChromeTabWidget.h"
-#include "QChromeTabButton.h"
+#include "Components/QChromeTab/QChromeTabWidget.h"
+#include "Components/QChromeTab/QChromeTabButton.h"
 #include <utility>
 
 void QChromeTabWidget::BuildUserInterface()

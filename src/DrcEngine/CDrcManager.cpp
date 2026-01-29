@@ -1,7 +1,7 @@
-#include "CDrcManager.h"
+#include "DrcEngine/CDrcManager.h"
 
-#include "IDrcRuleBase.h"
-#include "../Models/CViolationBase.h"
+#include "DrcEngine/IDrcRuleBase.h"
+#include "Models/CViolationBase.h"
 
 using namespace VisualLinkerScript;
 using namespace VisualLinkerScript::Models;

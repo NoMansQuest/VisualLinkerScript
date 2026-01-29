@@ -3,9 +3,9 @@
 #include <string>
 #include <cstdint>
 
-#include "CMemoryStatement.h"
-#include "CMemoryStatementAttribute.h"
-#include "CExpression.h"
+#include "Models/CMemoryStatement.h"
+#include "Models/CMemoryStatementAttribute.h"
+#include "Models/CExpression.h"
 
 using namespace VisualLinkerScript;
 using namespace VisualLinkerScript::Models;

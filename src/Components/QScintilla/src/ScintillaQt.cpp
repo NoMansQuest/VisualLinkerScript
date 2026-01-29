@@ -29,12 +29,12 @@
 #include <qscrollbar.h>
 #include <qstring.h>
 
-#include "Qsci/qsciscintillabase.h"
-#include "ScintillaQt.h"
+#include "Components/QScintilla/src/Qsci/qsciscintillabase.h"
+#include "Components/QScintilla/src/ScintillaQt.h"
 #if !defined(QT_NO_ACCESSIBILITY)
-#include "SciAccessibility.h"
+#include "Components/QScintilla/src/SciAccessibility.h"
 #endif
-#include "SciClasses.h"
+#include "Components/QScintilla/src/SciClasses.h"
 
 
 // We want to use the Scintilla notification names as Qt signal names.

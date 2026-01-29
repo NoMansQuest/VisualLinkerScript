@@ -1,7 +1,7 @@
 #ifndef CINCLUDE_RECURSION_GUARD_H__
 #define CINCLUDE_RECURSION_GUARD_H__
 
-#include "../IDrcRuleBase.h"
+#include "DrcEngine/IDrcRuleBase.h"
 
 namespace VisualLinkerScript::DrcEngine::Rules
 {

@@ -3,7 +3,7 @@
 
 #include <cstdint>
 #include <string>
-#include "SEditorActionBase.h"
+#include "Components/QLinkerScriptSession/EditorAction/SEditorActionBase.h"
 
 namespace VisualLinkerScript::Components::LinkerScriptSession::EditorAction
 {

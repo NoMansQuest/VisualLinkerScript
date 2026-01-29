@@ -3,11 +3,11 @@
 
 #include <memory>
 
-#include "CSubParserBase.h"
-#include "SubParserType.h"
+#include "ParsingEngine/SubParsers/CSubParserBase.h"
+#include "ParsingEngine/SubParsers/SubParserType.h"
 
-#include "../../Models/CVersionScope.h"
-#include "../../Models/Raw/CRawFile.h"
+#include "Models/CVersionScope.h"
+#include "Models/Raw/CRawFile.h"
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {

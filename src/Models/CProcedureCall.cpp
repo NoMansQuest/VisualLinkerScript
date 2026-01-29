@@ -3,7 +3,7 @@
 #include <string>
 #include <cstdint>
 
-#include "CProcedureCall.h"
+#include "Models/CProcedureCall.h"
 
 using namespace VisualLinkerScript;
 using namespace VisualLinkerScript::Models;

@@ -5,9 +5,9 @@
 #include <vector>
 #include <memory>
 #include <Models/CParsedContentBase.h>
-#include "EDrcViolationCode.h"
-#include "../Models/CViolationBase.h"
-#include "../Helpers.h"
+#include "DrcEngine/EDrcViolationCode.h"
+#include "Models/CViolationBase.h"
+#include "Helpers.h"
 
 namespace VisualLinkerScript::DrcEngine 
 {

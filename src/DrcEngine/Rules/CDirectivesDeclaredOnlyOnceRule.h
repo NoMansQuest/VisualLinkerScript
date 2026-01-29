@@ -1,7 +1,7 @@
 #ifndef CDIRECTIVESDECLAREDONLYONCERULE_H
 #define CDIRECTIVESDECLAREDONLYONCERULE_H
 
-#include "../IDrcRuleBase.h"
+#include "DrcEngine/IDrcRuleBase.h"
 
 namespace VisualLinkerScript::DrcEngine::Rules
 {

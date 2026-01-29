@@ -1,11 +1,11 @@
-#include "ComponentHelpers.h"
+#include "Components/QScintilla/ComponentHelpers.h"
 #include <QScrollBar>
 #include <QStyle>
-#include "src/Qsci/qsciscintilla.h"
-#include "../QScintilla/src/Qsci/qscilexerlinkerscript.h"
+#include "Components/QScintilla/src/Qsci/qsciscintilla.h"
+#include "Components/QScintilla/src/Qsci/qscilexerlinkerscript.h"
 #include <QOperatingSystemVersion>
 
-#include "Scintilla.h"
+#include "Components/QScintilla/scintilla/include/Scintilla.h"
 
 using namespace VisualLinkerScript::Components;
 

@@ -2,7 +2,7 @@
 #define ADD_EMPTY_LINE_H__
 
 #include <cstdint>
-#include "SEditorActionBase.h"
+#include "Components/QLinkerScriptSession/EditorAction/SEditorActionBase.h"
 
 namespace VisualLinkerScript::Components::LinkerScriptSession::EditorAction
 {

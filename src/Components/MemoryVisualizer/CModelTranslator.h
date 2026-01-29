@@ -2,7 +2,7 @@
 #define CMODEL_TRANSLATOR_H__
 
 #include <memory>
-#include "../../Models/CLinkerScriptFile.h"
+#include "Models/CLinkerScriptFile.h"
 
 namespace VisualLinkerScript::Components::MemoryVisualizer
 {

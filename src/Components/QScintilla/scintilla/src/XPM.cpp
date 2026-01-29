@@ -15,9 +15,9 @@
 #include <iterator>
 #include <memory>
 
-#include "Platform.h"
+#include "Components/QScintilla/scintilla/include/Platform.h"
 
-#include "XPM.h"
+#include "Components/QScintilla/scintilla/src/XPM.h"
 
 using namespace Scintilla;
 

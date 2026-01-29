@@ -1,8 +1,8 @@
 #ifndef CLEXER_VIOLATION_H_
 #define CLEXER_VIOLATION_H_
 
-#include "ELexerViolationCode.h"
-#include "../Models/CViolationBase.h"
+#include "ParsingEngine/ELexerViolationCode.h"
+#include "Models/CViolationBase.h"
 
 namespace VisualLinkerScript::ParsingEngine
 {

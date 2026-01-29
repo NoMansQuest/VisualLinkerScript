@@ -5,7 +5,7 @@
 #include <memory>
 #include <unordered_map>
 #include <string>
-#include "CRawEntry.h"
+#include "Models/Raw/CRawEntry.h"
 #include "Models/CIndentationInfo.h"
 
 namespace VisualLinkerScript::Models::Raw 

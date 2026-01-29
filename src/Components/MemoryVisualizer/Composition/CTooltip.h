@@ -4,10 +4,10 @@
 #include <string>
 #include <cstdint>
 
-#include "CDrawableObjectBase.h"
-#include "CInteractiveObject.h"
-#include "SMetricPointF.h"
-#include "SMetricPointF.h"
+#include "Components/MemoryVisualizer/Composition/CDrawableObjectBase.h"
+#include "Components/MemoryVisualizer/Composition/CInteractiveObject.h"
+#include "Components/MemoryVisualizer/Composition/SMetricPointF.h"
+#include "Components/MemoryVisualizer/Composition/SMetricPointF.h"
 
 namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 {

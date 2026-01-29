@@ -5,9 +5,9 @@
 #include <memory>
 #include <type_traits>
 
-#include "SubParserType.h"
-#include "../../Models/CParsedContentBase.h"
-#include "../../Models/CLinkerScriptFile.h"
+#include "ParsingEngine/SubParsers/SubParserType.h"
+#include "Models/CParsedContentBase.h"
+#include "Models/CLinkerScriptFile.h"
 
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers

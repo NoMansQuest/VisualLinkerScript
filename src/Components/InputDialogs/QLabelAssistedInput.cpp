@@ -1,4 +1,4 @@
-#include "QLabelAssistedInput.h"
+#include "Components/InputDialogs/QLabelAssistedInput.h"
 
 void QLabelAssistedInput::BuildUserInterface()
 {

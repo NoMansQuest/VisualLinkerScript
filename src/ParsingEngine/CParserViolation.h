@@ -3,8 +3,8 @@
 
 #include <numeric>
 #include <vector>
-#include "EParserViolationCode.h"
-#include "../Models/CViolationBase.h"
+#include "ParsingEngine/EParserViolationCode.h"
+#include "Models/CViolationBase.h"
 #include "Models/ESeverityCode.h"
 
 namespace VisualLinkerScript::ParsingEngine 

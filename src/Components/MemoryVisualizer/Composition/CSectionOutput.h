@@ -1,10 +1,10 @@
 #ifndef CSECTION_OUTPUT_H__
 #define CSECTION_OUTPUT_H__
 
-#include "CAddressedRegion.h"
+#include "Components/MemoryVisualizer/Composition/CAddressedRegion.h"
 #include "Helpers.h"
-#include "SMetricRectangleF.h"
-#include "SMetricSizeF.h"
+#include "Components/MemoryVisualizer/Composition/SMetricRectangleF.h"
+#include "Components/MemoryVisualizer/Composition/SMetricSizeF.h"
 
 namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 {

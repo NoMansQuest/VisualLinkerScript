@@ -4,8 +4,8 @@
 #include <vector>
 #include <memory>
 #include <string>
-#include "Raw/CRawEntry.h"
-#include "../Helpers.h"
+#include "Models/Raw/CRawEntry.h"
+#include "Helpers.h"
 
 namespace VisualLinkerScript::Models
 {

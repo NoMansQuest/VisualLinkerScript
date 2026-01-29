@@ -1,6 +1,6 @@
-#include "CModelTranslator.h"
+#include "Components/MemoryVisualizer/CModelTranslator.h"
 
-#include "Composition/CFloorPlan.h"
+#include "Components/MemoryVisualizer/Composition/CFloorPlan.h"
 
 using namespace VisualLinkerScript::Components::MemoryVisualizer;
 using namespace VisualLinkerScript::Components::MemoryVisualizer::Composition;

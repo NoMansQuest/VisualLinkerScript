@@ -6,12 +6,12 @@
 #include <string>
 #include <memory>
 
-#include "AutoStyling/CAutoStyler.h"
+#include "Components/QLinkerScriptSession/AutoStyling/CAutoStyler.h"
 #include "Components/MemoryVisualizer/QMemoryVisualizer.h"
 #include "Components/QScintilla/ComponentHelpers.h"
-#include "CustomComponents/QIssuesTreeView.h"
+#include "Components/QLinkerScriptSession/CustomComponents/QIssuesTreeView.h"
 #include "DrcEngine/CDrcManager.h"
-#include "EditorAction/SEditorActionBase.h"
+#include "Components/QLinkerScriptSession/EditorAction/SEditorActionBase.h"
 #include "ParsingEngine/CLinkerScriptParser.h"
 
 class QChromeTabWidget;

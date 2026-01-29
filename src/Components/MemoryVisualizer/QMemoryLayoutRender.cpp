@@ -1,7 +1,7 @@
-#include "QMemoryLayoutRender.h"
+#include "Components/MemoryVisualizer/QMemoryLayoutRender.h"
 #include <QPainter>
-#include "ColorResources.h"
-#include "Composition/CFloorPlan.h"
+#include "Components/MemoryVisualizer/ColorResources.h"
+#include "Components/MemoryVisualizer/Composition/CFloorPlan.h"
 
 using namespace VisualLinkerScript::Components::MemoryVisualizer;
 

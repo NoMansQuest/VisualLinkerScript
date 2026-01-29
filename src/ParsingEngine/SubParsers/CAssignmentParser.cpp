@@ -2,19 +2,19 @@
 #include <memory>
 #include <iterator>
 
-#include "CAssignmentParser.h"
-#include "CExpressionParser.h"
-#include "Constants.h"
+#include "ParsingEngine/SubParsers/CAssignmentParser.h"
+#include "ParsingEngine/SubParsers/CExpressionParser.h"
+#include "ParsingEngine/SubParsers/Constants.h"
 
-#include "../CMasterParserException.h"
+#include "ParsingEngine/CMasterParserException.h"
 
-#include "../../Models/CLinkerScriptFile.h"
-#include "../../Models/CComment.h"
-#include "../../Models/Raw/CRawEntry.h"
-#include "../../Models/CAssignmentStatement.h"
+#include "Models/CLinkerScriptFile.h"
+#include "Models/CComment.h"
+#include "Models/Raw/CRawEntry.h"
+#include "Models/CAssignmentStatement.h"
 
-#include "../CParserViolation.h"
-#include "../EParserViolationCode.h"
+#include "ParsingEngine/CParserViolation.h"
+#include "ParsingEngine/EParserViolationCode.h"
 
 using namespace VisualLinkerScript::ParsingEngine;
 using namespace VisualLinkerScript::ParsingEngine::SubParsers;

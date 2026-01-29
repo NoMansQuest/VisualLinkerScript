@@ -1,11 +1,11 @@
 #include <vector>
 #include <string>
 
-#include "CSubParserBase.h"
-#include "SubParserHelpers.h"
-#include "../../Helpers.h"
-#include "../../Models/Raw/CRawEntry.h"
-#include "../../Models/Raw/RawEntryType.h"
+#include "ParsingEngine/SubParsers/CSubParserBase.h"
+#include "ParsingEngine/SubParsers/SubParserHelpers.h"
+#include "Helpers.h"
+#include "Models/Raw/CRawEntry.h"
+#include "Models/Raw/RawEntryType.h"
 
 using namespace VisualLinkerScript;
 using namespace VisualLinkerScript::ParsingEngine::SubParsers;

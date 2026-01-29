@@ -1,9 +1,9 @@
 #ifndef SRECTANGLEF_H__
 #define SRECTANGLEF_H__
 
-#include "../../Helpers.h"
-#include "CGraphicContext.h"
-#include "SMetricPointF.h"
+#include "Helpers.h"
+#include "Components/MemoryVisualizer/Composition/CGraphicContext.h"
+#include "Components/MemoryVisualizer/Composition/SMetricPointF.h"
 
 namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 {

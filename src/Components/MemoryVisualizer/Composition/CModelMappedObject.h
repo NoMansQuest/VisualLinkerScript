@@ -1,7 +1,7 @@
 #ifndef CMODEL_MAPPED_OBJECT_H__
 #define CMODEL_MAPPED_OBJECT_H__
 
-#include "../../Helpers.h"
+#include "Helpers.h"
 
 namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 {

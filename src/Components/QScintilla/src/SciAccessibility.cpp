@@ -22,7 +22,7 @@
 
 #if !defined(QT_NO_ACCESSIBILITY)
 
-#include "SciAccessibility.h"
+#include "Components/QScintilla/src/SciAccessibility.h"
 
 #include <QAccessible>
 #include <QFont>
@@ -30,7 +30,7 @@
 #include <QRect>
 #include <QWidget>
 
-#include "Qsci/qsciscintillabase.h"
+#include "Components/QScintilla/src/Qsci/qsciscintillabase.h"
 
 
 // Set if the accessibility support needs initialising.

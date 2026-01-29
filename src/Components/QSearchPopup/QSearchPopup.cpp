@@ -1,6 +1,6 @@
-#include "QSearchPopup.h"
-#include "../QManualSizeGrip/QManualSizeGrip.h"
-#include "../QFlatCheckBox/QFlatCheckBox.h"
+#include "Components/QSearchPopup/QSearchPopup.h"
+#include "Components/QManualSizeGrip/QManualSizeGrip.h"
+#include "Components/QFlatCheckBox/QFlatCheckBox.h"
 
 SearchPerimeterType ConvertIndexToSearchPerimeter(int comboBoxIndex);
 

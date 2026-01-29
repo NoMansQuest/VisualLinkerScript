@@ -4,9 +4,6 @@
 #include <QString>
 #include <QRegularExpression>
 
-#ifdef RUN_TESTS
-#include "Tests\TestRegistry.h" 
-#endif
 
 struct PaletteEntryStruct
 {
@@ -55,11 +52,6 @@ std::vector<PaletteEntryStruct> ExtractPaletteEntries(const QString& paletteFile
 
 int main(int argc, char* argv[])
 {
-#ifdef RUN_TESTS
-    QCoreApplication app(argc, argv);
-    return TestRegistry::Instance().RunAllTests(argc, argv);
-
-#else
     QApplication application(argc, argv);
     MainWindow mainWindow;
     mainWindow.setWindowTitle("Untitled.ld - Visual Linker Script");
@@ -70,5 +62,4 @@ int main(int argc, char* argv[])
     // Show & Run
     mainWindow.show();
     return application.exec();
-#endif
 }

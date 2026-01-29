@@ -1,4 +1,4 @@
-#include "COverlaySectionOutput.h"
+#include "Components/MemoryVisualizer/Composition/COverlaySectionOutput.h"
 #include "Components/MemoryVisualizer/ColorResources.h"
 
 using namespace VisualLinkerScript;

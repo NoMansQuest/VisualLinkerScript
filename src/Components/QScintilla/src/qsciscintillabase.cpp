@@ -18,7 +18,7 @@
 // WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 
 
-#include "Qsci/qsciscintillabase.h"
+#include "Components/QScintilla/src/Qsci/qsciscintillabase.h"
 
 #include <QApplication>
 #include <QClipboard>
@@ -37,8 +37,8 @@
 #include <QScrollBar>
 #include <QStyle>
 
-#include "SciAccessibility.h"
-#include "ScintillaQt.h"
+#include "Components/QScintilla/src/SciAccessibility.h"
+#include "Components/QScintilla/src/ScintillaQt.h"
 
 
 // The #defines in Scintilla.h and the enums in qsciscintillabase.h conflict

@@ -4,27 +4,27 @@
 #include <iterator>
 #include <QDebug>
 
-#include "CSectionsRegionParser.h"
+#include "ParsingEngine/SubParsers/CSectionsRegionParser.h"
 
 #include <qlogging.h>
 
-#include "CSectionOutputCommandParser.h"
-#include "CFunctionParser.h"
-#include "CAssignmentParser.h"
-#include "CAssignmentProcedureParser.h"
-#include "Constants.h"
-#include "CSectionOverlayParser.h"
+#include "ParsingEngine/SubParsers/CSectionOutputCommandParser.h"
+#include "ParsingEngine/SubParsers/CFunctionParser.h"
+#include "ParsingEngine/SubParsers/CAssignmentParser.h"
+#include "ParsingEngine/SubParsers/CAssignmentProcedureParser.h"
+#include "ParsingEngine/SubParsers/Constants.h"
+#include "ParsingEngine/SubParsers/CSectionOverlayParser.h"
 
-#include "../CMasterParserException.h"
-#include "../CParserViolation.h"
-#include "../EParserViolationCode.h"
+#include "ParsingEngine/CMasterParserException.h"
+#include "ParsingEngine/CParserViolation.h"
+#include "ParsingEngine/EParserViolationCode.h"
 
-#include "../../Models/CFunctionCall.h"
-#include "../../Models/CSectionsRegion.h"
-#include "../../Models/Raw/CRawEntry.h"
-#include "../../Models/Raw/RawEntryType.h"
-#include "../../Models/Raw/CRawFile.h"
-#include "../../Models/CComment.h"
+#include "Models/CFunctionCall.h"
+#include "Models/CSectionsRegion.h"
+#include "Models/Raw/CRawEntry.h"
+#include "Models/Raw/RawEntryType.h"
+#include "Models/Raw/CRawFile.h"
+#include "Models/CComment.h"
 
 using namespace VisualLinkerScript::Models;
 using namespace VisualLinkerScript::Models::Raw;

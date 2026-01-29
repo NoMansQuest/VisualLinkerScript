@@ -2,10 +2,10 @@
 #define CMEMORY_STATEMENT_ATTRIBUTE_PARSER_H__
 
 #include <memory>
-#include "CSubParserBase.h"
-#include "SubParserType.h"
-#include "../../Models/Raw/CRawFile.h"
-#include "../../Models/CMemoryStatementAttribute.h"
+#include "ParsingEngine/SubParsers/CSubParserBase.h"
+#include "ParsingEngine/SubParsers/SubParserType.h"
+#include "Models/Raw/CRawFile.h"
+#include "Models/CMemoryStatementAttribute.h"
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {

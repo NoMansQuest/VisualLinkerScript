@@ -1,7 +1,7 @@
 #ifndef CSECTIONSDEFINEDONLYONCERULE_H
 #define CSECTIONSDEFINEDONLYONCERULE_H
 
-#include "../IDrcRuleBase.h"
+#include "DrcEngine/IDrcRuleBase.h"
 
 namespace VisualLinkerScript::DrcEngine::Rules
 {

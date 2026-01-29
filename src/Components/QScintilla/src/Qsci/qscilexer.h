@@ -27,7 +27,7 @@
 #include <QObject>
 #include <QString>
 
-#include "qsciglobal.h"
+#include "Components/QScintilla/src/Qsci/qsciglobal.h"
 
 
 QT_BEGIN_NAMESPACE

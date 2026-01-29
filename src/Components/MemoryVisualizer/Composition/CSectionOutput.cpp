@@ -1,4 +1,4 @@
-#include "CSectionOutput.h"
+#include "Components/MemoryVisualizer/Composition/CSectionOutput.h"
 
 #include "Components/MemoryVisualizer/ColorResources.h"
 

@@ -13,7 +13,7 @@
 // WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 
 
-#include "Qsci/qscilexerlinkerscript.h"
+#include "Components/QScintilla/src/Qsci/qscilexerlinkerscript.h"
 
 #include <qcolor.h>
 #include <qfont.h>

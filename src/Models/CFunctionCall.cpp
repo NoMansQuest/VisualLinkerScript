@@ -4,10 +4,10 @@
 #include <sstream>
 #include <cstdint>
 
-#include "CLinkerScriptFile.h"
-#include "CFunctionCall.h"
-#include "../ParsingEngine/CParserViolation.h"
-#include "../DrcEngine/CDrcViolation.h"
+#include "Models/CLinkerScriptFile.h"
+#include "Models/CFunctionCall.h"
+#include "ParsingEngine/CParserViolation.h"
+#include "DrcEngine/CDrcViolation.h"
 
 using namespace VisualLinkerScript;
 using namespace VisualLinkerScript::Models;

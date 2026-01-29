@@ -3,21 +3,21 @@
 #include <memory>
 #include <iterator>
 
-#include "CExpressionParser.h"
-#include "CFunctionParser.h"
-#include "Constants.h"
+#include "ParsingEngine/SubParsers/CExpressionParser.h"
+#include "ParsingEngine/SubParsers/CFunctionParser.h"
+#include "ParsingEngine/SubParsers/Constants.h"
 
-#include "../CMasterParserException.h"
-#include "../CParserViolation.h"
-#include "../EParserViolationCode.h"
+#include "ParsingEngine/CMasterParserException.h"
+#include "ParsingEngine/CParserViolation.h"
+#include "ParsingEngine/EParserViolationCode.h"
 
-#include "../../Models/Raw/CRawEntry.h"
-#include "../../Models/CComment.h"
-#include "../../Models/CExpression.h"
-#include "../../Models/CSymbol.h"
-#include "../../Models/CExpressionNumber.h"
-#include "../../Models/CExpressionOperator.h"
-#include "../../Models/CStringEntry.h"
+#include "Models/Raw/CRawEntry.h"
+#include "Models/CComment.h"
+#include "Models/CExpression.h"
+#include "Models/CSymbol.h"
+#include "Models/CExpressionNumber.h"
+#include "Models/CExpressionOperator.h"
+#include "Models/CStringEntry.h"
 
 using namespace VisualLinkerScript::ParsingEngine;
 using namespace VisualLinkerScript::ParsingEngine::SubParsers;

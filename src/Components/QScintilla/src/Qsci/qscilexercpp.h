@@ -23,8 +23,8 @@
 
 #include <QObject>
 
-#include "qsciglobal.h"
-#include "qscilexer.h"
+#include "Components/QScintilla/src/Qsci/qsciglobal.h"
+#include "Components/QScintilla/src/Qsci/qscilexer.h"
 
 
 //! \brief The QsciLexerCPP class encapsulates the Scintilla C++

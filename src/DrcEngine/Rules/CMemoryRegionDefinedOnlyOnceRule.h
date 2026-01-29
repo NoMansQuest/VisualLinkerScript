@@ -1,7 +1,7 @@
 #ifndef CMEMORYREGIONDEFINEDONLYONCERULE_H
 #define CMEMORYREGIONDEFINEDONLYONCERULE_H
 
-#include "../IDrcRuleBase.h"
+#include "DrcEngine/IDrcRuleBase.h"
 #include <memory>
 
 namespace VisualLinkerScript::DrcEngine::Rules

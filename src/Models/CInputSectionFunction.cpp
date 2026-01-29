@@ -3,7 +3,7 @@
 #include <string>
 #include <cstdint>
 
-#include "CInputSectionFunction.h"
+#include "Models/CInputSectionFunction.h"
 
 using namespace VisualLinkerScript;
 using namespace VisualLinkerScript::Models;

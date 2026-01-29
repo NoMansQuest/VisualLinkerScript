@@ -5,8 +5,8 @@
 #include <string>
 #include <cstdint>
 
-#include "CSectionDefinitionBase.h"
-#include "../../Helpers.h"
+#include "Components/MemoryVisualizer/Composition/CSectionDefinitionBase.h"
+#include "Helpers.h"
 #include "Components/MemoryVisualizer/ColorResources.h"
 
 namespace VisualLinkerScript::Components::MemoryVisualizer::Composition

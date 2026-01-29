@@ -1,10 +1,10 @@
 #ifndef CPHDRS_REGION_PARSER_H__
 #define CPHDRS_REGION_PARSER_H__
 
-#include "SubParserType.h"
-#include "CPhdrsRegionContentParser.h"
-#include "CScopedRegionParser.h"
-#include "../../Models/CPhdrsRegion.h"
+#include "ParsingEngine/SubParsers/SubParserType.h"
+#include "ParsingEngine/SubParsers/CPhdrsRegionContentParser.h"
+#include "ParsingEngine/SubParsers/CScopedRegionParser.h"
+#include "Models/CPhdrsRegion.h"
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {   

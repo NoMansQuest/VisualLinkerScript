@@ -1,6 +1,6 @@
-#include "CSectionStatement.h"
-#include "CProgramHeaderButton.h"
-#include "CFillExpressionButton.h"
+#include "Components/MemoryVisualizer/Composition/CSectionStatement.h"
+#include "Components/MemoryVisualizer/Composition/CProgramHeaderButton.h"
+#include "Components/MemoryVisualizer/Composition/CFillExpressionButton.h"
 #include "Components/MemoryVisualizer/ColorResources.h"
 
 using namespace VisualLinkerScript;

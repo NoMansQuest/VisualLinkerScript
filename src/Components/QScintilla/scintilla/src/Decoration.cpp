@@ -15,14 +15,14 @@
 #include <algorithm>
 #include <memory>
 
-#include "Platform.h"
+#include "Components/QScintilla/scintilla/include/Platform.h"
 
-#include "Scintilla.h"
-#include "Position.h"
-#include "SplitVector.h"
-#include "Partitioning.h"
-#include "RunStyles.h"
-#include "Decoration.h"
+#include "Components/QScintilla/scintilla/include/Scintilla.h"
+#include "Components/QScintilla/scintilla/src/Position.h"
+#include "Components/QScintilla/scintilla/src/SplitVector.h"
+#include "Components/QScintilla/scintilla/src/Partitioning.h"
+#include "Components/QScintilla/scintilla/src/RunStyles.h"
+#include "Components/QScintilla/scintilla/src/Decoration.h"
 
 using namespace Scintilla;
 

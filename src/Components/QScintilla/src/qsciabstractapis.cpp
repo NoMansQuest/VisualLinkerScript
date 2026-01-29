@@ -18,9 +18,9 @@
 // WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 
 
-#include "Qsci/qsciabstractapis.h"
+#include "Components/QScintilla/src/Qsci/qsciabstractapis.h"
 
-#include "Qsci/qscilexer.h"
+#include "Components/QScintilla/src/Qsci/qscilexer.h"
 
 
 // The ctor.

@@ -1,12 +1,12 @@
 #ifndef CPROGRAM_HEADER_H__
 #define CPROGRAM_HEADER_H__
 
-#include "CDrawableObjectBase.h"
-#include "CInteractiveObject.h"
-#include "CModelMappedObject.h"
+#include "Components/MemoryVisualizer/Composition/CDrawableObjectBase.h"
+#include "Components/MemoryVisualizer/Composition/CInteractiveObject.h"
+#include "Components/MemoryVisualizer/Composition/CModelMappedObject.h"
 #include "Helpers.h"
-#include "SMetricRectangleF.h"
-#include "SMetricSizeF.h"
+#include "Components/MemoryVisualizer/Composition/SMetricRectangleF.h"
+#include "Components/MemoryVisualizer/Composition/SMetricSizeF.h"
 #include "Models/Raw/CRawEntry.h"
 
 class QFontMetrics;

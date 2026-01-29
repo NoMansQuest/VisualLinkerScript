@@ -14,15 +14,15 @@
 #include <vector>
 #include <memory>
 
-#include "Platform.h"
+#include "Components/QScintilla/scintilla/include/Platform.h"
 
-#include "ILexer.h"
-#include "Scintilla.h"
-#include "SciLexer.h"
+#include "Components/QScintilla/scintilla/include/ILexer.h"
+#include "Components/QScintilla/scintilla/include/Scintilla.h"
+#include "Components/QScintilla/scintilla/include/SciLexer.h"
 
-#include "LexerModule.h"
-#include "Catalogue.h"
-#include "ExternalLexer.h"
+#include "Components/QScintilla/scintilla/lexlib/LexerModule.h"
+#include "Components/QScintilla/scintilla/src/Catalogue.h"
+#include "Components/QScintilla/scintilla/src/ExternalLexer.h"
 
 using namespace Scintilla;
 

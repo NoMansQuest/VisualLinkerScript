@@ -12,7 +12,7 @@
 #include <algorithm>
 #include <iterator>
 
-#include "WordList.h"
+#include "Components/QScintilla/scintilla/lexlib/WordList.h"
 
 using namespace Scintilla;
 

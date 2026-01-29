@@ -4,8 +4,8 @@
 #include <string>
 #include <stdint.h>
 
-#include "CLinkerScriptFile.h"
-#include "CParsedContentBase.h"
+#include "Models/CLinkerScriptFile.h"
+#include "Models/CParsedContentBase.h"
 
 using namespace VisualLinkerScript::Models;
 

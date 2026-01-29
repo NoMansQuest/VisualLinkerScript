@@ -15,16 +15,16 @@
 #include <algorithm>
 #include <memory>
 
-#include "Platform.h"
+#include "Components/QScintilla/scintilla/include/Platform.h"
 
-#include "Scintilla.h"
-#include "Position.h"
-#include "UniqueString.h"
-#include "Indicator.h"
-#include "XPM.h"
-#include "LineMarker.h"
-#include "Style.h"
-#include "ViewStyle.h"
+#include "Components/QScintilla/scintilla/include/Scintilla.h"
+#include "Components/QScintilla/scintilla/src/Position.h"
+#include "Components/QScintilla/scintilla/src/UniqueString.h"
+#include "Components/QScintilla/scintilla/src/Indicator.h"
+#include "Components/QScintilla/scintilla/src/XPM.h"
+#include "Components/QScintilla/scintilla/src/LineMarker.h"
+#include "Components/QScintilla/scintilla/src/Style.h"
+#include "Components/QScintilla/scintilla/src/ViewStyle.h"
 
 using namespace Scintilla;
 

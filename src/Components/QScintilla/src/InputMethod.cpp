@@ -17,8 +17,8 @@
 #include <QVariant>
 #include <QVarLengthArray>
 
-#include "Qsci/qsciscintillabase.h"
-#include "ScintillaQt.h"
+#include "Components/QScintilla/src/Qsci/qsciscintillabase.h"
+#include "Components/QScintilla/src/ScintillaQt.h"
 
 
 #define INDIC_INPUTMETHOD 24

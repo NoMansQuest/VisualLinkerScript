@@ -14,14 +14,14 @@
 #include <algorithm>
 #include <memory>
 
-#include "Platform.h"
+#include "Components/QScintilla/scintilla/include/Platform.h"
 
-#include "Scintilla.h"
+#include "Components/QScintilla/scintilla/include/Scintilla.h"
 
-#include "StringCopy.h"
-#include "IntegerRectangle.h"
-#include "XPM.h"
-#include "LineMarker.h"
+#include "Components/QScintilla/scintilla/lexlib/StringCopy.h"
+#include "Components/QScintilla/scintilla/src/IntegerRectangle.h"
+#include "Components/QScintilla/scintilla/src/XPM.h"
+#include "Components/QScintilla/scintilla/src/LineMarker.h"
 
 using namespace Scintilla;
 

@@ -17,48 +17,48 @@
 #include <algorithm>
 #include <memory>
 
-#include "Platform.h"
+#include "Components/QScintilla/scintilla/include/Platform.h"
 
-#include "ILoader.h"
-#include "ILexer.h"
-#include "Scintilla.h"
-
-#ifdef SCI_LEXER
-#include "SciLexer.h"
-#endif
-
-#include "PropSetSimple.h"
+#include "Components/QScintilla/scintilla/include/ILoader.h"
+#include "Components/QScintilla/scintilla/include/ILexer.h"
+#include "Components/QScintilla/scintilla/include/Scintilla.h"
 
 #ifdef SCI_LEXER
-#include "LexerModule.h"
-#include "Catalogue.h"
+#include "Components/QScintilla/scintilla/include/SciLexer.h"
 #endif
 
-#include "Position.h"
-#include "UniqueString.h"
-#include "SplitVector.h"
-#include "Partitioning.h"
-#include "RunStyles.h"
-#include "ContractionState.h"
-#include "CellBuffer.h"
-#include "CallTip.h"
-#include "KeyMap.h"
-#include "Indicator.h"
-#include "LineMarker.h"
-#include "Style.h"
-#include "ViewStyle.h"
-#include "CharClassify.h"
-#include "Decoration.h"
-#include "CaseFolder.h"
-#include "Document.h"
-#include "Selection.h"
-#include "PositionCache.h"
-#include "EditModel.h"
-#include "MarginView.h"
-#include "EditView.h"
-#include "Editor.h"
-#include "AutoComplete.h"
-#include "ScintillaBase.h"
+#include "Components/QScintilla/scintilla/lexlib/PropSetSimple.h"
+
+#ifdef SCI_LEXER
+#include "Components/QScintilla/scintilla/lexlib/LexerModule.h"
+#include "Components/QScintilla/scintilla/src/Catalogue.h"
+#endif
+
+#include "Components/QScintilla/scintilla/src/Position.h"
+#include "Components/QScintilla/scintilla/src/UniqueString.h"
+#include "Components/QScintilla/scintilla/src/SplitVector.h"
+#include "Components/QScintilla/scintilla/src/Partitioning.h"
+#include "Components/QScintilla/scintilla/src/RunStyles.h"
+#include "Components/QScintilla/scintilla/src/ContractionState.h"
+#include "Components/QScintilla/scintilla/src/CellBuffer.h"
+#include "Components/QScintilla/scintilla/src/CallTip.h"
+#include "Components/QScintilla/scintilla/src/KeyMap.h"
+#include "Components/QScintilla/scintilla/src/Indicator.h"
+#include "Components/QScintilla/scintilla/src/LineMarker.h"
+#include "Components/QScintilla/scintilla/src/Style.h"
+#include "Components/QScintilla/scintilla/src/ViewStyle.h"
+#include "Components/QScintilla/scintilla/src/CharClassify.h"
+#include "Components/QScintilla/scintilla/src/Decoration.h"
+#include "Components/QScintilla/scintilla/src/CaseFolder.h"
+#include "Components/QScintilla/scintilla/src/Document.h"
+#include "Components/QScintilla/scintilla/src/Selection.h"
+#include "Components/QScintilla/scintilla/src/PositionCache.h"
+#include "Components/QScintilla/scintilla/src/EditModel.h"
+#include "Components/QScintilla/scintilla/src/MarginView.h"
+#include "Components/QScintilla/scintilla/src/EditView.h"
+#include "Components/QScintilla/scintilla/src/Editor.h"
+#include "Components/QScintilla/scintilla/src/AutoComplete.h"
+#include "Components/QScintilla/scintilla/src/ScintillaBase.h"
 
 using namespace Scintilla;
 

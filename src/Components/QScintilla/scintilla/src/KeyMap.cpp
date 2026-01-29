@@ -12,11 +12,11 @@
 #include <map>
 #include <memory>
 
-#include "Platform.h"
+#include "Components/QScintilla/scintilla/include/Platform.h"
 
-#include "Scintilla.h"
+#include "Components/QScintilla/scintilla/include/Scintilla.h"
 
-#include "KeyMap.h"
+#include "Components/QScintilla/scintilla/src/KeyMap.h"
 
 using namespace Scintilla;
 

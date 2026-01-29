@@ -2,8 +2,8 @@
 #define CMEMORY_REGION_H__
 
 #include <vector>
-#include "CParsedContentBase.h"
-#include "Raw/CRawEntry.h"
+#include "Models/CParsedContentBase.h"
+#include "Models/Raw/CRawEntry.h"
 
 using namespace VisualLinkerScript::Models::Raw;
 

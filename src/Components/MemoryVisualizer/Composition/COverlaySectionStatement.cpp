@@ -1,4 +1,4 @@
-#include "COverlaySectionStatement.h"
+#include "Components/MemoryVisualizer/Composition/COverlaySectionStatement.h"
 
 #include "Components/MemoryVisualizer/ColorResources.h"
 

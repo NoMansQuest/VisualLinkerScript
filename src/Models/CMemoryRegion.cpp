@@ -3,7 +3,7 @@
 #include <string>
 #include <cstdint>
 
-#include "CMemoryRegion.h"
+#include "Models/CMemoryRegion.h"
 
 using namespace VisualLinkerScript;
 using namespace VisualLinkerScript::Models;

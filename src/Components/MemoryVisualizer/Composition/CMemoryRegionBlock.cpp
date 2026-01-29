@@ -1,6 +1,6 @@
-#include "CMemoryRegionBlock.h"
-#include "COverlayStatement.h"
-#include "CSectionStatement.h"
+#include "Components/MemoryVisualizer/Composition/CMemoryRegionBlock.h"
+#include "Components/MemoryVisualizer/Composition/COverlayStatement.h"
+#include "Components/MemoryVisualizer/Composition/CSectionStatement.h"
 #include "Components/MemoryVisualizer/ColorResources.h"
 
 using namespace VisualLinkerScript;

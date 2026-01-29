@@ -14,12 +14,12 @@
 #include <stdexcept>
 #include <vector>
 
-#include "ILexer.h"
-#include "Scintilla.h"
-#include "SciLexer.h"
+#include "Components/QScintilla/scintilla/include/ILexer.h"
+#include "Components/QScintilla/scintilla/include/Scintilla.h"
+#include "Components/QScintilla/scintilla/include/SciLexer.h"
 
-#include "LexerModule.h"
-#include "Catalogue.h"
+#include "Components/QScintilla/scintilla/lexlib/LexerModule.h"
+#include "Components/QScintilla/scintilla/src/Catalogue.h"
 
 using namespace Scintilla;
 

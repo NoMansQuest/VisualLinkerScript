@@ -1,5 +1,5 @@
-#include "CFillExpressionButton.h"
-#include "CGraphicContext.h"
+#include "Components/MemoryVisualizer/Composition/CFillExpressionButton.h"
+#include "Components/MemoryVisualizer/Composition/CGraphicContext.h"
 #include <QPainter>
 
 #include "Components/MemoryVisualizer/ColorResources.h"

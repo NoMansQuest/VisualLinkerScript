@@ -9,12 +9,12 @@
 #include <cassert>
 #include <cctype>
 
-#include "ILexer.h"
+#include "Components/QScintilla/scintilla/include/ILexer.h"
 
-#include "LexAccessor.h"
-#include "Accessor.h"
-#include "StyleContext.h"
-#include "CharacterSet.h"
+#include "Components/QScintilla/scintilla/lexlib/LexAccessor.h"
+#include "Components/QScintilla/scintilla/lexlib/Accessor.h"
+#include "Components/QScintilla/scintilla/lexlib/StyleContext.h"
+#include "Components/QScintilla/scintilla/lexlib/CharacterSet.h"
 
 using namespace Scintilla;
 

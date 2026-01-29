@@ -25,8 +25,8 @@
 #include <QObject>
 #include <QStringList>
 
-#include "qsciglobal.h"
-#include "qsciscintilla.h"
+#include "Components/QScintilla/src/Qsci/qsciglobal.h"
+#include "Components/QScintilla/src/Qsci/qsciscintilla.h"
 
 
 class QsciLexer;

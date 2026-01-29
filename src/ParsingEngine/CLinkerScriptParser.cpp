@@ -3,24 +3,24 @@
 #include <memory>
 #include <algorithm>
 
-#include "CMasterParserException.h"
-#include "CLinkerScriptParser.h"
+#include "ParsingEngine/CMasterParserException.h"
+#include "ParsingEngine/CLinkerScriptParser.h"
 
-#include "SubParsers/CAssignmentParser.h"
-#include "SubParsers/CAssignmentProcedureParser.h"
-#include "SubParsers/CMemoryRegionParser.h"
-#include "SubParsers/CFunctionParser.h"
-#include "SubParsers/CPhdrsRegionParser.h"
-#include "SubParsers/CSectionsRegionParser.h"
-#include "SubParsers/Constants.h"
-#include "SubParsers/CVersionRegionParser.h"
+#include "ParsingEngine/SubParsers/CAssignmentParser.h"
+#include "ParsingEngine/SubParsers/CAssignmentProcedureParser.h"
+#include "ParsingEngine/SubParsers/CMemoryRegionParser.h"
+#include "ParsingEngine/SubParsers/CFunctionParser.h"
+#include "ParsingEngine/SubParsers/CPhdrsRegionParser.h"
+#include "ParsingEngine/SubParsers/CSectionsRegionParser.h"
+#include "ParsingEngine/SubParsers/Constants.h"
+#include "ParsingEngine/SubParsers/CVersionRegionParser.h"
 
-#include "../Models/CComment.h"
-#include "../Models/CIncludeCommand.h"
-#include "../Models/CParsedContentBase.h"
-#include "../Models/Raw/RawEntryType.h"
+#include "Models/CComment.h"
+#include "Models/CIncludeCommand.h"
+#include "Models/CParsedContentBase.h"
+#include "Models/Raw/RawEntryType.h"
 
-#include "../../../../Helpers.h"
+#include "Helpers.h"
 
 using namespace VisualLinkerScript;
 using namespace VisualLinkerScript::ParsingEngine;

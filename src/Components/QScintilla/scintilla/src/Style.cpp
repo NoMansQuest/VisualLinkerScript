@@ -9,10 +9,10 @@
 #include <vector>
 #include <memory>
 
-#include "Platform.h"
+#include "Components/QScintilla/scintilla/include/Platform.h"
 
-#include "Scintilla.h"
-#include "Style.h"
+#include "Components/QScintilla/scintilla/include/Scintilla.h"
+#include "Components/QScintilla/scintilla/src/Style.h"
 
 using namespace Scintilla;
 

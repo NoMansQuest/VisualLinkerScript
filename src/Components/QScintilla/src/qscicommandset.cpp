@@ -18,13 +18,13 @@
 // WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 
 
-#include "Qsci/qscicommandset.h"
+#include "Components/QScintilla/src/Qsci/qscicommandset.h"
 
 #include <QSettings>
 
-#include "Qsci/qscicommand.h"
-#include "Qsci/qsciscintilla.h"
-#include "Qsci/qsciscintillabase.h"
+#include "Components/QScintilla/src/Qsci/qscicommand.h"
+#include "Components/QScintilla/src/Qsci/qsciscintilla.h"
+#include "Components/QScintilla/src/Qsci/qsciscintillabase.h"
 
 
 // Starting with QScintilla v2.7 the standard OS/X keyboard shortcuts are used

@@ -26,9 +26,9 @@
 #include <QPair>
 #include <QStringList>
 
-#include "qsciabstractapis.h"
-#include "qsciglobal.h"
-#include "qsciscintilla.h"
+#include "Components/QScintilla/src/Qsci/qsciabstractapis.h"
+#include "Components/QScintilla/src/Qsci/qsciglobal.h"
+#include "Components/QScintilla/src/Qsci/qsciscintilla.h"
 
 
 class QsciAPIsPrepared;

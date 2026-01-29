@@ -2,8 +2,8 @@
 #define CINPUT_SECTION_TARGET_SECTION_H__
 
 #include <vector>
-#include "CParsedContentBase.h"
-#include "CInputSectionWildcardWord.h"
+#include "Models/CParsedContentBase.h"
+#include "Models/CInputSectionWildcardWord.h"
 
 namespace VisualLinkerScript::Models
 {

@@ -22,7 +22,7 @@
 
 #include <algorithm>
 
-#include "Qsci/qsciapis.h"
+#include "Components/QScintilla/src/Qsci/qsciapis.h"
 
 #include <QApplication>
 #include <QDataStream>
@@ -34,7 +34,7 @@
 #include <QTextStream>
 #include <QThread>
 
-#include "Qsci/qscilexer.h"
+#include "Components/QScintilla/src/Qsci/qscilexer.h"
 
 
 

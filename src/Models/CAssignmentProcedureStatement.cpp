@@ -3,7 +3,7 @@
 #include <string>
 #include <stdint.h>
 
-#include "CAssignmentProcedureStatement.h"
+#include "Models/CAssignmentProcedureStatement.h"
 
 using namespace VisualLinkerScript;
 using namespace VisualLinkerScript::Models;

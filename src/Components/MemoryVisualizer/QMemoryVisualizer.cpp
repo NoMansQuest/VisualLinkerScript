@@ -1,13 +1,13 @@
-#include "QMemoryVisualizer.h"
+#include "Components/MemoryVisualizer/QMemoryVisualizer.h"
 #include <qboxlayout.h>
 #include <qguiapplication.h>
 
-#include "QPercentageLineEdit.h"
-#include "QMemoryLayoutRender.h"
-#include "Composition/CFloorPlan.h"
-#include "Composition/CMemoryRegionBlock.h"
-#include "Composition/COverlayStatement.h"
-#include "Composition/CSectionStatement.h"
+#include "Components/MemoryVisualizer/QPercentageLineEdit.h"
+#include "Components/MemoryVisualizer/QMemoryLayoutRender.h"
+#include "Components/MemoryVisualizer/Composition/CFloorPlan.h"
+#include "Components/MemoryVisualizer/Composition/CMemoryRegionBlock.h"
+#include "Components/MemoryVisualizer/Composition/COverlayStatement.h"
+#include "Components/MemoryVisualizer/Composition/CSectionStatement.h"
 #include "LinkerScriptManager/QLinkerScriptManager.h"
 
 #define FORCE_RANGE(value, upper, lower) ((value > upper) ? upper : (value < lower) ? lower : value)

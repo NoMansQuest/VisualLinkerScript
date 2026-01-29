@@ -1,10 +1,10 @@
 #ifndef CSECTIONS_REGION_CONTENT_PARSER_H__
 #define CSECTIONS_REGION_CONTENT_PARSER_H__
 
-#include "CSubParserBase.h"
-#include "SubParserType.h"
-#include "../../Models/CSectionOutputCommand.h"
-#include "../../Models/Raw/CRawFile.h"
+#include "ParsingEngine/SubParsers/CSubParserBase.h"
+#include "ParsingEngine/SubParsers/SubParserType.h"
+#include "Models/CSectionOutputCommand.h"
+#include "Models/Raw/CRawFile.h"
 #include <memory>
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers

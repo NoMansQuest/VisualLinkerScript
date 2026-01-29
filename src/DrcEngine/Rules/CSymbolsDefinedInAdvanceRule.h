@@ -1,7 +1,7 @@
 #ifndef CSYMBOLSAREDEFINEDINADVANCERULE_H
 #define CSYMBOLSAREDEFINEDINADVANCERULE_H
 
-#include "../IDrcRuleBase.h"
+#include "DrcEngine/IDrcRuleBase.h"
 
 namespace VisualLinkerScript::DrcEngine::Rules
 {

@@ -2,7 +2,7 @@
 #define STYLER_REMOVE_CONTENT_H
 
 #include <cstdint>
-#include "SEditorActionBase.h"
+#include "Components/QLinkerScriptSession/EditorAction/SEditorActionBase.h"
 
 namespace VisualLinkerScript::Components::LinkerScriptSession::EditorAction
 {

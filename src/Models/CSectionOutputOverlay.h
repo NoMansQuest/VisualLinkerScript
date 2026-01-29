@@ -4,12 +4,12 @@
 #include <vector>
 #include <memory>
 #include <string>
-#include "CSectionOutputToVmaRegion.h"
-#include "CSectionOutputAtLmaRegion.h"
-#include "CSectionOutputPhdr.h"
-#include "CSectionOutputFillExpression.h"
-#include "Raw/CRawEntry.h"
-#include "CViolationBase.h"
+#include "Models/CSectionOutputToVmaRegion.h"
+#include "Models/CSectionOutputAtLmaRegion.h"
+#include "Models/CSectionOutputPhdr.h"
+#include "Models/CSectionOutputFillExpression.h"
+#include "Models/Raw/CRawEntry.h"
+#include "Models/CViolationBase.h"
 
 namespace VisualLinkerScript::Models
 {

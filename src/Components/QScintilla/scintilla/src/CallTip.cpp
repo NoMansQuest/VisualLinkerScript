@@ -17,14 +17,14 @@
 #include <algorithm>
 #include <memory>
 
-#include "Platform.h"
+#include "Components/QScintilla/scintilla/include/Platform.h"
 
-#include "Scintilla.h"
+#include "Components/QScintilla/scintilla/include/Scintilla.h"
 
-#include "StringCopy.h"
-#include "Position.h"
-#include "IntegerRectangle.h"
-#include "CallTip.h"
+#include "Components/QScintilla/scintilla/lexlib/StringCopy.h"
+#include "Components/QScintilla/scintilla/src/Position.h"
+#include "Components/QScintilla/scintilla/src/IntegerRectangle.h"
+#include "Components/QScintilla/scintilla/src/CallTip.h"
 
 using namespace Scintilla;
 

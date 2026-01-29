@@ -2,8 +2,8 @@
 #define CPHDRS_REGION_H__
 
 #include <vector>
-#include "CParsedContentBase.h"
-#include "CPhdrsStatement.h"
+#include "Models/CParsedContentBase.h"
+#include "Models/CPhdrsStatement.h"
 
 namespace VisualLinkerScript::Models
 {

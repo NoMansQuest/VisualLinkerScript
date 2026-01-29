@@ -13,12 +13,12 @@
 #include <algorithm>
 #include <memory>
 
-#include "Platform.h"
+#include "Components/QScintilla/scintilla/include/Platform.h"
 
-#include "Scintilla.h"
+#include "Components/QScintilla/scintilla/include/Scintilla.h"
 
-#include "Position.h"
-#include "Selection.h"
+#include "Components/QScintilla/scintilla/src/Position.h"
+#include "Components/QScintilla/scintilla/src/Selection.h"
 
 using namespace Scintilla;
 

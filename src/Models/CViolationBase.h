@@ -1,8 +1,8 @@
 #ifndef CVIOLATIONBASE_H__
 #define CVIOLATIONBASE_H__
 
-#include "ESeverityCode.h"
-#include "Raw/CRawEntry.h"
+#include "Models/ESeverityCode.h"
+#include "Models/Raw/CRawEntry.h"
 
 namespace VisualLinkerScript::Models 
 {

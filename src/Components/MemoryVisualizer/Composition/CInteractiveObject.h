@@ -1,8 +1,8 @@
 #ifndef CINTERACTIVE_OBJECT_H__
 #define CINTERACTIVE_OBJECT_H__
 
-#include "SMetricPointF.h"
-#include "../../Helpers.h"
+#include "Components/MemoryVisualizer/Composition/SMetricPointF.h"
+#include "Helpers.h"
 
 namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 {

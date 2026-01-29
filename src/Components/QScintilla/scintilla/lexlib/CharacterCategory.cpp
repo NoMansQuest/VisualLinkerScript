@@ -10,7 +10,7 @@
 #include <algorithm>
 #include <iterator>
 
-#include "CharacterCategory.h"
+#include "Components/QScintilla/scintilla/lexlib/CharacterCategory.h"
 
 namespace Scintilla {
 

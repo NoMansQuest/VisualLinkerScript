@@ -1,7 +1,7 @@
 #ifndef CINCLUDEDFILESAREPRESENTRULE_H
 #define CINCLUDEDFILESAREPRESENTRULE_H
 
-#include "../IDrcRuleBase.h"
+#include "DrcEngine/IDrcRuleBase.h"
 
 namespace VisualLinkerScript::DrcEngine::Rules
 {

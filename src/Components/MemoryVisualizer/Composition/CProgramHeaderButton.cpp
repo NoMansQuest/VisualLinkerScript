@@ -1,4 +1,4 @@
-#include "CProgramHeaderButton.h"
+#include "Components/MemoryVisualizer/Composition/CProgramHeaderButton.h"
 
 #include "Components/MemoryVisualizer/ColorResources.h"
 

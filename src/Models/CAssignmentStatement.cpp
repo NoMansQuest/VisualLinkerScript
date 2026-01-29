@@ -3,8 +3,8 @@
 #include <string>
 #include <stdint.h>
 
-#include "CAssignmentStatement.h"
-#include "CLinkerScriptFile.h"
+#include "Models/CAssignmentStatement.h"
+#include "Models/CLinkerScriptFile.h"
 
 using namespace VisualLinkerScript;
 using namespace VisualLinkerScript::Models;

@@ -15,9 +15,9 @@
 #include <vector>
 #include <algorithm>
 
-#include "StringCopy.h"
-#include "CaseConvert.h"
-#include "UniConversion.h"
+#include "Components/QScintilla/scintilla/lexlib/StringCopy.h"
+#include "Components/QScintilla/scintilla/src/CaseConvert.h"
+#include "Components/QScintilla/scintilla/src/UniConversion.h"
 
 using namespace Scintilla;
 

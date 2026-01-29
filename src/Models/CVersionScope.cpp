@@ -3,7 +3,7 @@
 #include <string>
 #include <stdint.h>
 
-#include "CVersionScope.h"
+#include "Models/CVersionScope.h"
 
 using namespace VisualLinkerScript;
 using namespace VisualLinkerScript::Models;

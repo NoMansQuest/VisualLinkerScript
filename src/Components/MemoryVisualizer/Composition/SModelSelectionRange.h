@@ -1,7 +1,7 @@
 #ifndef SMODEL_SELECTION_RANGE_H__
 #define SMODEL_SELECTION_RANGE_H__
 
-#include "../../../Helpers.h"
+#include "Helpers.h"
 
 namespace VisualLinkerScript::Components::MemoryVisualizer::Composition
 {

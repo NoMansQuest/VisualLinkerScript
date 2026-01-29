@@ -2,7 +2,7 @@
 #define STYLER_ACTION_BASE_H_
 
 #include <cstdint>
-#include "EEditorActionType.h"
+#include "Components/QLinkerScriptSession/EditorAction/EEditorActionType.h"
 
 namespace VisualLinkerScript::Components::LinkerScriptSession::EditorAction
 {

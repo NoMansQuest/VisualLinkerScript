@@ -13,7 +13,7 @@
 #include <string>
 #include <map>
 
-#include "PropSetSimple.h"
+#include "Components/QScintilla/scintilla/lexlib/PropSetSimple.h"
 
 using namespace Scintilla;
 

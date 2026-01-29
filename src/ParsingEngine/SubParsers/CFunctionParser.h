@@ -3,10 +3,10 @@
 
 #include <memory>
 
-#include "CSubParserBase.h"
-#include "SubParserType.h"
+#include "ParsingEngine/SubParsers/CSubParserBase.h"
+#include "ParsingEngine/SubParsers/SubParserType.h"
 
-#include "../../Models/CFunctionCall.h"
+#include "Models/CFunctionCall.h"
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {   

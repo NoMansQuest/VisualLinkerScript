@@ -4,7 +4,7 @@
 #include <QtWidgets>
 #include <QString>
 #include <memory>
-#include "../Helpers.h"
+#include "Helpers.h"
 
 namespace VisualLinkerScript::Models
 {

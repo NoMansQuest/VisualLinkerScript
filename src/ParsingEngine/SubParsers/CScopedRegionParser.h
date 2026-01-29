@@ -1,7 +1,7 @@
 #ifndef CSCOPED_REGION_PARSER_H__
 #define CSCOPED_REGION_PARSER_H__
 
-#include "CSubParserBase.h"
+#include "ParsingEngine/SubParsers/CSubParserBase.h"
 
 namespace VisualLinkerScript::ParsingEngine::SubParsers
 {
@@ -44,6 +44,6 @@ namespace VisualLinkerScript::ParsingEngine::SubParsers
     };
 }
 
-#include "CScopedRegionParser.tpp"
+#include "ParsingEngine/SubParsers/CScopedRegionParser.tpp"
 
 #endif

@@ -3,7 +3,7 @@
 #include <string>
 #include <cstdint>
 
-#include "CSectionsRegion.h"
+#include "Models/CSectionsRegion.h"
 
 using namespace VisualLinkerScript;
 using namespace VisualLinkerScript::Models;
