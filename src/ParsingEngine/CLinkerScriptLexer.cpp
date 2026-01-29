@@ -104,12 +104,12 @@ namespace
 
             if (absolutePositionPostAdjustmentResult < 0)
             {
-                throw std::exception("AbsolutePosition, after adjustment, became negative!");
+                throw std::runtime_error("AbsolutePosition, after adjustment, became negative!");
             }
 
             if (indexInLinePostAdjustmentResult < 0)
             {
-                throw std::exception("IndexInLine, after adjustment, became negative!");
+                throw std::runtime_error("IndexInLine, after adjustment, became negative!");
             }
 
             return LexerPosition{

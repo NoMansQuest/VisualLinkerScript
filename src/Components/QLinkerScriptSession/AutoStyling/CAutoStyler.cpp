@@ -280,7 +280,7 @@ bool HasNonWhitespaceBeforeCurlyBracket(const std::string& str, uint32_t backwar
     // Check characters before the curly-bracket
     if (str[backwardStartingIndex] != '}')
     {
-        throw std::exception("Starting index should be a closing curly bracket");
+        throw std::runtime_error("Starting index should be a closing curly bracket");
     }
 
     if (backwardStartingIndex == 0)

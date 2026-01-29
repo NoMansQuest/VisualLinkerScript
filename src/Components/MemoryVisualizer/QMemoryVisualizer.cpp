@@ -107,7 +107,7 @@ void QMemoryVisualizer::CalculateAndUpdateModelGeometry() const
 {
     if (!this->screen())
     {
-        throw std::exception("'Screen' turned out null");
+        throw std::runtime_error("'Screen' turned out null");
     }
 
     auto graphicContext = CGraphicContext::Make(this);

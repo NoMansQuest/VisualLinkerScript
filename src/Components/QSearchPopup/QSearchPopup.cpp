@@ -253,7 +253,7 @@ SearchPerimeterType ConvertIndexToSearchPerimeter(const int comboBoxIndex)
 	case 1: return SearchPerimeterType::AllOpenFiles;
 	case 2: return SearchPerimeterType::Selection;
 	default:
-		throw std::exception("Index out of range for 'comboBoxIndex'");
+		throw std::runtime_error("Index out of range for 'comboBoxIndex'");
 	}
 }
 

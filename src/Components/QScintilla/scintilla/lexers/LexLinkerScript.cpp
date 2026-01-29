@@ -14,6 +14,7 @@
 #include <stdarg.h>
 #include <assert.h>
 #include <ctype.h>
+#include <stdexcept>
 
 #include "Components/QScintilla/scintilla/include/ILexer.h"
 #include "Components/QScintilla/scintilla/include/Scintilla.h"
@@ -697,7 +698,7 @@ static void FoldLinkerScriptDoc(Sci_PositionU startingPosition, Sci_Position len
              * by a potential future enum entry not referenced in the switch statement.
              */
 	        default:
-	            throw std::exception("Unrecognized enum state in 'FolderStateEnum'");            
+	            throw std::runtime_error("Unrecognized enum state in 'FolderStateEnum'");            
         }
 
         if (atEndOfLine || (hoveringIndex == (endingPosition - 1)))

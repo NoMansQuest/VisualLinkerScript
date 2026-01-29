@@ -86,7 +86,7 @@ static QIcon GetIconForSeverity(const ESeverityCode severity)
 	    case ESeverityCode::Information:
 	        return QIcon(":/resources/Images/info-sign-icon.svg");
     	default:
-            throw std::exception("Unrecognized severity");
+            throw std::runtime_error("Unrecognized severity");
     }
 }
 
@@ -344,7 +344,7 @@ void QLinkerScriptSession::OnSearchReplaceRequested(
 
 	    default:
 	    {
-	        throw std::exception("Unsupported enum value detected.");
+	        throw std::runtime_error("Unsupported enum value detected.");
 	    }
     }
 }
@@ -722,7 +722,7 @@ void QLinkerScriptSession::ApplyEditorActions(LinqVector<SEditorActionBase> acti
             }
 
         	default:
-                throw std::exception("Unrecognized editor action type.");
+                throw std::runtime_error("Unrecognized editor action type.");
         }
 	}
     this->m_scintilla->endUndoAction();
