@@ -1,8 +1,8 @@
 #include <QFile>
 #include <memory>
 #include <QString>
-#include "mainwindow.h"
-#include "ui_mainwindow.h"
+#include "MainWindow.h"
+#include "ui_MainWindow.h"
 #include <qscrollbar.h>
 #include <QElapsedTimer.h>
 #include "Components/InputDialogs/QJumpToLineDialog.h"

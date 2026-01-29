@@ -1,16 +1,14 @@
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include <QApplication>
 #include <QFile>
 #include <QString>
 #include <QRegularExpression>
-
 
 struct PaletteEntryStruct
 {
     QString entryName;
     QString entryValue;
 };
-
 
 QString GetStylesheetContent();
 std::vector<PaletteEntryStruct> ExtractPaletteEntries(const QString& paletteFileContent);
