@@ -7,7 +7,7 @@
 #include <QLabel>
 #include <QKeyEvent>
 #include <QDebug>
-
+#include <QIntValidator>
 
 class QJumpToLineDialog : public QDialog
 {

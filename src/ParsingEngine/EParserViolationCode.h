@@ -7,8 +7,6 @@
 
 namespace VisualLinkerScript::ParsingEngine
 {
-    #define NAMEOF(name) #name
-
     /// @brief An exhaustive list of all known violations.
     enum class EParserViolationCode : uint32_t
     {
@@ -143,7 +141,6 @@ namespace VisualLinkerScript::ParsingEngine
 
     /// @brief Maps parser violation to a unique ID code.
     std::string MapParserViolationToCode(EParserViolationCode code);
-
 };
 
 #endif //

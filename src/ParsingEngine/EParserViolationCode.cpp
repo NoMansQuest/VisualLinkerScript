@@ -111,7 +111,7 @@ std::string VisualLinkerScript::ParsingEngine::MapParserViolationToDescription(E
     case EParserViolationCode::DesignRuleCheckError: return "Design rule check error";
 
     default:
-        throw std::invalid_argument(NAMEOF(code));
+        throw std::invalid_argument("code");
     }
 }
 
@@ -223,6 +223,6 @@ std::string VisualLinkerScript::ParsingEngine::MapParserViolationToCode(EParserV
     case EParserViolationCode::DesignRuleCheckError: return "P0102";
 
     default:
-        throw std::invalid_argument(NAMEOF(code));
+        throw std::invalid_argument("code");
     }
 }

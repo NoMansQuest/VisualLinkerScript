@@ -3,6 +3,7 @@
 #include "Models/Raw/CRawEntry.h"
 #include <qlogging.h>
 #include <stack>
+#include <stdexcept>
 
 #include "Components/QLinkerScriptSession/EditorAction/SEditorAddContent.h"
 #include "Components/QLinkerScriptSession/EditorAction/SEditorAddEmptyLine.h"

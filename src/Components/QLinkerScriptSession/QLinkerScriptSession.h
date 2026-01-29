@@ -5,6 +5,7 @@
 #include <QString>
 #include <string>
 #include <memory>
+#include <stdexcept>
 
 #include "Components/QLinkerScriptSession/AutoStyling/CAutoStyler.h"
 #include "Components/MemoryVisualizer/QMemoryVisualizer.h"

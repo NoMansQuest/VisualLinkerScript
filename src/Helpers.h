@@ -11,9 +11,6 @@
 
 #include "Components/QChromeTab/QChromeTabWidget.h"
 
-/// @brief This does the "nameof" expression in c#
-#define NAMEOF(x) #x
-
 /// @brief We set here whether we're compiling for Unix-based or Windows
 #if defined(Q_OS_LINUX) || defined(__APPLE__) || defined (__linux__) || defined(__unix__ )
     #define COMPILING_FOR_UNIX_BASED

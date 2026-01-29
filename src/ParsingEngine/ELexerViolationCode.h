@@ -6,8 +6,6 @@
 
 namespace VisualLinkerScript::ParsingEngine
 {
-#define NAMEOF(name) #name
-
     /// @brief An exhaustive list of all known lexer violations.
     enum class ELexerViolationCode : uint32_t
     {
