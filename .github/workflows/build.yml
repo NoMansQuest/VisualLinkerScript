@@ -1,71 +1,96 @@
-name: Build
+name: Build on Windows & Linux
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
-  build-linux:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up Qt
-      uses: jurplel/install-qt-action@v2
-      with:
-        version: '5.15.2'
-        host: 'linux'
-        target: 'desktop'
-        arch: 'gcc_64'
-    - name: Install dependencies
-      run: sudo apt-get install -y build-essential libgl1-mesa-dev
-    - name: Configure
-      run: |
-        mkdir build
-        cd build
-        qmake ../src/VisualLinkerScript.pro
-    - name: Build
-      run: |
-        cd build
-        make
+  build:
+    name: Build (${{ matrix.os }} - Release)
+    runs-on: ${{ matrix.os }}
 
-  build-windows:
-    runs-on: windows-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up Qt
-      uses: jurplel/install-qt-action@v2
-      with:
-        version: '5.15.2'
-        host: 'windows'
-        target: 'desktop'
-        arch: 'win64_msvc2019_64'
-    - name: Configure
-      run: |
-        mkdir build
-        cd build
-        qmake ../src/VisualLinkerScript.pro
-    - name: Build
-      run: |
-        cd build
-        nmake
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
 
-  build-macos:
-    runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Qt
-      uses: jurplel/install-qt-action@v2
-      with:
-        version: '5.15.2'
-        host: 'mac'
-        target: 'desktop'
-        arch: 'clang_64'
-    - name: Install dependencies
-      run: brew install qt
-    - name: Configure
-      run: |
-        mkdir build
-        cd build
-        qmake ../src/VisualLinkerScript.pro
-    - name: Build
-      run: |
-        cd build
-        make
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive   # in case QScintilla or other deps are submodules
+
+      # ================================================
+      # Install Qt 6.3.2
+      # ================================================
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.3.2'
+          host: ${{ runner.os == 'Windows' && 'windows' || 'linux' }}
+          target: desktop
+          arch: ${{ runner.os == 'Windows' && 'win64_msvc2019_64' || 'gcc_64' }}
+          install-deps: true
+
+      # ================================================
+      # Linux system dependencies (for Qt GUI apps)
+      # ================================================
+      - name: Install Linux dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y \
+            libgl1-mesa-dev \
+            libxkbcommon-x11-0 \
+            libfontconfig1-dev \
+            libdbus-1-dev \
+            libxcb-cursor0 \
+            libxcb-xinerama0
+
+      # ================================================
+      # Configure CMake
+      # ================================================
+      - name: Configure CMake
+        run: |
+          cmake -S . -B build \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_RUNTIME_OUTPUT_DIRECTORY=build/bin \
+            -DCMAKE_LIBRARY_OUTPUT_DIRECTORY=build/lib \
+            -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY=build/lib
+
+      # ================================================
+      # Build everything
+      # ================================================
+      - name: Build
+        run: cmake --build build --config Release --parallel
+
+      # ================================================
+      # Windows: Run windeployqt after build
+      # ================================================
+      - name: Deploy Qt runtime (Windows only)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $qtBin = "${{ env.Qt6_DIR }}/bin"
+          & "$qtBin/windeployqt.exe" `
+            --dir "build/bin" `
+            --libdir "build/bin" `
+            --plugindir "build/bin/plugins" `
+            --no-compiler-runtime `
+            --no-translations `
+            "build/bin/VisualLinkerScript.exe"
+
+      # ================================================
+      # Upload built artifacts
+      # ================================================
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: VisualLinkerScript-${{ runner.os }}-Release
+          path: |
+            build/bin/*
+            build/lib/*
+          retention-days: 7
