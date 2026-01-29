@@ -39,9 +39,11 @@ target_link_libraries(app_core PRIVATE
     Qt${QT_VERSION_MAJOR}::PrintSupport
 )
 
-qt_add_resources(APP_RESOURCES    
-    *.qrc
+file(GLOB_RECURSE RESOURCE_FILES CONFIGURE_DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.qrc"
 )
+
+qt_add_resources(APP_RESOURCES ${RESOURCE_FILES})
 
 add_executable(VisualLinkerScript
     main.cpp
