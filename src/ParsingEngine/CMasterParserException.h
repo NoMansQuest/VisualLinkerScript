@@ -26,7 +26,7 @@ namespace VisualLinkerScript::ParsingEngine
 
     public:
         /// @brief The human-readable version of what went wrong
-        const char* what() const
+        const char* what() const noexcept override
         {
             return m_description.c_str();
         }
