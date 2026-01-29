@@ -7,7 +7,7 @@
 namespace VisualLinkerScript::ParsingEngine
 {
     /// @brief An exhaustive list of all known lexer violations.
-    enum class ELexerViolationCode : uint32_t
+    enum class ELexerViolationCode: uint32_t
     {
     	UnexpectedCharacterDetected // An unexpected character found in a given location
     };

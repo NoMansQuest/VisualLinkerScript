@@ -8,7 +8,7 @@
 namespace VisualLinkerScript::ParsingEngine
 {
     /// @brief An exhaustive list of all known violations.
-    enum class EParserViolationCode : uint32_t
+    enum class EParserViolationCode: uint32_t
     {
         // Program Header (PHDRS) violations:
         NoSymbolOrKeywordAllowedAfterPhdrsHeader,

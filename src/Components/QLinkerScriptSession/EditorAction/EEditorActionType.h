@@ -6,7 +6,7 @@
 namespace VisualLinkerScript::Components::LinkerScriptSession::EditorAction
 {
 	/// @brief Various types of editor action.
-	enum class EEditorActionType : uint32_t
+	enum class EEditorActionType: uint32_t
 	{
 		AddContent,
 		AddEmptyLine,
