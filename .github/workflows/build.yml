@@ -69,15 +69,7 @@ jobs:
       - name: Deploy Qt runtime (Windows only)
         if: runner.os == 'Windows'
         shell: pwsh
-        run: |
-          $qtBin = "${{ env.Qt6_DIR }}/bin"
-          & "$qtBin/windeployqt.exe" `
-            --dir "build/bin" `
-            --libdir "build/bin" `
-            --plugindir "build/bin/plugins" `
-            --no-compiler-runtime `
-            --no-translations `
-            "build/bin/VisualLinkerScript.exe"
+        run: $qtBin = "${{ env.Qt6_DIR }}/bin" & "$qtBin/windeployqt.exe" --dir "build/bin" --libdir "build/bin" --plugindir "build/bin/plugins" --no-compiler-runtime --no-translations "build/bin/VisualLinkerScript.exe"
 
       # ================================================
       # Upload built artifacts
