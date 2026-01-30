@@ -77,21 +77,29 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          # Qt6_DIR is set by install-qt-action
-          $qtBin = "${{ env.Qt6_DIR }}/bin"
+          # Debug: show all relevant env vars
+          Write-Host "Qt6_DIR env var = $env:Qt6_DIR"
+          Write-Host "Full Qt bin path would be = $env:Qt6_DIR/bin"
+
+          # Use env var directly (safer than ${{ }} inside string)
+          $qtBin = "$env:Qt6_DIR/bin"
           $exePath = "build/bin/VisualLinkerScript.exe"
 
           Write-Host "Using Qt bin path: $qtBin"
+          Write-Host "Looking for windeployqt.exe at: $qtBin/windeployqt.exe"
+
           if (-not (Test-Path "$qtBin/windeployqt.exe")) {
-            Write-Error "windeployqt.exe not found at $qtBin"
+            Write-Error "windeployqt.exe NOT found! Check Qt6_DIR value above."
+            Get-ChildItem -Path "$env:Qt6_DIR" -Recurse -File | Where-Object { $_.Name -like "*windeployqt*" } | Select-Object FullName
             exit 1
           }
 
           if (-not (Test-Path $exePath)) {
-            Write-Error "Executable not found at $exePath"
+            Write-Error "Main executable not found at $exePath"
             exit 1
           }
 
+          Write-Host "Running windeployqt..."
           & "$qtBin/windeployqt.exe" `
             --dir "build/bin" `
             --libdir "build/bin" `
@@ -99,6 +107,8 @@ jobs:
             --no-compiler-runtime `
             --no-translations `
             $exePath
+
+          Write-Host "windeployqt finished."
 
       - name: Upload Windows artifact
         uses: actions/upload-artifact@v4
