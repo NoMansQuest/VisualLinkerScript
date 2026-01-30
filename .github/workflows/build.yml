@@ -47,7 +47,7 @@ jobs:
           path: build/bin/*
           retention-days: 7
 
-build-windows:
+  build-windows:
     name: Build Windows (Release)
     runs-on: windows-latest
     needs: build-linux
