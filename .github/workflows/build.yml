@@ -8,77 +8,93 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
-    name: Build (${{ matrix.os }} - Release)
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, windows-latest]
+  build-linux:
+    name: Build Linux (Release)
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          submodules: recursive   # in case QScintilla or other deps are submodules
+          submodules: recursive
 
-      # ================================================
-      # Install Qt 6.3.2
-      # ================================================
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
         with:
           version: '6.3.2'
-          host: ${{ runner.os == 'Windows' && 'windows' || 'linux' }}
+          host: linux
           target: desktop
-          arch: ${{ runner.os == 'Windows' && 'win64_msvc2019_64' || 'gcc_64' }}
+          arch: gcc_64
           install-deps: true
 
-      # ================================================
-      # Linux system dependencies (for Qt GUI apps)
-      # ================================================
       - name: Install Linux dependencies
-        if: runner.os == 'Linux'
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y \
-            libgl1-mesa-dev \
-            libxkbcommon-x11-0 \
-            libfontconfig1-dev \
-            libdbus-1-dev \
-            libxcb-cursor0 \
-            libxcb-xinerama0
+            libgl1-mesa-dev libxkbcommon-x11-0 libfontconfig1-dev \
+            libdbus-1-dev libxcb-cursor0 libxcb-xinerama0
 
-      # ================================================
-      # Configure CMake
-      # ================================================
       - name: Configure CMake
-        run: |
-          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_RUNTIME_OUTPUT_DIRECTORY=build/bin -DCMAKE_LIBRARY_OUTPUT_DIRECTORY=build/lib -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY=build/lib
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 
-      # ================================================
-      # Build everything
-      # ================================================
       - name: Build
-        run: cmake --build build --config Release --parallel
+        run: cmake --build build --config Release --parallel 2   # keep low to avoid OOM
 
-      # ================================================
-      # Windows: Run windeployqt after build
-      # ================================================
-      - name: Deploy Qt runtime (Windows only)
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: $qtBin = "${{ env.Qt6_DIR }}/bin" & "$qtBin/windeployqt.exe" --dir "build/bin" --libdir "build/bin" --plugindir "build/bin/plugins" --no-compiler-runtime --no-translations "build/bin/VisualLinkerScript.exe"
-
-      # ================================================
-      # Upload built artifacts
-      # ================================================
-      - name: Upload artifacts
+      - name: Upload Linux artifact
         uses: actions/upload-artifact@v4
         with:
-          name: VisualLinkerScript-${{ runner.os }}-Release
-          path: |
-            build/bin/*
-            build/lib/*
+          name: VisualLinkerScript-Linux-Release
+          path: build/bin/*
+          retention-days: 7
+
+build-windows:
+    name: Build Windows (Release)
+    runs-on: windows-latest
+    needs: build-linux
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.3.2'
+          host: windows
+          target: desktop
+          arch: win64_msvc2019_64
+          install-deps: true
+
+      - name: Configure CMake
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build build --config Release --parallel 2
+
+      - name: Deploy Qt runtime (windeployqt)
+        shell: pwsh
+        run: |
+          $$   qtBin = "   $${{ env.Qt6_DIR }}/bin"
+          $exePath = "build/bin/VisualLinkerScript.exe"
+
+          if (Test-Path $exePath) {
+            & "$qtBin/windeployqt.exe" `
+              --dir "build/bin" `
+              --libdir "build/bin" `
+              --plugindir "build/bin/plugins" `
+              --no-compiler-runtime `
+              --no-translations `
+              $exePath
+          } else {
+            Write-Error "Executable not found: $exePath"
+            exit 1
+          }
+
+      - name: Upload Windows artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: VisualLinkerScript-Windows-Release
+          path: build/bin/*
           retention-days: 7
