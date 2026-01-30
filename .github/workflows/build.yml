@@ -73,9 +73,7 @@ jobs:
       - name: Build
         run: cmake --build build --config Release --parallel 2
 
-      - name: Deploy Qt runtime (windeployqt)
-        if: runner.os == 'Windows'
-        shell: pwsh
+      - name: Deploy Qt runtime (windeployqt)        
         run: |
           # Debug: show all relevant env vars
           Write-Host "Qt6_DIR env var = $env:Qt6_DIR"
