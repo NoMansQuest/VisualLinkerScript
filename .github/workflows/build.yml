@@ -76,7 +76,7 @@ jobs:
       - name: Deploy Qt runtime (windeployqt)
         if: runner.os == 'Windows'
         shell: pwsh
-        run: |        
+        run: |
           # Debug: show all relevant env vars
           Write-Host "Qt6_DIR env var = $env:Qt6_DIR"
           Write-Host "Full Qt bin path would be = $env:Qt6_DIR/bin"
