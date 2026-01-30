@@ -55,10 +55,10 @@ jobs:
       # ================================================
       - name: Configure CMake
         run: |
-          cmake -S . -B build \
-            -DCMAKE_BUILD_TYPE=Release \
-            -DCMAKE_RUNTIME_OUTPUT_DIRECTORY=build/bin \
-            -DCMAKE_LIBRARY_OUTPUT_DIRECTORY=build/lib \
+          cmake -S . -B build `
+            -DCMAKE_BUILD_TYPE=Release `
+            -DCMAKE_RUNTIME_OUTPUT_DIRECTORY=build/bin `
+            -DCMAKE_LIBRARY_OUTPUT_DIRECTORY=build/lib `
             -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY=build/lib
 
       # ================================================
@@ -74,8 +74,7 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          $qtBin = "${{ env.Qt6_DIR }}/bin"
-          & "$qtBin/windeployqt.exe" `
+          $qtBin = "${{ env.Qt6_DIR }}/bin" & "$qtBin/windeployqt.exe" `
             --dir "build/bin" `
             --libdir "build/bin" `
             --plugindir "build/bin/plugins" `
@@ -90,7 +89,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: VisualLinkerScript-${{ runner.os }}-Release
-          path: |
-            build/bin/*
-            build/lib/*
+          path: build/bin/*  build/lib/*
           retention-days: 7
