@@ -74,7 +74,8 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          $qtBin = "${{ env.Qt6_DIR }}/bin" & "$qtBin/windeployqt.exe" `
+          $qtBin = "${{ env.Qt6_DIR }}/bin"
+          & "$qtBin/windeployqt.exe" `
             --dir "build/bin" `
             --libdir "build/bin" `
             --plugindir "build/bin/plugins" `
@@ -89,5 +90,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: VisualLinkerScript-${{ runner.os }}-Release
-          path: build/bin/*  build/lib/*
+          path: |
+            build/bin/*
+            build/lib/*
           retention-days: 7
