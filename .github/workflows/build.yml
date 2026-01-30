@@ -77,28 +77,30 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          # Use QT_ROOT_DIR from install-qt-action (it's set reliably)
           $qtRoot = $env:QT_ROOT_DIR
           $qtBin = "$qtRoot/bin"
-          $exePath = "build/bin/VisualLinkerScript.exe"
 
           Write-Host "QT_ROOT_DIR = $env:QT_ROOT_DIR"
           Write-Host "qtBin = $qtBin"
-          Write-Host "exePath = $exePath"
+
+          # Auto-search for the executable
+          Write-Host "Searching for VisualLinkerScript.exe in build folder..."
+          $exeFiles = Get-ChildItem -Path build -Recurse -File -Filter "VisualLinkerScript.exe" -ErrorAction SilentlyContinue
+
+          if ($exeFiles.Count -eq 0) {
+            Write-Error "No VisualLinkerScript.exe found in build folder!"
+            exit 1
+          }
+
+          $exePath = $exeFiles[0].FullName
+          Write-Host "Found executable at: $exePath"
 
           if (-not (Test-Path "$qtBin/windeployqt.exe")) {
-            Write-Error "windeployqt.exe NOT found in $qtBin"
-            Get-ChildItem -Path $qtRoot -Recurse -File | Where-Object { $_.Name -eq "windeployqt.exe" } | Select-Object FullName
+            Write-Error "windeployqt.exe not found in $qtBin"
             exit 1
           }
 
-          if (-not (Test-Path $exePath)) {
-            Write-Error "Main executable not found: $exePath"
-            dir build -Recurse | Where-Object { $_.Name -like "VisualLinkerScript*" } | Select-Object FullName
-            exit 1
-          }
-
-          Write-Host "Running windeployqt..."
+          Write-Host "Running windeployqt on $exePath..."
           & "$qtBin/windeployqt.exe" `
             --dir "build/bin" `
             --libdir "build/bin" `
