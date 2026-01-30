@@ -55,11 +55,7 @@ jobs:
       # ================================================
       - name: Configure CMake
         run: |
-          cmake -S . -B build \
-            -DCMAKE_BUILD_TYPE=Release \
-            -DCMAKE_RUNTIME_OUTPUT_DIRECTORY=build/bin \
-            -DCMAKE_LIBRARY_OUTPUT_DIRECTORY=build/lib \
-            -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY=build/lib
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_RUNTIME_OUTPUT_DIRECTORY=build/bin -DCMAKE_LIBRARY_OUTPUT_DIRECTORY=build/lib -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY=build/lib
 
       # ================================================
       # Build everything
