@@ -77,25 +77,24 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          # Debug: show all relevant env vars
-          Write-Host "Qt6_DIR env var = $env:Qt6_DIR"
-          Write-Host "Full Qt bin path would be = $env:Qt6_DIR/bin"
-
-          # Use env var directly
-          $qtBin = "$env:Qt6_DIR/bin"
+          # Use QT_ROOT_DIR from install-qt-action (it's set reliably)
+          $qtRoot = $env:QT_ROOT_DIR
+          $qtBin = "$qtRoot/bin"
           $exePath = "build/bin/VisualLinkerScript.exe"
 
-          Write-Host "Using Qt bin path: $qtBin"
-          Write-Host "Looking for windeployqt.exe at: $qtBin/windeployqt.exe"
+          Write-Host "QT_ROOT_DIR = $env:QT_ROOT_DIR"
+          Write-Host "qtBin = $qtBin"
+          Write-Host "exePath = $exePath"
 
           if (-not (Test-Path "$qtBin/windeployqt.exe")) {
-            Write-Error "windeployqt.exe NOT found! Check Qt6_DIR value above."
-            Get-ChildItem -Path "$env:Qt6_DIR" -Recurse -File | Where-Object { $_.Name -like "*windeployqt*" } | Select-Object FullName
+            Write-Error "windeployqt.exe NOT found in $qtBin"
+            Get-ChildItem -Path $qtRoot -Recurse -File | Where-Object { $_.Name -eq "windeployqt.exe" } | Select-Object FullName
             exit 1
           }
 
           if (-not (Test-Path $exePath)) {
-            Write-Error "Main executable not found at $exePath"
+            Write-Error "Main executable not found: $exePath"
+            dir build -Recurse | Where-Object { $_.Name -like "VisualLinkerScript*" } | Select-Object FullName
             exit 1
           }
 
