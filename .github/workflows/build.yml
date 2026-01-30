@@ -65,7 +65,7 @@ jobs:
       # Build everything
       # ================================================
       - name: Build
-        run: cmake --build build --config Release --parallel
+        run: cmake --build build --config Release --parallel 2
 
       # ================================================
       # Windows: Run windeployqt after build

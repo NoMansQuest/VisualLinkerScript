@@ -11,6 +11,7 @@ set(CMAKE_AUTOMOC               ON)
 set(CMAKE_AUTORCC               ON)
 set(CMAKE_AUTOUIC               ON)
 set(CMAKE_AUTOUIC_SEARCH_PATHS "${CMAKE_CURRENT_SOURCE_DIR}")
+set(CMAKE_AUTOMOC_NO_MOC_COMPILATION ON)
 
 # Find Qt6 modules we need
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Gui Widgets PrintSupport Test)
